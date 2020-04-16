@@ -8,9 +8,16 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# install dependencies
-RUN pip install --upgrade pip
-RUN pip install pipenv
+# install psycopg2
+RUN pip install --upgrade pip \
+    && pip install pipenv \
+    && apk update \
+    && apk add --virtual build-deps gcc python3-dev musl-dev \
+    && apk add postgresql-dev \
+    && pipenv install psycopg2-binary --skip-lock --dev \
+    && apk del build-deps
+
+# install other deps
 COPY ./Pipfile /usr/src/app/Pipfile
 RUN pipenv install --skip-lock --system --dev
 
