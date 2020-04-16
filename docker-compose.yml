@@ -1,19 +1,23 @@
 version: '2.2'
 services:
   web:
-    build: ./src
-    command: python manage.py runserver 0.0.0.0:8000
+    build: ./web
+    command: sh -c "python manage.py collectstatic --no-input && gunicorn thesaurus.wsgi -b 0.0.0.0:8000"
+    container_name: thesaurus_web
     volumes:
-      - ./src/:/usr/src/app/
-    ports:
-      - 8000:8000
+      - ./web/:/usr/web/app/
+      - static_files:/static
+    expose:
+      - 8000
     env_file:
       - ./.env.dev
     depends_on:
       db:
         condition: service_healthy
+
   db:
     image: postgres:12.0-alpine
+    container_name: thesaurus_db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -23,5 +27,16 @@ services:
     healthcheck:
       test: "exit 0"
 
+  webserver:
+    build: ./nginx
+    container_name: thesaurus_webserver
+    ports:
+      - 8080:80
+    volumes:
+      - static_files:/static
+    depends_on:
+      - web
+
 volumes:
   postgres_data:
+  static_files:

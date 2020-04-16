@@ -23,3 +23,7 @@ RUN pipenv install --skip-lock --system --dev
 
 # copy project
 COPY . /usr/src/app/
+
+RUN python manage.py collectstatic --noinput
+
+USER 999
