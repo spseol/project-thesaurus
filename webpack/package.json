@@ -5,16 +5,23 @@
   "author": "Josef Kolar",
   "license": "MIT",
   "scripts": {
-    "build": "webpack"
+    "dev": "webpack-dev-server --config webpack.dev.config.js"
   },
   "dependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/preset-env": "^7.9.5",
+    "autoprefixer": "^9.7.6",
+    "babel-loader": "^8.1.0",
+    "chromatic-sass": "^0.1.8",
     "css-loader": "^3.5.2",
     "foundation-sites": "^6.6.3",
     "node-sass": "^4.13.1",
+    "postcss-object-fit-images": "^1.1.2",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.1.4",
     "webpack": "^4.42.1",
     "webpack-bundle-tracker": "^1.0.0-alpha.1",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.11",
+    "webpack-dev-server": "^3.10.3"
   }
 }

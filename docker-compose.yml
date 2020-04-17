@@ -37,6 +37,22 @@ services:
     depends_on:
       - web
 
+  webpack:
+    build: ./webpack
+    container_name: thesaurus_webpack
+#    command: dev-server
+    volumes:
+      - ./webpack/:/usr/src/app
+      - node_modules:/usr/src/app/node_modules
+      - webpack_build:/var/build/
+    environment:
+      - BUILD_DIR=/var/build/
+      #      - PUBLIC_PATH=/static/
+      - PUBLIC_PATH=http://${SITE_URL:-localhost}:3000/static/
+
+
 volumes:
   postgres_data:
   static_files:
+  node_modules:
+  webpack_build:
