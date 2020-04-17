@@ -1,10 +1,11 @@
-FROM node:12-alpine
+FROM node:10-slim
 
 WORKDIR /usr/src/app
 
-COPY package*.json yarn.lock ./
-RUN yarn install
+COPY package.json ./
+RUN npm install
+RUN rm package.json
 
 COPY . .
 
-CMD ["yarn", "run", "dev"   ]
+CMD ["npm", "run", "dev"]

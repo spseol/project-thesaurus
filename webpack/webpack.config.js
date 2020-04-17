@@ -4,6 +4,7 @@ const publicPath = process.env.PUBLIC_PATH || '//localhost:3000/static/';
 const build_dir = process.env.BUILD_DIR || path.resolve('./build');
 
 const BundleTracker = require('webpack-bundle-tracker');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 // plugin for django integration
 const bundler = new BundleTracker({
@@ -33,10 +34,11 @@ module.exports = {
         // for example ../build/head.[hash].js
         publicPath,
         path: build_dir,
-        filename: '[name].js',
+        filename: '[name].[hash:12].js',
     },
     plugins: [
         bundler,
+        new MiniCssExtractPlugin(),
     ],
     module: {
         rules: [
@@ -55,7 +57,15 @@ module.exports = {
             {
                 test: /\.s?css$/,
                 use: [
-                    {loader: 'style-loader'},
+                    // {loader: 'style-loader'},
+                    {
+                        loader: MiniCssExtractPlugin.loader,
+                        options: {
+                            hmr: process.env.NODE_ENV === 'development',
+                            // if hmr does not work, this is a forceful method.
+                            reloadAll: true,
+                        },
+                    },
                     {loader: 'css-loader', options: {sourceMap: true}},
                     {
                         loader: 'postcss-loader',
@@ -69,7 +79,7 @@ module.exports = {
                     },
                     {
                         loader: 'sass-loader',
-                        options: {sourceMap: true, functions: require('chromatic-sass')},
+                        options: {sourceMap: true /* functions: require('chromatic-sass') */},
                     },
                 ],
             },
@@ -90,11 +100,15 @@ module.exports = {
     },
     resolve: {
         modules: [
+            path.resolve(__dirname, './src/js'),
+            path.resolve(__dirname, './src/scss'),
             path.resolve(__dirname, './src/'),
             'node_modules',
         ],
         extensions: ['.mjs', '.js', '.jsx', '.json'],
         unsafeCache: true,
-        alias: {},
+        alias: {
+            scss: path.join(__dirname, './src/scss'),
+        },
     },
 };

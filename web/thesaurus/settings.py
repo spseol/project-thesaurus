@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 
 import os
 
+from .utils import Environment
+
+env = Environment(strict=False)
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
@@ -124,9 +128,10 @@ STATIC_URL = '/static/'
 
 STATIC_ROOT = '/usr/src/static'
 
-# WEBPACK_LOADER = {
-#     'DEFAULT': {
-#         # 'BUNDLE_DIR_NAME': 'webpack_bundles/',  # must end with slash
-#         'STATS_FILE': os.path.join(BASE_DIR, 'static/webpack-stats.json'),
-#     }
-# }
+WEBPACK_LOADER = {
+    'DEFAULT': {
+        'CACHE': True,
+        'BUNDLE_DIR_NAME': './',  # must end with slash
+        'STATS_FILE': env.BUILD_DIR + 'webpack-stats.json',
+    }
+}
