@@ -8,6 +8,7 @@ django = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
 django-webpack-loader = "*"
+django-extensions = "*"
 
 [dev-packages]
 
