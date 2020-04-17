@@ -26,4 +26,4 @@ COPY . /usr/src/app/
 
 RUN python manage.py collectstatic --noinput
 
-USER 999
+# TODO: run django not under root

@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -52,7 +54,7 @@ ROOT_URLCONF = 'thesaurus.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,4 +119,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = '/static'
+STATIC_ROOT = '/usr/src/static'
+
+# WEBPACK_LOADER = {
+#     'DEFAULT': {
+#         # 'BUNDLE_DIR_NAME': 'webpack_bundles/',  # must end with slash
+#         'STATS_FILE': os.path.join(BASE_DIR, 'static/webpack-stats.json'),
+#     }
+# }

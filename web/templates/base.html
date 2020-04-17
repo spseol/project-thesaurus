@@ -1,0 +1,39 @@
+{% load static %}
+{% load i18n %}
+{% load render_bundle from webpack_loader %}
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %} Thesaurus</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Josef Kolář">
+
+    <script src="{% static "main.bundle.js" %}"></script>
+
+{#    {% render_bundle 'main' %}#}
+</head>
+<body>
+{% block body %}{% endblock %}
+{% if messages %}
+    <script>
+        ((window) => {
+            {% for message in messages %}
+                const tags = JSON.parse('{{ message.extra_tags|default:'{}'|escapejs }}' || {});
+                const options = {};
+                if (tags.timeout !== undefined) {
+                    options.timeOut = options.extendedTimeOut = tags.timeout;
+                }
+                if (tags.infinite !== undefined) {
+                    options.tapToDismiss = !tags.infinite;
+                }
+                (window.toastr['{{ message.level_tag }}'] || (function() {
+                    console.warn('Undefined flash message with type: {{ message.level_tag }}.');
+                }))('{{ message }}', undefined, options);
+            {% endfor %}
+        })(window);
+    </script>
+{% endif %}
+</body>
+</html>
