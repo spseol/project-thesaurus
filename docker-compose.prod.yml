@@ -3,4 +3,4 @@ services:
   web:
     env_file:
       - ./django.env.dev
-      - ./djnago.env.prod
+      - ./django.env.prod
