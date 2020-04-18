@@ -7,7 +7,7 @@ name = "pypi"
 django = "*"
 psycopg2-binary = "*"
 gunicorn = "*"
-django-webpack-loader = "*"
+django-webpack-loader = "~=0.6.0"
 django-extensions = "*"
 python-decouple = "*"
 
