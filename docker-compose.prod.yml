@@ -1,6 +1,12 @@
 version: '2.2'
 services:
   web:
+    command: gunicorn thesaurus.wsgi -b 0.0.0.0:8000
     env_file:
-      - ./django.env.dev
-      - ./django.env.prod
+      - ./web/.env.prod
+
+  webpack:
+    command: build
+    environment:
+      - NODE_ENV=production
+      - PUBLIC_PATH=/static/

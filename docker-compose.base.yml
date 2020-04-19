@@ -2,16 +2,15 @@ version: '2.2'
 services:
   web:
     build: ./web
-    command: sh -c "python manage.py collectstatic --no-input && gunicorn thesaurus.wsgi -b 0.0.0.0:8000"
     container_name: thesaurus_web
     volumes:
       - ./web/:/usr/src/app/
-      - static_files:/usr/src/static
+      - django_static_files:/usr/src/static
       - webpack_build:/var/build/
     expose:
       - 8000
     env_file:
-      - ./django.env.dev
+      - ./web/.env.base
     depends_on:
       db:
         condition: service_healthy
@@ -21,9 +20,6 @@ services:
     container_name: thesaurus_db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    ports:
-      # TODO: only for dev compose
-      - 15432:5432
     environment:
       - POSTGRES_USER=thesaurus
       - POSTGRES_PASSWORD=thesaurus
@@ -37,29 +33,23 @@ services:
     ports:
       - 8080:80
     volumes:
-      - static_files:/static
+      - django_static_files:/static
+      - webpack_build:/build
     depends_on:
       - web
 
   webpack:
     build: ./webpack
     container_name: thesaurus_webpack
-    #    command: dev-server
-    ports:
-      - "3000:3000"
     volumes:
       - ./webpack/:/usr/src/app
 #      - node_modules:/usr/src/app/node_modules
       - webpack_build:/var/build/
     environment:
       - BUILD_DIR=/var/build/
-      #      - PUBLIC_PATH=/static/
-      - PUBLIC_PATH=http://${SITE_URL:-localhost}:3000/static/
-      - NODE_ENV=development
-
 
 volumes:
   postgres_data:
-  static_files:
+  django_static_files:
   node_modules:
   webpack_build:

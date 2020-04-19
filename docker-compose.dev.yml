@@ -1,0 +1,18 @@
+version: '2.2'
+services:
+  web:
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - ./web/.env.dev
+
+  db:
+    ports:
+      - 15432:5432
+
+  webpack:
+    command: dev
+    ports:
+      - 3000:3000
+    environment:
+      - NODE_ENV=development
+      - PUBLIC_PATH=http://${SITE_URL:-localhost}:3000/static/

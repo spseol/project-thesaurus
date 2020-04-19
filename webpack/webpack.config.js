@@ -1,7 +1,7 @@
 const path = require('path');
 const webpack = require('webpack');
 const publicPath = process.env.PUBLIC_PATH || '//localhost:3000/static/';
-const build_dir = process.env.BUILD_DIR || path.resolve('./build');
+const buildDir = process.env.BUILD_DIR || path.resolve('./build');
 
 const BundleTracker = require('webpack-bundle-tracker');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -9,7 +9,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 // plugin for django integration
 const bundler = new BundleTracker({
     indent: ' ',
-    path: build_dir,
+    path: buildDir,
     filename: 'webpack-stats.json',
 });
 
@@ -33,8 +33,8 @@ module.exports = {
     output: {
         // for example ../build/head.[hash].js
         publicPath,
-        path: build_dir,
-        filename: '[name].[hash:12].js',
+        path: buildDir,
+        filename: '[name].[hash:6].js',
     },
     plugins: [
         bundler,
@@ -61,6 +61,7 @@ module.exports = {
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
+                            filename: '[name].[hash:6].css',
                             hmr: process.env.NODE_ENV === 'development',
                             // if hmr does not work, this is a forceful method.
                             reloadAll: true,

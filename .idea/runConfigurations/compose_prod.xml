@@ -7,7 +7,7 @@
             <option value="docker-compose.prod.yml" />
           </list>
         </option>
-        <option name="sourceFilePath" value="docker-compose.yml" />
+        <option name="sourceFilePath" value="docker-compose.base.yml" />
       </settings>
     </deployment>
     <method v="2" />

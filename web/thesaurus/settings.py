@@ -126,6 +126,6 @@ WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': True,
         'BUNDLE_DIR_NAME': './',  # must end with slash
-        'STATS_FILE': config('BUILD_DIR') + 'webpack-stats.json',
+        'STATS_FILE': config('BUILD_DIR', default='') + 'webpack-stats.json',
     }
 }

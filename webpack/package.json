@@ -5,7 +5,8 @@
   "author": "Josef Kolar",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.dev.config.js"
+    "dev": "webpack-dev-server --config webpack.dev.config.js",
+    "build": "webpack --mode production --config webpack.config.js"
   },
   "dependencies": {
     "@babel/core": "^7.9.0",

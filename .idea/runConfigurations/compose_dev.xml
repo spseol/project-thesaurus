@@ -2,7 +2,12 @@
   <configuration default="false" name="compose dev" type="docker-deploy" factoryName="docker-compose.yml" server-name="docker-default">
     <deployment type="docker-compose.yml">
       <settings>
-        <option name="sourceFilePath" value="docker-compose.yml" />
+        <option name="secondarySourceFiles">
+          <list>
+            <option value="docker-compose.dev.yml" />
+          </list>
+        </option>
+        <option name="sourceFilePath" value="docker-compose.base.yml" />
       </settings>
     </deployment>
     <method v="2" />
