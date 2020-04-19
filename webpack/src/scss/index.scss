@@ -1,8 +1,9 @@
-@import "node_modules/foundation-sites/scss/foundation";
+// workaround for including images in framework
+$image-path: "~mdbootstrap/img/";
 
-@include foundation-everything;
+@import "~bootstrap/scss/bootstrap";
+@import "~mdbootstrap/scss/mdb-free";
 
 body {
-  background-color: lightsalmon;
 
 }

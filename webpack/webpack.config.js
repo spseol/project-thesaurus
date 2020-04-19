@@ -101,10 +101,10 @@ module.exports = {
     },
     resolve: {
         modules: [
-            path.resolve(__dirname, './src/js'),
-            path.resolve(__dirname, './src/scss'),
+            path.resolve(__dirname, './src/js/'),
+            path.resolve(__dirname, './src/scss/'),
             path.resolve(__dirname, './src/'),
-            'node_modules',
+            'node_modules/',
         ],
         extensions: ['.mjs', '.js', '.jsx', '.json'],
         unsafeCache: true,
