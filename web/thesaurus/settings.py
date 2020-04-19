@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.home',
     'apps.thesis',
     'apps.accounts',
+    'apps.attachment',
 ]
 
 MIDDLEWARE = [

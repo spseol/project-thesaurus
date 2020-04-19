@@ -1,5 +1,6 @@
 import re
 
+from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.db import models
 from django.utils.translation import gettext as _
@@ -13,6 +14,28 @@ class Thesis(BaseTimestampedModel):
     category = models.ForeignKey(
         to='thesis.Category',
         on_delete=models.PROTECT,
+        related_name='thesis_category',
+    )
+
+    author = models.ForeignKey(
+        to=get_user_model(),
+        on_delete=models.PROTECT,
+        verbose_name=_('Author'),
+        related_name='thesis_author',
+    )
+
+    supervisor = models.ForeignKey(
+        to=get_user_model(),
+        on_delete=models.PROTECT,
+        verbose_name=_('Supervisor'),
+        related_name='thesis_supervisor',
+    )
+
+    opponent = models.ForeignKey(
+        to=get_user_model(),
+        on_delete=models.PROTECT,
+        verbose_name=_('Opponent'),
+        related_name='thesis_opponent',
     )
 
     registration_number = models.CharField(
@@ -28,18 +51,12 @@ class Thesis(BaseTimestampedModel):
 
     title = models.CharField(
         verbose_name=_('Title'),
-        max_length=128,
+        max_length=128, default='',
     )
 
     abstract = models.TextField(
-        verbose_name=_('Abstract')
-    )
-
-    pdf_file = models.CharField(
-        verbose_name=_('File with thesis'),
-        max_length=512,
+        verbose_name=_('Abstract'),
         null=True,
-        # TODO: add validation, somehow implement solving real path to file
     )
 
     class Meta:

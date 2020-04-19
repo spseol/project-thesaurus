@@ -9,7 +9,7 @@ class Reservation(BaseTimestampedModel):
 
     thesis = models.ForeignKey(
         to='thesis.Thesis',
-        related_name='thesis_reservations',
+        related_name='thesis_reservation',
         verbose_name=_('Thesis for borrow'),
         on_delete=models.CASCADE,
     )
