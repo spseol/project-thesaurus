@@ -11,6 +11,8 @@ django-webpack-loader = "~=0.6.0"
 django-extensions = "*"
 python-decouple = "*"
 django-debug-toolbar = "*"
+faker = "*"
+werkzeug = "*"
 
 [dev-packages]
 

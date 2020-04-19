@@ -3,7 +3,7 @@ services:
   web:
     # TODO: think about uvicorn or https://github.com/tiangolo/uvicorn-gunicorn-docker
     # TODO: or just use $ gunicorn -k uvicorn.workers.UvicornWorker
-    command: gunicorn thesaurus.wsgi -b 0.0.0.0:8000
+    command: runserver_prod
     env_file:
       - ./web/.env.prod
 
