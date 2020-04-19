@@ -17,16 +17,13 @@ from decouple import config
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
-
 SECRET_KEY = config("SECRET_KEY", default='...')
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 
-# 'DJANGO_ALLOWED_HOSTS' should be a single string of hosts with a space between each.
-# For example: 'DJANGO_ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
-ALLOWED_HOSTS = config("DJANGO_ALLOWED_HOSTS", default='').split(" ")
+# 'ALLOWED_HOSTS' should be a single string of hosts with a space between each.
+# For example: 'ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
+ALLOWED_HOSTS = config("ALLOWED_HOSTS", default='').split(" ")
 
 # Application definition
 
@@ -40,6 +37,7 @@ INSTALLED_APPS = [
 
     'webpack_loader',
     'django_extensions',
+    'debug_toolbar',
 
     'apps.home',
     'apps.thesis',
@@ -47,6 +45,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -129,3 +128,8 @@ WEBPACK_LOADER = {
         'STATS_FILE': config('BUILD_DIR', default='') + 'webpack-stats.json',
     }
 }
+
+if DEBUG:
+    # for django-debug-toolbar
+    # remote_addr does not matter in debug mode in image
+    INTERNAL_IPS = type(str('ContainsEverything'), (), {'__contains__': lambda *a: True})()

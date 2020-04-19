@@ -27,3 +27,10 @@ urlpatterns = [
 
 if settings.DEBUG and not urlpatterns:
     urlpatterns += staticfiles_urlpatterns()
+
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+
+    ] + urlpatterns
