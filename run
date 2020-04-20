@@ -1,0 +1,130 @@
+#!/bin/bash
+# taken from https://github.com/universitas/universitas.no
+# utility script / entry point for the repo
+
+main__(){
+while (( $# > 0 )); do
+  rest=${@:2}
+  case $1 in
+  help    ) show_help; exit 0 ;; # show help for commands
+  dc      ) docker-compose $rest; exit ;; # docker-compose [...args]
+  da      ) docker-compose run --rm web django-admin $rest; exit ;; # django-admin [...args]
+
+  dump_db  ) dump_db ;;  # dump postgresql database
+  load_db  ) load_db $rest; exit ;;  # load database from dump file [filename]
+
+  djbuild ) build_django ;;   # download and build all images, migrate database
+  webpack ) docker-compose run --rm webpack "${rest:-sh}"; exit;;  # login to webpack container as default user
+  build   ) webpack_build ;; # build css+js client bundles and express bundle;
+
+  repl    ) docker-compose run --rm web django-admin shell_plus --quiet-load ;; # django repl shell
+  django  ) docker-compose run --rm -u django web "${rest:-sh}"; exit ;; # login to django container as default user
+  root    ) docker-compose run --rm           web "${rest:-sh}"; exit ;;  # login to django container as root
+
+  fake    ) docker-compose run --rm web django-admin fake_content -c10 -s50 ;;  # create fake data in django database
+
+  upd     ) docker-compose up -d ;;  # start all docker images in daemon mode
+  up     ) docker-compose up; exit ;;  # start all docker images in daemon mode
+  logs    ) docker-compose logs --tail=50 -f $rest ; exit ;;  # show docker logs
+
+  prod    ) # production settings
+            production_settings; echo 'production settings' $IMAGE_VERSION ;;
+  dev     ) # development settings
+            echo "development settings" ;;
+
+  *       ) show_help ${@:1}; exit 1 ;;
+  esac;
+  shift 1;
+done
+}
+
+webpack_build() {
+  production_settings
+  docker-compose run --rm webpack build
+}
+
+production_settings() {
+  export COMPOSE_FILE=docker-compose.base.yml:docker-compose.prod.yml
+}
+
+show_help() {
+  # ansi codes
+  esc=$(printf '\033')
+  yellow="$esc[33;1m"
+  red="$esc[31;1m"
+  bold="$esc[1m"
+  reset="$esc[0m"
+
+  # help output
+  printf "\n  usage:   %s [...commmands]\n\n" "$0"
+  cat run \
+    | sed -n '/^main__()/,$p;/^}/q'\
+    | awk '/[a-zA-Z]  *\) /{print}/case/{p=1}'\
+    | sed 's/; exit//' | sed 's/;;//'\
+    | sed "s/).*#\(.*\)$/)$yellow\1$reset/"\
+    | sed "s/^ *\(\w* *\))/  $bold\1$reset/"\
+    | sort
+  if [[ $# > 0 ]]; then
+    printf "\n  %sunknown command:  %s%s\n" "$red" "$*" "$reset" >&2
+  fi
+}
+
+
+load_db() {
+  dumpfile=$(ls *.sql -1t 2>/dev/null | head -n1)
+  dumpfile=${1:-$dumpfile}
+  [[ -e $dumpfile ]] || exit 1
+  echo "found database dump: $dumpfile"
+  cp "$dumpfile" django/dbdump.sql
+
+  # loading data
+  docker-compose down
+  docker-compose run --rm web load_db
+
+  # cleanup
+  rm django/dbdump.sql
+  echo "done"
+}
+
+dump_db() {
+  DUMP=$(date +"db_%d-%m-%Y_%H.%M.%S.sql")
+  docker-compose up -d db
+  echo "dumping database to $DUMP"
+  docker-compose exec db pg_dump --no-owner -U thesaurus -d thesaurus > "$DUMP"
+}
+
+build_django() {
+  docker-compose build
+  docker-compose run --rm web django-admin migrate
+  docker-compose run --rm web django-admin collectstatic --noinput
+}
+
+install_docker() {
+  # install docker and docker-compose on ubuntu
+  [ $UID = 0 ] || { echo 'must run as root' >&2; exit 1; }
+  USERNAME=$1
+  apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    software-properties-common \
+    python3-pip
+
+  pip3 install -U docker-compose
+
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+  echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+  apt-get update
+  apt-get install -y docker-ce
+
+  groupadd -f docker
+  if [[ -z $USERNAME ]]; then
+    usermod -aG docker $USERNAME
+  fi
+  systemctl enable docker
+}
+
+cd $(dirname $0)
+
+unset CDPATH
+export COMPOSE_FILE=docker-compose.base.yml:docker-compose.dev.yml
+main__ $@

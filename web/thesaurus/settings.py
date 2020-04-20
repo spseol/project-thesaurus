@@ -36,13 +36,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'webpack_loader',
-    'django_extensions',
     'debug_toolbar',
 
     'apps.home',
     'apps.thesis',
     'apps.accounts',
     'apps.attachment',
+
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

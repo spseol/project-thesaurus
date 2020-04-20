@@ -7,7 +7,6 @@ run() {
   exec su django -c "$*"
 }
 
-
 case $1 in
   migrate)
     # under root
