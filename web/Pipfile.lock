@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "6216b036cd9c270801f69f28a861e5c61c004674bd875bd60d0bdfbb6ddb3f0a"
+            "sha256": "c5f6ce8a3f6f99321c515380220465f314aa567e90dc7d8d2e590df23c66d32b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -46,6 +46,13 @@
             ],
             "index": "pypi",
             "version": "==2.2.9"
+        },
+        "django-seed": {
+            "hashes": [
+                "sha256:5cdda71dcd51b2e7340e4aec9035d99d7014409a4b11adddbdff17d814968221"
+            ],
+            "index": "pypi",
+            "version": "==0.2.2"
         },
         "django-webpack-loader": {
             "hashes": [

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'apps.thesis',
     'apps.accounts',
     'apps.attachment',
+    'apps.utils',
 
     'django_extensions',
 ]

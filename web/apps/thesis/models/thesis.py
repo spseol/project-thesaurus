@@ -63,3 +63,6 @@ class Thesis(BaseTimestampedModel):
         ordering = ['registration_number']
         verbose_name = _('Thesis')
         verbose_name_plural = _('Theses')
+
+    def __str__(self):
+        return f'{self.title} ({self.author if self.author else "---"})'.strip()

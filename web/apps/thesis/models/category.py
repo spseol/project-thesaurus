@@ -19,3 +19,6 @@ class Category(BaseModel):
         ordering = ['order', 'title']
         verbose_name = _('Category')
         verbose_name_plural = _('Categories')
+
+    def __str__(self):
+        return self.title
