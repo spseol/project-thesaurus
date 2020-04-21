@@ -9,7 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="author" content="Josef Kolar, github.com/thejoeejoee">
 
-    {% render_bundle 'main' %}
+    {% render_bundle 'main' 'css' %}
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
 </head>
 <body>
 {% block body %}
@@ -77,5 +79,7 @@
         })(window);
     </script>
 {% endif %}
+
+{% render_bundle 'main' 'js' %}
 </body>
 </html>

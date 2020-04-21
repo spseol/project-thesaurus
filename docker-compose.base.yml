@@ -43,7 +43,7 @@ services:
     container_name: thesaurus_webpack
     volumes:
       - ./webpack/:/usr/src/app
-#      - node_modules:/usr/src/app/node_modules
+      - node_modules:/usr/src/app/node_modules
       - webpack_build:/var/build/
     environment:
       - BUILD_DIR=/var/build/

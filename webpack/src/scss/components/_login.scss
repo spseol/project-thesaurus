@@ -15,4 +15,10 @@
     justify-content: center;
     align-items: center;
   }
+
+  &__logo {
+    background: url("../img/thesaurus.svg") no-repeat center center;
+    background-size: cover;
+    height: 12.5em;
+  }
 }

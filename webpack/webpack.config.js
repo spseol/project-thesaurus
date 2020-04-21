@@ -5,6 +5,8 @@ const buildDir = process.env.BUILD_DIR || path.resolve('./build');
 
 const BundleTracker = require('webpack-bundle-tracker');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const VueLoaderPlugin = require('vue-loader/lib/plugin');
+
 
 // plugin for django integration
 const bundler = new BundleTracker({
@@ -39,6 +41,10 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.vue$/,
+                loader: 'vue-loader',
+            },
+            {
                 test: /\.(svg|gif|jpg|png|woff|woff2|eot|ttf)$/,
                 use: [
                     {
@@ -51,9 +57,10 @@ module.exports = {
                 ],
             },
             {
-                test: /\.s?css$/,
+                test: /\.s[ac]?ss$/,
                 use: [
-                    {loader: 'style-loader'},
+                    'vue-style-loader',
+                    'style-loader',
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
@@ -76,10 +83,17 @@ module.exports = {
                     },
                     {
                         loader: 'sass-loader',
-                        options: {sourceMap: true /* functions: require('chromatic-sass') */},
+                        options: {
+                            sourceMap: true,
+                            implementation: require('sass'),
+                            sassOptions: {
+                                fiber: require('fibers'),
+                            },
+                        },
                     },
                 ],
             },
+            {test: /\.tsx?$/, loader: 'ts-loader'},
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
@@ -100,14 +114,18 @@ module.exports = {
             path.resolve(__dirname, './src/'),
             'node_modules/',
         ],
-        extensions: ['.mjs', '.js', '.jsx', '.json'],
+        extensions: ['.js', '.ts', '.vue'],
         unsafeCache: true,
-        alias: {},
+        alias: {
+            vue: 'vue/dist/vue.esm.js',
+        },
     },
     plugins: [
         bundler,
         new MiniCssExtractPlugin(),
+        new VueLoaderPlugin(),
         new webpack.ProvidePlugin({
+            // TODO: really needed?
             $: 'jquery',
             Popper: 'popper.js',
         }),

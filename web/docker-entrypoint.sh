@@ -17,7 +17,8 @@ case $1 in
     ;;
   runserver)
     # runtime under django user
-    run "python manage.py collectstatic --noinput && python manage.py runserver_plus --nopin 0.0.0.0:8000"
+    run "python manage.py collectstatic --noinput && python manage.py runserver 0.0.0.0:8000"
+    # run "python manage.py collectstatic --noinput && python manage.py runserver_plus --nopin 0.0.0.0:8000"
     ;;
   runserver_prod)
     # runtime under django user

@@ -1,5 +1,10 @@
 @import "variables";
-@import "~bootstrap-material-design/scss/core";
+@import "~bootstrap-material-design/scss/variables";
+
+@import "~bootstrap/scss/bootstrap";
+
+@import "~bootstrap-material-design/scss/reboot";
+@import "~bootstrap-material-design/scss/navbar";
 
 @import "components/login";
 @import "components/navbar";
