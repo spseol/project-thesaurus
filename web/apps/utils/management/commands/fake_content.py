@@ -20,9 +20,9 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         seeder = Seed.seeder(locale='cz_CZ')
 
-        seeder.add_entity(get_user_model(), 10)
+        seeder.add_entity(get_user_model(), 100)
         seeder.add_entity(Category, 10)
-        seeder.add_entity(Thesis, 20, dict(
+        seeder.add_entity(Thesis, 1000, dict(
             registration_number=lambda *_: ''.join((choice(string.ascii_uppercase), str(randint(100, 999))))
         ))
         seeder.add_entity(Reservation, 10)

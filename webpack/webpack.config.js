@@ -37,6 +37,10 @@ module.exports = {
         publicPath,
         path: buildDir,
         filename: '[name].[hash:6].js',
+
+        library: 'Thesaurus',
+        libraryTarget: 'var',
+        libraryExport: 'default',
     },
     module: {
         rules: [

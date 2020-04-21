@@ -1,8 +1,12 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Welcome!</h1>
     <div class="container">
-        <div id="app"></div>
+        <div id="app">
+        </div>
     </div>
+
+    <script>
+        window.Thesaurus.installThesisList('#app');
+    </script>
 {% endblock %}

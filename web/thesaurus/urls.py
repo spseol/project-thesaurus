@@ -18,12 +18,15 @@ from django.contrib import admin
 from django.contrib.auth import views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
+from rest_framework.documentation import include_docs_urls
 
 urlpatterns = [
     path('', include('apps.home.urls')),
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.LogoutView.as_view(), name='logout'),
 
+    # since DRF CoreAPI does not support namespacing :-(
+    path('api/docs/', include_docs_urls(title='Thesaurus API'), name='api-docs'),
     path('api/', include('apps.api.urls')),
 
     path('admin/', admin.site.urls),

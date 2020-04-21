@@ -16,9 +16,9 @@ Werkzeug = "*"
 setuptools = "*"
 django-seed = "*"
 django-crispy-forms = "*"
-# TODO: needed?
 djangorestframework-datatables = "*"
 djangorestframework = "*"
+coreapi = "*"
 
 [dev-packages]
 

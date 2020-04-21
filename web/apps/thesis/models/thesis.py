@@ -15,6 +15,7 @@ class Thesis(BaseTimestampedModel):
         to='thesis.Category',
         on_delete=models.PROTECT,
         related_name='thesis_category',
+        help_text=_('Corresponding category for thesis.')
     )
 
     author = models.ForeignKey(
