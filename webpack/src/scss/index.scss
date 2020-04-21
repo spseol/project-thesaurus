@@ -1,9 +1,12 @@
-// workaround for including images in framework
-$image-path: "~mdbootstrap/img/";
+@import "variables";
+@import "~bootstrap-material-design/scss/core";
 
-@import "~bootstrap/scss/bootstrap";
-@import "~mdbootstrap/scss/mdb-free";
+@import "components/login";
+@import "components/navbar";
 
+
+html,
 body {
-
+  height: 100%;
 }
+

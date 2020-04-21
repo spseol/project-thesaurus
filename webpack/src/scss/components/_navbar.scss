@@ -1,0 +1,21 @@
+.navbar {
+  background-color: $amber-700;
+
+  .navbar-brand {
+    position: relative;
+    $icon-width: 90px;
+    margin-left: $icon-width - 10px;
+    padding-left: $spacer;
+    text-transform: uppercase;
+
+    &::before {
+      width: $icon-width;
+      height: 100%;
+      position: absolute;
+      right: 100%;
+      background-size: cover;
+      background-image: url("../img/thesaurus.svg");
+      content: '';
+    }
+  }
+}

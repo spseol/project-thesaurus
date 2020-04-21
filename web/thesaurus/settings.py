@@ -35,15 +35,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    'webpack_loader',
-    'debug_toolbar',
-
     'apps.home',
     'apps.thesis',
     'apps.accounts',
     'apps.attachment',
     'apps.utils',
 
+    'crispy_forms',
+    'webpack_loader',
+    'debug_toolbar',
     'django_extensions',
 ]
 
@@ -60,6 +60,10 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'thesaurus.urls'
 
+LOGIN_REDIRECT_URL = '/'
+
+LOGIN_URL = '/login'
+
 AUTH_USER_MODEL = 'accounts.User'
 
 TEMPLATES = [
@@ -73,6 +77,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.i18n',
             ],
         },
     },
@@ -126,11 +131,13 @@ STATIC_ROOT = '/usr/src/static'
 
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'CACHE': True,
+        'CACHE': not DEBUG,
         'BUNDLE_DIR_NAME': './',  # must end with slash
         'STATS_FILE': config('BUILD_DIR', default='') + 'webpack-stats.json',
     }
 }
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 if DEBUG:
     # for django-debug-toolbar

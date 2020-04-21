@@ -1,5 +1,4 @@
-{% load static %}
-{% load i18n %}
+{% load static i18n %}
 {% load render_bundle from webpack_loader %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
@@ -13,7 +12,52 @@
     {% render_bundle 'main' %}
 </head>
 <body>
-{% block body %}{% endblock %}
+{% block body %}
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <strong>thesaurus</strong>
+                </a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Přehled <span class="sr-only">(current)</span></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Práce</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">Rezervace</a>
+                        </li>
+                    </ul>
+                </div>
+                <form class="form-inline">
+                    <div class="md-form my-0">
+                        <input class="form-control mr-sm-2" type="text" placeholder="Hledat" aria-label="Search">
+                    </div>
+                    {#                    <button class="btn btn-outline-white btn-md my-2 my-sm-0 ml-3" type="submit">Hledat</button>#}
+                </form>
+                <ul class="navbar-nav ml-auto nav-flex-icons d-none">
+                    <li class="nav-item avatar">
+                        <a class="nav-link p-0" href="#">
+                            <img src="https://mdbootstrap.com/img/Photos/Avatars/avatar-5.jpg" class="rounded-circle z-depth-0"
+                                alt="avatar image" height="35">
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    {% block content %}
+
+    {% endblock content %}
+{% endblock body %}
+
 {% if messages %}
     <script>
         ((window) => {

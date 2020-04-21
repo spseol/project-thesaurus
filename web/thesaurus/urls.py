@@ -15,12 +15,14 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth import views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
 urlpatterns = [
     path('', include('apps.home.urls')),
-    path('accounts/', include('django.contrib.auth.urls')),
+    path('login/', views.LoginView.as_view(), name='login'),
+    path('logout/', views.LogoutView.as_view(), name='logout'),
 
     path('admin/', admin.site.urls),
 ]
@@ -30,7 +32,8 @@ if settings.DEBUG and not urlpatterns:
 
 if settings.DEBUG:
     import debug_toolbar
-    urlpatterns = [
-        path('__debug__/', include(debug_toolbar.urls)),
 
-    ] + urlpatterns
+    urlpatterns = [
+                      path('__debug__/', include(debug_toolbar.urls)),
+
+                  ] + urlpatterns

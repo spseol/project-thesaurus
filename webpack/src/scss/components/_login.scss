@@ -1,0 +1,18 @@
+.Login {
+  height: 100%;
+
+  &__view {
+    height: 100%;
+    // TODO: fix relative paths in included files
+    background: url("../img/background.jpg") no-repeat center center;
+    background-size: cover;
+  }
+
+  &__mask {
+    height: 100%;
+    background-color: $gray-lighter;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}

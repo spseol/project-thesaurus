@@ -14,7 +14,7 @@ while (( $# > 0 )); do
   load_db  ) load_db $rest; exit ;;  # load database from dump file [filename]
 
   djbuild ) build_django ;;   # download and build all images, migrate database
-  webpack ) docker-compose run --rm webpack "${rest:-sh}"; exit;;  # login to webpack container as default user
+  webpack ) docker-compose run --entrypoint bash --rm webpack; exit;;  # login to webpack container
   build   ) webpack_build ;; # build css+js client bundles and express bundle;
 
   repl    ) docker-compose run --rm web python manage.py shell_plus --quiet-load ;; # django repl shell

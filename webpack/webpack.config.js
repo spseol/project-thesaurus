@@ -36,10 +36,6 @@ module.exports = {
         path: buildDir,
         filename: '[name].[hash:6].js',
     },
-    plugins: [
-        bundler,
-        new MiniCssExtractPlugin(),
-    ],
     module: {
         rules: [
             {
@@ -57,7 +53,7 @@ module.exports = {
             {
                 test: /\.s?css$/,
                 use: [
-                    // {loader: 'style-loader'},
+                    {loader: 'style-loader'},
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
@@ -87,7 +83,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,
-                sideEffects: false,
+                sideEffects: true,
                 use: [
                     {
                         loader: 'babel-loader',
@@ -101,15 +97,19 @@ module.exports = {
     },
     resolve: {
         modules: [
-            path.resolve(__dirname, './src/js/'),
-            path.resolve(__dirname, './src/scss/'),
             path.resolve(__dirname, './src/'),
             'node_modules/',
         ],
         extensions: ['.mjs', '.js', '.jsx', '.json'],
         unsafeCache: true,
-        alias: {
-            scss: path.join(__dirname, './src/scss'),
-        },
+        alias: {},
     },
+    plugins: [
+        bundler,
+        new MiniCssExtractPlugin(),
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            Popper: 'popper.js',
+        }),
+    ],
 };

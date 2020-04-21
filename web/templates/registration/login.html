@@ -1,5 +1,31 @@
 {% extends "base.html" %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+
 
 {% block body %}
-    <h1>Login</h1>
+    <div class="Login">
+        <div class="Login__view">
+            <div class="Login__mask">
+                <div class="col-3">
+                    <div class="card">
+                        <div class="card-header bg-primary">
+                            <h1 class="h3">THESAURUS</h1>
+                        </div>
+                        <div class="card-body">
+                            <form method="post">
+                                {% csrf_token %}
+                                {{ form|crispy }}
+                                <div class="form-group float-right">
+                                    <button type="submit" class="btn btn-raised btn-primary">
+                                        {% trans "Login" context "Submit form button" %}
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
