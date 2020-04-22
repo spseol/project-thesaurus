@@ -19,6 +19,7 @@ django-crispy-forms = "*"
 djangorestframework-datatables = "*"
 djangorestframework = "*"
 coreapi = "*"
+django-filter = "*"
 
 [dev-packages]
 
