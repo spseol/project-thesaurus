@@ -1,0 +1,54 @@
+{% load humanize %}
+{% load crispy_forms_tags %}
+{% load i18n %}
+
+<form method="POST" novalidate>
+    <div class="card">
+        <div class="card-header">
+            {% block title %}
+                {% if not form.updating %}
+                    {% trans "New record" %} -
+                    {% if form.instance %}
+                        {{ form.instance }}
+                    {% endif %}
+                {% endif %}
+                {% if form.updating %}
+                    {{ form.instance }}
+                {% endif %}
+            {% endblock %}
+        </div>
+        <div class="card-body">
+            {% block body %}
+                {% crispy form %}
+            {% endblock %}
+        </div>
+        <div class="card-footer d-flex align-items-center justify-content-between">
+            {% block form_card_footer_left %}
+                <small class="font-italic small">
+                    {% if form.updating %}
+                        <span title="{{ form.instance.x_created }}">
+                            {% trans "Created at" %} {{ form.instance.created|naturaltime }},
+                        </span>
+                        <span title="{{ form.instance.x_modified }}">
+                            {% trans "Last modified at"|lower %} {{ form.instance.modified|naturaltime }}.
+                        </span>
+                    {% endif %}
+                </small>
+            {% endblock form_card_footer_left %}
+            <button type="submit" class="d-none"></button>
+            {# default submit button should not be "and continue #}
+            {% block form_card_footer_ext %}{% endblock %}
+            <div class="btn-group float-right">
+                {% if form.save_and_continue_button and form.updating %}
+                    <button type="submit" name="_save_and_continue" class="btn btn-outline-success" value=":-)">
+                        {% block save_btn_continue_text %}
+                            {% trans 'Save and stay' %}{% endblock save_btn_continue_text %}
+                    </button>
+                {% endif %}
+                <button type="submit" class="btn btn-success">
+                    {% block save_btn_text %}{% trans 'Save' %}{% endblock save_btn_text %}
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

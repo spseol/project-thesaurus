@@ -64,9 +64,11 @@
             </div>
         </nav>
     </header>
-    {% block content %}
+    <div class="container">
+        {% block content %}
 
-    {% endblock content %}
+        {% endblock content %}
+    </div>
 {% endblock body %}
 
 {% if messages %}
