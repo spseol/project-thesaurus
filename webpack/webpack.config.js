@@ -32,16 +32,13 @@ module.exports = {
     },
     entry: {
         main: './src/js/index.js',
+        login: './src/js/login.js',
     },
     output: {
         // for example ../build/head.[hash].js
         publicPath,
         path: buildDir,
         filename: '[name].[hash:6].js',
-
-        library: 'Thesaurus',
-        libraryTarget: 'var',
-        libraryExport: 'default',
     },
     module: {
         rules: [
@@ -69,7 +66,6 @@ module.exports = {
                     {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
-                            onlyLocals: true,
                             filename: '[name].[hash:6].css',
                             hmr: process.env.NODE_ENV === 'development',
                             // if hmr does not work, this is a forceful method.

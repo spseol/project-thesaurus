@@ -1,32 +1,7 @@
 {% extends "base.html" %}
-{% load i18n %}
-{% load crispy_forms_tags %}
+{% load webpack_loader %}
 
-
-{% block body %}
-    <div class="Login">
-        <div class="Login__view">
-            <div class="Login__mask">
-                <div class="col-3">
-                    <div class="card fade show">
-                        <div class="card-header bg-primary">
-                            <div class="Login__logo"></div>
-                            <h1 class="h2 text-center text-uppercase mt-3">thesaurus</h1>
-                        </div>
-                        <div class="card-body">
-                            <form method="post">
-                                {% csrf_token %}
-                                {{ form|crispy }}
-                                <div class="form-group float-right">
-                                    <button type="submit" class="btn btn-raised btn-primary">
-                                        {% trans "Login" context "Submit form button" %}
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-{% endblock %}
+{% block bundles %}
+    {% render_bundle 'login' 'js' attrs='defer' %}
+    {% render_bundle 'login' 'css' %}
+{% endblock bundles %}
