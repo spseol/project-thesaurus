@@ -1,8 +1,9 @@
-// import 'bootstrap-material-design/js/bootstrapMaterialDesign'
-import 'scss/index.scss';
-import installThesisList from './components/ThesisList/main';
-// import 'bootstrap';
+// import 'scss/index.scss';
+import createVueFactory from './components/base-vue';
+import App from './components/App';
 
-export default {
-    installThesisList,
-};
+
+createVueFactory({
+    el: '#app',
+    render: h => h(App),
+});

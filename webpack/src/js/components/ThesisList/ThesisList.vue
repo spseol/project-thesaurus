@@ -1,31 +1,47 @@
 <template>
-    <v-app>
-        <v-card elevation="1">
-            <v-card-title>
-                Theses
 
-                <v-spacer></v-spacer>
 
-                <v-text-field
-                    v-model="search"
-                    append-icon="mdi-magnify"
-                    label="Search"
-                    single-line
-                    hide-details
-                ></v-text-field>
+    <v-card elevation="1">
+        <v-card-title>
+            Theses
 
-            </v-card-title>
-            <v-data-table
-                :headers="headers"
-                :items="items"
-                :search="search"
-                :options.sync="options"
-                :server-items-length="totalCount"
-                :loading="loading"
-                :items-per-page="40"
-            ></v-data-table>
-        </v-card>
-    </v-app>
+            <v-spacer></v-spacer>
+
+            <v-text-field
+                v-model="search"
+                append-icon="mdi-magnify"
+                label="Search"
+                single-line
+                hide-details
+            ></v-text-field>
+
+            <v-spacer></v-spacer>
+
+            <v-btn color="primary">
+                Prepare new thesis
+            </v-btn>
+
+        </v-card-title>
+        <v-data-table
+            :headers="headers"
+            :items="items"
+            :search="search"
+            :options.sync="options"
+            :server-items-length="totalCount"
+            :loading="loading"
+
+            single-expand
+            show-expand
+        >
+            <template v-slot:expanded-item="{ headers, item }">
+                <td :colspan="headers.length">More info about {{ item.title }}</td>
+            </template>
+
+            <template v-slot:item.author.full_name="{ item }">
+                <a @click="search += ` ${item.author.full_name}`" v-text="item.author.full_name"></a>
+            </template>
+        </v-data-table>
+    </v-card>
 </template>
 
 <script>
@@ -52,6 +68,7 @@
                     {text: 'Author', value: 'author.full_name', mapped: 'author__last_name'},
                     {text: 'Opponent', value: 'opponent.full_name', mapped: 'opponent__last_name'},
                     {text: 'Supervisor', value: 'supervisor.full_name', mapped: 'supervisor__last_name'},
+                    {text: '', value: 'data-table-expand'},
                 ],
             };
         },
