@@ -13,7 +13,6 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-import loginas.urls
 
 from django.conf import settings
 from django.contrib import admin
@@ -22,16 +21,16 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include
 
 urlpatterns = [
-    path('', include('apps.app.urls')),
-    path('admin/', include(loginas.urls)),
+    path('admin/', include('loginas.urls')),
     path('admin/', admin.site.urls),
 
     path('login', views.LoginView.as_view(), name='login'),
     path('logout', views.LogoutView.as_view(), name='logout'),
 
-    # since DRF CoreAPI does not support namespacing :-(
     path('api/', include('apps.api.urls')),
 
+    # consumes all rest urls into frontend app
+    path('', include('apps.app.urls')),
 ]
 
 if settings.DEBUG and not urlpatterns:

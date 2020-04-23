@@ -2,30 +2,32 @@
     <v-app
     >
         <v-navigation-drawer app :clipped="true" v-model="drawer">
-            <v-list dense>
-                <v-list-item
-                    v-for="item in items"
-                    :key="item.text"
-                    link
-                >
-                    <v-list-item-action>
-                        <v-icon>{{ item.icon }}</v-icon>
-                    </v-list-item-action>
-                    <v-list-item-content>
-                        <v-list-item-title>
-                            {{ item.text }}
-                        </v-list-item-title>
-                    </v-list-item-content>
-                </v-list-item>
+            <v-list nav shaped>
+                <v-list-item-group color="primary">
+                    <v-list-item
+                        v-for="item in items"
+                        :key="item.text"
+                        :to="item.to"
+                    >
+                        <v-list-item-action>
+                            <v-icon>{{ item.icon }}</v-icon>
+                        </v-list-item-action>
+                        <v-list-item-content>
+                            <v-list-item-title>
+                                {{ item.text }}
+                            </v-list-item-title>
+                        </v-list-item-content>
+                    </v-list-item>
+                </v-list-item-group>
             </v-list>
         </v-navigation-drawer>
 
         <v-app-bar app color="orange accent-3" clipped-left>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
             <v-toolbar-title
-                class="ml-0 pl-4 d-md-flex hidden-sm-and-down"
+                class="ml-0 pl-2 d-md-flex hidden-sm-and-down"
             >
-                <img height="35" src="../../img/thesaurus.svg" class="pr-4" alt="Project Thesaurus">
+                <img height="35" src="../img/thesaurus.svg" class="pr-2" alt="Project Thesaurus">
 
                 <span class="font-weight-bold mt-1">THESAURUS</span>
             </v-toolbar-title>
@@ -51,9 +53,9 @@
 
         <v-content>
             <v-container fluid>
-
-                <ThesisList :search.sync="search"></ThesisList>
-                <!--                <router-view></router-view>-->
+                <v-fade-transition mode="out-in">
+                    <router-view></router-view>
+                </v-fade-transition>
             </v-container>
         </v-content>
 
@@ -68,7 +70,7 @@
 
 
 <script>
-    import ThesisList from './ThesisList/ThesisList';
+    import ThesisList from './pages/ThesisList/ThesisList';
 
     export default {
         components: {ThesisList},
@@ -76,12 +78,13 @@
             return {
                 drawer: this.$vuetify.breakpoint.mdAndUp,
                 search: '',
+                drawerItem: 0,
                 items: [
-                    {icon: 'mdi-book-multiple', text: 'Theses'},
-                    {icon: 'mdi-book-plus', text: 'Prepare thesis'},
-                    {icon: 'mdi-calendar-account', text: 'Reservations'},
-                    {icon: 'mdi-printer', text: 'Exports'},
-                    {icon: 'mdi-settings', text: 'Settings'},
+                    {icon: 'mdi-book-multiple', text: 'Theses', to: {name: 'thesis-list'}},
+                    {icon: 'mdi-book-plus', text: 'Prepare thesis', to: {name: 'thesis-create'}},
+                    {icon: 'mdi-calendar-account', text: 'Reservations', to: {name: 'reservations'}},
+                    {icon: 'mdi-printer', text: 'Exports', to: {name: 'exports'}},
+                    {icon: 'mdi-settings', text: 'Settings', to: {name: 'settings'}},
                     /*
                     {
                         icon: 'mdi-chevron-up',

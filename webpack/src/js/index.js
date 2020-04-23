@@ -1,9 +1,4 @@
 // import 'scss/index.scss';
-import createVueFactory from './components/base-vue';
-import App from './components/App';
+import createVue from './app';
 
-
-createVueFactory({
-    el: '#app',
-    render: h => h(App),
-});
+createVue().$mount('#app');

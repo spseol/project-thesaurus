@@ -21,7 +21,7 @@
 </template>
 
 <script>
-    import Axios from '../api-client.ts';
+    import Axios from '../../api-client.ts';
     import _ from 'lodash';
 
     import qs from 'qs';
