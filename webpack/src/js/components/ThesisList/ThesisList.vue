@@ -1,51 +1,26 @@
 <template>
+    <v-data-table
+        :headers="headers"
+        :items="items"
+        :search="search"
+        :options.sync="options"
+        :server-items-length="totalCount"
+        :loading="loading"
 
+        single-expand
+        show-expand
+    >
+        <template v-slot:expanded-item="{ headers, item }">
+            <td :colspan="headers.length">More info about {{ item.title }}</td>
+        </template>
 
-    <v-card elevation="1">
-        <v-card-title>
-            Theses
-
-            <v-spacer></v-spacer>
-
-            <v-text-field
-                v-model="search"
-                append-icon="mdi-magnify"
-                label="Search"
-                single-line
-                hide-details
-            ></v-text-field>
-
-            <v-spacer></v-spacer>
-
-            <v-btn color="primary">
-                Prepare new thesis
-            </v-btn>
-
-        </v-card-title>
-        <v-data-table
-            :headers="headers"
-            :items="items"
-            :search="search"
-            :options.sync="options"
-            :server-items-length="totalCount"
-            :loading="loading"
-
-            single-expand
-            show-expand
-        >
-            <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length">More info about {{ item.title }}</td>
-            </template>
-
-            <template v-slot:item.author.full_name="{ item }">
-                <a @click="search += ` ${item.author.full_name}`" v-text="item.author.full_name"></a>
-            </template>
-        </v-data-table>
-    </v-card>
+        <!--        <template v-slot:item.author.full_name="{ item }">-->
+        <!--            <a @click="search += ` ${item.author.full_name}`" v-text="item.author.full_name"></a>-->
+        <!--        </template>-->
+    </v-data-table>
 </template>
 
 <script>
-    import {VDataTable} from 'vuetify/lib';
     import Axios from '../api-client.ts';
     import _ from 'lodash';
 
@@ -53,11 +28,15 @@
 
 
     export default {
-        components: {VDataTable},
+        props: {
+            search: {
+                type: String,
+                default: '',
+            },
+        },
         data() {
             return {
                 url: this.$parent.url,
-                search: '',
                 items: [],
                 totalCount: 0,
                 loading: true,
