@@ -39,10 +39,11 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.api',
     'apps.attachment',
-    'apps.home',
+    'apps.app',
     'apps.thesis',
     'apps.utils',
 
+    'loginas',
     'crispy_forms',
     'webpack_loader',
     'debug_toolbar',
@@ -155,6 +156,8 @@ REST_FRAMEWORK = {
 
     'PAGE_SIZE': 50,
 }
+
+CAN_LOGIN_AS = lambda request, target_user: request.user.is_superuser and not target_user.is_superuser
 
 if DEBUG:
     # for django-debug-toolbar

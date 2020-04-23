@@ -20,6 +20,7 @@ djangorestframework-datatables = "*"
 djangorestframework = "*"
 coreapi = "*"
 django-filter = "*"
+django-loginas = "*"
 
 [dev-packages]
 
