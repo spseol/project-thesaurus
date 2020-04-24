@@ -21,6 +21,7 @@ django-filter = "*"
 django-loginas = "*"
 django-webpack4-loader = "*"
 funcy = "*"
+django-positions = "*"
 
 [dev-packages]
 

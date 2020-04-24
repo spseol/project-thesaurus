@@ -61,6 +61,11 @@ class Thesis(BaseTimestampedModel):
         null=True,
     )
 
+    published_at = models.DateField(
+        verbose_name=_('Publication date'),
+        null=True,
+    )
+
     class Meta:
         ordering = ['registration_number']
         verbose_name = _('Thesis')

@@ -2,11 +2,15 @@ from django.urls import path, include
 from django.views import i18n
 from rest_framework.routers import DefaultRouter
 
+from apps.api.views.category import CategoryViewSet
 from apps.api.views.login import LoginView
 from apps.api.views.thesis import ThesisViewSet
+from apps.api.views.user import TeacherViewSet
 
 router = DefaultRouter()
 router.register(r'thesis', ThesisViewSet)
+router.register(r'teacher', TeacherViewSet)
+router.register(r'category', CategoryViewSet)
 
 app_name = 'api'
 urlpatterns = [

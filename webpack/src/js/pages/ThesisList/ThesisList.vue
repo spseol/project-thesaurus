@@ -63,10 +63,11 @@
                 loading: true,
                 options: {},
                 search: '',
-                debouncedLoad: _.noop,
                 headers: [
                     {text: 'SN', value: 'registration_number'},
                     {text: 'Title', value: 'title'},
+                    {text: 'Category', value: 'category.title'},
+                    {text: 'Acad. year', value: 'published_at'},
                     {text: 'Author', value: 'author.full_name', mapped: 'author__last_name'},
                     {text: 'Opponent', value: 'opponent.full_name', mapped: 'opponent__last_name'},
                     {text: 'Supervisor', value: 'supervisor.full_name', mapped: 'supervisor__last_name'},
@@ -92,7 +93,7 @@
 
                 this.loading = true;
                 // TODO: generalize? VueJS Composition API?
-                const remap = (value) => (_.find(this.headers, {value}) || {}).mapped || value;
+                const remap = (value) => (_.find(this.headers, {value}) || {}).mapped || value.replace('.', '__');
 
                 const resp = await Axios.get(`/api/v1/thesis/?${qs.stringify({
                     page,

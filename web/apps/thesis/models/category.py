@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext as _
+from positions import PositionField
 
 from apps.utils.models import BaseModel
 
@@ -11,8 +12,8 @@ class Category(BaseModel):
         max_length=128,
     )
 
-    order = models.PositiveSmallIntegerField(
-        verbose_name=_('Order')
+    order = PositionField(
+        verbose_name=_('Order'),
     )
 
     class Meta:
