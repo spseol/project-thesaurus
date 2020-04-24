@@ -49,30 +49,29 @@
 
 <script type="text/tsx">
     import * as _ from 'lodash';
-
-    import * as qs from 'qs';
     import Vue from 'vue';
-    import Axios from '../../api-client';
-
+    import ThesisService from './thesis-service';
 
     export default Vue.extend({
         data() {
+            const headers = [
+                {text: 'SN', value: 'registration_number'},
+                {text: 'Title', value: 'title'},
+                {text: 'Category', value: 'category.title'},
+                {text: 'Acad. year', value: 'published_at'},
+                {text: 'Author', value: 'author.full_name', mapped: 'author__last_name'},
+                {text: 'Opponent', value: 'opponent.full_name', mapped: 'opponent__last_name'},
+                {text: 'Supervisor', value: 'supervisor.full_name', mapped: 'supervisor__last_name'},
+                {text: '', value: 'data-table-expand'}
+            ];
             return {
                 items: [],
                 totalCount: 0,
                 loading: true,
                 options: {},
                 search: '',
-                headers: [
-                    {text: 'SN', value: 'registration_number'},
-                    {text: 'Title', value: 'title'},
-                    {text: 'Category', value: 'category.title'},
-                    {text: 'Acad. year', value: 'published_at'},
-                    {text: 'Author', value: 'author.full_name', mapped: 'author__last_name'},
-                    {text: 'Opponent', value: 'opponent.full_name', mapped: 'opponent__last_name'},
-                    {text: 'Supervisor', value: 'supervisor.full_name', mapped: 'supervisor__last_name'},
-                    {text: '', value: 'data-table-expand'}
-                ]
+                headers: headers,
+                service: new ThesisService(headers)
             };
         },
         watch: {
@@ -89,20 +88,9 @@
         },
         methods: {
             async load() {
-                const {sortBy, sortDesc, page = 1, itemsPerPage, ...rest} = this.options;
-
                 this.loading = true;
-                // TODO: generalize? VueJS Composition API?
-                const remap = (value) => (_.find(this.headers, {value}) || {}).mapped || value.replace('.', '__');
 
-                const resp = await Axios.get(`/api/v1/thesis/?${qs.stringify({
-                    page,
-                    search: this.search,
-                    ordering: _.map(
-                        _.zip(sortBy, sortDesc),
-                        ([col, desc]) => `${desc ? '-' : ''}${remap(col).split('.')[0]}`
-                    ).join(',')
-                })}`);
+                const resp = await this.service.loadData(this.options, this.search);
 
                 this.items = resp.data.results;
                 this.totalCount = resp.data.count;
