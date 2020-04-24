@@ -5,11 +5,11 @@ from rest_framework.routers import DefaultRouter
 from apps.api.views.category import CategoryViewSet
 from apps.api.views.login import LoginView
 from apps.api.views.thesis import ThesisViewSet
-from apps.api.views.user import TeacherViewSet
+from apps.api.views.user import UserOptionsViewSet
 
 router = DefaultRouter()
 router.register(r'thesis', ThesisViewSet)
-router.register(r'teacher', TeacherViewSet)
+router.register(r'teacher', UserOptionsViewSet)
 router.register(r'category', CategoryViewSet)
 
 app_name = 'api'

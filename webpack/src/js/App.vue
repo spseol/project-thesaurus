@@ -36,9 +36,10 @@
 
                 <span class="font-weight-bold mt-1">THESAURUS</span>
             </v-toolbar-title>
-            <v-spacer></v-spacer>
 
-            <portal-target name="navbar-center" slim/>
+            <v-col cols="auto">
+                <portal-target name="navbar-center" slim/>
+            </v-col>
 
             <v-spacer/>
             <v-btn icon href="/logout" large>
@@ -68,10 +69,8 @@
 
 <script type="text/tsx">
     import Vue from 'vue';
-    import ThesisList from './pages/ThesisList/ThesisList';
 
     export default Vue.extend({
-        components: {ThesisList},
         data() {
             return {
                 drawer: this.$vuetify.breakpoint.mdAndUp,

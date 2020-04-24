@@ -22,7 +22,7 @@ module.exports = {
         },
     },
     entry: {
-        main: './src/js/index.js',
+        main: './src/js/index.ts',
         login: './src/js/login.js',
     },
     output: {
@@ -33,6 +33,10 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /\.tsx?$/,
+                loader: 'ts-loader',
+            },
             {
                 test: /\.vue$/,
                 loader: 'vue-loader',
@@ -92,7 +96,6 @@ module.exports = {
                     },
                 ],
             },
-            {test: /\.tsx?$/, loader: 'ts-loader'},
             {
                 test: /\.jsx?$/,
                 exclude: /node_modules/,

@@ -18,6 +18,7 @@ class Thesis(BaseTimestampedModel):
         help_text=_('Corresponding category for thesis.')
     )
 
+    # TODO: not only one :'(
     author = models.ForeignKey(
         to=get_user_model(),
         on_delete=models.PROTECT,

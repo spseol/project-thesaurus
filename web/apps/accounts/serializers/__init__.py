@@ -1,5 +1,6 @@
-from .user import UserSerializer
+from .user import UserOptionSerializer, UserSerializer
 
 __all__ = [
-    'UserSerializer'
+    'UserOptionSerializer',
+    'UserSerializer',
 ]
