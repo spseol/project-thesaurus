@@ -30,7 +30,7 @@
         <v-app-bar app color="orange accent-3" clipped-left>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
             <v-toolbar-title
-                class="ml-0 pl-2 d-md-flex hidden-sm-and-down"
+                class="ml-0 pl-1 d-md-flex hidden-sm-and-down"
             >
                 <img height="35" src="../img/thesaurus.svg" class="pr-2" alt="Project Thesaurus">
 
@@ -38,14 +38,7 @@
             </v-toolbar-title>
             <v-spacer></v-spacer>
 
-            <v-text-field
-                flat
-                solo-inverted
-                hide-details
-                prepend-inner-icon="mdi-magnify"
-                label="Search"
-                v-model.sync="search"
-            />
+            <portal-target name="navbar-center" slim/>
 
             <v-spacer/>
             <v-btn icon href="/logout" large>
@@ -56,7 +49,9 @@
         <v-content>
             <v-container fluid>
                 <v-fade-transition mode="out-in">
-                    <router-view></router-view>
+                    <keep-alive>
+                        <router-view></router-view>
+                    </keep-alive>
                 </v-fade-transition>
             </v-container>
         </v-content>
@@ -71,24 +66,24 @@
 </template>
 
 
-<script>
+<script type="text/tsx">
+    import Vue from 'vue';
     import ThesisList from './pages/ThesisList/ThesisList';
 
-    export default {
+    export default Vue.extend({
         components: {ThesisList},
         data() {
             return {
                 drawer: this.$vuetify.breakpoint.mdAndUp,
-                search: '',
                 drawerItem: 0,
                 items: [
                     {icon: 'mdi-book-multiple', text: 'Theses', to: {name: 'thesis-list'}},
                     {icon: 'mdi-book-plus', text: 'Prepare thesis', to: {name: 'thesis-create'}},
                     {icon: 'mdi-calendar-account', text: 'Reservations', to: {name: 'reservations'}},
                     {icon: 'mdi-printer', text: 'Exports', to: {name: 'exports'}},
-                    {icon: 'mdi-settings', text: 'Settings', to: {name: 'settings'}},
-                ],
+                    {icon: 'mdi-settings', text: 'Settings', to: {name: 'settings'}}
+                ]
             };
-        },
-    };
+        }
+    });
 </script>

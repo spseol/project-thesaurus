@@ -1,17 +1,18 @@
+import PortalVue from 'portal-vue';
 import Vue from 'vue';
+import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
 import cs from 'vuetify/es5/locale/cs';
 import en from 'vuetify/es5/locale/en';
 import colors from 'vuetify/es5/util/colors';
-import VueRouter from 'vue-router';
-
 
 import 'vuetify/src/styles/main.sass';
 import App from './App';
 
-export default function createVue(opts) {
+export default function createVue(opts = {}) {
     Vue.use(Vuetify);
     Vue.use(VueRouter);
+    Vue.use(PortalVue);
 
     const vuetify = new Vuetify({
         lang: {

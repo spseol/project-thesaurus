@@ -1,54 +1,77 @@
 <template>
-    <v-data-table
-        :headers="headers"
-        :items="items"
-        :search="search"
-        :options.sync="options"
-        :server-items-length="totalCount"
-        :loading="loading"
 
-        single-expand
-        show-expand
-    >
-        <template v-slot:expanded-item="{ headers, item }">
-            <td :colspan="headers.length">More info about {{ item.title }}</td>
-        </template>
+    <div>
+        <v-data-table
+            :headers="headers"
+            :items="items"
+            :search="search"
+            :options.sync="options"
+            :server-items-length="totalCount"
+            :loading="loading"
+            sort-by="registration_number"
+            single-expand
+            show-expand
+            :footer-props="{
+                'disable-items-per-page': true,
+            }"
+        >
+            <template v-slot:expanded-item="{ headers, item }">
+                <td :colspan="headers.length">More info about {{ item.title }}</td>
+            </template>
 
-        <!--        <template v-slot:item.author.full_name="{ item }">-->
-        <!--            <a @click="search += ` ${item.author.full_name}`" v-text="item.author.full_name"></a>-->
-        <!--        </template>-->
-    </v-data-table>
+            <!-- dynamic slots for all "author" FKs -->
+            <template
+                v-for="key in 'author supervisor opponent'.split(' ')"
+                v-slot:[`item.${key}.full_name`]="{ item }"
+            >
+                <!-- TODO: add chips for each filter? -->
+                <a @click="search += ` ${item[key].full_name}`">{{ item[key].full_name }}</a>
+            </template>
+
+        </v-data-table>
+
+
+        <portal to="navbar-center">
+            <v-text-field
+                flat
+                solo-inverted
+                hide-details
+                clearable
+                prepend-inner-icon="mdi-magnify"
+                label="Search"
+                v-model="search"
+            />
+        </portal>
+    </div>
+
+
 </template>
 
-<script>
-    import Axios from '../../api-client.ts';
-    import _ from 'lodash';
+<script type="text/tsx">
+    import * as _ from 'lodash';
 
-    import qs from 'qs';
+    import * as qs from 'qs';
+    import Vue from 'vue';
+    import Axios from '../../api-client';
 
 
-    export default {
-        props: {
-            search: {
-                type: String,
-                default: '',
-            },
-        },
+    export default Vue.extend({
         data() {
             return {
-                url: this.$parent.url,
                 items: [],
                 totalCount: 0,
                 loading: true,
                 options: {},
+                search: '',
+                debouncedLoad: _.noop,
                 headers: [
                     {text: 'SN', value: 'registration_number'},
                     {text: 'Title', value: 'title'},
                     {text: 'Author', value: 'author.full_name', mapped: 'author__last_name'},
                     {text: 'Opponent', value: 'opponent.full_name', mapped: 'opponent__last_name'},
                     {text: 'Supervisor', value: 'supervisor.full_name', mapped: 'supervisor__last_name'},
-                    {text: '', value: 'data-table-expand'},
-                ],
+                    {text: '', value: 'data-table-expand'}
+                ]
             };
         },
         watch: {
@@ -56,11 +79,12 @@
                 async handler() {
                     await this.load();
                 },
-                deep: true,
+                deep: true
             },
             search() {
+                this.options.page = 1;
                 this.debouncedLoad();
-            },
+            }
         },
         methods: {
             async load() {
@@ -68,24 +92,27 @@
 
                 this.loading = true;
                 // TODO: generalize? VueJS Composition API?
-                const remap = (value) => _.find(this.headers, {value}).mapped || value;
+                const remap = (value) => (_.find(this.headers, {value}) || {}).mapped || value;
 
                 const resp = await Axios.get(`/api/v1/thesis/?${qs.stringify({
                     page,
                     search: this.search,
-                    ordering: _.map(_.zip(sortBy, sortDesc), ([col, desc]) => `${desc ? '-' : ''}${remap(col).split('.')[0]}`).join(','),
+                    ordering: _.map(
+                        _.zip(sortBy, sortDesc),
+                        ([col, desc]) => `${desc ? '-' : ''}${remap(col).split('.')[0]}`
+                    ).join(',')
                 })}`);
 
                 this.items = resp.data.results;
                 this.totalCount = resp.data.count;
                 this.loading = false;
-            },
+            }
         },
         async created() {
             await this.load();
             this.debouncedLoad = _.debounce(this.load, 200);
-        },
-    };
+        }
+    });
 </script>
 
 <style scoped>

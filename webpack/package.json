@@ -23,6 +23,7 @@
     "lodash": "^4.17.15",
     "node-sass": "^4.13.1",
     "popper.js": "^1.16.1",
+    "portal-vue": "^2.1.7",
     "postcss-loader": "^3.0.0",
     "postcss-object-fit-images": "^1.1.2",
     "qs": "^6.9.3",
@@ -41,6 +42,9 @@
     "webpack4-bundle-tracker": "0.0.1-beta"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.150",
+    "@types/qs": "^6.9.1",
+    "image-webpack-loader": "^6.0.0",
     "mini-css-extract-plugin": "^0.9.0",
     "ts-loader": "^7.0.1",
     "typescript": "^3.8.3",

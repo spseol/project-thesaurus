@@ -16,7 +16,6 @@ module.exports = {
             cacheGroups: {
                 common: {
                     name: 'common',
-                    priority: -10,
                     chunks: 'all',
                 },
             },
@@ -45,11 +44,19 @@ module.exports = {
                         loader: 'url-loader',
                         options: {
                             name: 'assets/[name]-[hash:12].[ext]',
-                            limit: 20000, // inline smaller files in css
+                            limit: 10 * 1024, // inline smaller files in css (than 10kB)
                             esModule: false,
                         },
                     },
                 ],
+            },
+            {
+                test: /\.(jpg|png|gif|svg)$/,
+                loader: 'image-webpack-loader',
+                enforce: 'pre',
+                options: {
+                    bypassOnDebug: true,
+                },
             },
             {
                 test: /\.s([ac])ss$/,

@@ -154,7 +154,7 @@ REST_FRAMEWORK = {
         'apps.api.utils.filters.RelatedOrderingFilter',
     ],
 
-    'PAGE_SIZE': 50,
+    'PAGE_SIZE': 20,
 }
 
 CAN_LOGIN_AS = lambda request, target_user: request.user.is_superuser and not target_user.is_superuser
