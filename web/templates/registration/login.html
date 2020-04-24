@@ -1,7 +1,7 @@
 {% extends "base.html" %}
-{% load webpack_loader %}
+{% load render_entrypoint from webpack_loader %}
 
 {% block bundles %}
-    {% render_bundle 'login' 'js' attrs='defer' %}
-    {% render_bundle 'login' 'css' %}
+    {% render_entrypoint 'login' 'js' attrs='defer' %}
+    {% render_entrypoint 'login' 'css' %}
 {% endblock bundles %}

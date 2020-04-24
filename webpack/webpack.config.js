@@ -3,29 +3,21 @@ const webpack = require('webpack');
 const publicPath = process.env.PUBLIC_PATH || '//localhost:3000/static/';
 const buildDir = process.env.BUILD_DIR || path.resolve('./build');
 
-const BundleTracker = require('webpack-bundle-tracker');
+const BundleTracker = require('webpack4-bundle-tracker');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 
 
-// plugin for django integration
-const bundler = new BundleTracker({
-    indent: ' ',
-    path: buildDir,
-    filename: 'webpack-stats.json',
-});
-
 module.exports = {
     optimization: {
-        minimizer: [],
         splitChunks: {
+            name: false,
             cacheGroups: {
-                commons: {
-                    name: 'commons',
-                    minChunks: 2,
-                    chunks: 'initial',
+                common: {
+                    name: 'common',
                     priority: -10,
+                    chunks: 'all',
                 },
             },
         },
@@ -121,14 +113,12 @@ module.exports = {
         },
     },
     plugins: [
-        bundler,
+        new BundleTracker({
+            path: buildDir,
+            filename: 'webpack-stats.json',
+        }),
         new MiniCssExtractPlugin(),
         new VueLoaderPlugin(),
         new VuetifyLoaderPlugin(),
-        new webpack.ProvidePlugin({
-            // TODO: really needed?
-            $: 'jquery',
-            Popper: 'popper.js',
-        }),
     ],
 };

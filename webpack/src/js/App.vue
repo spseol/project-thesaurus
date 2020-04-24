@@ -1,7 +1,12 @@
 <template>
     <v-app
     >
-        <v-navigation-drawer app :clipped="true" v-model="drawer">
+        <v-navigation-drawer
+            app
+            dark
+            :clipped="true"
+            v-model="drawer"
+        >
             <v-list nav shaped>
                 <v-list-item-group color="primary">
                     <v-list-item
@@ -43,11 +48,8 @@
             />
 
             <v-spacer/>
-            <v-btn icon>
-                <v-icon>mdi-apps</v-icon>
-            </v-btn>
-            <v-btn icon href="/logout">
-                <v-icon>mdi-logout</v-icon>
+            <v-btn icon href="/logout" large>
+                <v-icon large>mdi-logout</v-icon>
             </v-btn>
         </v-app-bar>
 

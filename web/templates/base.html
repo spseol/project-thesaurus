@@ -1,5 +1,5 @@
 {% load static i18n %}
-{% load render_bundle from webpack_loader %}
+{% load render_entrypoint from webpack_loader %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
@@ -17,8 +17,8 @@
     </script>
 
     {% block bundles %}
-        {% render_bundle 'main' 'js' attrs='defer' %}
-        {% render_bundle 'main' 'css' %}
+        {% render_entrypoint 'main' 'js' attrs='defer' %}
+        {% render_entrypoint 'main' 'css' %}
     {% endblock bundles %}
 
     <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
