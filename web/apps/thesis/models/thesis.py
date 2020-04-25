@@ -38,6 +38,7 @@ class Thesis(BaseTimestampedModel):
         on_delete=models.PROTECT,
         verbose_name=_('Opponent'),
         related_name='thesis_opponent',
+        null=True,
     )
 
     registration_number = models.CharField(

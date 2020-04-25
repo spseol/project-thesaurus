@@ -7,10 +7,10 @@ from apps.thesis.serializers import CategorySerializer
 
 
 class ThesisSerializer(ModelSerializer):
-    author = UserSerializer()
-    supervisor = UserSerializer()
-    opponent = UserSerializer()
-    category = CategorySerializer()
+    author = UserSerializer(read_only=True)
+    supervisor = UserSerializer(read_only=True)
+    opponent = UserSerializer(read_only=True)
+    category = CategorySerializer(read_only=True)
 
     published_at = DateField(format="%Y/%m", required=False, read_only=True)
 

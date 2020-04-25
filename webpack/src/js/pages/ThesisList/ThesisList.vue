@@ -22,7 +22,11 @@
                 v-for="key in 'author supervisor opponent'.split(' ')"
                 v-slot:[`item.${key}.full_name`]="{ item }"
             >
-                <a @click="addUserFilterFromDataTable(item[key].id)">{{ item[key].full_name }}</a>
+                <a
+                    v-if="item[key]"
+                    v-text="item[key].full_name"
+                    @click="addUserFilterFromDataTable(item[key].id)"
+                ></a>
             </template>
 
         </v-data-table>

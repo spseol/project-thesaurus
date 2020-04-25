@@ -9,13 +9,20 @@
                         v-model="valid"
                         @submit.prevent="submit"
                         lazy-validation
-
                     >
                         <v-text-field
                             v-model="thesis.title"
                             :counter="128"
                             :rules="[v => !!v]"
                             label="Title"
+                            required
+                        ></v-text-field>
+
+                        <v-text-field
+                            v-model="thesis.registration_number"
+                            :counter="4"
+                            :rules="[v => !!v, v => /[A-Z]\d{3}/.test(v) || 'Not in format AXXX.']"
+                            label="Registration number"
                             required
                         ></v-text-field>
 
@@ -31,6 +38,14 @@
                             :rules="[v => v.length > 0]"
                         ></v-autocomplete>
 
+                        <v-autocomplete
+                            v-model="thesis.supervisor"
+                            :items="teacherOptions"
+                            hide-no-data
+                            label="Supervisor"
+                            :rules="[v => !!v]"
+                        ></v-autocomplete>
+
                         <v-radio-group
 
                             label="Category"
@@ -44,15 +59,30 @@
                             ></v-radio>
                         </v-radio-group>
 
+                        <v-text-field
+                            v-model="thesis.published_at"
+                            :counter="7"
+                            :rules="[v => !!v, v => /\d{4}\/\d{2}/.test(v) || 'Not in format YYYY/MM.']"
+                            label="Published"
+                            required
+                        ></v-text-field>
+
                         <v-file-input
                             accept="application/pdf"
                             label="Thesis admission"
-                            v-model="thesis.admissionAttachment"
+                            v-model="thesis.admission"
                         ></v-file-input>
 
                         <v-row>
                             <v-spacer></v-spacer>
-                            <v-btn large right type="submit" color="primary">Submit</v-btn>
+                            <v-btn
+                                large
+                                type="submit"
+                                color="primary"
+                                :disabled="!valid"
+                            >
+                                Submit
+                            </v-btn>
                         </v-row>
                     </v-form>
                 </v-card-text>
@@ -79,10 +109,12 @@
             checkbox: false,
             thesis: {
                 title: '',
+                registration_number: '',
                 authors: [],
+                published_at: new Date().toISOString().substr(0, 7).replace('-', '/'),
                 category: null,
-                admissionAttachment: null
-
+                supervisor: null,
+                admission: null
             }
         }),
         watch: {
@@ -92,15 +124,6 @@
         },
 
         methods: {
-            validate() {
-                this.$refs.form.validate();
-            },
-            reset() {
-                this.$refs.form.reset();
-            },
-            resetValidation() {
-                this.$refs.form.resetValidation();
-            },
             async queryStudentOptions(search) {
                 this.loading = true;
 
@@ -124,17 +147,23 @@
             async submit() {
                 let formData = new FormData();
 
-                const admissionAttachment = await this.readFileAsync(this.thesis.admissionAttachment);
+                const admission = await this.readFileAsync(this.thesis.admissionAttachment);
 
                 const data = {
                     ...this.thesis,
-                    admissionAttachment
+                    admission
                 };
 
                 for (let key in data) {
                     formData.append(key, this.thesis[key]);
                 }
                 console.log(data, formData);
+
+                await Axios.post('/api/v1/thesis/', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                    }
+                });
             }
         },
         async created() {

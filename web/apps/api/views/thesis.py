@@ -1,9 +1,13 @@
+from django.contrib.auth import get_user_model
+from django.utils.dateparse import parse_date
+from rest_framework.generics import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 
-from apps.thesis.models import Thesis
+from apps.thesis.models import Thesis, Category
 from apps.thesis.serializers import ThesisSerializer
 
 
+# TODO: needed ModelViewSet?
 class ThesisViewSet(ModelViewSet):
     queryset = Thesis.objects.all().select_related('author', 'supervisor', 'opponent')
     serializer_class = ThesisSerializer
@@ -26,3 +30,14 @@ class ThesisViewSet(ModelViewSet):
         # 'published_at__year',
         # 'published_at__month',
     )
+
+    def perform_create(self, serializer: ThesisSerializer):
+        # TODO: save attachment
+        self.request.FILES.get('admission')
+
+        instance = serializer.save(
+            category=get_object_or_404(Category, pk=serializer.initial_data.get('category')),
+            supervisor=get_object_or_404(get_user_model(), pk=serializer.initial_data.get('supervisor')),
+            author=get_object_or_404(get_user_model(), pk=serializer.initial_data.get('authors')[0]),
+            published_at=parse_date(serializer.initial_data.get('published_at') + '-01')
+        )
