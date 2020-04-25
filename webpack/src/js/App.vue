@@ -7,24 +7,43 @@
             :clipped="true"
             v-model="drawer"
         >
-            <v-list nav shaped>
-                <v-list-item-group color="primary">
-                    <v-list-item
-                        v-for="item in items"
-                        :key="item.text"
-                        :to="item.to"
-                    >
+            <div class="v-navigation-drawer__content d-flex flex-column justify-space-between">
+
+                <v-list nav shaped>
+
+                    <v-list-item-group color="primary">
+                        <v-list-item
+                            v-for="item in items"
+                            :key="item.text"
+                            :to="item.to"
+                        >
+                            <v-list-item-action>
+                                <v-icon>{{ item.icon }}</v-icon>
+                            </v-list-item-action>
+                            <v-list-item-content>
+                                <v-list-item-title>
+                                    {{ item.text }}
+                                </v-list-item-title>
+                            </v-list-item-content>
+                        </v-list-item>
+                    </v-list-item-group>
+                </v-list>
+                <!-- to avoid flex circumstances of v-list-item -->
+                <div v-if="djangoAdminUrl">
+                    <v-list-item :href="djangoAdminUrl">
                         <v-list-item-action>
-                            <v-icon>{{ item.icon }}</v-icon>
+                            <v-icon>mdi-share</v-icon>
                         </v-list-item-action>
                         <v-list-item-content>
                             <v-list-item-title>
-                                {{ item.text }}
+                                Django Administration
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
-                </v-list-item-group>
-            </v-list>
+                </div>
+
+            </div>
+
         </v-navigation-drawer>
 
         <v-app-bar app color="orange accent-3" clipped-left>
@@ -42,7 +61,10 @@
             </v-col>
 
             <v-spacer/>
-            <v-btn icon href="/logout" large>
+            <span class="font-weight-medium">
+            {{ username }}
+            </span>
+            <v-btn icon href="/logout" x-large class="mr-2">
                 <v-icon large>mdi-logout</v-icon>
             </v-btn>
         </v-app-bar>
@@ -50,9 +72,8 @@
         <v-content>
             <v-container fluid>
                 <v-fade-transition mode="out-in">
-                    <keep-alive>
-                        <router-view></router-view>
-                    </keep-alive>
+                    <router-view></router-view>
+
                 </v-fade-transition>
             </v-container>
         </v-content>
@@ -73,6 +94,8 @@
     export default Vue.extend({
         data() {
             return {
+                username: window['Thesaurus'].settings.username,
+                djangoAdminUrl: window['Thesaurus'].settings.djangoAdminUrl,
                 drawer: this.$vuetify.breakpoint.mdAndUp,
                 drawerItem: 0,
                 items: [

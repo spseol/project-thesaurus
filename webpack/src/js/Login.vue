@@ -49,13 +49,15 @@
                                     <v-btn
                                         type="submit"
                                         color="primary"
-                                        large
+                                        x-large
                                         :loading="loading"
                                         :disabled="loading"
                                         @click.prevent="login"
                                     >
                                         Login
                                     </v-btn>
+
+                                    <v-spacer/>
                                 </v-card-actions>
                             </v-form>
                         </v-card>

@@ -32,16 +32,17 @@
             <v-combobox
                 :items="userOptions"
                 flat
-                solo-inverted
+                solo-inverted solo
                 hide-details
                 clearable
+                hide-selected
                 prepend-inner-icon="mdi-magnify"
                 label="Search"
                 v-model="filterItems"
                 multiple
-                solo
                 chips
                 :filter="userOptionsFilter"
+                :menu-props="{closeOnContentClick: true}"
             >
                 <template v-slot:selection="{ attrs, item, select, selected }">
                     <v-chip

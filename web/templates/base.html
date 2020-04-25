@@ -13,6 +13,8 @@
         window.Thesaurus = (window.Thesaurus || {});
         window.Thesaurus.settings = {
             locale: '{{ LANGUAGE_CODE }}'.split(/[_-]/)[0],
+            username: '{{ user.get_username }}',
+            djangoAdminUrl: '{% if user.is_staff %}{% url "admin:index" %}{% endif %}',
         };
     </script>
 
