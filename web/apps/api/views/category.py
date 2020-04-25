@@ -1,12 +1,13 @@
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from apps.thesis.models import Category
-from apps.thesis.serializers import CategorySerializer
+from apps.thesis.serializers.category import CategoryOptionSerializer
 
 
-class CategoryViewSet(ReadOnlyModelViewSet):
+class CategoryOptionsViewSet(ReadOnlyModelViewSet):
     queryset = Category.objects.all()
-    serializer_class = CategorySerializer
+    serializer_class = CategoryOptionSerializer
+    pagination_class = None
     search_fields = (
         'title',
     )

@@ -43,6 +43,7 @@ class TypeAttachment(BaseTypeModel):
     """Type of attachment signalizing for which purpose has been attachment uploaded."""
     class Identifier(models.TextChoices):
         THESIS_TEXT = 'thesis_text', _('Thesis text')
+        THESIS_ASSIGMENT = 'thesis_assigment', _('Thesis assigment')
         SUPERVISOR_REVIEW = 'supervisor_review', _('Supervisor review')
         OPPONENT_REVIEW = 'opponent_review', _('Opponent review')
 

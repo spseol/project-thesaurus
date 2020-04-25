@@ -42,7 +42,7 @@
                 multiple
                 chips
                 :filter="userOptionsFilter"
-                :menu-props="{closeOnContentClick: true}"
+                menu-props="closeOnContentClick"
             >
                 <template v-slot:selection="{ attrs, item, select, selected }">
                     <v-chip

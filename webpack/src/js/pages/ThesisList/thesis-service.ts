@@ -31,6 +31,6 @@ export default class ThesisService {
 
     // TODO: improve typing
     async loadUserOptions(): Promise<Array<Object>> {
-        return (await Axios.get('/api/v1/teacher/')).data;
+        return (await Axios.get('/api/v1/user-options/')).data;
     }
 }

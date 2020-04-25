@@ -36,11 +36,16 @@ export default function createVue(opts = {}) {
 
     const router = new VueRouter({
         routes: [
+            {path: '/', component: {template: '<div>Home</div>'}, name: 'home'},
             {path: '/theses', component: () => import('./pages/ThesisList/ThesisList'), name: 'thesis-list'},
-            {path: '/thesis-create', component: () => import('./pages/ThesisForm/ThesisForm'), name: 'thesis-create'},
-            {path: '/reservations', component: () => import('./pages/ThesisForm/ThesisForm'), name: 'reservations'},
-            {path: '/exports', component: () => import('./pages/ThesisForm/ThesisForm'), name: 'exports'},
-            {path: '/settings', component: () => import('./pages/ThesisForm/ThesisForm'), name: 'settings'},
+            {
+                path: '/thesis-prepare',
+                component: () => import('./pages/ThesisPrepareForm/ThesisPrepareForm'),
+                name: 'thesis-prepare',
+            },
+            {path: '/reservations', component: {template: '<div>Nonono</div>'}, name: 'reservations'},
+            {path: '/exports', component: {template: '<div>Nonono</div>'}, name: 'exports'},
+            {path: '/settings', component: {template: '<div>Nonono</div>'}, name: 'settings'},
             {path: '*', component: {template: '<div>Not found :-(</div>'}},
         ],
         mode: 'history',

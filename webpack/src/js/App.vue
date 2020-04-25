@@ -48,13 +48,15 @@
 
         <v-app-bar app color="orange accent-3" clipped-left>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
-            <v-toolbar-title
-                class="ml-0 pl-1 d-md-flex hidden-sm-and-down"
-            >
-                <img height="35" src="../img/thesaurus.svg" class="pr-2" alt="Project Thesaurus">
+            <v-btn :to="{name: 'home'}" :text="true" class="primary--text">
+                <v-toolbar-title
+                    class="ml-0 pl-1 d-md-flex hidden-sm-and-down black--text"
+                >
+                    <img height="35" src="../img/thesaurus.svg" class="pr-2" alt="Project Thesaurus">
 
-                <span class="font-weight-bold mt-1">THESAURUS</span>
-            </v-toolbar-title>
+                    <span class="font-weight-bold mt-1">THESAURUS</span>
+                </v-toolbar-title>
+            </v-btn>
 
             <v-col cols="auto">
                 <portal-target name="navbar-center" slim/>
@@ -100,7 +102,7 @@
                 drawerItem: 0,
                 items: [
                     {icon: 'mdi-book-multiple', text: 'Theses', to: {name: 'thesis-list'}},
-                    {icon: 'mdi-book-plus', text: 'Prepare thesis', to: {name: 'thesis-create'}},
+                    {icon: 'mdi-book-plus', text: 'Prepare thesis', to: {name: 'thesis-prepare'}},
                     {icon: 'mdi-calendar-account', text: 'Reservations', to: {name: 'reservations'}},
                     {icon: 'mdi-printer', text: 'Exports', to: {name: 'exports'}},
                     {icon: 'mdi-settings', text: 'Settings', to: {name: 'settings'}}
