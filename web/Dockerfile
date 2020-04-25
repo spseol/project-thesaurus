@@ -14,8 +14,8 @@ RUN addgroup -S django \
     && pip install --upgrade pip \
     && pip install pipenv \
     && apk update \
-    && apk add --virtual build-deps gcc python3-dev musl-dev \
-    && apk add postgresql-dev \
+    && apk add --virtual build-deps gcc python3-dev musl-dev gettext-dev \
+    && apk add postgresql-dev gettext \
     && pipenv install psycopg2-binary --skip-lock --dev \
     && apk del build-deps \
     && mkdir /usr/src/static \

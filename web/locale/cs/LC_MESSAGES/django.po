@@ -1,0 +1,172 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-04-25 19:32+0000\n"
+"PO-Revision-Date: 2020-04-25 22:37+0300\n"
+"Language: cs\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n "
+"<= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.2.4\n"
+
+#: apps/accounts/models/user.py:13
+msgid "User"
+msgstr "Uživatel"
+
+#: apps/accounts/models/user.py:14
+msgid "Users"
+msgstr "Uživatelé"
+
+#: apps/attachment/models/attachment.py:14
+msgid "Target thesis"
+msgstr "Práce"
+
+#: apps/attachment/models/attachment.py:22
+msgid "Type of attachment"
+msgstr "Typ přílohy"
+
+#: apps/attachment/models/attachment.py:26
+msgid "File with thesis"
+msgstr "Soubor s prací"
+
+#: apps/attachment/models/attachment.py:33
+msgid "Attachment"
+msgstr "Příloha"
+
+#: apps/attachment/models/attachment.py:34
+msgid "Attachments"
+msgstr "Přílohy"
+
+#: apps/attachment/models/attachment.py:45
+msgid "Thesis text"
+msgstr "Text práce"
+
+#: apps/attachment/models/attachment.py:46
+msgid "Thesis assigment"
+msgstr "Text zadání"
+
+#: apps/attachment/models/attachment.py:47
+msgid "Supervisor review"
+msgstr "Posudek vedoucího"
+
+#: apps/attachment/models/attachment.py:48
+msgid "Opponent review"
+msgstr "Posudek oponenta"
+
+#: apps/attachment/models/attachment.py:51 apps/utils/models/base.py:34
+msgid "Identifier"
+msgstr "Identifikátor"
+
+#: apps/attachment/models/attachment.py:60
+msgid "List of allowed mime/content types"
+msgstr "Seznam povolených typů souborů"
+
+#: apps/attachment/models/attachment.py:65
+msgid "Type attachment"
+msgstr "Typ přílohy"
+
+#: apps/attachment/models/attachment.py:66
+msgid "Types attachments"
+msgstr "Typy příloh"
+
+#: apps/thesis/models/category.py:11 apps/thesis/models/thesis.py:57
+msgid "Title"
+msgstr "Název"
+
+#: apps/thesis/models/category.py:16 apps/utils/models/base.py:50
+msgid "Order"
+msgstr "Pořadí"
+
+#: apps/thesis/models/category.py:21
+msgid "Category"
+msgstr "Kategorie"
+
+#: apps/thesis/models/category.py:22
+msgid "Categories"
+msgstr "Kategorie"
+
+#: apps/thesis/models/reservation.py:14
+msgid "Thesis for borrow"
+msgstr "Práce k zapůjčení"
+
+#: apps/thesis/models/reservation.py:21
+msgid "For user"
+msgstr "Pro uživatele"
+
+#: apps/thesis/models/reservation.py:28
+msgid "Reservation"
+msgstr "Rezervace"
+
+#: apps/thesis/models/reservation.py:29
+msgid "Reservations"
+msgstr "Rezervace"
+
+#: apps/thesis/models/reservation.py:32
+msgid "Reservation {} for {}"
+msgstr "Rezervace {} pro {}"
+
+#: apps/thesis/models/thesis.py:18
+msgid "Corresponding category for thesis."
+msgstr "Odpovídající kategorie práce"
+
+#: apps/thesis/models/thesis.py:25
+msgid "Author"
+msgstr "Autor"
+
+#: apps/thesis/models/thesis.py:32
+msgid "Supervisor"
+msgstr "Vedoucí"
+
+#: apps/thesis/models/thesis.py:39
+msgid "Opponent"
+msgstr "Oponent"
+
+#: apps/thesis/models/thesis.py:45
+msgid "Registration number"
+msgstr "Evidenční číslo"
+
+#: apps/thesis/models/thesis.py:51
+msgid "Thesis registration number is not valid."
+msgstr "Evidenční číslo práce není validní"
+
+#: apps/thesis/models/thesis.py:62
+msgid "Abstract"
+msgstr "Abstrakt"
+
+#: apps/thesis/models/thesis.py:67
+msgid "Publication date"
+msgstr "Publikováno"
+
+#: apps/thesis/models/thesis.py:73
+msgid "Thesis"
+msgstr "Práce"
+
+#: apps/thesis/models/thesis.py:74
+msgid "Theses"
+msgstr "Práce"
+
+#: apps/utils/models/base.py:18
+msgid "created"
+msgstr "vytořeno"
+
+#: apps/utils/models/base.py:19
+msgid "modified"
+msgstr "modifikováno"
+
+#: apps/utils/models/base.py:41
+msgid "Name"
+msgstr "Název"
+
+#: apps/utils/models/base.py:45
+msgid "Description"
+msgstr "Popis"

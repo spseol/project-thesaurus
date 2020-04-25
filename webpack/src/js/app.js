@@ -2,21 +2,24 @@ import PortalVue from 'portal-vue';
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
-import cs from 'vuetify/es5/locale/cs';
-import en from 'vuetify/es5/locale/en';
+import VueI18n from 'vue-i18n';
+import {cs as csVuetify, en as enVuetify} from 'vuetify/es5/locale';
+import csLocal from './locale/cs.json';
 import colors from 'vuetify/es5/util/colors';
 
 import 'vuetify/src/styles/main.sass';
 import App from './App';
+import Axios from './api-client';
 
 export default function createVue(opts = {}) {
+    Vue.use(VueI18n);
     Vue.use(Vuetify);
     Vue.use(VueRouter);
     Vue.use(PortalVue);
 
     const vuetify = new Vuetify({
         lang: {
-            locales: {cs, en},
+            locales: {cs: csVuetify, en: enVuetify},
             current: window.Thesaurus.settings.locale,
         },
         theme: {
@@ -32,6 +35,15 @@ export default function createVue(opts = {}) {
                 },
             },
         },
+    });
+
+    const i18n = new VueI18n({
+        locale: window.Thesaurus.settings.locale, // set locale
+        messages: {cs: csLocal},
+    });
+
+    Axios.get('/api/i18n/').then(({data}) => {
+        i18n.mergeLocaleMessage(window.Thesaurus.settings.locale, data.catalog);
     });
 
     const router = new VueRouter({
@@ -54,6 +66,7 @@ export default function createVue(opts = {}) {
     return new Vue({
         router,
         vuetify,
+        i18n,
         render: h => h(App),
         ...opts,
     });

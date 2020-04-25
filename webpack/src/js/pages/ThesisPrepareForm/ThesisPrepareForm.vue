@@ -2,7 +2,7 @@
     <v-row>
         <v-col xl="4" md="6">
             <v-card :loading="loading">
-                <v-card-title>Prepare new thesis</v-card-title>
+                <v-card-title>{{ $('Prepare new thesis') }}</v-card-title>
                 <v-card-text>
                     <v-form
                         ref="form"
@@ -14,7 +14,7 @@
                             v-model="thesis.title"
                             :counter="128"
                             :rules="[v => !!v]"
-                            label="Title"
+                            :label="$t('Title')"
                             required
                         ></v-text-field>
 
@@ -22,7 +22,7 @@
                             v-model="thesis.registration_number"
                             :counter="4"
                             :rules="[v => !!v, v => /[A-Z]\d{3}/.test(v) || 'Not in format AXXX.']"
-                            label="Registration number"
+                            :label="$t('Registration number')"
                             required
                         ></v-text-field>
 
@@ -34,7 +34,7 @@
                             cache-items
                             multiple
                             hide-no-data
-                            label="Author(s)"
+                            :label="$t('Author(s)')"
                             :rules="[v => v.length > 0]"
                         ></v-autocomplete>
 
@@ -42,13 +42,12 @@
                             v-model="thesis.supervisor"
                             :items="teacherOptions"
                             hide-no-data
-                            label="Supervisor"
+                            :label="$t('Supervisor')"
                             :rules="[v => !!v]"
                         ></v-autocomplete>
 
                         <v-radio-group
-
-                            label="Category"
+                            :label="$t('Category')"
                             v-model="thesis.category"
                             row
                             :rules="[v => !!v]"
@@ -63,13 +62,13 @@
                             v-model="thesis.published_at"
                             :counter="7"
                             :rules="[v => !!v, v => /\d{4}\/\d{2}/.test(v) || 'Not in format YYYY/MM.']"
-                            label="Published"
+                            :label="$t('Published')"
                             required
                         ></v-text-field>
 
                         <v-file-input
                             accept="application/pdf"
-                            label="Thesis admission"
+                            :label="$t('Thesis admission')"
                             v-model="thesis.admission"
                         ></v-file-input>
 
@@ -147,17 +146,17 @@
             async submit() {
                 let formData = new FormData();
 
-                const admission = await this.readFileAsync(this.thesis.admissionAttachment);
-
                 const data = {
                     ...this.thesis,
-                    admission
+                    admission: undefined
                 };
+                if (this.thesis.admission) {
+                    data.admission = await this.readFileAsync(this.thesis.admission);
+                }
 
                 for (let key in data) {
                     formData.append(key, this.thesis[key]);
                 }
-                console.log(data, formData);
 
                 await Axios.post('/api/v1/thesis/', formData, {
                     headers: {

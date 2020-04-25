@@ -36,7 +36,7 @@
                         </v-list-item-action>
                         <v-list-item-content>
                             <v-list-item-title>
-                                Django Administration
+                                {{ $t('Django Administration') }}
                             </v-list-item-title>
                         </v-list-item-content>
                     </v-list-item>
@@ -101,11 +101,11 @@
                 drawer: this.$vuetify.breakpoint.mdAndUp,
                 drawerItem: 0,
                 items: [
-                    {icon: 'mdi-book-multiple', text: 'Theses', to: {name: 'thesis-list'}},
-                    {icon: 'mdi-book-plus', text: 'Prepare thesis', to: {name: 'thesis-prepare'}},
-                    {icon: 'mdi-calendar-account', text: 'Reservations', to: {name: 'reservations'}},
-                    {icon: 'mdi-printer', text: 'Exports', to: {name: 'exports'}},
-                    {icon: 'mdi-settings', text: 'Settings', to: {name: 'settings'}}
+                    {icon: 'mdi-book-multiple', text: this.$t('Theses'), to: {name: 'thesis-list'}},
+                    {icon: 'mdi-book-plus', text: this.$t('Prepare thesis'), to: {name: 'thesis-prepare'}},
+                    {icon: 'mdi-calendar-account', text: this.$t('Reservations'), to: {name: 'reservations'}},
+                    {icon: 'mdi-printer', text: this.$t('Exports'), to: {name: 'exports'}},
+                    {icon: 'mdi-settings', text: this.$t('Settings'), to: {name: 'settings'}}
                 ]
             };
         }

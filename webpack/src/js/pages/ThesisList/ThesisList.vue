@@ -82,13 +82,13 @@
     export default Vue.extend({
         data() {
             const headers = [
-                {text: 'SN', value: 'registration_number'},
-                {text: 'Title', value: 'title'},
-                {text: 'Category', value: 'category.title'},
-                {text: 'Acad. year', value: 'published_at'},
-                {text: 'Author', value: 'author.full_name'},
-                {text: 'Supervisor', value: 'supervisor.full_name'},
-                {text: 'Opponent', value: 'opponent.full_name'},
+                {text: this.$t('SN'), value: 'registration_number'},
+                {text: this.$t('Title'), value: 'title'},
+                {text: this.$t('Category'), value: 'category.title'},
+                {text: this.$t('Acad. year'), value: 'published_at'},
+                {text: this.$t('Author'), value: 'author.full_name', mapped: 'author__last_name'},
+                {text: this.$t('Supervisor'), value: 'supervisor.full_name', mapped: 'supervisor__last_name'},
+                {text: this.$t('Opponent'), value: 'opponent.full_name', mapped: 'opponent__last_name'},
                 {text: '', value: 'data-table-expand'}
             ];
             return {
