@@ -7,14 +7,22 @@
             :server-items-length="totalCount"
             :loading="loading"
             sort-by="registration_number"
-            single-expand
             show-expand
             :footer-props="{
                 'disable-items-per-page': true,
             }"
         >
             <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length">More info about {{ item.title }}</td>
+                <td :colspan="headers.length">
+                    <v-row class="my-2">
+                        <v-col cols="1" v-text="$t('Abstract')" class="font-weight-bold text-right"></v-col>
+                        <v-col cols="6" md="7" sm="11" class="text-justify">
+                            <p class="text-justify">
+                                {{ item.abstract }}
+                            </p>
+                        </v-col>
+                    </v-row>
+                </td>
             </template>
 
             <!-- dynamic slots for all "author" FKs -->
@@ -84,12 +92,12 @@
             const headers = [
                 {text: this.$t('SN'), value: 'registration_number'},
                 {text: this.$t('Title'), value: 'title'},
+                {text: '', value: 'data-table-expand'},
                 {text: this.$t('Category'), value: 'category.title'},
                 {text: this.$t('Year'), value: 'published_at'},
                 {text: this.$t('Author'), value: 'author.full_name', mapped: 'author__last_name'},
                 {text: this.$t('Supervisor'), value: 'supervisor.full_name', mapped: 'supervisor__last_name'},
-                {text: this.$t('Opponent'), value: 'opponent.full_name', mapped: 'opponent__last_name'},
-                {text: '', value: 'data-table-expand'}
+                {text: this.$t('Opponent'), value: 'opponent.full_name', mapped: 'opponent__last_name'}
             ];
             return {
                 items: [],

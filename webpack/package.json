@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "webpack-dev-server --config webpack.dev.config.js",
     "build": "webpack --mode production --config webpack.config.js",
-    "extract-locale": "vue-i18n-extract report -v src/js/**/*.vue -l src/js/locale/**/*.json -a",
+    "extract-locale": "vue-i18n-extract report -v 'src/js/**/*.vue' -l 'src/js/locale/**/*.json' -a",
     "merge-locale": "node ./bin/merge-locale-from-django.js"
   },
   "dependencies": {

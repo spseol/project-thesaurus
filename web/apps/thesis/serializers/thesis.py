@@ -19,6 +19,7 @@ class ThesisSerializer(ModelSerializer):
         fields = (
             'id',
             'title',
+            'abstract',
             'registration_number',
             'published_at',
             'category',

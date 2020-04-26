@@ -1,7 +1,7 @@
 <template>
 
     <v-card :loading="loading">
-        <v-card-title>{{ $t('Prepare new thesis') }}</v-card-title>
+        <v-card-title>{{ $t('Prepare admission') }}</v-card-title>
         <v-card-text>
             <v-form
                 ref="form"
