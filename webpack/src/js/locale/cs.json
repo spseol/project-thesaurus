@@ -5,5 +5,17 @@
   "Reservations": "Rezervace",
   "Exports": "Exporty",
   "Settings": "Nastavení",
-  "Django Administration": ""
+  "Category": "Kategorie",
+  "Author": "Autor",
+  "Supervisor": "Vedoucí",
+  "Opponent": "Oponent",
+  "Registration number": "Evidenční číslo",
+  "Year": "Rok",
+  "Django Administration": "Django administrace",
+  "SN": "Ev. č.",
+  "Prepare new thesis": "Vytvořit práci",
+  "Author(s)": "Autor/ři",
+  "Published": "Publikováno",
+  "Thesis admission": "Zadání práce",
+  "Prepare": "Připravit"
 }

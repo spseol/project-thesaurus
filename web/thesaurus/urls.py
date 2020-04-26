@@ -15,10 +15,13 @@ Including another URLconf
 """
 
 from django.conf import settings
+from django.conf.urls.i18n import i18n_patterns
 from django.contrib import admin
 from django.contrib.auth import views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.urls import path, include
+from django.urls import path, include, re_path
+
+from apps.app.views import AppView
 
 urlpatterns = [
     path('admin/', include('loginas.urls')),
@@ -28,17 +31,16 @@ urlpatterns = [
     path('logout', views.LogoutView.as_view(), name='logout'),
 
     path('api/', include('apps.api.urls')),
-
-    # consumes all rest urls into frontend app
-    path('', include('apps.app.urls')),
 ]
 
-if settings.DEBUG and not urlpatterns:
-    urlpatterns += staticfiles_urlpatterns()
+urlpatterns += i18n_patterns(
+    re_path('.*', AppView.as_view(), name='home')
+)
 
 if settings.DEBUG:
     import debug_toolbar
 
+    urlpatterns += staticfiles_urlpatterns()
     urlpatterns = [
                       path('__debug__/', include(debug_toolbar.urls)),
 

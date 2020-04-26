@@ -70,7 +70,7 @@
 
 <script type="text/tsx">
     import Vue from 'vue';
-    import Axios from './api-client';
+    import Axios from './axios';
 
     export default Vue.extend({
         name: 'Login',

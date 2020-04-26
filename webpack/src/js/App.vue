@@ -29,8 +29,10 @@
                     </v-list-item-group>
                 </v-list>
                 <!-- to avoid flex circumstances of v-list-item -->
-                <div v-if="djangoAdminUrl">
-                    <v-list-item :href="djangoAdminUrl">
+                <div>
+                    <LanguageMenu/>
+
+                    <v-list-item v-if="djangoAdminUrl" :href="djangoAdminUrl">
                         <v-list-item-action>
                             <v-icon>mdi-share</v-icon>
                         </v-list-item-action>
@@ -92,8 +94,10 @@
 
 <script type="text/tsx">
     import Vue from 'vue';
+    import LanguageMenu from './components/LanguageMenu.vue';
 
     export default Vue.extend({
+        components: {LanguageMenu},
         data() {
             return {
                 username: window['Thesaurus'].settings.username,

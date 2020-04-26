@@ -9,7 +9,7 @@ import colors from 'vuetify/es5/util/colors';
 
 import 'vuetify/src/styles/main.sass';
 import App from './App';
-import Axios from './api-client';
+import Axios from './axios';
 
 export default function createVue(opts = {}) {
     Vue.use(VueI18n);
@@ -17,10 +17,12 @@ export default function createVue(opts = {}) {
     Vue.use(VueRouter);
     Vue.use(PortalVue);
 
+    const {locale} = window.Thesaurus.settings;
+
     const vuetify = new Vuetify({
         lang: {
             locales: {cs: csVuetify, en: enVuetify},
-            current: window.Thesaurus.settings.locale,
+            current: locale,
         },
         theme: {
             themes: {
@@ -38,12 +40,13 @@ export default function createVue(opts = {}) {
     });
 
     const i18n = new VueI18n({
-        locale: window.Thesaurus.settings.locale, // set locale
-        messages: {cs: csLocal},
+        locale,
+        messages: {cs: csLocal, en: {}},
     });
 
-    Axios.get('/api/i18n/').then(({data}) => {
-        i18n.mergeLocaleMessage(window.Thesaurus.settings.locale, data.catalog);
+
+    Axios.get('/api/i18n/catalog', {headers: {'Accept-language': locale}}).then(({data}) => {
+        i18n.mergeLocaleMessage(locale, data.catalog);
     });
 
     const router = new VueRouter({
@@ -61,6 +64,7 @@ export default function createVue(opts = {}) {
             {path: '*', component: {template: '<div>Not found :-(</div>'}},
         ],
         mode: 'history',
+        base: `${locale}/`,
     });
 
     return new Vue({

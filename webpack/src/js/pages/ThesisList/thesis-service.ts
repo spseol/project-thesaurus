@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 import * as qs from 'qs';
 import {DataOptions, DataTableHeader} from 'vuetify';
-import Axios from '../../api-client';
+import Axios from '../../axios';
 
 export interface MappedDataTableHeader extends DataTableHeader {
     mapped?: string

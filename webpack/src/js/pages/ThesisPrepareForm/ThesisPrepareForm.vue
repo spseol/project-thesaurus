@@ -2,7 +2,7 @@
     <v-row>
         <v-col xl="4" md="6">
             <v-card :loading="loading">
-                <v-card-title>{{ $('Prepare new thesis') }}</v-card-title>
+                <v-card-title>{{ $t('Prepare new thesis') }}</v-card-title>
                 <v-card-text>
                     <v-form
                         ref="form"
@@ -54,7 +54,7 @@
                         >
                             <v-radio
                                 v-for="{text, value} in categoryOptions"
-                                :label="text" :value="value"
+                                :label="text" :value="value" :key="value"
                             ></v-radio>
                         </v-radio-group>
 
@@ -77,11 +77,10 @@
                             <v-btn
                                 large
                                 type="submit"
-                                color="primary"
+                                color="success"
                                 :disabled="!valid"
-                            >
-                                Submit
-                            </v-btn>
+                                v-text="$t('Prepare')"
+                            ></v-btn>
                         </v-row>
                     </v-form>
                 </v-card-text>
@@ -93,11 +92,11 @@
 <script type="text/tsx">
     import qs from 'qs';
     import Vue from 'vue';
-    import Axios from '../../api-client';
+    import Axios from '../../axios';
 
     export default Vue.extend({
         data: () => ({
-            valid: true,
+            valid: false,
             loading: false,
 
             search: '',
@@ -144,6 +143,7 @@
                 });
             },
             async submit() {
+                this.$refs.form.validate();
                 let formData = new FormData();
 
                 const data = {
