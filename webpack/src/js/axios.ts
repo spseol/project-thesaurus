@@ -1,11 +1,11 @@
-import Axios, {AxiosInstance, AxiosRequestConfig} from 'axios';
+import OrigAxios, {AxiosInstance, AxiosRequestConfig} from 'axios';
 
 const config: AxiosRequestConfig = {
     xsrfCookieName: 'csrftoken',
     xsrfHeaderName: 'X-CSRFTOKEN'
 };
 
-const axios: AxiosInstance = Axios.create(config);
+const Axios: AxiosInstance = OrigAxios.create(config);
 
-export default axios;
+export default Axios;
 

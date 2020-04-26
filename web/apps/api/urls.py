@@ -6,6 +6,7 @@ from rest_framework.routers import DefaultRouter
 
 from apps.api.views.category import CategoryOptionsViewSet
 from apps.api.views.login import LoginView
+from apps.api.views.reservation import ReservationViewSet
 from apps.api.views.thesis import ThesisViewSet
 from apps.api.views.user import UserOptionsViewSet, StudentOptionsViewSet, TeacherOptionsViewSet
 
@@ -13,6 +14,7 @@ last_modified_date = timezone.now()
 
 router = DefaultRouter()
 router.register(r'thesis', ThesisViewSet)
+router.register(r'reservation', ReservationViewSet)
 router.register(r'user-options', UserOptionsViewSet)
 router.register(r'student-options', StudentOptionsViewSet)
 router.register(r'teacher-options', TeacherOptionsViewSet)

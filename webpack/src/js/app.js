@@ -1,13 +1,13 @@
-import PortalVue from 'portal-vue';
 import Vue from 'vue';
+import PortalVue from 'portal-vue';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
 import VueI18n from 'vue-i18n';
 import {cs as csVuetify, en as enVuetify} from 'vuetify/es5/locale';
-import csLocal from './locale/cs.json';
 import colors from 'vuetify/es5/util/colors';
-
 import 'vuetify/src/styles/main.sass';
+
+import csLocal from './locale/cs.json';
 import App from './App';
 import Axios from './axios';
 
@@ -55,10 +55,10 @@ export default function createVue(opts = {}) {
             {path: '/theses', component: () => import('./pages/ThesisList/ThesisList'), name: 'thesis-list'},
             {
                 path: '/thesis-prepare',
-                component: () => import('./pages/ThesisPrepareForm/ThesisPrepareForm'),
+                component: () => import('./pages/ThesisPrepare/Page'),
                 name: 'thesis-prepare',
             },
-            {path: '/reservations', component: {template: '<div>Nonono</div>'}, name: 'reservations'},
+            {path: '/reservations', component: () => import('./pages/ReservationList/Page'), name: 'reservations'},
             {path: '/exports', component: {template: '<div>Nonono</div>'}, name: 'exports'},
             {path: '/settings', component: {template: '<div>Nonono</div>'}, name: 'settings'},
             {path: '*', component: {template: '<div>Not found :-(</div>'}},
