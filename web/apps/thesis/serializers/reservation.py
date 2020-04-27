@@ -1,6 +1,4 @@
-from random import choice
-
-from rest_framework.fields import CharField, DateTimeField, SerializerMethodField
+from rest_framework.fields import CharField, DateTimeField
 from rest_framework.serializers import ModelSerializer
 
 from apps.accounts.serializers import UserSerializer
@@ -13,8 +11,6 @@ class ReservationSerializer(ModelSerializer):
     thesis_registration_number = CharField(source='thesis.registration_number')
     created = DateTimeField(format="%d.%m.%Y")
 
-    state = SerializerMethodField()
-
     class Meta:
         model = Reservation
         fields = (
@@ -25,11 +21,3 @@ class ReservationSerializer(ModelSerializer):
             'created',
             'state',
         )
-
-    def get_state(self, reservation: Reservation):
-        return choice((
-            'created',
-            'ready',
-            'running',
-            'finished',
-        ))

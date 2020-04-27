@@ -3,21 +3,11 @@ import * as qs from 'qs';
 import {DataOptions, DataTableHeader} from 'vuetify';
 import Axios from '../../axios';
 
-export interface MappedDataTableHeader extends DataTableHeader {
-    mapped?: string
-}
-
 export default class ThesisService {
-
-    constructor(
-        private headers: Array<MappedDataTableHeader>
-    ) {
-    }
-
-    async loadData(options: DataOptions, filter: Array<any>) {
+    async loadData(options: DataOptions, filter: Array<any>, headers: Array<DataTableHeader>) {
         const {page, sortBy, sortDesc} = options;
 
-        const remap = (value) => (_.find(this.headers, {value})).mapped || value.replace('.', '__');
+        const remap = (value) => value.replace('.', '__');
 
         return await Axios.get(`/api/v1/thesis/?${qs.stringify({
             page,

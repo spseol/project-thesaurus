@@ -29,5 +29,15 @@
   "Created": "Vytvořeno",
   "State": "Stav",
   "Actions": "Akce",
-  "Abstract": "Abstrakt"
+  "Abstract": "Abstrakt",
+  "All": "Vše",
+  "Ready": "Připravené",
+  "Running": "Probíhající",
+  "Finished": "Dokončené",
+  "Added": "Vytvořené",
+  "Make reservation": "Zarezervovat",
+  "Prepared for pickup": "Připravena k vyzvednutí",
+  "Borrow": "Vypůjčit",
+  "Borrowed": "Vypůjčená",
+  "Not reservable": "Nelze vypůjčit"
 }

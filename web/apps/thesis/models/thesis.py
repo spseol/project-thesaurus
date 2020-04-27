@@ -1,4 +1,5 @@
 import re
+from functools import cached_property
 
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
@@ -68,6 +69,11 @@ class Thesis(BaseTimestampedModel):
         null=True,
     )
 
+    reservable = models.BooleanField(
+        verbose_name=_('Reservable'),
+        default=True,
+    )
+
     class Meta:
         ordering = ['registration_number']
         verbose_name = _('Thesis')
@@ -75,3 +81,14 @@ class Thesis(BaseTimestampedModel):
 
     def __str__(self):
         return f'{self.title} ({self.author if self.author_id else "---"})'.strip()
+
+    @cached_property
+    def available_for_reservation(self):
+        from .reservation import Reservation
+
+        return not self.thesis_reservation.filter(
+            state__in=(
+                Reservation.State.READY,
+                Reservation.State.RUNNING,
+            )
+        ).exists()

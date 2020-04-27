@@ -26,4 +26,6 @@ class ThesisSerializer(ModelSerializer):
             'author',
             'supervisor',
             'opponent',
+            'available_for_reservation',
+            'reservable',
         )

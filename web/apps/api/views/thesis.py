@@ -24,6 +24,7 @@ class ThesisViewSet(ModelViewSet):
         'opponent__id',
         'opponent__first_name',
         'opponent__last_name',
+        'category__id',
         'category__title',
         # TODO: fix filtering by date
         # TODO: https://stackoverflow.com/questions/33358120/django-rest-framework-month-and-year-as-numberfilter

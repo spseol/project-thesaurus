@@ -1,6 +1,5 @@
 <template>
-    <v-app
-    >
+    <v-app>
         <v-navigation-drawer
             app
             dark
@@ -28,7 +27,7 @@
                         </v-list-item>
                     </v-list-item-group>
                 </v-list>
-                <!-- to avoid flex circumstances of v-list-item -->
+                <!-- to avoid flex circumstances of v-list-thesis -->
                 <div>
                     <LanguageMenu/>
 
@@ -50,7 +49,7 @@
 
         <v-app-bar app color="primary accent-3" clipped-left>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
-            <v-btn :to="{name: 'home'}" :text="true" class="primary--text">
+            <v-btn :to="{name: 'home'}" :text="true" class="primary--text hidden-sm-and-down">
                 <v-toolbar-title
                     class="ml-0 pl-1 d-md-flex hidden-sm-and-down black--text"
                 >

@@ -1,6 +1,6 @@
 <template>
     <v-row>
-        <v-col sm="12" md="12" lg="10">
+        <v-col cols="12">
             <ReservationList></ReservationList>
         </v-col>
     </v-row>
