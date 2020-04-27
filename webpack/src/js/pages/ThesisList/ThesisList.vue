@@ -24,10 +24,15 @@
                     <v-btn
                         v-if="item.reservable && item.available_for_reservation"
                         v-text="$t('Borrow')"
-                        small color="info" outlined
+                        color="info" outlined
                     ></v-btn>
                     <v-btn
-                        v-if="item.reservable && !item.available_for_reservation"
+                        v-if="item.reservable && !item.available_for_reservation && item.open_reservations_count === 1"
+                        v-text="$t('Make pre-reservation')"
+                        color="info" outlined
+                    ></v-btn>
+                    <v-btn
+                        v-if="item.reservable && !item.available_for_reservation && item.open_reservations_count > 1"
                         v-text="$t('Borrowed')"
                         x-small depressed
                     ></v-btn>

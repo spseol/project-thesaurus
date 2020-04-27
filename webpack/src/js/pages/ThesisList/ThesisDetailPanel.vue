@@ -2,13 +2,13 @@
     <v-container fluid class="body-1">
         <v-row no-gutters>
             <v-col cols="12" md="9" lg="8" xl="6">
-                <v-row v-for="[title, path, titleCss = '', valueCss = ''] in rows" :key="path" no-gutters>
+                <v-row v-for="[title, getter, titleCss = '', valueCss = ''] in rows" :key="getter" no-gutters>
                     <v-col cols="12" md="1" class="font-weight-bold text-left text-md-right" :class="titleCss">
                         {{ title }}
                     </v-col>
                     <v-col class="text-justify" :class="valueCss">
                         <p class="text-justify pl-3">
-                            {{ getByPath(path) }}
+                            {{ getByGetter(getter) }}
                         </p>
                     </v-col>
                 </v-row>
@@ -33,7 +33,7 @@
             return {
                 rows: [
                     ['', 'title', null, 'headline'],
-                    [this.$t('Author'), 'author.full_name'],
+                    [this.$t('Author'), (t) => _.map(t.authors, 'full_name').join(', ')],
                     [this.$t('Supervisor'), 'supervisor.full_name'],
                     [this.$t('Opponent'), 'opponent.full_name'],
                     [this.$t('Year'), 'published_at'],
@@ -43,8 +43,8 @@
             };
         },
         methods: {
-            getByPath(path) {
-                return _.get(this.thesis, path, '');
+            getByGetter(getter) {
+                return _.isFunction(getter) ? getter(this.thesis) : _.get(this.thesis, getter, '');
             },
         },
     };

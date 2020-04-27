@@ -1,16 +1,40 @@
 from django.contrib.auth import get_user_model
+from django.db.models import Exists, OuterRef, Count, Q
 from django.shortcuts import get_list_or_404
 from django.utils.dateparse import parse_date
 from rest_framework.generics import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 
-from apps.thesis.models import Thesis, Category
+from apps.thesis.models import Thesis, Category, Reservation
 from apps.thesis.serializers import ThesisSerializer
 
 
 # TODO: needed ModelViewSet?
 class ThesisViewSet(ModelViewSet):
-    queryset = Thesis.objects.all().select_related('supervisor', 'opponent').prefetch_related('authors')
+    queryset = Thesis.objects.all().select_related(
+        'category',
+        'supervisor',
+        'opponent'
+    ).prefetch_related(
+        'authors'
+    ).annotate(
+        available_for_reservation=~Exists(
+            queryset=Reservation.objects.filter(
+                thesis=OuterRef('pk'),
+                state__in=(
+                    Reservation.State.READY,
+                    Reservation.State.RUNNING,
+                ),
+            )
+        ),
+        open_reservations_count=Count(
+            'thesis_reservation',
+            filter=Q(
+                thesis_reservation__state=Reservation.State.FINISHED,
+                _negated=True,
+            )
+        )
+    )
     serializer_class = ThesisSerializer
     search_fields = (
         'title',

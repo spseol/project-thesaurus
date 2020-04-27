@@ -40,7 +40,7 @@ services:
     build: ./nginx
     container_name: thesaurus_webserver
     ports:
-      - 8080:80
+      - 127.0.0.1:8080:80
     volumes:
       - django_static_files:/static
       - webpack_build:/build

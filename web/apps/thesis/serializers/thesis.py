@@ -28,4 +28,5 @@ class ThesisSerializer(ModelSerializer):
             'opponent',
             'available_for_reservation',
             'reservable',
+            'open_reservations_count',
         )

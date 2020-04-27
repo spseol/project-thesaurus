@@ -82,7 +82,8 @@ class Thesis(BaseTimestampedModel):
         return f'{self.title} ({", ".join(tuple(map(str, self.authors.all()))) or "---"})'.strip()
 
     @cached_property
-    def available_for_reservation(self):
+    def available_for_reservation(self) -> bool:
+        """Is this Thesis currently available for reservation?"""
         from .reservation import Reservation
 
         return not self.thesis_reservation.filter(
@@ -91,6 +92,15 @@ class Thesis(BaseTimestampedModel):
                 Reservation.State.RUNNING,
             )
         ).exists()
+
+    @cached_property
+    def open_reservations_count(self) -> int:
+        """"""
+        from .reservation import Reservation
+
+        return self.thesis_reservation.exclude(
+            state__in=Reservation.State.FINISHED,
+        ).count()
 
 
 class ThesisAuthor(BaseTimestampedModel):
