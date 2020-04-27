@@ -11,7 +11,7 @@ export default class ThesisService {
 
         return await Axios.get(`/api/v1/thesis/?${qs.stringify({
             page,
-            search: _.map(filter, (i) => i.id || i).join(' '),
+            search: _.map(filter, (i) => i.username || i.id || i).join(' '),
             ordering: _.map(
                 _.zip(sortBy, sortDesc),
                 ([col, desc]) => `${desc ? '-' : ''}${remap(col).split('.')[0]}`

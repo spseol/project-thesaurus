@@ -1,6 +1,6 @@
 {% load static i18n %}
 {% load render_entrypoint from webpack_loader %}
-{% load to_json from utils %}
+{% load to_json get_version from utils %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
@@ -18,6 +18,7 @@
             username: '{{ user.get_username }}',
             djangoAdminUrl: '{% if user.is_staff %}{% url "admin:index" %}{% endif %}',
             languages: JSON.parse('{{ languages|to_json|escapejs }}'),
+            version: '{% get_version %}',
         };
     </script>
 
@@ -30,28 +31,6 @@
     <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
 </head>
 <body>
-{% block body %}
-    <div id="app"></div>
-{% endblock body %}
-
-{% if messages %}
-    <script>
-        ((window) => {
-            {% for message in messages %}
-                const tags = JSON.parse('{{ message.extra_tags|default:'{}'|escapejs }}' || {});
-                const options = {};
-                if (tags.timeout !== undefined) {
-                    options.timeOut = options.extendedTimeOut = tags.timeout;
-                }
-                if (tags.infinite !== undefined) {
-                    options.tapToDismiss = !tags.infinite;
-                }
-                (window.toastr['{{ message.level_tag }}'] || (function() {
-                    console.warn('Undefined flash message with type: {{ message.level_tag }}.');
-                }))('{{ message }}', undefined, options);
-            {% endfor %}
-        })(window);
-    </script>
-{% endif %}
+<div id="app"></div>
 </body>
 </html>

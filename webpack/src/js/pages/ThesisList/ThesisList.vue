@@ -47,7 +47,7 @@
                 <a
                     v-if="item[key]"
                     v-text="item[key].full_name"
-                    @click="addUserFilterFromDataTable(item[key].id)"
+                    @click="addUserFilterFromDataTable(item[key].username)"
                 ></a>
             </template>
 
@@ -135,9 +135,9 @@
             };
         },
         methods: {
-            addUserFilterFromDataTable(id) {
+            addUserFilterFromDataTable(username) {
                 this.filterItems.push(
-                    _.find(this.userOptions, {id})
+                    _.find(this.userOptions, {username})
                 );
             },
             removeFromFilter(item) {

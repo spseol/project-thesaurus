@@ -85,7 +85,7 @@
             app
         >
             <v-spacer></v-spacer>
-            <span class="px-4">&copy; 2020</span>
+            <span class="px-4"><a href="https://github.com/spseol/project-thesaurus">v{{ version }}</a> &copy; 2020</span>
         </v-footer>
     </v-app>
 </template>
@@ -101,8 +101,8 @@
             return {
                 username: window['Thesaurus'].settings.username,
                 djangoAdminUrl: window['Thesaurus'].settings.djangoAdminUrl,
+                version: window['Thesaurus'].settings.version,
                 drawer: this.$vuetify.breakpoint.mdAndUp,
-                drawerItem: 0,
                 items: [
                     {icon: 'mdi-book-multiple', text: this.$t('Theses'), to: {name: 'thesis-list'}},
                     {icon: 'mdi-book-plus', text: this.$t('Prepare admission'), to: {name: 'thesis-prepare'}},

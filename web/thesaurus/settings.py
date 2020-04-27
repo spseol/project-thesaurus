@@ -24,6 +24,8 @@ SECRET_KEY = config("SECRET_KEY", default='...')
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 
+VERSION = config('THESAURUS_VERSION', default='unknown')
+
 # 'ALLOWED_HOSTS' should be a single string of hosts with a space between each.
 # For example: 'ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default='').split(" ")
