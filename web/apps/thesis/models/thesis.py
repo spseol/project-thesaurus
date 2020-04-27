@@ -19,11 +19,10 @@ class Thesis(BaseTimestampedModel):
         help_text=_('Corresponding category for thesis.')
     )
 
-    # TODO: not only one :'(
-    author = models.ForeignKey(
+    authors = models.ManyToManyField(
         to=get_user_model(),
-        on_delete=models.PROTECT,
-        verbose_name=_('Author'),
+        through='thesis.ThesisAuthor',
+        verbose_name=_('Authors'),
         related_name='thesis_author',
     )
 
@@ -80,7 +79,7 @@ class Thesis(BaseTimestampedModel):
         verbose_name_plural = _('Theses')
 
     def __str__(self):
-        return f'{self.title} ({self.author if self.author_id else "---"})'.strip()
+        return f'{self.title} ({", ".join(tuple(map(str, self.authors.all()))) or "---"})'.strip()
 
     @cached_property
     def available_for_reservation(self):
@@ -92,3 +91,21 @@ class Thesis(BaseTimestampedModel):
                 Reservation.State.RUNNING,
             )
         ).exists()
+
+
+class ThesisAuthor(BaseTimestampedModel):
+    author = models.ForeignKey(
+        to=get_user_model(),
+        related_name='thesis_author_author',
+        on_delete=models.PROTECT
+    )
+    thesis = models.ForeignKey(
+        to='thesis.Thesis',
+        related_name='thesis_author_thesis',
+        on_delete=models.PROTECT
+    )
+
+    class Meta:
+        ordering = ['author', 'created']
+        verbose_name = _('Thesis author relation')
+        verbose_name_plural = _('Thesis author relations')

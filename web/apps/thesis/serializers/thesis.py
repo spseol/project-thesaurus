@@ -7,7 +7,7 @@ from apps.thesis.serializers import CategorySerializer
 
 
 class ThesisSerializer(ModelSerializer):
-    author = UserSerializer(read_only=True)
+    authors = UserSerializer(read_only=True, many=True)
     supervisor = UserSerializer(read_only=True)
     opponent = UserSerializer(read_only=True)
     category = CategorySerializer(read_only=True)
@@ -23,7 +23,7 @@ class ThesisSerializer(ModelSerializer):
             'registration_number',
             'published_at',
             'category',
-            'author',
+            'authors',
             'supervisor',
             'opponent',
             'available_for_reservation',

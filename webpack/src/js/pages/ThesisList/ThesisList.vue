@@ -39,6 +39,21 @@
                 </div>
             </template>
 
+            <template
+                v-slot:item.authors="{ item }"
+            >
+                <template
+                    v-if="item.authors"
+                    v-for="(author, i) in item.authors"
+                >
+                    <span v-if="i !== 0">, </span>
+                    <a
+                        v-text="author.full_name"
+                        @click="addUserFilterFromDataTable(author.username)"
+                    ></a>
+                </template>
+            </template>
+
             <!-- dynamic slots for all "author" FKs -->
             <template
                 v-for="key in 'author supervisor opponent'.split(' ')"
@@ -176,7 +191,7 @@
 
                     mdAndUp && {text: this.$t('Year'), value: 'published_at'},
 
-                    {text: this.$t('Author'), value: 'author.full_name'},
+                    {text: this.$t('Authors'), value: 'authors'},
 
                     lgAndUp && {text: this.$t('Supervisor'), value: 'supervisor.full_name'},
                     lgAndUp && {text: this.$t('Opponent'), value: 'opponent.full_name'}

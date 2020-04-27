@@ -8,6 +8,7 @@ from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django_seed import Seed
+from django_seed.seeder import Seeder
 
 from apps.thesis.models import Thesis, Reservation, Category
 
@@ -21,12 +22,13 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         pass
 
+    @transaction.atomic
     def handle(self, *args, **options):
         for title in 'SE SL VE VT'.split(' '):
             Category.objects.update_or_create(title=title)
 
         categories = tuple(Category.objects.all())
-        seeder = Seed.seeder(locale='cz_CZ')
+        seeder: Seeder = Seed.seeder(locale='cz_CZ')
         seeder.add_entity(get_user_model(), 30)
         seeder.add_entity(Thesis, 200, dict(
             registration_number=lambda *_: ''.join((choice(string.ascii_uppercase), str(randint(100, 999)))),
@@ -40,11 +42,17 @@ class Command(BaseCommand):
             state=lambda *_: choice(Reservation.State.values)
         ))
 
-        with transaction.atomic():
-            seeder.execute()
+        inserted = seeder.execute()
+
+        all_users = tuple(get_user_model().objects.all())
+
+        for thesis in map(lambda i: Thesis.objects.get(pk=i), inserted[Thesis]):
+            thesis.authors.add(choice(all_users))
+            if random() > .85:
+                thesis.authors.add(choice(all_users))
 
         teacher = Group.objects.get_or_create(name='teacher')[0]
-        for user in sample(list(get_user_model().objects.all()), 10):
+        for user in sample(all_users, 10):
             teacher.user_set.add(user)
 
 
