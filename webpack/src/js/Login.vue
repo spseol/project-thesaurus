@@ -16,13 +16,15 @@
                         lg="3"
                     >
                         <v-card class="elevation-12" :loading="loading">
-                            <v-card-title class="primary">
-                                Login
+                            <v-card-title class="primary headline">
+                                {{ $t('Project THESAURUS') }}
                             </v-card-title>
+                            <v-card-subtitle>{{ $t('Evidence system for managing and borrowing theses') }}
+                            </v-card-subtitle>
                             <v-form v-model="formValid">
                                 <v-card-text>
                                     <v-text-field
-                                        label="Login"
+                                        :label="$t('Username')"
                                         name="login"
                                         prepend-icon="mdi-account"
                                         type="text"
@@ -33,7 +35,7 @@
                                     />
 
                                     <v-text-field
-                                        label="Password"
+                                        :label="$t('Password')"
                                         name="password"
                                         prepend-icon="mdi-lock"
                                         type="password"
@@ -54,7 +56,7 @@
                                         :disabled="loading"
                                         @click.prevent="login"
                                     >
-                                        Login
+                                        {{ $t('Login') }}
                                     </v-btn>
 
                                     <v-spacer/>

@@ -6,6 +6,8 @@ services:
     command: runserver_prod
     env_file:
       - ./web/.env.prod
+    depends_on:
+      - webpack
 
   webpack:
     command: build

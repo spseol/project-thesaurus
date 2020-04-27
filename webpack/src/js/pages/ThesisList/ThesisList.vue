@@ -14,7 +14,7 @@
             class="body-2"
         >
             <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length" class="primary lighten-5">
+                <td :colspan="headers.length" class="orange lighten-5">
                     <ThesisDetailPanel :thesis="item"/>
                 </td>
             </template>

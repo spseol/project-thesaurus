@@ -39,5 +39,10 @@
   "Prepared for pickup": "Připravena k vyzvednutí",
   "Borrow": "Vypůjčit",
   "Borrowed": "Vypůjčená",
-  "Not reservable": "Nelze vypůjčit"
+  "Not reservable": "Nelze vypůjčit",
+  "Evidence system for managing and borrowing theses": "",
+  "Login": "Přihlásit se",
+  "Password": "Heslo",
+  "Username": "Uživatelské jméno",
+  "Project THESAURUS": "Projekt THESAURUS"
 }
