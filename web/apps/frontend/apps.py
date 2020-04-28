@@ -2,4 +2,4 @@ from django.apps import AppConfig
 
 
 class HomeConfig(AppConfig):
-    name = 'apps.app'
+    name = 'apps.frontend'

@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.api',
     'apps.attachment',
-    'apps.app',
+    'apps.frontend',
     'apps.thesis',
     'apps.utils',
 
