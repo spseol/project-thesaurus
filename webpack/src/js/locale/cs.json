@@ -71,6 +71,7 @@
   "Thesis name": "Název práce",
   "Review author": "Posudek vypracoval",
   "review": {
-    "gradingNote": "Pokud se hodnocení vedoucího a oponenta liší o více jak dva stupně (výborná - nevyhovující), bude vypracován třetí nezávislý posudek."
+    "gradingNote": "Pokud se hodnocení vedoucího a oponenta liší o více jak dva stupně (výborná - nevyhovující), bude vypracován třetí nezávislý posudek.",
+    "submitHint": "Odesláním potvrzuji správnost a konečnost tohoto posudku."
   }
 }

@@ -28,8 +28,9 @@
                             <v-divider></v-divider>
                             <v-textarea
                                 outlined
-                                rows="12"
+                                rows="14"
                                 :label="$t('Review comment')"
+                                :rules="[v => !!v]"
                             ></v-textarea>
                             <v-textarea
                                 outlined
@@ -40,11 +41,15 @@
                         </v-col>
                         <v-col cols="12" md="6" class="d-flex flex-column justify-space-between">
                             <div>
-                                <div class="subtitle-1 black--text">{{ $t('Difficulty of selected topic') }}</div>
+                                <v-chip
+                                    :color="valueToColor(review.difficulty, 3)"
+                                >{{ $t('Difficulty of selected topic') }}
+                                </v-chip>
                                 <v-slider
                                     :tick-labels="grades3"
                                     v-model="review.difficulty"
-                                    :max="2"
+                                    :max="3"
+                                    :min="0"
                                     :step="1"
                                     ticks="always"
                                     :thumb-color="valueToColor(review.difficulty, 3)"
@@ -54,37 +59,44 @@
                                 ></v-slider>
 
                                 <div v-for="grade in review.grades">
-                                    <div class="subtitle-1 mt-6 black--text">{{ grade.text }}</div>
+                                    <v-chip
+                                        :color="valueToColor(grade.value, 4)"
+                                        class="mt-5"
+                                    >{{ grade.text }}
+                                    </v-chip>
                                     <v-slider
                                         v-model="grade.value"
+                                        :rules="[v => v > 0]"
                                         :tick-labels="grades4"
-                                        :max="3"
+                                        :max="4"
+                                        :min="0"
                                         :step="1"
                                         ticks="always"
                                         color="info"
                                         :thumb-color="valueToColor(grade.value, 4)"
-                                        :track-color="valueToColor(grade.value, 4)"
+                                        track-color="grey"
                                         :color="valueToColor(grade.value, 4)"
                                         class="VSliderCustom__label--gray"
-                                    >
-                                        <template v-slot:tick-labels="value">
-
-                                        </template>
-                                        <template slot="default">test</template>
-
-                                    </v-slider>
+                                    ></v-slider>
                                 </div>
                             </div>
-                            <div class="d-flex">
-
-                                <v-text-field
-                                    outlined
-                                    :label="$t('Classification proposal')"
-                                    value="???"
-                                    class="mr-3"
-                                    hide-details
-                                ></v-text-field>
-                                <v-btn x-large color="success">{{ $t('Submit') }}</v-btn>
+                            <div>
+                                <v-divider></v-divider>
+                                <v-checkbox
+                                    :label="$t('review.submitHint')"
+                                    class="font-weight-bold"
+                                    :rules="[v => !!v]"
+                                ></v-checkbox>
+                                <div class="d-flex">
+                                    <v-text-field
+                                        outlined
+                                        :label="$t('Classification proposal')"
+                                        value="???"
+                                        class="mr-3"
+                                        hide-details
+                                    ></v-text-field>
+                                    <v-btn x-large color="success" type="submit">{{ $t('Submit') }}</v-btn>
+                                </div>
                             </div>
                         </v-col>
                     </v-row>
@@ -111,12 +123,14 @@
                     this.$t('Excellent'),
                     this.$t('Very well'),
                     this.$t('Great'),
-                    this.$t('Not sufficient')
+                    this.$t('Not sufficient'),
+                    ''
                 ].reverse(),
                 grades3: [
                     this.$t('Over average'),
                     this.$t('Average'),
-                    this.$t('Under average')
+                    this.$t('Under average'),
+                    ''
                 ].reverse(),
                 review: {
                     difficulty: 0,
@@ -141,16 +155,18 @@
             valueToColor(v, scale = 3) {
                 if (scale === 3) {
                     return {
-                        2: colors.green.lighten2,
-                        1: colors.blue.lighten2,
-                        0: colors.red.accent3
+                        3: colors.deepPurple.lighten2,
+                        2: colors.blue.lighten2,
+                        1: colors.red.lighten3,
+                        0: colors.grey.lighten1
                     }[v];
                 } else {
                     return {
-                        3: colors.deepPurple.lighten2,
-                        2: colors.blue.lighten2,
-                        1: colors.brown.base,
-                        0: colors.red.accent3
+                        4: colors.deepPurple.lighten2,
+                        3: colors.blue.lighten2,
+                        2: colors.orange.base,
+                        1: colors.red.lighten3,
+                        0: colors.grey.lighten1
                     }[v];
                 }
             }
