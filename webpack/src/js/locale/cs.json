@@ -46,5 +46,31 @@
   "Username": "Uživatelské jméno",
   "Project THESAURUS": "Projekt THESAURUS",
   "Make pre-reservation": "Rezervovat",
-  "Authors": "Autoři"
+  "Authors": "Autoři",
+  "Reviews": "Posudky",
+  "Thesis review": "Posudek práce",
+  "Difficulty of selected topic": "Náročnost zvoleného tématu",
+  "Submit": "Odeslat",
+  "Excellent": "Výborná",
+  "Very well": "Velmi dobrá",
+  "Great": "Dobrá",
+  "Not sufficient": "Nedostatečná",
+  "Over average": "Nadprůměrná",
+  "Average": "Průměrná",
+  "Under average": "Podprůměrná",
+  "Theoretical part of the work, comprehensibility of the text": "Teoretická část práce, srozumitelnost textu",
+  "Methods and procedures used": "Použité metody a postupy",
+  "Formal editing, work with sources, citations in the text": "Formální úprava, práce s literaturou, citace v textu",
+  "Graphic design of the thesis": "Grafická úprava práce",
+  "Interpretation of conclusions, their originality and their own contribution to the work": "Interpretace závěrů, jejich originalita a vlastní přínos práce",
+  "Review comment": "Odůvodnění hodnocení práce",
+  "Thesis defence questions": "Otázky k obhajobě",
+  "Classification proposal": "Návrh klasifikace",
+  "Students independence during processing (to be filled in only by the supervisor)": "Samostatnost studenta při zpracování (vyplní jen vedoucí)",
+  "Student name": "Jméno a příjmení studenta",
+  "Thesis name": "Název práce",
+  "Review author": "Posudek vypracoval",
+  "review": {
+    "gradingNote": "Pokud se hodnocení vedoucího a oponenta liší o více jak dva stupně (výborná - nevyhovující), bude vypracován třetí nezávislý posudek."
+  }
 }

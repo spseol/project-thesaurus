@@ -48,5 +48,32 @@
   "Username": "",
   "Project THESAURUS": "",
   "Make pre-reservation": "",
-  "Authors": ""
+  "Authors": "",
+  "Reviews": "",
+  "Thesis review": "",
+  "Difficulty of selected topic": "",
+  "Submit": "",
+  "Excellent": "",
+  "Very well": "",
+  "Great": "",
+  "Not sufficient": "",
+  "Over average": "",
+  "Average": "",
+  "Under average": "",
+  "Student\\'s independence during processing (to be filled in only by the supervisor)": "",
+  "Theoretical part of the work, comprehensibility of the text": "",
+  "Methods and procedures used": "",
+  "Formal editing, work with sources, citations in the text": "",
+  "Graphic design of the thesis": "",
+  "Interpretation of conclusions, their originality and their own contribution to the work": "",
+  "Review comment": "",
+  "Thesis defence questions": "",
+  "Classification proposal": "",
+  "Students independence during processing (to be filled in only by the supervisor)": "",
+  "Student name": "",
+  "Thesis name": "",
+  "Review author": "",
+  "review": {
+    "gradingNote": "If the evaluation of the leader and the opponent differs by more than two degrees (excellent - unsatisfactory), it will be prepared third independent opinion."
+  }
 }

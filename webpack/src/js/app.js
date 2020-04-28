@@ -5,7 +5,7 @@ import Vuetify from 'vuetify';
 import VueI18n from 'vue-i18n';
 import {cs as csVuetify, en as enVuetify} from 'vuetify/es5/locale';
 import colors from 'vuetify/es5/util/colors';
-import 'vuetify/src/styles/main.sass';
+import '../scss/index.scss';
 
 import csLocal from './locale/cs.json';
 import App from './App';
@@ -61,6 +61,7 @@ export default function createVue(opts = {}) {
             {path: '/reservations', component: () => import('./pages/ReservationList/Page'), name: 'reservations'},
             {path: '/exports', component: {template: '<div>Nonono</div>'}, name: 'exports'},
             {path: '/settings', component: {template: '<div>Nonono</div>'}, name: 'settings'},
+            {path: '/reviews', component: () => import('./pages/ReviewSubmit/Page'), name: 'reviews'},
             {path: '*', component: {template: '<div>Not found :-(</div>'}},
         ],
         mode: 'history',
