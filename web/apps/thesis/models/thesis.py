@@ -4,6 +4,7 @@ from functools import cached_property
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.db import models
+from django.db.models import TextChoices
 from django.utils.translation import gettext as _
 
 from apps.utils.models import BaseTimestampedModel
@@ -11,6 +12,14 @@ from apps.utils.models import BaseTimestampedModel
 
 class Thesis(BaseTimestampedModel):
     """Thesis as a single object, with all needed information."""
+
+    class State(TextChoices):
+        CREATED = 'created', _('Created')
+        READY_FOR_SUBMIT = 'ready_for_submit', _('Ready for submit')
+        SUBMITTED = 'submitted', _('Submitted')
+        READY_FOR_REVIEWS = 'ready_for_reviews', _('Ready for reviews')
+        REVIEWED = 'reviewed', _('Reviewed')
+        PUBLISHED = 'published', _('Published')
 
     category = models.ForeignKey(
         to='thesis.Category',
@@ -45,12 +54,20 @@ class Thesis(BaseTimestampedModel):
         verbose_name=_('Registration number'),
         max_length=4,
         unique=True,
+        null=True,
         validators=[
             RegexValidator(
                 regex=re.compile(r'[A-Z]\d{3}'),
                 message=_('Thesis registration number is not valid.')
             )
         ]
+    )
+
+    state = models.CharField(
+        verbose_name=_('State'),
+        max_length=32,
+        choices=State.choices,
+        default=State.CREATED.value
     )
 
     title = models.CharField(
@@ -95,7 +112,7 @@ class Thesis(BaseTimestampedModel):
 
     @cached_property
     def open_reservations_count(self) -> int:
-        """"""
+        """Returns count of reservations for this thesis in states"""
         from .reservation import Reservation
 
         return self.thesis_reservation.exclude(
