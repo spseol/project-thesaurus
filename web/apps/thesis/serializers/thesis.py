@@ -6,13 +6,10 @@ from apps.thesis.models import Thesis
 from apps.thesis.serializers import CategorySerializer
 
 
-class ThesisSerializer(ModelSerializer):
+class ThesisBaseSerializer(ModelSerializer):
     authors = UserSerializer(read_only=True, many=True)
     supervisor = UserSerializer(read_only=True)
     opponent = UserSerializer(read_only=True)
-    category = CategorySerializer(read_only=True)
-
-    published_at = DateField(format="%Y/%m", required=False, read_only=True)
 
     class Meta:
         model = Thesis
@@ -20,12 +17,25 @@ class ThesisSerializer(ModelSerializer):
             'id',
             'title',
             'abstract',
-            'registration_number',
-            'published_at',
-            'category',
+            'state',
+
             'authors',
             'supervisor',
             'opponent',
+        )
+
+
+class ThesisFullSerializer(ThesisBaseSerializer):
+    category = CategorySerializer(read_only=True)
+    published_at = DateField(format="%Y/%m", required=False, read_only=True)
+
+    class Meta:
+        model = Thesis
+        fields = ThesisBaseSerializer.Meta.fields + (
+            'registration_number',
+            'published_at',
+            'category',
+
             'available_for_reservation',
             'reservable',
             'open_reservations_count',

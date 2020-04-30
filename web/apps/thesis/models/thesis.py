@@ -17,7 +17,7 @@ class Thesis(BaseTimestampedModel):
         CREATED = 'created', _('Created')
         READY_FOR_SUBMIT = 'ready_for_submit', _('Ready for submit')
         SUBMITTED = 'submitted', _('Submitted')
-        READY_FOR_REVIEWS = 'ready_for_reviews', _('Ready for reviews')
+        READY_FOR_REVIEW = 'ready_for_review', _('Ready for reviews')
         REVIEWED = 'reviewed', _('Reviewed')
         PUBLISHED = 'published', _('Published')
 

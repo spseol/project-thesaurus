@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Exists, OuterRef, Count, Q
+from django.db.models import Exists, OuterRef, Count, Q, QuerySet
 from django.shortcuts import get_list_or_404
 from django.utils.dateparse import parse_date
 from rest_framework.generics import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 
 from apps.thesis.models import Thesis, Category, Reservation
-from apps.thesis.serializers import ThesisSerializer
+from apps.thesis.serializers import ThesisFullSerializer
 
 
 # TODO: needed ModelViewSet?
@@ -35,7 +35,7 @@ class ThesisViewSet(ModelViewSet):
             )
         )
     )
-    serializer_class = ThesisSerializer
+    serializer_class = ThesisFullSerializer
     search_fields = (
         'title',
         'abstract',
@@ -57,7 +57,7 @@ class ThesisViewSet(ModelViewSet):
         # 'published_at__month',
     )
 
-    def perform_create(self, serializer: ThesisSerializer):
+    def perform_create(self, serializer: ThesisFullSerializer):
         # TODO: save attachment
         self.request.FILES.get('admission')
 
@@ -70,3 +70,11 @@ class ThesisViewSet(ModelViewSet):
             ),
             published_at=parse_date((serializer.initial_data.get('published_at') + '/01').replace('/', '-'))
         )
+
+    def get_queryset(self):
+        qs = super().get_queryset()  # type: QuerySet
+
+        if not self.request.user.has_perm('thesis.change_thesis'):
+            return qs.filter(state=Thesis.State.PUBLISHED)
+
+        return qs

@@ -203,7 +203,7 @@
                 ];
 
 
-                headers.push({text: this.$t('State'), value: 'available_for_reservation'});
+                headers.push({text: '', value: 'available_for_reservation'});
                 return _.filter(headers, _.isPlainObject);
             }
         },

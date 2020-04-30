@@ -31,7 +31,7 @@ export default function createVue(opts = {}) {
                     secondary: colors.brown.base,
                     accent: colors.deepOrange.base,
                     error: colors.pink.base,
-                    warning: colors.yellow.base,
+                    warning: colors.orange.darken4,
                     info: colors.blue.base,
                     success: colors.green.base,
                 },
@@ -44,15 +44,14 @@ export default function createVue(opts = {}) {
         messages: {cs: csLocal, en: {}},
     });
 
-
     Axios.get('/api/i18n/catalog', {headers: {'Accept-language': locale}}).then(({data}) => {
         i18n.mergeLocaleMessage(locale, data.catalog);
     });
 
     const router = new VueRouter({
         routes: [
-            {path: '/', component: {template: '<div>Home</div>'}, name: 'home'},
-            {path: '/theses', component: () => import('./pages/ThesisList/ThesisList'), name: 'thesis-list'},
+            {path: '/', component: () => import('./pages/Dashboard/Page'), name: 'home'},
+            {path: '/theses', component: () => import('./pages/ThesisList/Page'), name: 'thesis-list'},
             {
                 path: '/thesis-prepare',
                 component: () => import('./pages/ThesisPrepare/Page'),

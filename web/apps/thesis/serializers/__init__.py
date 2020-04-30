@@ -1,9 +1,10 @@
 from .category import CategorySerializer
 from .reservation import ReservationSerializer
-from .thesis import ThesisSerializer
+from .thesis import ThesisFullSerializer, ThesisBaseSerializer
 
 __all__ = [
-    'ThesisSerializer',
+    'ThesisBaseSerializer',
+    'ThesisFullSerializer',
     'CategorySerializer',
     'ReservationSerializer',
 ]
