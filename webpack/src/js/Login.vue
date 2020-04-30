@@ -15,54 +15,62 @@
                         md="4"
                         lg="3"
                     >
-                        <v-card class="elevation-12" :loading="loading">
-                            <v-card-title class="primary headline">
-                                {{ $t('Project THESAURUS') }}
-                            </v-card-title>
-                            <v-card-subtitle>{{ $t('Evidence system for managing and borrowing theses') }}
-                            </v-card-subtitle>
-                            <v-form v-model="formValid">
-                                <v-card-text>
-                                    <v-text-field
-                                        :label="$t('Username')"
-                                        name="login"
-                                        prepend-icon="mdi-account"
-                                        type="text"
-                                        required
-                                        :error="!!message"
-                                        v-model="credentials.username"
-                                        :rules="[v => !!v || 'Username is required']"
-                                    />
 
-                                    <v-text-field
-                                        :label="$t('Password')"
-                                        name="password"
-                                        prepend-icon="mdi-lock"
-                                        type="password"
-                                        required
-                                        v-model="credentials.password"
-                                        :error="!!message"
-                                        :rules="[v => !!v || 'Password is required']"
-                                    />
-                                    <v-alert v-if="message" text type="error" v-text="message"/>
-                                </v-card-text>
-                                <v-card-actions>
-                                    <v-spacer/>
-                                    <v-btn
-                                        type="submit"
-                                        color="primary"
-                                        x-large
-                                        :loading="loading"
-                                        :disabled="loading"
-                                        @click.prevent="login"
-                                    >
-                                        {{ $t('Login') }}
-                                    </v-btn>
+                        <v-form v-model="formValid">
+                            <transition name="show-form">
+                                <v-card class="elevation-12 mt-n12" :loading="loading" v-if="showForm">
+                                    <v-card-title class="primary justify-center">
+                                        <v-img :src="require('../img/thesaurus.svg')"
+                                            width="80%" max-width="300px"
+                                            class="ma-3 mb-5" alt="Project Thesaurus"
+                                        />
 
-                                    <v-spacer/>
-                                </v-card-actions>
-                            </v-form>
-                        </v-card>
+                                        <div class="headline text-center font-weight-bold">
+                                            {{ $t('Project THESAURUS') }}
+                                        </div>
+                                    </v-card-title>
+                                    <v-card-text class="pt-5">
+                                        <v-text-field
+                                            :label="$t('Username')"
+                                            name="login"
+                                            prepend-icon="mdi-account"
+                                            type="text"
+                                            required
+                                            :error="!!message"
+                                            v-model="credentials.username"
+                                            :rules="[v => !!v || 'Username is required']"
+                                        />
+
+                                        <v-text-field
+                                            :label="$t('Password')"
+                                            name="password"
+                                            prepend-icon="mdi-lock"
+                                            type="password"
+                                            required
+                                            v-model="credentials.password"
+                                            :error="!!message"
+                                            :rules="[v => !!v || 'Password is required']"
+                                        />
+                                        <v-alert v-if="message" text type="error" v-text="message"/>
+                                    </v-card-text>
+                                    <v-card-actions class="pb-5">
+                                        <v-spacer/>
+                                        <v-btn
+                                            type="submit"
+                                            color="primary"
+                                            x-large
+                                            :loading="loading"
+                                            :disabled="loading"
+                                            @click.prevent="login"
+                                        >
+                                            {{ $t('Login') }}
+                                        </v-btn>
+
+                                        <v-spacer/>
+                                    </v-card-actions>
+                                </v-card>
+                            </transition>
+                        </v-form>
                     </v-col>
                 </v-row>
             </v-container>
@@ -80,7 +88,8 @@
             formValid: true,
             credentials: {username: '', password: ''},
             loading: false,
-            message: ''
+            message: '',
+            showForm: false
         }),
         methods: {
             async login() {
@@ -98,6 +107,11 @@
                 this.message = response.data.message;
                 this.formValid = !(this.loading = false);
             }
+        },
+        mounted() {
+            setTimeout(() => {
+                this.showForm = true;
+            }, 0);
         }
     });
 </script>
@@ -124,5 +138,18 @@
 
     // TODO: invalid?
     // animation: v-shake .6s map-get($transition, 'swing')
+    .show-form-enter-active {
+        transition: all ease-in-out 250ms;
+    }
+
+    .show-form-enter {
+        opacity: 0;
+        transform: scale(0);
+    }
+
+    .show-form-enter-to {
+        opacity: 1;
+        transform: scale(1);
+    }
 
 </style>

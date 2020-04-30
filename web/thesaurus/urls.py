@@ -6,6 +6,7 @@ from django.contrib import admin
 from django.contrib.auth import views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include, re_path
+from loginas.views import user_logout
 
 from apps.frontend.views import AppView
 
@@ -18,7 +19,7 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('login', views.LoginView.as_view(), name='login'),
-    path('logout', views.LogoutView.as_view(), name='logout'),
+    path('logout', user_logout, name='logout'),
     re_path('.*', AppView.as_view(), name='home')
 )
 
