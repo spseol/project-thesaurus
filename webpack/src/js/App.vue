@@ -104,9 +104,11 @@
                 version: window['Thesaurus'].settings.version,
                 drawer: this.$vuetify.breakpoint.mdAndUp,
                 items: [
+                    {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'home'}},
                     {icon: 'mdi-book-multiple', text: this.$t('Theses'), to: {name: 'thesis-list'}},
                     {icon: 'mdi-book-plus', text: this.$t('Prepare admission'), to: {name: 'thesis-prepare'}},
-                    {icon: 'mdi-pencil', text: this.$t('Reviews'), to: {name: 'reviews'}},
+                    {icon: 'mdi-book-open-variant', text: this.$t('Submit thesis'), to: {name: 'thesis-submit'}},
+                    {icon: 'mdi-pencil', text: this.$t('Submit review'), to: {name: 'reviews'}},
                     {icon: 'mdi-calendar-account', text: this.$t('Reservations'), to: {name: 'reservations'}},
                     {icon: 'mdi-printer', text: this.$t('Exports'), to: {name: 'exports'}},
                     {icon: 'mdi-settings', text: this.$t('Settings'), to: {name: 'settings'}}

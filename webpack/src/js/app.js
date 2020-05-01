@@ -57,6 +57,11 @@ export default function createVue(opts = {}) {
                 component: () => import('./pages/ThesisPrepare/Page'),
                 name: 'thesis-prepare',
             },
+            {
+                path: '/thesis-submit',
+                component: () => import('./pages/ThesisSubmit/Page'),
+                name: 'thesis-submit',
+            },
             {path: '/reservations', component: () => import('./pages/ReservationList/Page'), name: 'reservations'},
             {path: '/exports', component: {template: '<div>Nonono</div>'}, name: 'exports'},
             {path: '/settings', component: {template: '<div>Nonono</div>'}, name: 'settings'},
