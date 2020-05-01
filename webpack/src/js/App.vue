@@ -7,14 +7,13 @@
             v-model="drawer"
         >
             <div class="v-navigation-drawer__content d-flex flex-column justify-space-between">
-
                 <v-list nav shaped>
-
                     <v-list-item-group color="primary">
                         <v-list-item
                             v-for="item in items"
                             :key="item.text"
                             :to="item.to"
+                            exact
                         >
                             <v-list-item-action>
                                 <v-icon>{{ item.icon }}</v-icon>
