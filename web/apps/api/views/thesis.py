@@ -5,6 +5,7 @@ from django.utils.dateparse import parse_date
 from rest_framework.generics import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 
+from apps.accounts.models import User
 from apps.thesis.models import Thesis, Category, Reservation
 from apps.thesis.serializers import ThesisFullSerializer
 
@@ -40,6 +41,7 @@ class ThesisViewSet(ModelViewSet):
         'title',
         'abstract',
         'registration_number',
+        'state',
         'authors__username',
         'authors__first_name',
         'authors__last_name',
@@ -73,8 +75,16 @@ class ThesisViewSet(ModelViewSet):
 
     def get_queryset(self):
         qs = super().get_queryset()  # type: QuerySet
+        user = self.request.user  # type: User
 
-        if not self.request.user.has_perm('thesis.change_thesis'):
-            return qs.filter(state=Thesis.State.PUBLISHED)
+        # in case of request for one object include also thesis waiting for submit by one author
+        include_waiting_for_submit = self.action == 'retrieve'
 
-        return qs
+        if user.has_perm('thesis.change_thesis'):
+            return qs
+
+        # no perms to see all thesis, so filter only published ones
+        return qs.filter(
+            Q(state=Thesis.State.PUBLISHED) |
+            Q(authors=user, state=Thesis.State.READY_FOR_SUBMIT) if include_waiting_for_submit else Q()
+        )

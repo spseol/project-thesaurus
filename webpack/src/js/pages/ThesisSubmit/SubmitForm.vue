@@ -4,16 +4,15 @@
         <v-card-text>
             <v-form>
                 <v-text-field
-                    disabled filled
+                    disabled filled v-model="thesis.title"
                     :label="$t('Thesis title')"
-                    value="Long thesis name and some words"
                 ></v-text-field>
 
                 <v-textarea
-                    outlined
+                    outlined hide-details
                     rows="15"
                     :label="$t('Abstract')"
-                    hide-details
+                    v-model="thesis.abstract"
                 ></v-textarea>
 
                 <v-file-input
@@ -30,9 +29,27 @@
 
 <script type="text/tsx">
     import Vue from 'vue';
+    import Axios from '../../axios';
 
     export default Vue.extend({
-        name: 'SubmitForm'
+        name: 'SubmitForm',
+        props: {
+            id: {type: String, required: true}
+        },
+        data() {
+            return {
+                thesis: {
+                    abstract: null
+                }
+            };
+        },
+        async created() {
+            console.log(`/api/v1/thesis/${this.id}/`);
+            console.log('http://localhost:8080/api/v1/thesis/d6ba7a00-d57c-457c-84d7-396ec43eb536/');
+
+            this.thesis = (await Axios.get(`/api/v1/thesis/${this.id}/`)).data;
+            // this.thesis = (await Axios.get('http://localhost:8080/api/v1/thesis/d6ba7a00-d57c-457c-84d7-396ec43eb536/')).data;
+        }
     });
 </script>
 

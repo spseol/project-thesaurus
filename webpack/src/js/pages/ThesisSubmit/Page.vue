@@ -1,7 +1,7 @@
 <template>
     <v-row>
         <v-col xl="4" md="6">
-            <SubmitForm></SubmitForm>
+            <SubmitForm :id="$route.params.id"></SubmitForm>
         </v-col>
         <v-col xl="4" md="6">
         </v-col>

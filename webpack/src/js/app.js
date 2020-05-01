@@ -58,7 +58,7 @@ export default function createVue(opts = {}) {
                 name: 'thesis-prepare',
             },
             {
-                path: '/thesis-submit',
+                path: '/thesis-submit/:id',
                 component: () => import('./pages/ThesisSubmit/Page'),
                 name: 'thesis-submit',
             },

@@ -184,7 +184,6 @@
                     _.filter(_.concat(this.filterItems, this.categoryFilter)),
                     this.headers
                 );
-
                 this.items = resp.data.results;
                 this.totalCount = resp.data.count;
                 this.loading = false;
