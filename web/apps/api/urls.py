@@ -9,18 +9,18 @@ from apps.api.views.dashboard import DashboardView
 from apps.api.views.login import LoginView
 from apps.api.views.reservation import ReservationViewSet
 from apps.api.views.thesis import ThesisViewSet
-from apps.api.views.user import UserOptionsViewSet, StudentOptionsViewSet, TeacherOptionsViewSet
+from apps.api.views.user import UserFilterOptionsViewSet, StudentOptionsViewSet, TeacherOptionsViewSet
 
 last_modified_date = timezone.now()
 
 router = DefaultRouter()
 router.register(r'thesis', ThesisViewSet)
 router.register(r'reservation', ReservationViewSet)
-router.register(r'user-options', UserOptionsViewSet)
-router.register(r'student-options', StudentOptionsViewSet)
-router.register(r'teacher-options', TeacherOptionsViewSet)
-router.register(r'category-options', CategoryOptionsViewSet)
 
+router.register(r'user-filter-options', UserFilterOptionsViewSet, basename='user')
+router.register(r'student-options', StudentOptionsViewSet, basename='student')
+router.register(r'teacher-options', TeacherOptionsViewSet, basename='teacher')
+router.register(r'category-options', CategoryOptionsViewSet)
 
 app_name = 'api'
 urlpatterns = [

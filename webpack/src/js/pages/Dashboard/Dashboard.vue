@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-card-title>Dashboard</v-card-title>
+        <v-card-title>{{ $t('Dashboard') }}</v-card-title>
         <v-card-text>
             <v-alert
                 v-for="thesis in theses_ready_for_submit" :key="thesis.id"
@@ -31,7 +31,7 @@
                         {{ thesis.authors.map(a => a.full_name).join(',') }}
                     </v-col>
                     <v-col class="shrink">
-                        <v-btn large :to="{name: 'reviews'}">
+                        <v-btn large :to="{name: 'thesis-submit'}">
                             {{ $t('Submit review') }}
                         </v-btn>
                     </v-col>

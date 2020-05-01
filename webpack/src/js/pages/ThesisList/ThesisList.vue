@@ -52,16 +52,21 @@
                     v-for="(author, i) in item.authors"
                 >
                     <span v-if="i !== 0">, </span>
-                    <a
-                        v-text="author.full_name"
-                        @click="addUserFilterFromDataTable(author.username)"
-                    ></a>
+                    <template v-if="isPossibleUserFilter(author)">
+                        <a
+                            v-text="author.full_name"
+                            @click="addUserFilterFromDataTable(author.username)"
+                        ></a>
+                    </template>
+                    <template v-else>
+                        {{ author.full_name }}
+                    </template>
                 </template>
             </template>
 
             <!-- dynamic slots for all "author" FKs -->
             <template
-                v-for="key in 'author supervisor opponent'.split(' ')"
+                v-for="key in 'supervisor opponent'.split(' ')"
                 v-slot:[`item.${key}.full_name`]="{ item }"
             >
                 <a
@@ -136,7 +141,7 @@
     import Vue from 'vue';
     import Axios from '../../axios';
     import ThesisService from './thesis-service';
-    import ThesisDetailPanel from './ThesisDetailPanel.vue';
+    import ThesisDetailPanel from './ThesisDetailPanel';
 
     export default Vue.extend({
         components: {ThesisDetailPanel},
@@ -164,9 +169,11 @@
                 this.filterItems.splice(this.filterItems.indexOf(item), 1);
                 this.filterItems = [...this.filterItems];
             },
-
             userOptionsFilter(item, queryText, itemText) {
                 return itemText.toLowerCase().includes(queryText.toLowerCase());
+            },
+            isPossibleUserFilter({username}) {
+                return !!_.find(this.userOptions, {username});
             },
 
             async load() {
@@ -216,7 +223,7 @@
                 this.debouncedLoad,
                 {deep: true}
             );
-            this.userOptions = await this.service.loadUserOptions();
+            this.userOptions = (await Axios.get('/api/v1/user-filter-options/')).data;
             this.categoryOptions = (await Axios.get('/api/v1/category-options')).data;
         }
     });

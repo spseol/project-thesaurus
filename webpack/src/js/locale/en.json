@@ -76,5 +76,13 @@
   "review": {
     "gradingNote": "If the evaluation of the leader and the opponent differs by more than two degrees (excellent - unsatisfactory), it will be prepared third independent opinion.",
     "submitHint": "By submitting, I confirm the accuracy and finality of this review."
-  }
+  },
+  "Dashboard": "",
+  "Submit thesis": "",
+  "Submit review": "",
+  "Thesis waiting for submit": "",
+  "Thesis waiting for review": "",
+  "Thesis submit": "",
+  "Thesis title": "",
+  "Dashboard!": ""
 }
