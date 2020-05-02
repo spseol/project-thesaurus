@@ -23,6 +23,7 @@ django-webpack4-loader = "*"
 funcy = "*"
 django-positions = "*"
 django-stubs = "*"
+filetype = "*"
 
 [dev-packages]
 

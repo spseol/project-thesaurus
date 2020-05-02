@@ -7,23 +7,24 @@
                 ref="form"
                 v-model="valid"
                 @submit.prevent="submit"
-                lazy-validation
             >
                 <v-text-field
                     v-model="thesis.title"
                     :counter="128"
                     :rules="[v => !!v]"
                     :label="$t('Title')"
+                    :error-messages="messages.title"
                     required
                 ></v-text-field>
 
-                <v-text-field
-                    v-model="thesis.registration_number"
-                    :counter="4"
-                    :rules="[v => !!v, v => /[A-Z]\d{3}/.test(v) || 'Not in format AXXX.']"
-                    :label="$t('Registration number')"
-                    required
-                ></v-text-field>
+                <!--                <v-text-field-->
+                <!--                    v-model="thesis.registration_number"-->
+                <!--                    :counter="4"-->
+                <!--                    :rules="[v => !!v, v => /[A-Z]\d{3}/.test(v) || 'Not in format AXXX.']"-->
+                <!--                    :label="$t('Registration number')"-->
+                <!--                    :error-messages="messages.title"-->
+                <!--                    required-->
+                <!--                ></v-text-field>-->
 
                 <v-autocomplete
                     v-model="thesis.authors"
@@ -35,6 +36,7 @@
                     hide-no-data
                     :label="$t('Author(s)')"
                     :rules="[v => v.length > 0]"
+                    :error-messages="messages.authors"
                 ></v-autocomplete>
 
                 <v-autocomplete
@@ -43,12 +45,14 @@
                     hide-no-data
                     :label="$t('Supervisor')"
                     :rules="[v => !!v]"
+                    :error-messages="messages.supervisor"
                 ></v-autocomplete>
 
                 <v-radio-group
                     :label="$t('Category')"
                     v-model="thesis.category"
                     row
+                    :error-messages="messages.category"
                     :rules="[v => !!v]"
                 >
                     <v-radio
@@ -69,6 +73,7 @@
                     accept="application/pdf"
                     :label="$t('Thesis admission')"
                     v-model="thesis.admission"
+                    :error-messages="messages.admission"
                 ></v-file-input>
 
                 <v-row no-gutters>
@@ -96,6 +101,7 @@
         data: () => ({
             valid: false,
             loading: false,
+            messages: {},
 
             search: '',
             select: null,
@@ -155,12 +161,20 @@
                 for (let key in data) {
                     formData.append(key, this.thesis[key]);
                 }
-
-                await Axios.post('/api/v1/thesis/', formData, {
+                const resp = await Axios.post('/api/v1/thesis/', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
+
+                if (resp.data.id) {
+
+                } else {
+                    this.messages = resp.data;
+                    this.valid = false;
+                }
+
+
             }
         },
         async created() {

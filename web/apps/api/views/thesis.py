@@ -1,42 +1,23 @@
 from django.contrib.auth import get_user_model
-from django.db.models import Exists, OuterRef, Count, Q, QuerySet
+from django.db import transaction
+from django.db.models import Q, QuerySet
 from django.shortcuts import get_list_or_404
 from django.utils.dateparse import parse_date
 from rest_framework.generics import get_object_or_404
 from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts.models import User
-from apps.thesis.models import Thesis, Category, Reservation
+from apps.api.permissions import RestrictedViewModelPermissions
+from apps.attachment.models import Attachment, TypeAttachment
+from apps.thesis.models import Thesis, Category
 from apps.thesis.serializers import ThesisFullSerializer
 
 
 # TODO: needed ModelViewSet?
 class ThesisViewSet(ModelViewSet):
-    queryset = Thesis.objects.all().select_related(
-        'category',
-        'supervisor',
-        'opponent'
-    ).prefetch_related(
-        'authors'
-    ).annotate(
-        available_for_reservation=~Exists(
-            queryset=Reservation.objects.filter(
-                thesis=OuterRef('pk'),
-                state__in=(
-                    Reservation.State.READY,
-                    Reservation.State.RUNNING,
-                ),
-            )
-        ),
-        open_reservations_count=Count(
-            'thesis_reservation',
-            filter=Q(
-                thesis_reservation__state=Reservation.State.FINISHED,
-                _negated=True,
-            )
-        )
-    )
+    queryset = Thesis.api_objects.get_queryset()
     serializer_class = ThesisFullSerializer
+    permission_classes = (RestrictedViewModelPermissions,)
     search_fields = (
         'title',
         'abstract',
@@ -59,20 +40,6 @@ class ThesisViewSet(ModelViewSet):
         # 'published_at__month',
     )
 
-    def perform_create(self, serializer: ThesisFullSerializer):
-        # TODO: save attachment
-        self.request.FILES.get('admission')
-
-        instance = serializer.save(
-            category=get_object_or_404(Category, pk=serializer.initial_data.get('category')),
-            supervisor=get_object_or_404(get_user_model(), pk=serializer.initial_data.get('supervisor')),
-            authors=get_list_or_404(
-                get_user_model(),
-                pk__in=serializer.initial_data.get('authors').split(',')
-            ),
-            published_at=parse_date((serializer.initial_data.get('published_at') + '/01').replace('/', '-'))
-        )
-
     def get_queryset(self):
         qs = super().get_queryset()  # type: QuerySet
         user = self.request.user  # type: User
@@ -88,3 +55,24 @@ class ThesisViewSet(ModelViewSet):
             Q(state=Thesis.State.PUBLISHED) |
             Q(authors=user, state=Thesis.State.READY_FOR_SUBMIT) if include_waiting_for_submit else Q()
         )
+
+    @transaction.atomic
+    def perform_create(self, serializer: ThesisFullSerializer):
+        thesis = serializer.save(
+            category=get_object_or_404(Category, pk=serializer.initial_data.get('category')),
+            supervisor=get_object_or_404(get_user_model(), pk=serializer.initial_data.get('supervisor')),
+            authors=get_list_or_404(
+                get_user_model(),
+                pk__in=serializer.initial_data.get('authors').split(',')
+            ),
+            published_at=parse_date((serializer.initial_data.get('published_at') + '/01').replace('/', '-'))
+        )
+
+        Attachment.objects.create_from_upload(
+            uploaded=self.request.FILES.get('admission'),
+            thesis=thesis,
+            type_attachment=TypeAttachment.objects.get_by_identifier(TypeAttachment.Identifier.THESIS_ASSIGMENT),
+        )
+
+        thesis.state = Thesis.State.READY_FOR_SUBMIT
+        thesis.save()

@@ -4,6 +4,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 from apps.accounts.models import User
 from apps.accounts.models.managers import UserQueryset
 from apps.accounts.serializers import UserOptionSerializer
+from apps.api.permissions import RestrictedViewModelPermissions
 
 
 class UserFilterOptionsViewSet(ReadOnlyModelViewSet):
@@ -25,8 +26,7 @@ class UserFilterOptionsViewSet(ReadOnlyModelViewSet):
 
 
 class StudentOptionsViewSet(ReadOnlyModelViewSet):
-    # TODO: not so public please
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (RestrictedViewModelPermissions,)
     queryset = User.objects.students()
     pagination_class = None
     serializer_class = UserOptionSerializer
@@ -37,7 +37,7 @@ class StudentOptionsViewSet(ReadOnlyModelViewSet):
 
 
 class TeacherOptionsViewSet(ReadOnlyModelViewSet):
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = (RestrictedViewModelPermissions,)
     queryset = User.objects.teachers()
     pagination_class = None
     serializer_class = UserOptionSerializer

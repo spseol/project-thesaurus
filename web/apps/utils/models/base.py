@@ -4,6 +4,8 @@ from django.db.models import Model, UUIDField, CharField, TextField, PositiveSma
 from django.utils.translation import gettext as _
 from django_extensions.db.fields import CreationDateTimeField, ModificationDateTimeField
 
+from apps.utils.models.managers import BaseTypeModelManager
+
 
 class BaseModel(Model):
     """Base model with UUID primary key."""
@@ -49,6 +51,8 @@ class BaseTypeModel(BaseModel):
     order = PositiveSmallIntegerField(
         verbose_name=_('Order'),
     )
+
+    objects = BaseTypeModelManager()
 
     class Meta:
         ordering = "order",

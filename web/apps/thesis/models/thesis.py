@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import TextChoices
 from django.utils.translation import gettext as _
 
+from apps.thesis.models.managers.thesis import ThesisApiManager
 from apps.utils.models import BaseTimestampedModel
 
 
@@ -89,6 +90,8 @@ class Thesis(BaseTimestampedModel):
         verbose_name=_('Reservable'),
         default=True,
     )
+
+    api_objects = ThesisApiManager()
 
     class Meta:
         ordering = ['registration_number']

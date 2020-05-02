@@ -2,6 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.translation import gettext as _
 
+from apps.attachment.models.managers import AttachmentManager, default_storage
 from apps.utils.models import BaseTimestampedModel, BaseTypeModel
 
 
@@ -26,12 +27,21 @@ class Attachment(BaseTimestampedModel):
         verbose_name=_('File with thesis'),
         max_length=512,
         null=True,
-        # TODO: add validation, somehow implement solving real path to file
     )
+
+    objects = AttachmentManager()
 
     class Meta:
         verbose_name = _('Attachment')
         verbose_name_plural = _('Attachments')
+
+    def build_file_path(self, suffix: str):
+        pk = str(self.id)
+        thesis_pk = str(self.thesis.pk)
+        return f'attachment/{thesis_pk[:2]}/{thesis_pk}/{self.type_attachment.identifier}-{pk[:4]}.{suffix.lstrip(".")}'
+
+    def full_file_path(self):
+        return default_storage.path(name=self.file_path)
 
 
 def _default_allowed_content_types():
@@ -41,6 +51,7 @@ def _default_allowed_content_types():
 
 class TypeAttachment(BaseTypeModel):
     """Type of attachment signalizing for which purpose has been attachment uploaded."""
+
     class Identifier(models.TextChoices):
         THESIS_TEXT = 'thesis_text', _('Thesis text')
         THESIS_ASSIGMENT = 'thesis_assigment', _('Thesis assigment')

@@ -81,5 +81,6 @@
   "Thesis waiting for review": "Práce čekající na posudek",
   "Thesis submit": "Odevzdat práci",
   "Thesis title": "Název práce",
-  "Dashboard!": ""
+  "Dashboard!": "",
+  "/theses": "/prace"
 }
