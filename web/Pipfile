@@ -24,6 +24,7 @@ funcy = "*"
 django-positions = "*"
 django-stubs = "*"
 filetype = "*"
+drf-pdf = "*"
 
 [dev-packages]
 

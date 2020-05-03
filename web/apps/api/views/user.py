@@ -17,7 +17,7 @@ class UserFilterOptionsViewSet(ReadOnlyModelViewSet):
     )
 
     def get_queryset(self):
-        queryset = User.objects.with_school_account()  # type: UserQueryset
+        queryset = User.school_users.with_school_account()  # type: UserQueryset
 
         if self.request.user.is_teacher or self.request.user.is_manager:
             return queryset
@@ -27,7 +27,7 @@ class UserFilterOptionsViewSet(ReadOnlyModelViewSet):
 
 class StudentOptionsViewSet(ReadOnlyModelViewSet):
     permission_classes = (RestrictedViewModelPermissions,)
-    queryset = User.objects.students()
+    queryset = User.school_users.students()
     pagination_class = None
     serializer_class = UserOptionSerializer
     search_fields = (
@@ -38,7 +38,7 @@ class StudentOptionsViewSet(ReadOnlyModelViewSet):
 
 class TeacherOptionsViewSet(ReadOnlyModelViewSet):
     permission_classes = (RestrictedViewModelPermissions,)
-    queryset = User.objects.teachers()
+    queryset = User.school_users.teachers()
     pagination_class = None
     serializer_class = UserOptionSerializer
     search_fields = (

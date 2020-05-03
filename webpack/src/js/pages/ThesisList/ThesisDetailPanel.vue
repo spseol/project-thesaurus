@@ -2,13 +2,25 @@
     <v-container fluid class="body-1">
         <v-row no-gutters>
             <v-col cols="12" md="9" lg="8" xl="6">
-                <v-row v-for="[title, getter, titleCss = '', valueCss = ''] in rows" :key="getter" no-gutters>
+                <v-row
+                    v-for="[title, getter, titleCss = '', valueCss = ''] in rows" v-if="getByGetter(getter)"
+                    :key="getter.toString()" no-gutters>
                     <v-col cols="12" md="1" class="font-weight-bold text-left text-md-right" :class="titleCss">
                         {{ title }}
                     </v-col>
                     <v-col class="text-justify" :class="valueCss">
                         <p class="text-justify pl-3">
                             {{ getByGetter(getter) }}
+                        </p>
+                    </v-col>
+                </v-row>
+                <v-row v-for="attachment in thesis.attachments" :key="attachment.id">
+                    <v-col cols="12" md="1" class="text-left text-md-right">
+                        <v-icon>mdi-pdf-box</v-icon>
+                    </v-col>
+                    <v-col>
+                        <p class="text-justify pl-3">
+                            <a :href="attachment.url">{{ attachment.type_attachment.name }}</a>
                         </p>
                     </v-col>
                 </v-row>

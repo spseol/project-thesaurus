@@ -62,8 +62,8 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'apps.utils.middleware.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -147,6 +147,8 @@ LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 STATIC_URL = '/static/'
 
 STATIC_ROOT = '/usr/src/static'
+
+MEDIA_ROOT = '/usr/src/media'
 
 WEBPACK_LOADER = {
     'DEFAULT': {

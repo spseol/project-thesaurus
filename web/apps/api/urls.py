@@ -4,6 +4,7 @@ from django.views.decorators.http import last_modified
 from django.views.i18n import JSONCatalog
 from rest_framework.routers import DefaultRouter
 
+from apps.api.views.attachment import AttachmentViewSet
 from apps.api.views.category import CategoryOptionsViewSet
 from apps.api.views.dashboard import DashboardView
 from apps.api.views.login import LoginView
@@ -16,6 +17,7 @@ last_modified_date = timezone.now()
 router = DefaultRouter()
 router.register(r'thesis', ThesisViewSet)
 router.register(r'reservation', ReservationViewSet)
+router.register(r'attachment', AttachmentViewSet)
 
 router.register(r'user-filter-options', UserFilterOptionsViewSet, basename='user')
 router.register(r'student-options', StudentOptionsViewSet, basename='student')

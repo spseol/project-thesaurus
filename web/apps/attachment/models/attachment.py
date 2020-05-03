@@ -1,8 +1,9 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.utils.translation import gettext as _
+from django.utils.text import slugify
+from django.utils.translation import gettext_lazy as _
 
-from apps.attachment.models.managers import AttachmentManager, default_storage
+from apps.attachment.models.managers import AttachmentManager
 from apps.utils.models import BaseTimestampedModel, BaseTypeModel
 
 
@@ -40,8 +41,10 @@ class Attachment(BaseTimestampedModel):
         thesis_pk = str(self.thesis.pk)
         return f'attachment/{thesis_pk[:2]}/{thesis_pk}/{self.type_attachment.identifier}-{pk[:4]}.{suffix.lstrip(".")}'
 
-    def full_file_path(self):
-        return default_storage.path(name=self.file_path)
+    @property
+    def public_file_name(self):
+        ext = self.file_path.rsplit('.', 1)[-1]
+        return f'{self.thesis.registration_number or slugify(self.thesis.title)}.{ext}'
 
 
 def _default_allowed_content_types():

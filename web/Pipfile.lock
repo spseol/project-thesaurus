@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "5f0344e21537557a6687b3b73a403e684f86b395fc1007c6b18925b5d82e16c0"
+            "sha256": "94f65c11d4455084d13156d9b8b6148e9b652c8073cd814960332f5a90cce646"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -116,6 +116,13 @@
             ],
             "index": "pypi",
             "version": "==0.5.2"
+        },
+        "drf-pdf": {
+            "hashes": [
+                "sha256:4e870bff87d19f43fa0bb85f8112ab0588db0c7bb00656f1ec52120d19ac4b2a"
+            ],
+            "index": "pypi",
+            "version": "==0.2.0"
         },
         "faker": {
             "hashes": [

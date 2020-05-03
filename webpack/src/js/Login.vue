@@ -6,7 +6,6 @@
                 fluid
             >
                 <v-row
-                    align="top"
                     justify="center"
                 >
                     <v-col

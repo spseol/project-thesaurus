@@ -51,14 +51,14 @@ export default function createVue(opts = {}) {
     const router = new VueRouter({
         routes: [
             {path: '/', component: () => import('./pages/Dashboard/Page'), name: 'home'},
-            {path: '/theses', component: () => import('./pages/ThesisList/Page'), name: 'thesis-list'},
+            {path: '/thesis/list', component: () => import('./pages/ThesisList/Page'), name: 'thesis-list'},
             {
-                path: '/thesis-prepare',
+                path: '/thesis/prepare',
                 component: () => import('./pages/ThesisPrepare/Page'),
                 name: 'thesis-prepare',
             },
             {
-                path: '/thesis-submit/:id',
+                path: '/thesis/submit/:id',
                 component: () => import('./pages/ThesisSubmit/Page'),
                 name: 'thesis-submit',
             },

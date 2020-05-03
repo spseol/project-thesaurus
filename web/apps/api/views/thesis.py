@@ -10,13 +10,11 @@ from apps.accounts.models import User
 from apps.api.permissions import RestrictedViewModelPermissions
 from apps.attachment.models import Attachment, TypeAttachment
 from apps.thesis.models import Thesis, Category
-from apps.thesis.serializers import ThesisFullSerializer
+from apps.thesis.serializers import ThesisFullPublicSerializer, ThesisFullInternalSerializer
 
 
-# TODO: needed ModelViewSet?
 class ThesisViewSet(ModelViewSet):
     queryset = Thesis.api_objects.get_queryset()
-    serializer_class = ThesisFullSerializer
     permission_classes = (RestrictedViewModelPermissions,)
     search_fields = (
         'title',
@@ -57,7 +55,7 @@ class ThesisViewSet(ModelViewSet):
         )
 
     @transaction.atomic
-    def perform_create(self, serializer: ThesisFullSerializer):
+    def perform_create(self, serializer: ThesisFullPublicSerializer):
         thesis = serializer.save(
             category=get_object_or_404(Category, pk=serializer.initial_data.get('category')),
             supervisor=get_object_or_404(get_user_model(), pk=serializer.initial_data.get('supervisor')),
@@ -76,3 +74,9 @@ class ThesisViewSet(ModelViewSet):
 
         thesis.state = Thesis.State.READY_FOR_SUBMIT
         thesis.save()
+
+    def get_serializer_class(self):
+        if self.request.user.has_perm('attachment.view_attachment'):
+            return ThesisFullInternalSerializer
+
+        return ThesisFullPublicSerializer

@@ -1,6 +1,6 @@
 <template>
     <v-row>
-        <v-col cols="8">
+        <v-col cols="12" lg="8" xl="6">
             <Dashboard></Dashboard>
         </v-col>
     </v-row>

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager
 from django.utils.translation import gettext as _
 
 from apps.accounts.models.managers import UserQueryset
@@ -11,7 +11,8 @@ class User(AbstractUser):
 
     full_name = property(AbstractUser.get_full_name)
 
-    objects = UserQueryset.as_manager()
+    objects = UserManager()
+    school_users = UserQueryset.as_manager()
 
     @property
     def is_teacher(self):

@@ -18,8 +18,9 @@ RUN addgroup -S django \
     && apk add postgresql-dev gettext \
     && pipenv install psycopg2-binary --skip-lock --dev \
     && apk del build-deps \
-    && mkdir /usr/src/static \
-    && chown django:django /usr/src/static
+    && mkdir /usr/src/static /usr/src/media \
+    && chown django:django /usr/src/static \
+    && chown django:django /usr/src/media
 
 # install other deps
 COPY ./Pipfile /usr/src/app/Pipfile

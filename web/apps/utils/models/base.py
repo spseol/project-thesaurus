@@ -59,4 +59,4 @@ class BaseTypeModel(BaseModel):
         abstract = True
 
     def __str__(self):
-        return self.name or self.identifier
+        return self.name or self.get_identifier_display()
