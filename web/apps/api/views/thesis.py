@@ -51,7 +51,9 @@ class ThesisViewSet(ModelViewSet):
         # no perms to see all thesis, so filter only published ones
         return qs.filter(
             Q(state=Thesis.State.PUBLISHED) |
-            Q(authors=user, state=Thesis.State.READY_FOR_SUBMIT) if include_waiting_for_submit else Q()
+            (Q(authors=user, state=Thesis.State.READY_FOR_SUBMIT) if include_waiting_for_submit else Q()) |
+            Q(opponent=user, state=Thesis.State.READY_FOR_REVIEW) |
+            Q(supervisor=user, state=Thesis.State.READY_FOR_REVIEW)
         )
 
     @transaction.atomic

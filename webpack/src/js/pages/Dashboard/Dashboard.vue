@@ -31,7 +31,7 @@
                         {{ thesis.authors.map(a => a.full_name).join(',') }}
                     </v-col>
                     <v-col class="shrink">
-                        <v-btn large :to="{name: 'reviews'}">
+                        <v-btn large :to="{name: 'review-submit', params: {id: thesis.id}}">
                             {{ $t('Submit review') }}
                         </v-btn>
                     </v-col>

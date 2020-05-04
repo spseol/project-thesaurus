@@ -10,12 +10,25 @@ import '../scss/index.scss';
 import csLocal from './locale/cs.json';
 import App from './App';
 import Axios from './axios';
+import hasPerm from './user';
 
 export default function createVue(opts = {}) {
     Vue.use(VueI18n);
     Vue.use(Vuetify);
     Vue.use(VueRouter);
     Vue.use(PortalVue);
+
+    Vue.directive('has-perm', function(el, bindings, vnode) {
+        // TODO: think about https://github.com/mblarsen/vue-browser-acl
+        if (bindings.arg) {
+
+            let originDisplay = el.style.display;
+            el.style.display = 'none';
+            bindings.arg && hasPerm(bindings.arg).then((allowed) => {
+                el.style.display = allowed ? originDisplay : 'none';
+            });
+        }
+    });
 
     const {locale} = window.Thesaurus.settings;
 
@@ -65,7 +78,7 @@ export default function createVue(opts = {}) {
             {path: '/reservations', component: () => import('./pages/ReservationList/Page'), name: 'reservations'},
             {path: '/exports', component: {template: '<div>Nonono</div>'}, name: 'exports'},
             {path: '/settings', component: {template: '<div>Nonono</div>'}, name: 'settings'},
-            {path: '/reviews', component: () => import('./pages/ReviewSubmit/Page'), name: 'reviews'},
+            {path: '/review/:id', component: () => import('./pages/ReviewSubmit/Page'), name: 'review-submit'},
             {path: '*', component: {template: '<div>Not found :-(</div>'}},
         ],
         mode: 'history',

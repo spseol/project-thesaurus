@@ -44,8 +44,6 @@
             };
         },
         async created() {
-            console.log(`/api/v1/thesis/${this.id}/`);
-            console.log('http://localhost:8080/api/v1/thesis/d6ba7a00-d57c-457c-84d7-396ec43eb536/');
 
             this.thesis = (await Axios.get(`/api/v1/thesis/${this.id}/`)).data;
             // this.thesis = (await Axios.get('http://localhost:8080/api/v1/thesis/d6ba7a00-d57c-457c-84d7-396ec43eb536/')).data;

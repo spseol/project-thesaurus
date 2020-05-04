@@ -13,6 +13,7 @@
                             v-for="item in items"
                             :key="item.text"
                             :to="item.to"
+                            v-has-perm:[item.perm]
                             exact
                         >
                             <v-list-item-action>
@@ -105,9 +106,19 @@
                 items: [
                     {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'home'}},
                     {icon: 'mdi-book-multiple', text: this.$t('Theses'), to: {name: 'thesis-list'}},
-                    {icon: 'mdi-book-plus', text: this.$t('Prepare admission'), to: {name: 'thesis-prepare'}},
-                    {icon: 'mdi-pencil', text: this.$t('Submit review'), to: {name: 'reviews'}},
-                    {icon: 'mdi-calendar-account', text: this.$t('Reservations'), to: {name: 'reservations'}},
+                    {
+                        icon: 'mdi-book-plus',
+                        text: this.$t('Prepare admission'),
+                        to: {name: 'thesis-prepare'},
+                        perm: 'thesis.add_thesis'
+                    },
+                    // {icon: 'mdi-pencil', text: this.$t('Submit review'), to: {name: 'reviews'}, perm: 'thesis.add_review'},
+                    {
+                        icon: 'mdi-calendar-account',
+                        text: this.$t('Reservations'),
+                        to: {name: 'reservations'},
+                        perm: 'thesis.view_reservation'
+                    },
                     {icon: 'mdi-printer', text: this.$t('Exports'), to: {name: 'exports'}},
                     {icon: 'mdi-settings', text: this.$t('Settings'), to: {name: 'settings'}}
                 ]

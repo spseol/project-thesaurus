@@ -3,23 +3,24 @@
         <v-card>
             <v-card-title>{{ $t('Thesis review') }}</v-card-title>
             <v-card-text>
-                <v-form>
+                <v-form v-model="valid">
                     <v-row>
                         <v-col cols="12" md="6">
                             <v-text-field
                                 disabled filled
                                 :label="$t('Student name')"
-                                value="John Doe"
+                                :value="thesis.authors.map(a => a.full_name).join(', ')"
                             ></v-text-field>
                             <v-text-field
                                 disabled filled
                                 :label="$t('Thesis name')"
-                                value="Long thesis name and some words"
+                                :value="thesis.title"
                             ></v-text-field>
                             <v-text-field
                                 disabled filled
                                 :label="$t('Review author')"
-                                value="Harry Potter"
+                                :value="thesis.opponent.full_name"
+                                suffix="Role"
                             ></v-text-field>
                             <v-btn-toggle mandatory value="opponent" v-if="false">
                                 <v-btn value="supervisor" outlined>{{ $t('Supervisor') }}</v-btn>
@@ -48,6 +49,7 @@
                                 <v-slider
                                     :tick-labels="grades3"
                                     v-model="review.difficulty"
+                                    :rules="[v => v > 0]"
                                     :max="3"
                                     :min="0"
                                     :step="1"
@@ -95,7 +97,8 @@
                                         class="mr-3"
                                         hide-details
                                     ></v-text-field>
-                                    <v-btn x-large color="success" type="submit">{{ $t('Submit') }}</v-btn>
+                                    <v-btn x-large color="success" type="submit" :disabled="!valid">{{ $t('Submit') }}
+                                    </v-btn>
                                 </div>
                             </div>
                         </v-col>
@@ -113,12 +116,21 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import colors from 'vuetify/lib/util/colors';
+    import Axios from '../../axios';
 
 
     export default Vue.extend({
-        name: 'ImportForm',
+        name: 'ReviewForm',
+        props: {
+            id: {
+                type: String,
+                required: true
+            }
+        },
         data() {
             return {
+                thesis: {authors: [], opponent: {}},
+                valid: true,
                 grades4: [
                     this.$t('Excellent'),
                     this.$t('Very well'),
@@ -170,6 +182,9 @@
                     }[v];
                 }
             }
+        },
+        async created() {
+            this.thesis = (await Axios.get(`/api/v1/thesis/${this.id}`)).data;
         }
     });
 </script>

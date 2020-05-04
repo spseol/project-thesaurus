@@ -1,6 +1,5 @@
 <template>
-
-    <ReviewForm></ReviewForm>
+    <ReviewForm :id="$route.params.id"></ReviewForm>
 </template>
 
 <script type="text/tsx">

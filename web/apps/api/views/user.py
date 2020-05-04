@@ -1,4 +1,7 @@
 from rest_framework import permissions
+from rest_framework.renderers import JSONRenderer
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from apps.accounts.models import User
@@ -45,3 +48,10 @@ class TeacherOptionsViewSet(ReadOnlyModelViewSet):
         'first_name',
         'last_name',
     )
+
+
+class UserPermView(APIView):
+    renderer_classes = (JSONRenderer,)
+
+    def get(self, request, perm):
+        return Response(request.user.has_perm(perm))
