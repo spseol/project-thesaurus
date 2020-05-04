@@ -9,6 +9,7 @@ from .views.category import CategoryOptionsViewSet
 from .views.dashboard import DashboardView
 from .views.login import LoginView
 from .views.reservation import ReservationViewSet
+from .views.review import ReviewViewSet
 from .views.thesis import ThesisViewSet
 from .views.user import UserFilterOptionsViewSet, StudentOptionsViewSet, TeacherOptionsViewSet, UserPermView
 
@@ -18,6 +19,7 @@ router = DefaultRouter()
 router.register(r'thesis', ThesisViewSet)
 router.register(r'reservation', ReservationViewSet)
 router.register(r'attachment', AttachmentViewSet)
+router.register(r'review', ReviewViewSet)
 
 router.register(r'user-filter-options', UserFilterOptionsViewSet, basename='user')
 router.register(r'student-options', StudentOptionsViewSet, basename='student')

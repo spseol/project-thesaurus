@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'apps.attachment',
     'apps.frontend',
     'apps.thesis',
+    'apps.review',
     'apps.utils',
 
     'loginas',
@@ -53,7 +54,6 @@ INSTALLED_APPS = [
     'webpack_loader',
     'debug_toolbar',
     'rest_framework',
-    'rest_framework_datatables',
 
     'django_extensions',
 ]
