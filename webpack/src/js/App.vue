@@ -94,33 +94,36 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import LanguageMenu from './components/LanguageMenu';
+    import pageContext from './context';
 
     export default Vue.extend({
         components: {LanguageMenu},
         data() {
+            // @ts-ignore
+            let $t = (key) => this.$t(key);
             return {
-                username: window['Thesaurus'].settings.username,
-                djangoAdminUrl: window['Thesaurus'].settings.djangoAdminUrl,
-                version: window['Thesaurus'].settings.version,
+                username: pageContext.username,
+                djangoAdminUrl: pageContext.djangoAdminUrl,
+                version: pageContext.version,
                 drawer: this.$vuetify.breakpoint.mdAndUp,
                 items: [
-                    {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'home'}},
-                    {icon: 'mdi-book-multiple', text: this.$t('Theses'), to: {name: 'thesis-list'}},
+                    {icon: 'mdi-home', text: $t('Dashboard'), to: {name: 'home'}},
+                    {icon: 'mdi-book-multiple', text: $t('Theses'), to: {name: 'thesis-list'}},
                     {
                         icon: 'mdi-book-plus',
-                        text: this.$t('Prepare admission'),
+                        text: $t('Prepare admission'),
                         to: {name: 'thesis-prepare'},
                         perm: 'thesis.add_thesis'
                     },
                     // {icon: 'mdi-pencil', text: this.$t('Submit review'), to: {name: 'reviews'}, perm: 'thesis.add_review'},
                     {
                         icon: 'mdi-calendar-account',
-                        text: this.$t('Reservations'),
+                        text: $t('Reservations'),
                         to: {name: 'reservations'},
                         perm: 'thesis.view_reservation'
                     },
-                    {icon: 'mdi-printer', text: this.$t('Exports'), to: {name: 'exports'}},
-                    {icon: 'mdi-settings', text: this.$t('Settings'), to: {name: 'settings'}}
+                    {icon: 'mdi-printer', text: $t('Exports'), to: {name: 'exports'}},
+                    {icon: 'mdi-settings', text: $t('Settings'), to: {name: 'settings'}}
                 ]
             };
         }

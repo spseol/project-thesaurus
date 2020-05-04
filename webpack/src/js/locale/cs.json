@@ -66,7 +66,7 @@
   "Review comment": "Odůvodnění hodnocení práce",
   "Thesis defence questions": "Otázky k obhajobě",
   "Classification proposal": "Návrh klasifikace",
-  "Students independence during processing (to be filled in only by the supervisor)": "Samostatnost studenta při zpracování (vyplní jen vedoucí)",
+  "Students independence during processing": "Samostatnost studenta při zpracování",
   "Student name": "Jméno a příjmení studenta",
   "Thesis name": "Název práce",
   "Review author": "Posudek vypracoval",
@@ -81,6 +81,7 @@
   "Thesis waiting for review": "Práce čekající na posudek",
   "Thesis submit": "Odevzdat práci",
   "Thesis title": "Název práce",
-  "Dashboard!": "",
-  "/theses": "/prace"
+  "Unknown": "Neznámý",
+  "supervisor": "vedoucí",
+  "opponent": "oponent"
 }

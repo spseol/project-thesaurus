@@ -11,12 +11,14 @@ import csLocal from './locale/cs.json';
 import App from './App';
 import Axios from './axios';
 import hasPerm from './user';
+import pageContext from './context';
 
 export default function createVue(opts = {}) {
     Vue.use(VueI18n);
     Vue.use(Vuetify);
     Vue.use(VueRouter);
     Vue.use(PortalVue);
+    Vue.config.productionTip = false;
 
     Vue.directive('has-perm', function(el, bindings, vnode) {
         // TODO: think about https://github.com/mblarsen/vue-browser-acl
@@ -30,7 +32,7 @@ export default function createVue(opts = {}) {
         }
     });
 
-    const {locale} = window.Thesaurus.settings;
+    const {locale} = pageContext;
 
     const vuetify = new Vuetify({
         lang: {

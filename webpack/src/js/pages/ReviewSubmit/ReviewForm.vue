@@ -19,25 +19,23 @@
                             <v-text-field
                                 disabled filled
                                 :label="$t('Review author')"
-                                :value="thesis.opponent.full_name"
-                                suffix="Role"
+                                :value="(thesis[reviewingUserRole] || {full_name: $t('Unknown')}).full_name"
+                                :suffix="$t(reviewingUserRole)"
                             ></v-text-field>
-                            <v-btn-toggle mandatory value="opponent" v-if="false">
-                                <v-btn value="supervisor" outlined>{{ $t('Supervisor') }}</v-btn>
-                                <v-btn value="opponent" outlined>{{ $t('Opponent') }}</v-btn>
-                            </v-btn-toggle>
                             <v-divider></v-divider>
                             <v-textarea
                                 outlined
                                 rows="14"
                                 :label="$t('Review comment')"
                                 :rules="[v => !!v]"
+                                v-model="review.comment"
                             ></v-textarea>
                             <v-textarea
                                 outlined
                                 rows="8"
                                 :label="$t('Thesis defence questions')"
                                 hide-details
+                                v-model="review.questions"
                             ></v-textarea>
                         </v-col>
                         <v-col cols="12" md="6" class="d-flex flex-column justify-space-between">
@@ -60,11 +58,11 @@
                                     class="VSliderCustom__label--gray"
                                 ></v-slider>
 
-                                <div v-for="grade in review.grades">
+                                <div v-for="(grade, i) in review.grades">
                                     <v-chip
                                         :color="valueToColor(grade.value, 4)"
                                         class="mt-5"
-                                    >{{ grade.text }}
+                                    >{{ gradings[i] }}
                                     </v-chip>
                                     <v-slider
                                         v-model="grade.value"
@@ -114,9 +112,11 @@
 </template>
 
 <script type="text/tsx">
+    import _ from 'lodash';
     import Vue from 'vue';
     import colors from 'vuetify/lib/util/colors';
     import Axios from '../../axios';
+    import pageContext from '../../context';
 
 
     export default Vue.extend({
@@ -128,40 +128,39 @@
             }
         },
         data() {
+            // @ts-ignore
+            const $t = (key) => this.$t(key);
             return {
-                thesis: {authors: [], opponent: {}},
+                thesis: {authors: [], opponent: {}, supervisor: {}},
                 valid: true,
-                grades4: [
-                    this.$t('Excellent'),
-                    this.$t('Very well'),
-                    this.$t('Great'),
-                    this.$t('Not sufficient'),
-                    ''
-                ].reverse(),
-                grades3: [
-                    this.$t('Over average'),
-                    this.$t('Average'),
-                    this.$t('Under average'),
-                    ''
-                ].reverse(),
+                grades4: [$t('Excellent'), $t('Very well'), $t('Great'), $t('Not sufficient'), ''].reverse(),
+                grades3: [$t('Over average'), $t('Average'), $t('Under average'), ''].reverse(),
+
                 review: {
                     difficulty: 0,
-                    grades: [
-                        {
-                            value: 0,
-                            text: this.$t('Students independence during processing (to be filled in only by the supervisor)')
-                        },
-                        {value: 0, text: this.$t('Theoretical part of the work, comprehensibility of the text')},
-                        {value: 0, text: this.$t('Methods and procedures used')},
-                        {value: 0, text: this.$t('Formal editing, work with sources, citations in the text')},
-                        {value: 0, text: this.$t('Graphic design of the thesis')},
-                        {
-                            value: 0,
-                            text: this.$t('Interpretation of conclusions, their originality and their own contribution to the work')
-                        }
-                    ]
+                    grades: _.times(6, () => ({value: 0})),
+                    comment: null,
+                    questions: null
                 }
             };
+        },
+        computed: {
+            reviewingUserRole() {
+                return {
+                    [this.thesis.supervisor.username]: 'supervisor',
+                    [this.thesis.opponent.username]: 'opponent'
+                }[pageContext.username]; // TODO: in case of filled review.user.username use that
+            },
+            gradings() {
+                return _.filter([
+                    this.reviewingUserRole == 'supervisor' ? this.$t('Students independence during processing') : null,
+                    this.$t('Theoretical part of the work, comprehensibility of the text'),
+                    this.$t('Methods and procedures used'),
+                    this.$t('Formal editing, work with sources, citations in the text'),
+                    this.$t('Graphic design of the thesis'),
+                    this.$t('Interpretation of conclusions, their originality and their own contribution to the work')
+                ]);
+            }
         },
         methods: {
             valueToColor(v, scale = 3) {

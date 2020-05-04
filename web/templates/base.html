@@ -18,7 +18,7 @@
     {% get_available_languages as languages %}
     <script>
         window.Thesaurus = (window.Thesaurus || {});
-        window.Thesaurus.settings = {
+        window.Thesaurus.pageContext = {
             locale: '{{ LANGUAGE_CODE }}'.split(/[_-]/)[0],
             username: '{{ user.get_username }}',
             djangoAdminUrl: '{% if user.is_staff %}{% url "admin:index" %}{% endif %}',
