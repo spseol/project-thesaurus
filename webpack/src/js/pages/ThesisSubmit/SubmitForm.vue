@@ -30,6 +30,7 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import Axios from '../../axios';
+    import {readFileAsync} from '../../utils';
 
     export default Vue.extend({
         name: 'SubmitForm',
@@ -46,7 +47,35 @@
         async created() {
 
             this.thesis = (await Axios.get(`/api/v1/thesis/${this.id}/`)).data;
-            // this.thesis = (await Axios.get('http://localhost:8080/api/v1/thesis/d6ba7a00-d57c-457c-84d7-396ec43eb536/')).data;
+        },
+        methods: {
+            async submit() {
+                // TODO: make it alive
+                this.$refs.form.validate();
+                let formData = new FormData();
+
+                const data = {
+                    ...this.thesis,
+                    admission: undefined
+                };
+                if (this.thesis.admission) {
+                    data.admission = await readFileAsync(this.thesis.admission);
+                }
+
+                for (let key in data) {
+                    formData.append(key, this.thesis[key]);
+                }
+                const resp = await Axios.put('/api/v1/thesis/', formData, {
+                    headers: {'Content-Type': 'multipart/form-data'}
+                });
+
+                if (resp.data.id) {
+
+                } else {
+                    this.messages = resp.data;
+                    this.valid = false;
+                }
+            }
         }
     });
 </script>

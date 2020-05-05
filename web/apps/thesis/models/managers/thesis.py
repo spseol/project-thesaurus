@@ -8,9 +8,10 @@ class ThesisApiManager(Manager):
         return super().get_queryset().select_related(
             'category',
             'supervisor',
-            'opponent'
+            'opponent',
         ).prefetch_related(
-            'authors'
+            'authors',
+            'thesis_attachment',
         ).annotate(
             available_for_reservation=~Exists(
                 queryset=Reservation.objects.filter(

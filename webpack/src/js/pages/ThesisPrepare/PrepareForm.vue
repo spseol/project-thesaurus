@@ -95,6 +95,7 @@
     import qs from 'qs';
     import Vue from 'vue';
     import Axios from '../../axios';
+    import {readFileAsync} from '../../utils';
 
     export default Vue.extend({
         name: 'ThesisPrepareForm',
@@ -133,19 +134,6 @@
 
                 this.loading = false;
             },
-            readFileAsync(file) {
-                return new Promise((resolve, reject) => {
-                    let reader = new FileReader();
-
-                    reader.onload = () => {
-                        resolve(reader.result);
-                    };
-
-                    reader.onerror = reject;
-
-                    reader.readAsArrayBuffer(file);
-                });
-            },
             async submit() {
                 this.$refs.form.validate();
                 let formData = new FormData();
@@ -155,7 +143,7 @@
                     admission: undefined
                 };
                 if (this.thesis.admission) {
-                    data.admission = await this.readFileAsync(this.thesis.admission);
+                    data.admission = await readFileAsync(this.thesis.admission);
                 }
 
                 for (let key in data) {
@@ -173,8 +161,6 @@
                     this.messages = resp.data;
                     this.valid = false;
                 }
-
-
             }
         },
         async created() {

@@ -28,7 +28,7 @@
     import * as _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../axios';
-    import pageContext from '../context';
+    import {pageContext} from '../utils';
 
     export default Vue.extend({
         data: () => ({

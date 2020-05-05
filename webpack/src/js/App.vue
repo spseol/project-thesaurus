@@ -94,7 +94,7 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import LanguageMenu from './components/LanguageMenu';
-    import pageContext from './context';
+    import {pageContext} from './utils';
 
     export default Vue.extend({
         components: {LanguageMenu},

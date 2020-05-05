@@ -116,7 +116,7 @@
     import Vue from 'vue';
     import colors from 'vuetify/lib/util/colors';
     import Axios from '../../axios';
-    import pageContext from '../../context';
+    import {pageContext} from '../../utils';
 
 
     export default Vue.extend({
@@ -191,6 +191,14 @@
                         thesis: {id: this.thesis.id}
                     }
                 )).data;
+
+                if (resp.id) {
+                    // TODO: show success
+                } else {
+                    // TODO show messages
+                    this.valid = false;
+                    this.messages = resp;
+                }
 
                 this.loading = false;
             }

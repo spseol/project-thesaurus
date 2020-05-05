@@ -20,6 +20,9 @@ class DashboardView(APIView):
             state=Thesis.State.READY_FOR_REVIEW,
         )
 
+        # TODO: theses waiting for physical submit
+        # TODO: theses waiting for reservation pickup
+
         return Response(data=dict(
             theses_ready_for_submit=ThesisBaseSerializer(many=True, instance=theses_ready_for_submit).data,
             theses_ready_for_review=ThesisBaseSerializer(many=True, instance=theses_ready_for_review).data,

@@ -11,7 +11,7 @@ import csLocal from './locale/cs.json';
 import App from './App';
 import Axios from './axios';
 import hasPerm from './user';
-import pageContext from './context';
+import {pageContext} from './utils';
 
 export default function createVue(opts = {}) {
     Vue.use(VueI18n);
