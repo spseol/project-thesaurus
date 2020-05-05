@@ -83,5 +83,11 @@
   "Thesis title": "Název práce",
   "Unknown": "Neznámý",
   "supervisor": "vedoucí",
-  "opponent": "oponent"
+  "opponent": "oponent",
+  "Thesis text": "Text práce",
+  "Download": "Stáhnout",
+  "Send to review": "Odeslat k posouzení",
+  "Publish": "Zveřejnit",
+  "Waiting for submit": "Čeká na odevzdání",
+  "Waiting for review": "Čeká na posudky"
 }

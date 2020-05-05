@@ -149,7 +149,7 @@
                 for (let key in data) {
                     formData.append(key, this.thesis[key]);
                 }
-                const resp = await Axios.post('/api/v1/thesis/', formData, {
+                const resp = await Axios.post('/api/v1/thesis', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }

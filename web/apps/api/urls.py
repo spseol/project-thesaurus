@@ -15,7 +15,7 @@ from .views.user import UserFilterOptionsViewSet, StudentOptionsViewSet, Teacher
 
 last_modified_date = timezone.now()
 
-router = DefaultRouter()
+router = DefaultRouter(trailing_slash=False)
 router.register(r'thesis', ThesisViewSet)
 router.register(r'reservation', ReservationViewSet)
 router.register(r'attachment', AttachmentViewSet)

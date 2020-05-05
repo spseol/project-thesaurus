@@ -25,6 +25,12 @@ class ThesisBaseSerializer(ModelSerializer):
             'opponent',
         )
 
+class ThesisSubmitSerializer(ThesisBaseSerializer):
+    class Meta:
+        model = Thesis
+        fields = (
+            'abstract',
+        )
 
 class ThesisFullPublicSerializer(ThesisBaseSerializer):
     category = CategorySerializer(read_only=True)

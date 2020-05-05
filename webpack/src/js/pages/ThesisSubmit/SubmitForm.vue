@@ -2,7 +2,7 @@
     <v-card>
         <v-card-title>{{ $t('Thesis submit') }}</v-card-title>
         <v-card-text>
-            <v-form>
+            <v-form @submit.prevent="submit" :valid="valid">
                 <v-text-field
                     disabled filled v-model="thesis.title"
                     :label="$t('Thesis title')"
@@ -13,14 +13,22 @@
                     rows="15"
                     :label="$t('Abstract')"
                     v-model="thesis.abstract"
+                    :rules="[v => !!v]"
                 ></v-textarea>
 
                 <v-file-input
-                    label="Thesis text"
+                    :label="$t('Thesis text')"
+                    v-model="thesis.thesisText"
+                    :rules="[v => !!v]"
+                    accept="application/pdf"
+
                 ></v-file-input>
+
                 <v-row no-gutters>
                     <v-spacer></v-spacer>
-                    <v-btn type="submit" color="success">Submit</v-btn>
+                    <v-btn type="submit" color="success" :disabled="!valid">
+                        {{ $t('Submit thesis') }}
+                    </v-btn>
                 </v-row>
             </v-form>
         </v-card-text>
@@ -39,33 +47,34 @@
         },
         data() {
             return {
+                valid: true,
                 thesis: {
-                    abstract: null
+                    abstract: null,
+                    thesisText: null
                 }
             };
         },
         async created() {
 
-            this.thesis = (await Axios.get(`/api/v1/thesis/${this.id}/`)).data;
+            this.thesis = (await Axios.get(`/api/v1/thesis/${this.id}`)).data;
         },
         methods: {
             async submit() {
                 // TODO: make it alive
-                this.$refs.form.validate();
                 let formData = new FormData();
 
                 const data = {
                     ...this.thesis,
-                    admission: undefined
+                    thesisText: undefined
                 };
-                if (this.thesis.admission) {
-                    data.admission = await readFileAsync(this.thesis.admission);
+                if (this.thesis.thesisText) {
+                    data.thesisText = await readFileAsync(this.thesis.thesisText);
                 }
 
                 for (let key in data) {
                     formData.append(key, this.thesis[key]);
                 }
-                const resp = await Axios.put('/api/v1/thesis/', formData, {
+                const resp = await Axios.patch(`/api/v1/thesis/${this.id}/submit`, formData, {
                     headers: {'Content-Type': 'multipart/form-data'}
                 });
 

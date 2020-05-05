@@ -9,7 +9,7 @@ export default class ThesisService {
 
         const remap = (value) => value.replace('.', '__');
 
-        return await Axios.get(`/api/v1/thesis/?${qs.stringify({
+        return await Axios.get(`/api/v1/thesis?${qs.stringify({
             page,
             search: _.map(filter, (i) => i.username || i.id || i).join(' '),
             ordering: _.map(

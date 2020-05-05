@@ -20,7 +20,7 @@ export default function createVue(opts = {}) {
     Vue.use(PortalVue);
     Vue.config.productionTip = false;
 
-    Vue.directive('has-perm', function(el, bindings, vnode) {
+    Vue.directive('has-perm', (el, bindings, vnode) => {
         // TODO: think about https://github.com/mblarsen/vue-browser-acl
         if (bindings.arg) {
 

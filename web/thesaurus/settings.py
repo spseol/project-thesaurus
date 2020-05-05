@@ -50,11 +50,9 @@ INSTALLED_APPS = [
     'apps.utils',
 
     'loginas',
-    'crispy_forms',
     'webpack_loader',
     'debug_toolbar',
     'rest_framework',
-
     'django_extensions',
 ]
 
@@ -76,7 +74,13 @@ LOGIN_REDIRECT_URL = LOGOUT_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login'
 
+APPEND_SLASH = False
+
 AUTH_USER_MODEL = 'accounts.User'
+
+LOCALE_MIDDLEWARE_IGNORE_URLS = (
+    r'^/api/.*',
+)
 
 TEMPLATES = [
     {

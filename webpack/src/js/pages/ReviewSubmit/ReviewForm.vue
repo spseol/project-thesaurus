@@ -11,17 +11,27 @@
                                 disabled
                                 filled
                             ></v-text-field>
+
                             <v-text-field
                                 :label="$t('Thesis name')" :value="thesis.title"
                                 disabled
                                 filled
                             ></v-text-field>
+
                             <v-text-field
                                 :label="$t('Review author')" :suffix="$t(reviewingUserRole)"
                                 :value="(thesis[reviewingUserRole] || {full_name: $t('Unknown')}).full_name"
                                 disabled
                                 filled
                             ></v-text-field>
+                            <v-row no-gutters v-if="thesisTextAttachment">
+                                {{ $t('Thesis text') }}
+                                <v-spacer></v-spacer>
+                                <v-btn :to="thesisTextAttachment.url">
+                                    {{ $t('Download') }}
+                                </v-btn>
+                            </v-row>
+
                             <v-divider></v-divider>
                             <v-textarea
                                 :label="$t('Review comment')"
@@ -161,6 +171,9 @@
                     this.$t('Graphic design of the thesis'),
                     this.$t('Interpretation of conclusions, their originality and their own contribution to the work')
                 ]);
+            },
+            thesisTextAttachment() {
+                return _.find(this.thesis.attachments, {type_attachment: {identifier: 'thesis_text'}});
             }
         },
         methods: {

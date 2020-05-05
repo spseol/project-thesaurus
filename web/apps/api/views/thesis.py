@@ -3,7 +3,11 @@ from django.db import transaction
 from django.db.models import Q, QuerySet
 from django.shortcuts import get_list_or_404
 from django.utils.dateparse import parse_date
+from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
+from rest_framework.permissions import BasePermission
+from rest_framework.request import Request
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts.models import User
@@ -11,6 +15,14 @@ from apps.api.permissions import RestrictedViewModelPermissions
 from apps.attachment.models import Attachment, TypeAttachment
 from apps.thesis.models import Thesis, Category
 from apps.thesis.serializers import ThesisFullPublicSerializer, ThesisFullInternalSerializer
+from apps.thesis.serializers.thesis import ThesisSubmitSerializer
+
+
+class CanSubmitThesisPermission(BasePermission):
+    def has_object_permission(self, request, view, thesis: Thesis):
+        user = request.user  # type: User
+
+        return user in thesis.authors.get_queryset() and thesis.state == Thesis.State.READY_FOR_SUBMIT
 
 
 class ThesisViewSet(ModelViewSet):
@@ -43,7 +55,7 @@ class ThesisViewSet(ModelViewSet):
         user = self.request.user  # type: User
 
         # in case of request for one object include also thesis waiting for submit by one author
-        include_waiting_for_submit = self.action == 'retrieve'
+        include_waiting_for_submit = self.action in ('retrieve', 'submit')
 
         if user.has_perm('thesis.change_thesis'):
             return qs
@@ -76,6 +88,24 @@ class ThesisViewSet(ModelViewSet):
 
         thesis.state = Thesis.State.READY_FOR_SUBMIT
         thesis.save()
+
+    @action(methods=['patch'], detail=True, permission_classes=[CanSubmitThesisPermission])
+    @transaction.atomic
+    def submit(self, request: Request, *args, **kwargs):
+        serializer = ThesisSubmitSerializer(
+            instance=self.get_object(),
+            data=request.data,
+        )
+        serializer.is_valid(raise_exception=True)
+        thesis = serializer.save(
+            state=Thesis.State.SUBMITTED,
+        )
+        Attachment.objects.create_from_upload(
+            uploaded=request.FILES.get('thesisText'),
+            thesis=thesis,
+            type_attachment=TypeAttachment.objects.get_by_identifier(TypeAttachment.Identifier.THESIS_TEXT),
+        )
+        return Response(data=serializer.data)
 
     def get_serializer_class(self):
         if self.request.user.has_perm('attachment.view_attachment'):

@@ -19,28 +19,14 @@
                 </td>
             </template>
 
-            <template v-slot:item.available_for_reservation="{ item }">
+            <template v-slot:item.title="{ item }">
+                {{ item.title }}
+                <v-chip v-has-perm:thesis.change_thesis class="float-right" small>{{ item.state }}</v-chip>
+            </template>
+
+            <template v-slot:item.state="{ item }">
                 <div class="text-center">
-                    <v-btn
-                        v-if="item.reservable && item.available_for_reservation"
-                        v-text="$t('Borrow')"
-                        color="info" outlined
-                    ></v-btn>
-                    <v-btn
-                        v-if="item.reservable && !item.available_for_reservation && item.open_reservations_count === 1"
-                        v-text="$t('Make pre-reservation')"
-                        color="info" outlined
-                    ></v-btn>
-                    <v-btn
-                        v-if="item.reservable && !item.available_for_reservation && item.open_reservations_count > 1"
-                        v-text="$t('Borrowed')"
-                        x-small depressed
-                    ></v-btn>
-                    <v-btn
-                        v-if="!item.reservable"
-                        v-text="$t('Not reservable')"
-                        x-small depressed
-                    ></v-btn>
+                    <ThesisListActionBtn :thesis="item"></ThesisListActionBtn>
                 </div>
             </template>
 
@@ -75,7 +61,6 @@
                     @click="addUserFilterFromDataTable(item[key].username)"
                 ></a>
             </template>
-
         </v-data-table>
 
 
@@ -142,9 +127,10 @@
     import Axios from '../../axios';
     import ThesisService from './thesis-service';
     import ThesisDetailPanel from './ThesisDetailPanel';
+    import ThesisListActionBtn from './ThesisListActionBtn.vue';
 
     export default Vue.extend({
-        components: {ThesisDetailPanel},
+        components: {ThesisListActionBtn, ThesisDetailPanel},
         data() {
             return {
                 items: [],
@@ -194,10 +180,10 @@
                 const lgAndUp = this.$vuetify.breakpoint.lgAndUp;
                 const mdAndUp = this.$vuetify.breakpoint.mdAndUp;
                 const headers = [
-                    lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
+                    {text: '', value: 'data-table-expand'},
 
                     {text: this.$t('Title'), value: 'title'},
-                    {text: '', value: 'data-table-expand'},
+                    lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
                     {text: this.$t('Category'), value: 'category.title'},
 
                     mdAndUp && {text: this.$t('Year'), value: 'published_at'},
@@ -209,7 +195,7 @@
                 ];
 
 
-                headers.push({text: '', value: 'available_for_reservation'});
+                headers.push({text: '', value: 'state'});
                 return _.filter(headers, _.isPlainObject);
             }
         },
@@ -222,7 +208,7 @@
                 this.debouncedLoad,
                 {deep: true}
             );
-            this.userOptions = (await Axios.get('/api/v1/user-filter-options/')).data;
+            this.userOptions = (await Axios.get('/api/v1/user-filter-options')).data;
             this.categoryOptions = (await Axios.get('/api/v1/category-options')).data;
         }
     });
