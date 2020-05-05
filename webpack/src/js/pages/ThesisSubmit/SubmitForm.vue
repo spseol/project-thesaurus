@@ -2,7 +2,7 @@
     <v-card>
         <v-card-title>{{ $t('Thesis submit') }}</v-card-title>
         <v-card-text>
-            <v-form @submit.prevent="submit" :valid="valid">
+            <v-form @submit.prevent="submit" v-model="valid" ref="form" @change="$refs.form.validate()">
                 <v-text-field
                     disabled filled v-model="thesis.title"
                     :label="$t('Thesis title')"
@@ -38,7 +38,7 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {readFileAsync} from '../../utils';
+    import {eventBus, readFileAsync} from '../../utils';
 
     export default Vue.extend({
         name: 'SubmitForm',
@@ -47,9 +47,9 @@
         },
         data() {
             return {
-                valid: true,
+                valid: false,
                 thesis: {
-                    abstract: null,
+                    abstract: '',
                     thesisText: null
                 }
             };
@@ -60,16 +60,17 @@
         },
         methods: {
             async submit() {
-                // TODO: make it alive
                 let formData = new FormData();
 
                 const data = {
                     ...this.thesis,
                     thesisText: undefined
                 };
-                if (this.thesis.thesisText) {
-                    data.thesisText = await readFileAsync(this.thesis.thesisText);
+                if (!this.thesis.thesisText) {
+                    this.valid = false;
+                    return;
                 }
+                data.thesisText = await readFileAsync(this.thesis.thesisText);
 
                 for (let key in data) {
                     formData.append(key, this.thesis[key]);
@@ -79,7 +80,10 @@
                 });
 
                 if (resp.data.id) {
-
+                    eventBus.$emit('flash', {
+                        text: this.$t('Thesis has been successfully submitted!')
+                    });
+                    this.$router.push({name: 'dashboard'});
                 } else {
                     this.messages = resp.data;
                     this.valid = false;

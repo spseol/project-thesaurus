@@ -1,3 +1,5 @@
+import Vue from 'vue';
+
 class Context {
     username: string;
     locale: string;
@@ -31,9 +33,12 @@ function readFileAsync(file) {
 
 const pageContext = new Context();
 
+const eventBus = new Vue();
+
 export {
     pageContext,
-    readFileAsync
+    readFileAsync,
+    eventBus
 };
 
 

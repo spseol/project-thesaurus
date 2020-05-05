@@ -29,6 +29,7 @@ class ThesisSubmitSerializer(ThesisBaseSerializer):
     class Meta:
         model = Thesis
         fields = (
+            'id',
             'abstract',
         )
 
