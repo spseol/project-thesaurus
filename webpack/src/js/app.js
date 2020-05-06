@@ -8,6 +8,7 @@ import colors from 'vuetify/es5/util/colors';
 import '../scss/index.scss';
 
 import csLocal from './locale/cs.json';
+import enLocal from './locale/en.json';
 import App from './App';
 import Axios from './axios';
 import hasPerm from './user';
@@ -26,14 +27,11 @@ export default function createVue(opts = {}) {
 
         // dot is modifier sign for vue directives and app splitter for Django perms, needed manual parse
         const perm = bindings.arg.indexOf('.') >= 0 ? bindings.arg : bindings.rawName.replace(/v-has-perm:/g, '');
-
         hasPerm(perm).then((allowed) => {
             if (allowed)
                 delete el.style.display;
             else
                 el.style.display = 'none';
-
-            console.log(el.style.display);
         }).catch(() => {
             el.style.display = 'none';
         });
@@ -63,7 +61,7 @@ export default function createVue(opts = {}) {
 
     const i18n = new VueI18n({
         locale,
-        messages: {cs: csLocal, en: {}},
+        messages: {cs: csLocal, en: enLocal},
     });
 
     Axios.get('/api/i18n/catalog', {headers: {'Accept-language': locale}}).then(({data}) => {

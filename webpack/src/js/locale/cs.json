@@ -89,5 +89,15 @@
   "Send to review": "Odeslat k posouzení",
   "Publish": "Zveřejnit",
   "Waiting for submit": "Čeká na odevzdání",
-  "Waiting for review": "Čeká na posudky"
+  "Waiting for review": "Čeká na posudky",
+  "Thesis assigment": "Text zadání",
+  "Download thesis assigment": "Stáhnout zadání práce",
+  "Download thesis text": "Stáhnout text práce",
+  "After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews": {
+    "": ""
+  },
+  "Thesis admission was successfully prepared": {
+    " ": ""
+  },
+  "Thesis has been successfully submitted!": ""
 }

@@ -92,5 +92,15 @@
   "Send to review": "Send to review",
   "Publish": "Publish",
   "Waiting for submit": "Waiting for submit",
-  "Waiting for review": "Waiting for review"
+  "Waiting for review": "Waiting for review",
+  "Thesis assigment": "Thesis assigment",
+  "Download thesis assigment": "Download thesis assigment",
+  "Download thesis text": "Download thesis text",
+  "After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews": {
+    "": ""
+  },
+  "Thesis admission was successfully prepared": {
+    " ": ""
+  },
+  "Thesis has been successfully submitted!": "Thesis has been successfully submitted!"
 }

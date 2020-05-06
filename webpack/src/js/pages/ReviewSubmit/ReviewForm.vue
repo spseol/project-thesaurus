@@ -3,7 +3,7 @@
         <v-card :loading="loading">
             <v-card-title>{{ $t('Thesis review') }}</v-card-title>
             <v-card-text>
-                <v-form v-model="valid" @submit.prevent="submit" disabled="disabled">
+                <v-form @submit.prevent="submit" disabled="disabled" v-model="valid">
                     <v-row>
                         <v-col cols="12" md="6">
                             <v-text-field
@@ -24,15 +24,13 @@
                                 disabled
                                 filled
                             ></v-text-field>
-                            <v-row no-gutters v-if="thesisTextAttachment">
-                                {{ $t('Thesis text') }}
+                            <v-row class="mb-4" no-gutters v-if="thesisTextAttachment">
                                 <v-spacer></v-spacer>
-                                <v-btn :to="thesisTextAttachment.url">
-                                    {{ $t('Download') }}
+                                <v-btn :href="thesisTextAttachment.url" color="info" large target="_blank">
+                                    {{ $t('Download thesis text') }}
                                 </v-btn>
+                                <v-spacer></v-spacer>
                             </v-row>
-
-                            <v-divider></v-divider>
                             <v-textarea
                                 :label="$t('Review comment')"
                                 :rules="[v => !!v]"
@@ -52,8 +50,8 @@
                             <div>
                                 <v-chip
                                     :color="valueToColor(review.difficulty, 3)"
-                                >{{ $t('Difficulty of selected topic') }}
-                                </v-chip>
+                                    v-text="$t('Difficulty of selected topic')"
+                                ></v-chip>
                                 <v-slider
                                     :color="valueToColor(review.difficulty, 3)"
                                     :max="3"
@@ -62,18 +60,17 @@
                                     :step="1"
                                     :thumb-color="valueToColor(review.difficulty, 3)"
                                     :tick-labels="grades3"
-                                    :track-color="valueToColor(review.difficulty, 3)"
                                     class="VSliderCustom__label--gray"
                                     ticks="always"
+                                    track-color="grey"
                                     v-model="review.difficulty"
                                 ></v-slider>
 
                                 <div v-for="(grade, i) in review.grades">
                                     <v-chip
                                         :color="valueToColor(grade, 4)"
-                                        class="mt-5"
-                                    >{{ gradings[i] }}
-                                    </v-chip>
+                                        class="mt-5" v-text="gradings[i]"
+                                    ></v-chip>
                                     <v-slider
                                         :color="valueToColor(grade, 4)"
                                         :max="4"
@@ -83,7 +80,6 @@
                                         :thumb-color="valueToColor(grade, 4)"
                                         :tick-labels="grades4"
                                         class="VSliderCustom__label--gray"
-                                        color="info"
                                         ticks="always"
                                         track-color="grey"
                                         v-model="review.grades[i]"
@@ -92,22 +88,29 @@
                             </div>
                             <div>
                                 <v-divider></v-divider>
-                                <v-checkbox
-                                    :label="$t('review.submitHint')"
-                                    :rules="[v => !!v]"
-                                    class="font-weight-bold"
-                                ></v-checkbox>
-                                <div class="d-flex">
-                                    <v-text-field
-                                        :label="$t('Classification proposal')"
-                                        class="mr-3"
-                                        hide-details
-                                        outlined
-                                        v-model="review.grade_proposal"
-                                    ></v-text-field>
-                                    <v-btn :disabled="!valid" color="success" type="submit" x-large>{{ $t('Submit') }}
+                                <v-radio-group
+                                    :label="$t('Classification proposal')"
+                                    :rules="[v => v != null]"
+                                    row
+                                    v-model="review.grade_proposal"
+                                >
+                                    <v-radio
+                                        :color="valueToColor(review.grade_proposal, 4)"
+                                        :key="value" :label="text" :value="value"
+                                        v-for="[value, text] in gradeProposalOptions"
+                                    ></v-radio>
+                                </v-radio-group>
+                                <v-row no-gutters>
+                                    <v-checkbox
+                                        :label="$t('review.submitHint')"
+                                        :rules="[v => !!v]"
+                                        class="font-weight-bold"
+                                    ></v-checkbox>
+                                    <v-spacer></v-spacer>
+                                    <v-btn :disabled="!valid" color="success" type="submit" x-large>
+                                        {{ $t('Submit') }}
                                     </v-btn>
-                                </div>
+                                </v-row>
                             </div>
                         </v-col>
                     </v-row>
@@ -146,10 +149,10 @@
                 valid: true,
                 grades4: [$t('Excellent'), $t('Very well'), $t('Great'), $t('Not sufficient'), ''].reverse(),
                 grades3: [$t('Over average'), $t('Average'), $t('Under average'), ''].reverse(),
-
                 review: {
                     difficulty: 0,
-                    grades: _.times(6, () => 0),
+                    grade_proposal: 0,
+                    grades: _.times(this.reviewingUserRole == 'supervisor' ? 6 : 5, () => 0),
                     comment: null,
                     questions: null
                 }
@@ -158,8 +161,8 @@
         computed: {
             reviewingUserRole() {
                 return {
-                    [this.thesis.supervisor.username]: 'supervisor',
-                    [this.thesis.opponent.username]: 'opponent'
+                    [this.thesis.supervisor?.username]: 'supervisor',
+                    [this.thesis.opponent?.username]: 'opponent'
                 }[pageContext.username]; // TODO: in case of filled review.user.username use that
             },
             gradings() {
@@ -174,23 +177,26 @@
             },
             thesisTextAttachment() {
                 return _.find(this.thesis.attachments, {type_attachment: {identifier: 'thesis_text'}});
+            },
+            gradeProposalOptions() {
+                return _.map(_.reverse(_.filter(this.grades4)), (grade, i) => ([4 - i, grade]));
             }
         },
         methods: {
             valueToColor(v, scale = 3) {
                 if (scale === 3) {
                     return {
-                        3: colors.deepPurple.lighten2,
+                        3: colors.deepPurple.lighten3,
                         2: colors.blue.lighten2,
-                        1: colors.red.lighten3,
+                        1: colors.red.lighten1,
                         0: colors.grey.lighten1
                     }[v];
                 } else {
                     return {
-                        4: colors.deepPurple.lighten2,
+                        4: colors.deepPurple.lighten3,
                         3: colors.blue.lighten2,
                         2: colors.orange.base,
-                        1: colors.red.lighten3,
+                        1: colors.red.lighten1,
                         0: colors.grey.lighten1
                     }[v];
                 }
