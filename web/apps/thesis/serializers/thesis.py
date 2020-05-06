@@ -51,7 +51,7 @@ class ThesisFullPublicSerializer(ThesisBaseSerializer):
 
 
 class ThesisFullInternalSerializer(ThesisFullPublicSerializer):
-    attachments = AttachmentSerializer(many=True, source='thesis_attachment')
+    attachments = AttachmentSerializer(many=True, source='thesis_attachment', read_only=True)
 
     class Meta:
         model = Thesis

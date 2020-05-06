@@ -2,6 +2,7 @@
     <v-container fluid class="body-1">
         <v-row no-gutters>
             <v-col cols="12" md="9" lg="8" xl="6">
+                <!-- TODO: refactor to table? -->
                 <v-row
                     v-for="[title, getter, titleCss = '', valueCss = ''] in rows" v-if="getByGetter(getter)"
                     :key="getter.toString()" no-gutters>

@@ -60,6 +60,7 @@
                     v-text="item[key].full_name"
                     @click="addUserFilterFromDataTable(item[key].username)"
                 ></a>
+                <!-- TODO: editable at least opponent-->
             </template>
         </v-data-table>
 
@@ -193,7 +194,6 @@
                     lgAndUp && {text: this.$t('Supervisor'), value: 'supervisor.full_name'},
                     lgAndUp && {text: this.$t('Opponent'), value: 'opponent.full_name'}
                 ];
-
 
                 headers.push({text: '', value: 'state'});
                 return _.filter(headers, _.isPlainObject);

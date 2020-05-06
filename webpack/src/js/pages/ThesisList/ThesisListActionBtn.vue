@@ -35,7 +35,6 @@
             v-text="$t('Publish')"
             small color="primary" elevation="0"
             @click="publishDialog = true"
-
             v-has-perm:thesis.change_thesis
         ></v-btn>
 
@@ -53,34 +52,56 @@
             v-has-perm:thesis.change_thesis
         ></v-btn>
 
-        <v-dialog v-model="sendToReviewDialog" max-width="40vw">
+        <v-dialog v-model="sendToReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '50vw'">
             <v-card>
                 <v-card-title
                     class="headline grey lighten-2"
                     primary-title
-                >{{ $t('Send to review') }}</v-card-title>
+                >{{ thesis.title }}</v-card-title>
                 <v-card-text class="pt-3">
-                    <div class="title">
-                        {{ thesis.title }}
-                    </div>
-                    <div class="subtitle-1">
-                        {{ $tc('Authors', thesis.authors.length) }}: {{ thesis.authors.map(a => a.full_name).join(', ') }}
-                    </div>
-                    <div class="subtitle-1">
-                        {{ $tc('Supervisor') }}: {{ thesis.supervisor.full_name }}
-                    </div>
-                    <div class="subtitle-1">
-                        {{ $tc('Opponent') }}: {{ thesis.opponent.full_name }}
-                    </div>
-                    <div class="subtitle-1" v-if="thesisTextAttachment">
-                        {{ $tc('Thesis text') }}: <v-btn text :to="thesisTextAttachment.url">{{ $t('Download') }}</v-btn>
-                    </div>
+                    <v-simple-table>
+                        <tbody>
+                        <tr class="subtitle-1">
+                            <td>{{ $tc('Authors', thesis.authors.length) }}</td>
+                            <td>{{ thesis.authors.map(a => a.full_name).join(', ') }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.supervisor">
+                            <td>{{ $t('Supervisor') }}</td>
+                            <td>{{ thesis.supervisor.full_name }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.category">
+                            <td>{{ $t('Category') }}</td>
+                            <td>{{ thesis.category.title }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.opponent">
+                            <td>{{ $t('Opponent') }}</td>
+                            <td>{{ thesis.opponent.full_name }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.opponent">
+                            <td>{{ $t('Opponent') }}</td>
+                            <td>{{ thesis.opponent.full_name }}</td>
+                        </tr>
+                        <tr class="subtitle-1">
+                            <td class="col-2">{{ $t('Abstract') }}</td>
+                            <td class="text-justify">{{ thesis.abstract }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="getAttachment('thesis_assigment')">
+                            <td>{{ $t('Thesis assigment') }}</td>
+                            <td><v-btn outlined :href="getAttachment('thesis_assigment').url" small target="_blank">{{ $t('Download thesis assigment') }}</v-btn></td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="getAttachment('thesis_text')">
+                            <td>{{ $t('Thesis text') }}</td>
+                            <td><v-btn outlined :href="getAttachment('thesis_text').url" small target="_blank">{{ $t('Download thesis text') }}</v-btn></td>
+                        </tr>
+                        </tbody>
+                    </v-simple-table>
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
+                    <v-subheader class="ma-3">{{ $t('After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews.') }}</v-subheader>
                   <v-spacer></v-spacer>
                   <v-btn
-                      color="success"
+                      color="success" class="ma-3" x-large
                       @click="sendToReviewDialog = false"
                   >{{ $t('Send to review') }}</v-btn>
                 </v-card-actions>
@@ -102,9 +123,9 @@
                 publishDialog: false,
             };
         },
-        computed: {
-            thesisTextAttachment() {
-                return _.find(this.thesis.attachments, {type_attachment: {identifier: 'thesis_text'}});
+        methods: {
+            getAttachment(type) {
+                return _.find(this.thesis.attachments, {type_attachment: {identifier: type}});
             },
         },
     };

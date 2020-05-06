@@ -1,5 +1,4 @@
 <template>
-
     <v-card :loading="loading">
         <v-card-title>{{ $t('Prepare admission') }}</v-card-title>
         <v-card-text>
@@ -95,7 +94,7 @@
     import qs from 'qs';
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {readFileAsync} from '../../utils';
+    import {eventBus, readFileAsync} from '../../utils';
 
     export default Vue.extend({
         name: 'ThesisPrepareForm',
@@ -130,7 +129,7 @@
             async queryStudentOptions(search) {
                 this.loading = true;
 
-                this.studentOptions = (await Axios.get(`/api/v1/student-options/?${qs.stringify({search})}`)).data;
+                this.studentOptions = (await Axios.get(`/api/v1/student-options?${qs.stringify({search})}`)).data;
 
                 this.loading = false;
             },
@@ -156,7 +155,8 @@
                 });
 
                 if (resp.data.id) {
-
+                    eventBus.$emit('flash', {text: this.$t('Thesis admission was successfully prepared. ')});
+                    this.$router.push({name: 'thesis-list'});
                 } else {
                     this.messages = resp.data;
                     this.valid = false;
@@ -164,8 +164,8 @@
             }
         },
         async created() {
-            this.categoryOptions = (await Axios.get('/api/v1/category-options/')).data;
-            this.teacherOptions = (await Axios.get('/api/v1/teacher-options/')).data;
+            this.categoryOptions = (await Axios.get('/api/v1/category-options')).data;
+            this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
         }
     });
 </script>

@@ -7,7 +7,7 @@ from apps.accounts.models.managers import UserQueryset
 class User(AbstractUser):
     """Replacement for default Django user with some additional stuff."""
 
-    # TODO: custom fields?
+    # TODO: custom fields? class?
 
     full_name = property(AbstractUser.get_full_name)
 

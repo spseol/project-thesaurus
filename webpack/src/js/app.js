@@ -20,16 +20,23 @@ export default function createVue(opts = {}) {
     Vue.use(PortalVue);
     Vue.config.productionTip = false;
 
+    // TODO: think about https://github.com/mblarsen/vue-browser-acl
     Vue.directive('has-perm', (el, bindings, vnode) => {
-        // TODO: think about https://github.com/mblarsen/vue-browser-acl
-        if (bindings.arg) {
+        if (!bindings.arg) return;
 
-            let originDisplay = el.style.display;
+        // dot is modifier sign for vue directives and app splitter for Django perms, needed manual parse
+        const perm = bindings.arg.indexOf('.') >= 0 ? bindings.arg : bindings.rawName.replace(/v-has-perm:/g, '');
+
+        hasPerm(perm).then((allowed) => {
+            if (allowed)
+                delete el.style.display;
+            else
+                el.style.display = 'none';
+
+            console.log(el.style.display);
+        }).catch(() => {
             el.style.display = 'none';
-            bindings.arg && hasPerm(bindings.arg).then((allowed) => {
-                el.style.display = allowed ? originDisplay : 'none';
-            });
-        }
+        });
     });
 
     const {locale} = pageContext;
