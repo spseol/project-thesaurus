@@ -211,6 +211,7 @@
             },
             async submit() {
                 this.loading = true;
+                // TODO: editation?
                 const resp = (await Axios.post('/api/v1/review',
                     {
                         ...this.review,
@@ -229,7 +230,11 @@
             }
         },
         async created() {
+            // TODO: handle 404
             this.thesis = (await Axios.get(`/api/v1/thesis/${this.thesisId}`)).data;
+            if (this.reviewId) {
+                this.review = (await Axios.get(`/api/v1/review/${this.reviewId}`)).data;
+            }
         }
     });
 </script>

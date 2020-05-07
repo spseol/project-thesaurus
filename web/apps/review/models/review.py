@@ -41,9 +41,9 @@ class Review(BaseTimestampedModel):
         validators=[ArrayMinLengthValidator(5), ArrayMaxLengthValidator(6)],
         verbose_name=_('Grades'),
     )
-    grade_proposal = models.CharField(
+    grade_proposal = models.PositiveSmallIntegerField(
         verbose_name=_('Proposed grade'),
-        max_length=8
+        validators=[MinValueValidator(1), MaxValueValidator(4)],
     )
 
     class Meta:
