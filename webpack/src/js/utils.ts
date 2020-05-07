@@ -33,7 +33,18 @@ function readFileAsync(file) {
 
 const pageContext = new Context();
 
-const eventBus = new Vue();
+class Flash extends Object {
+    text: string;
+    color?: string;
+}
+
+class EventBus extends Vue {
+    public flash(flash: Flash) {
+        this.$emit('flash', flash);
+    }
+}
+
+const eventBus = new EventBus();
 
 export {
     pageContext,

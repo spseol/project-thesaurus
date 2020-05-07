@@ -85,7 +85,11 @@ export default function createVue(opts = {}) {
             {path: '/reservations', component: () => import('./pages/ReservationList/Page'), name: 'reservations'},
             {path: '/exports', component: {template: '<div>Nonono</div>'}, name: 'exports'},
             {path: '/settings', component: {template: '<div>Nonono</div>'}, name: 'settings'},
-            {path: '/review/:id', component: () => import('./pages/ReviewSubmit/Page'), name: 'review-submit'},
+            {
+                path: '/review/:id/:reviewId?',
+                component: () => import('./pages/ReviewSubmit/Page'),
+                name: 'review-detail',
+            },
             {path: '*', component: {template: '<div>Not found :-(</div>'}},
         ],
         mode: 'history',

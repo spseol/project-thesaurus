@@ -49,3 +49,4 @@ class Review(BaseTimestampedModel):
     class Meta:
         verbose_name = _('Review')
         verbose_name_plural = _('Reviews')
+        ordering = ('thesis', 'user')

@@ -80,7 +80,7 @@
                 });
 
                 if (resp.data.id) {
-                    eventBus.$emit('flash', {
+                    eventBus.flash({
                         text: this.$t('Thesis has been successfully submitted!')
                     });
                     this.$router.push({name: 'dashboard'});

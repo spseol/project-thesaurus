@@ -3,7 +3,7 @@
         <v-card :loading="loading">
             <v-card-title>{{ $t('Thesis review') }}</v-card-title>
             <v-card-text>
-                <v-form @submit.prevent="submit" disabled="disabled" v-model="valid">
+                <v-form @submit.prevent="submit" v-model="valid">
                     <v-row>
                         <v-col cols="12" md="6">
                             <v-text-field
@@ -69,7 +69,7 @@
                                 <div v-for="(grade, i) in review.grades">
                                     <v-chip
                                         :color="valueToColor(grade, 4)"
-                                        class="mt-5" v-text="gradings[i]"
+                                        class="mt-7" v-text="gradings[i]"
                                     ></v-chip>
                                     <v-slider
                                         :color="valueToColor(grade, 4)"
@@ -90,10 +90,11 @@
                                 <v-divider></v-divider>
                                 <v-radio-group
                                     :label="$t('Classification proposal')"
-                                    :rules="[v => v != null]"
+                                    :rules="[v => !!v]"
                                     row
                                     v-model="review.grade_proposal"
                                 >
+                                    <v-spacer></v-spacer>
                                     <v-radio
                                         :color="valueToColor(review.grade_proposal, 4)"
                                         :key="value" :label="text" :value="value"
@@ -105,6 +106,8 @@
                                         :label="$t('review.submitHint')"
                                         :rules="[v => !!v]"
                                         class="font-weight-bold"
+                                        :hide-details="!non_field_error_messages"
+                                        :error-messages="non_field_error_messages"
                                     ></v-checkbox>
                                     <v-spacer></v-spacer>
                                     <v-btn :disabled="!valid" color="success" type="submit" x-large>
@@ -129,7 +132,7 @@
     import Vue from 'vue';
     import colors from 'vuetify/lib/util/colors';
     import Axios from '../../axios';
-    import {pageContext} from '../../utils';
+    import {eventBus, pageContext} from '../../utils';
 
 
     export default Vue.extend({
@@ -138,6 +141,10 @@
             thesisId: {
                 type: String,
                 required: true
+            },
+            reviewId: {
+                type: String,
+                required: false
             }
         },
         data() {
@@ -147,6 +154,7 @@
                 thesis: {authors: [], opponent: {}, supervisor: {}},
                 loading: false,
                 valid: true,
+                non_field_error_messages: [],
                 grades4: [$t('Excellent'), $t('Very well'), $t('Great'), $t('Not sufficient'), ''].reverse(),
                 grades3: [$t('Over average'), $t('Average'), $t('Under average'), ''].reverse(),
                 review: {
@@ -163,7 +171,7 @@
                 return {
                     [this.thesis.supervisor?.username]: 'supervisor',
                     [this.thesis.opponent?.username]: 'opponent'
-                }[pageContext.username]; // TODO: in case of filled review.user.username use that
+                }[this.review?.user?.username || pageContext.username];
             },
             gradings() {
                 return _.filter([
@@ -186,14 +194,14 @@
             valueToColor(v, scale = 3) {
                 if (scale === 3) {
                     return {
-                        3: colors.deepPurple.lighten3,
+                        3: colors.green.lighten1,
                         2: colors.blue.lighten2,
                         1: colors.red.lighten1,
                         0: colors.grey.lighten1
                     }[v];
                 } else {
                     return {
-                        4: colors.deepPurple.lighten3,
+                        4: colors.green.lighten1,
                         3: colors.blue.lighten2,
                         2: colors.orange.base,
                         1: colors.red.lighten1,
@@ -203,23 +211,21 @@
             },
             async submit() {
                 this.loading = true;
-
-                const resp = (await Axios.post('/api/v1/review/',
+                const resp = (await Axios.post('/api/v1/review',
                     {
                         ...this.review,
-                        thesis: {id: this.thesis.id}
+                        thesis_id: this.thesisId
                     }
                 )).data;
-
-                if (resp.id) {
-                    // TODO: show success
-                } else {
-                    // TODO show messages
-                    this.valid = false;
-                    this.messages = resp;
-                }
-
                 this.loading = false;
+
+                if (resp.pk) {
+                    eventBus.flash({text: this.$t('Review has been submitted.')});
+                    this.$router.push({name: 'dashboard'});
+                } else {
+                    this.messages = resp;
+                    this.non_field_error_messages = resp.non_field_errors;
+                }
             }
         },
         async created() {
