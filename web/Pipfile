@@ -23,6 +23,7 @@ django-positions = "*"
 django-stubs = "*"
 filetype = "*"
 drf-pdf = "*"
+djangorestframework-stubs = "*"
 
 [dev-packages]
 

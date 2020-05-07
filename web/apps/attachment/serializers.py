@@ -26,6 +26,5 @@ class AttachmentSerializer(ModelSerializer):
         fields = (
             'id',
             'type_attachment',
-            'file_path',
             'url',
         )

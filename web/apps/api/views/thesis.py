@@ -108,7 +108,13 @@ class ThesisViewSet(ModelViewSet):
         return Response(data=serializer.data)
 
     def get_serializer_class(self):
-        if self.request.user.has_perm('attachment.view_attachment'):
-            return ThesisFullInternalSerializer
+        class DynamicThesisSerializer(ThesisFullInternalSerializer):
+            class Meta:
+                model = Thesis
+                # skip ThesisFullInternalSerializer to avoid variant fields attachments and reviews
+                fields = ThesisFullPublicSerializer.Meta.fields + tuple(filter(None, (
+                    'attachments' if self.request.user.has_perm('attachment.view_attachment') else None,
+                    'reviews' if self.request.user.has_perm('review.view_review') else None,
+                )))
 
-        return ThesisFullPublicSerializer
+        return DynamicThesisSerializer

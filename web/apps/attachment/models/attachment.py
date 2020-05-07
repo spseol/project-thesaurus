@@ -12,7 +12,7 @@ class Attachment(BaseTimestampedModel):
 
     thesis = models.ForeignKey(
         to='thesis.Thesis',
-        related_name='thesis_attachment',
+        related_name='attachment_thesis',
         verbose_name=_('Target thesis'),
         on_delete=models.CASCADE,
     )
@@ -20,7 +20,7 @@ class Attachment(BaseTimestampedModel):
     type_attachment = models.ForeignKey(
         to='attachment.TypeAttachment',
         on_delete=models.CASCADE,
-        related_name='type_attachment_attachment',
+        related_name='attachment_type_attachment',
         verbose_name=_('Type of attachment'),
     )
 

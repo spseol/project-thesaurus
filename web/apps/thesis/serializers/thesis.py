@@ -3,6 +3,7 @@ from rest_framework.serializers import ModelSerializer
 
 from apps.accounts.serializers import UserSerializer
 from apps.attachment.serializers import AttachmentSerializer
+from apps.review.serializers import ReviewSerializer
 from apps.thesis.models import Thesis
 from apps.thesis.serializers import CategorySerializer
 
@@ -52,9 +53,11 @@ class ThesisFullPublicSerializer(ThesisBaseSerializer):
 
 class ThesisFullInternalSerializer(ThesisFullPublicSerializer):
     attachments = AttachmentSerializer(many=True, source='thesis_attachment', read_only=True)
+    reviews = ReviewSerializer(many=True, source='review_thesis', read_only=True)
 
     class Meta:
         model = Thesis
         fields = ThesisFullPublicSerializer.Meta.fields + (
             'attachments',
+            'reviews',
         )

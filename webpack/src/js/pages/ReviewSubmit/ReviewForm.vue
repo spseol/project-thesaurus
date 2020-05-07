@@ -215,7 +215,7 @@
                 const resp = (await Axios.post('/api/v1/review',
                     {
                         ...this.review,
-                        thesis_id: this.thesisId
+                        thesis: this.thesisId
                     }
                 )).data;
                 this.loading = false;

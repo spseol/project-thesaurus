@@ -46,6 +46,8 @@ class Review(BaseTimestampedModel):
         validators=[MinValueValidator(1), MaxValueValidator(4)],
     )
 
+    # TODO: state?
+
     class Meta:
         verbose_name = _('Review')
         verbose_name_plural = _('Reviews')

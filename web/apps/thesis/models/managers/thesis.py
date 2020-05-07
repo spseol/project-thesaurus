@@ -11,8 +11,10 @@ class ThesisApiManager(Manager):
             'opponent',
         ).prefetch_related(
             'authors',
-            'thesis_attachment',
-            'thesis_attachment__type_attachment',
+            'attachment_thesis',
+            'attachment_thesis__type_attachment',
+            'review_thesis',
+            'review_thesis__user',
         ).annotate(
             available_for_reservation=~Exists(
                 queryset=Reservation.objects.filter(

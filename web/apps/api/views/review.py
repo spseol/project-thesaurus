@@ -3,21 +3,17 @@ from rest_framework.viewsets import ModelViewSet
 
 from apps.api.permissions import RestrictedViewModelPermissions
 from apps.review.models import Review
-from apps.review.serializers import ReviewSubmitSerializer
+from apps.review.serializers import ReviewSerializer
 
 
 class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.get_queryset()
     permission_classes = (RestrictedViewModelPermissions,)
-    serializer_class = ReviewSubmitSerializer
+    serializer_class = ReviewSerializer
 
     @transaction.atomic
-    def perform_create(self, serializer: ReviewSubmitSerializer):
-        review = serializer.save(
-            user=self.request.user,
-            thesis=serializer.validated_data.get('thesis_id')
+    def perform_create(self, serializer: ReviewSerializer):
+        serializer.save(
+            user=self.request.user,  # TODO: Current user default?
         )
-
-        review.save()
-
     # TODO: perform update?
