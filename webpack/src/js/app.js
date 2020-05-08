@@ -95,7 +95,7 @@ export default function createVue(opts = {}) {
                 component: () => import('./pages/ReviewSubmit/Page'),
                 name: 'review-detail',
             },
-            {path: '*', component: {template: '<div>Not found :-(</div>'}},
+            {path: '*', component: () => import('./components/404'), name: '404'},
         ],
         mode: 'history',
         base: `${locale}/`,

@@ -115,7 +115,7 @@
             let $t = (key) => this.$t(key);
             return {
                 pageContext,
-                drawer: this.$vuetify.breakpoint.mdAndUp,
+                drawer: this.$vuetify.breakpoint.mdAndUp && this.$route.name != '404',
                 flash: {show: false},
                 items: [
                     {icon: 'mdi-home', text: $t('Dashboard'), to: {name: 'dashboard'}},
@@ -137,6 +137,12 @@
                     {icon: 'mdi-settings', text: $t('Settings'), to: {name: 'settings'}}
                 ]
             };
+        },
+        watch: {
+            $route(to, from) {
+                if (to.name == '404')
+                    this.drawer = false;
+            }
         },
         created() {
             eventBus.$on('flash', (flash) => {

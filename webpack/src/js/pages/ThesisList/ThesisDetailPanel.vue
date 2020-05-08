@@ -80,22 +80,7 @@
             }
         },
         data() {
-            return {
-                rows: [
-                    ['', 'title', null, 'headline'],
-                    [this.$t('Author'), (t) => _.map(t.authors, 'full_name').join(', ')],
-                    [this.$t('Supervisor'), 'supervisor.full_name'],
-                    [this.$t('Opponent'), 'opponent.full_name'],
-                    [this.$t('Year'), 'published_at'],
-                    [this.$t('Category'), 'category.title'],
-                    [this.$t('Abstract'), 'abstract']
-                ]
-            };
-        },
-        methods: {
-            getByGetter(getter) {
-                return _.isFunction(getter) ? getter(this.thesis) : _.get(this.thesis, getter, '');
-            }
+            return {};
         }
     };
 </script>
