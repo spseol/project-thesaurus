@@ -1,46 +1,83 @@
 <template>
     <v-container fluid class="body-1">
         <v-row no-gutters>
-            <v-col cols="12" md="9" lg="8" xl="6">
-                <!-- TODO: refactor to table? -->
-                <v-row
-                    v-for="[title, getter, titleCss = '', valueCss = ''] in rows" v-if="getByGetter(getter)"
-                    :key="getter.toString()" no-gutters>
-                    <v-col cols="12" md="1" class="font-weight-bold text-left text-md-right" :class="titleCss">
-                        {{ title }}
-                    </v-col>
-                    <v-col class="text-justify" :class="valueCss">
-                        <p class="text-justify pl-3">
-                            {{ getByGetter(getter) }}
-                        </p>
-                    </v-col>
-                </v-row>
-                <v-row v-for="attachment in thesis.attachments" :key="attachment.id">
-                    <v-col cols="12" md="1" class="text-left text-md-right">
-                        <v-icon>mdi-pdf-box</v-icon>
-                    </v-col>
-                    <v-col>
-                        <p class="text-justify pl-3">
-                            <a :href="attachment.url">{{ attachment.type_attachment.name }}</a>
-                        </p>
-                    </v-col>
-                </v-row>
+            <v-col cols="12" md="8">
+                <table class="InfoTable">
+                    <tbody>
+                    <tr>
+                        <td colspan="2" class="display-1">{{ thesis.title }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Author') }}</td>
+                        <td>{{ thesis.authors.map(o => o.full_name).join(', ') }}</td>
+                    </tr>
+                    <tr v-if="thesis.supervisor">
+                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Supervisor') }}</td>
+                        <td>{{ thesis.supervisor.full_name }}</td>
+                    </tr>
+                    <tr v-if="thesis.opponent">
+                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Opponent') }}</td>
+                        <td>{{ thesis.opponent.full_name }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Year') }}</td>
+                        <td>{{ thesis.published_at }}</td>
+                    </tr>
+                    <tr>
+                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Category') }}</td>
+                        <td>{{ thesis.category.title }}</td>
+                    </tr>
+                    <tr v-if="thesis.abstract">
+                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Abstract') }}</td>
+                        <td class="text-justify">{{ thesis.abstract }}</td>
+                    </tr>
+                    <template v-has-perm:attachment.view_attachment>
+                        <tr v-for="attachment in thesis.attachments">
+                            <td class="text-left text-md-right">
+                                <v-icon>mdi-pdf-box</v-icon>
+                            </td>
+                            <td>
+                                <v-btn small outlined color="primary" :href="attachment.url" target="_blank">
+                                    {{ attachment.type_attachment.name }}
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </template>
+                    <template v-has-perm:review.view_review>
+                        <tr v-for="review in thesis.reviews">
+                            <td class="text-left text-md-right">
+                                <v-icon>mdi-book-information-variant</v-icon>
+                            </td>
+                            <td>
+                                <v-btn small outlined color="primary" :to="{
+                                    name: 'review-detail',
+                                    params: {id: thesis.id, reviewId: review.id}
+                                }" target="_blank">
+                                    {{ $t('Review') }}
+                                    {{ review.user.full_name || review.user.username }}
+                                </v-btn>
+                            </td>
+                        </tr>
+                    </template>
+                    </tbody>
+                </table>
             </v-col>
-            <v-col cols="12" md="3" lg="4" xl="6" class="align-center d-flex justify-center">
+            <v-col cols="12" md="4" class="align-center d-flex justify-center">
                 <v-img :src="require('../../../img/poster.png')" max-width="200px" class="elevation-2"></v-img>
             </v-col>
         </v-row>
     </v-container>
 
 </template>
-<script>
+<script type="text/tsx">
+
     export default {
         name: 'ThesisDetailPanel',
         props: {
             thesis: {
                 type: Object,
-                required: true,
-            },
+                required: true
+            }
         },
         data() {
             return {
@@ -51,14 +88,14 @@
                     [this.$t('Opponent'), 'opponent.full_name'],
                     [this.$t('Year'), 'published_at'],
                     [this.$t('Category'), 'category.title'],
-                    [this.$t('Abstract'), 'abstract'],
-                ],
+                    [this.$t('Abstract'), 'abstract']
+                ]
             };
         },
         methods: {
             getByGetter(getter) {
                 return _.isFunction(getter) ? getter(this.thesis) : _.get(this.thesis, getter, '');
-            },
-        },
+            }
+        }
     };
 </script>

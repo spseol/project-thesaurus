@@ -14,19 +14,18 @@
             class="body-2"
         >
             <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length" class="orange lighten-5">
+                <td :colspan="headers.length" class="white lighten-5">
                     <ThesisDetailPanel :thesis="item"/>
                 </td>
             </template>
 
             <template v-slot:item.title="{ item }">
                 {{ item.title }}
-                <v-chip v-has-perm:thesis.change_thesis class="float-right" small>{{ item.state }}</v-chip>
             </template>
 
             <template v-slot:item.state="{ item }">
                 <div class="text-center">
-                    <ThesisListActionBtn :thesis="item"></ThesisListActionBtn>
+                    <ThesisListActionBtn :thesis="item" :title="item.state"></ThesisListActionBtn>
                 </div>
             </template>
 
