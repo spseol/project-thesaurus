@@ -2,9 +2,29 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from filetype import Type as FileType, get_type
+from filetype.types.archive import Pdf, Zip, Rar, Tar, Gz
+from filetype.types.image import Png
 
 from apps.attachment.models.managers import AttachmentManager
 from apps.utils.models import BaseTimestampedModel, BaseTypeModel
+
+
+def _default_allowed_content_types():
+    # has to be std function, lambda is not serializable for migrations
+    return [Pdf.MIME]
+
+
+def _content_type_choices():
+    # has to be std function, lambda is not serializable for migrations
+    return list(map(lambda t: (t.MIME, t.EXTENSION), (
+        Pdf,
+        Png,
+        Zip,
+        Rar,
+        Tar,
+        Gz,
+    )))
 
 
 class Attachment(BaseTimestampedModel):
@@ -30,26 +50,26 @@ class Attachment(BaseTimestampedModel):
         null=True,
     )
 
+    content_type = models.CharField(
+        max_length=64,
+        choices=_content_type_choices(),
+    )
+
     objects = AttachmentManager()
 
     class Meta:
         verbose_name = _('Attachment')
         verbose_name_plural = _('Attachments')
 
-    def build_file_path(self, suffix: str):
+    def build_file_path(self, file_type: FileType):
         pk = str(self.id)
         thesis_pk = str(self.thesis.pk)
-        return f'attachment/{thesis_pk[:2]}/{thesis_pk}/{self.type_attachment.identifier}-{pk[:4]}.{suffix.lstrip(".")}'
+        return f'attachment/{thesis_pk[:2]}/{thesis_pk}/{self.type_attachment.identifier}-{pk[:4]}.{file_type.extension}'
 
     @property
     def public_file_name(self):
-        ext = self.file_path.rsplit('.', 1)[-1]
-        return f'{self.thesis.registration_number or slugify(self.thesis.title)}.{ext}'
-
-
-def _default_allowed_content_types():
-    # has to be std function, lambda is not serializable for migrations
-    return ['application/pdf']
+        file_type = get_type(mime=self.content_type)
+        return f'{self.thesis.registration_number or slugify(self.thesis.title)}.{file_type.extension}'
 
 
 class TypeAttachment(BaseTypeModel):
@@ -60,6 +80,7 @@ class TypeAttachment(BaseTypeModel):
         THESIS_ASSIGMENT = 'thesis_assigment', _('Thesis assigment')
         SUPERVISOR_REVIEW = 'supervisor_review', _('Supervisor review')
         OPPONENT_REVIEW = 'opponent_review', _('Opponent review')
+        THESIS_POSTER = 'thesis_poster', _('Thesis poster')
 
     identifier = models.CharField(
         verbose_name=_('Identifier'),
@@ -69,7 +90,10 @@ class TypeAttachment(BaseTypeModel):
     )
 
     allowed_content_types = ArrayField(
-        base_field=models.CharField(max_length=64),
+        base_field=models.CharField(
+            max_length=64,
+            choices=_content_type_choices(),
+        ),
         default=_default_allowed_content_types,
         verbose_name=_('List of allowed mime/content types'),
         blank=True,

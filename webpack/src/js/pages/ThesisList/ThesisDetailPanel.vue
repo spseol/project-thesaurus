@@ -63,13 +63,19 @@
                 </table>
             </v-col>
             <v-col cols="12" md="4" class="align-center d-flex justify-center">
-                <v-img :src="require('../../../img/poster.png')" max-width="200px" class="elevation-2"></v-img>
+                <!--suppress HtmlUnknownTarget -->
+                <v-img
+                    v-if="poster"
+                    :src="poster.url"
+                    max-width="300px" class="elevation-2"
+                ></v-img>
             </v-col>
         </v-row>
     </v-container>
 
 </template>
 <script type="text/tsx">
+    import _ from 'lodash';
 
     export default {
         name: 'ThesisDetailPanel',
@@ -81,6 +87,12 @@
         },
         data() {
             return {};
+        },
+        computed: {
+            poster() {
+                // TODO: will not work for users without view_attachment perm
+                return _.find(this.thesis.attachments, {type_attachment: {identifier: 'thesis_poster'}});
+            }
         }
     };
 </script>

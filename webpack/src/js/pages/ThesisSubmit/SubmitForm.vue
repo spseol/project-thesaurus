@@ -21,8 +21,14 @@
                     v-model="thesis.thesisText"
                     :rules="[v => !!v]"
                     accept="application/pdf"
-
                 ></v-file-input>
+
+                <v-file-input
+                    :label="$t('Thesis poster')"
+                    v-model="thesis.thesisPoster"
+                    accept="image/png"
+                ></v-file-input>
+                <!-- TODO: validation? -->
 
                 <v-row no-gutters>
                     <v-spacer></v-spacer>
@@ -71,6 +77,8 @@
                     return;
                 }
                 data.thesisText = await readFileAsync(this.thesis.thesisText);
+                if (this.thesis.thesisPoster)
+                    data.thesisPoster = await readFileAsync(this.thesis.thesisPoster);
 
                 for (let key in data) {
                     formData.append(key, this.thesis[key]);

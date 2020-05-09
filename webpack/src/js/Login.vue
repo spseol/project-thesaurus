@@ -139,7 +139,7 @@
     // TODO: invalid?
     // animation: v-shake .6s map-get($transition, 'swing')
     .show-form-enter-active {
-        transition: all ease-in-out 250ms;
+        transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }
 
     .show-form-enter {

@@ -39,12 +39,12 @@
                 ></v-autocomplete>
 
                 <v-autocomplete
-                    v-model="thesis.supervisor"
+                    v-model="thesis.supervisor_id"
                     :items="teacherOptions"
                     hide-no-data
                     :label="$t('Supervisor')"
                     :rules="[v => !!v]"
-                    :error-messages="messages.supervisor"
+                    :error-messages="messages.supervisor_id"
                 ></v-autocomplete>
 
                 <v-radio-group
@@ -115,7 +115,7 @@
                 authors: [],
                 published_at: new Date().toISOString().substr(0, 7).replace('-', '/'),
                 category: null,
-                supervisor: null,
+                supervisor_id: null,
                 admission: null
             }
         }),
@@ -159,7 +159,6 @@
                     this.$router.push({name: 'thesis-list'});
                 } else {
                     this.messages = resp.data;
-                    this.valid = false;
                 }
             }
         },

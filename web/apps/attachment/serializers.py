@@ -14,6 +14,7 @@ class TypeAttachmentSerializer(ModelSerializer):
             'name',
             'identifier',
         )
+        read_only_fields = fields
 
 
 class AttachmentSerializer(ModelSerializer):
@@ -27,4 +28,7 @@ class AttachmentSerializer(ModelSerializer):
             'id',
             'type_attachment',
             'url',
+            'content_type',
         )
+
+        read_only_fields = fields

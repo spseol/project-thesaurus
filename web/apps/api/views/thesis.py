@@ -72,7 +72,7 @@ class ThesisViewSet(ModelViewSet):
     def perform_create(self, serializer: ThesisFullPublicSerializer):
         thesis = serializer.save(
             category=get_object_or_404(Category, pk=serializer.initial_data.get('category')),
-            supervisor=get_object_or_404(get_user_model(), pk=serializer.initial_data.get('supervisor')),
+            supervisor=serializer.validated_data.get('supervisor'),
             authors=get_list_or_404(
                 get_user_model(),
                 pk__in=serializer.initial_data.get('authors').split(',')
@@ -105,6 +105,14 @@ class ThesisViewSet(ModelViewSet):
             thesis=thesis,
             type_attachment=TypeAttachment.objects.get_by_identifier(TypeAttachment.Identifier.THESIS_TEXT),
         )
+        if poster := request.FILES.get('thesisPoster'):
+            # TODO: validation with allowed mimetypes?
+            Attachment.objects.create_from_upload(
+                uploaded=poster,
+                thesis=thesis,
+                type_attachment=TypeAttachment.objects.get_by_identifier(TypeAttachment.Identifier.THESIS_POSTER),
+            )
+
         return Response(data=serializer.data)
 
     def get_serializer_class(self):
