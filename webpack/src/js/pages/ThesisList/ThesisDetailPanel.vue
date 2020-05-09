@@ -52,7 +52,7 @@
                                 <v-btn small outlined color="primary" :to="{
                                     name: 'review-detail',
                                     params: {id: thesis.id, reviewId: review.id}
-                                }" target="_blank">
+                                }">
                                     {{ $t('Review') }}
                                     {{ review.user.full_name || review.user.username }}
                                 </v-btn>

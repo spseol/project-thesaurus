@@ -1,10 +1,10 @@
 <template>
     <v-container class="fill-height mt-md-12" fluid>
         <v-row align="center" justify="center" no-gutters class="mt-md-12">
-            <v-col cols="12" md="3" class="md-md-12 mr-10 text-right Emoji hidden-sm-and-down">
+            <v-col cols="12" md="2" class="md-md-12 mr-10 text-right Emoji hidden-sm-and-down">
                 ☹
             </v-col>
-            <v-col cols="12" md="3" class="md-md-12">
+            <v-col cols="12" md="3" class="md-md-12 ml-md-10">
                 <h1 class="display-3 font-weight-medium">{{ $t('Page not found') }}</h1>
                 <p class="subtitle-1">{{ $t('Sorry, but this page was not found.') }}</p>
             </v-col>

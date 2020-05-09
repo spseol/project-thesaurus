@@ -110,7 +110,7 @@
                                         :error-messages="non_field_error_messages"
                                     ></v-checkbox>
                                     <v-spacer></v-spacer>
-                                    <v-btn :disabled="!valid" color="success" type="submit" x-large>
+                                    <v-btn :disabled="!valid" color="success" type="submit" x-large v-if="!this.review.id">
                                         {{ $t('Submit') }}
                                     </v-btn>
                                 </v-row>
@@ -138,12 +138,12 @@
     export default Vue.extend({
         name: 'ReviewForm',
         props: {
-            thesisId: {
-                type: String,
+            thesisLoaded: {
+                type: Object,
                 required: true
             },
-            reviewId: {
-                type: String,
+            reviewLoaded: {
+                type: Object,
                 required: false
             }
         },
@@ -215,7 +215,7 @@
                 const resp = (await Axios.post('/api/v1/review',
                     {
                         ...this.review,
-                        thesis: this.thesisId
+                        thesis: this.thesis.id
                     }
                 )).data;
                 this.loading = false;
@@ -229,11 +229,12 @@
                 }
             }
         },
-        async created() {
-            // TODO: handle 404
-            this.thesis = (await Axios.get(`/api/v1/thesis/${this.thesisId}`)).data;
-            if (this.reviewId) {
-                this.review = (await Axios.get(`/api/v1/review/${this.reviewId}`)).data;
+        watch: {
+            thesisLoaded(to) {
+                this.thesis = _.cloneDeep(to);
+            },
+            reviewLoaded(to) {
+                this.review = _.cloneDeep(to);
             }
         }
     });
