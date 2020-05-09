@@ -51,7 +51,7 @@
                             <td>
                                 <v-btn small outlined color="primary" :to="{
                                     name: 'review-detail',
-                                    params: {id: thesis.id, reviewId: review.id}
+                                    params: {thesisId: thesis.id, reviewId: review.id}
                                 }">
                                     {{ $t('Review') }}
                                     {{ review.user.full_name || review.user.username }}

@@ -3,6 +3,7 @@
         <v-card :loading="loading">
             <v-card-title>{{ $t('Thesis review') }}</v-card-title>
             <v-card-text>
+                <!-- TODO: https://stackoverflow.com/a/55915597-->
                 <v-form @submit.prevent="submit" v-model="valid">
                     <v-row>
                         <v-col cols="12" md="6">
@@ -101,7 +102,7 @@
                                         v-for="[value, text] in gradeProposalOptions"
                                     ></v-radio>
                                 </v-radio-group>
-                                <v-row no-gutters>
+                                <v-row no-gutters v-if="!this.review.id">
                                     <v-checkbox
                                         :label="$t('review.submitHint')"
                                         :rules="[v => !!v]"
@@ -110,7 +111,7 @@
                                         :error-messages="non_field_error_messages"
                                     ></v-checkbox>
                                     <v-spacer></v-spacer>
-                                    <v-btn :disabled="!valid" color="success" type="submit" x-large v-if="!this.review.id">
+                                    <v-btn :disabled="!valid" color="success" type="submit" x-large>
                                         {{ $t('Submit') }}
                                     </v-btn>
                                 </v-row>

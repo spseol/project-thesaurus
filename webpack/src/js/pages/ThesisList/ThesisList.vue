@@ -143,7 +143,7 @@
     import {eventBus} from '../../utils';
     import ThesisService from './thesis-service';
     import ThesisDetailPanel from './ThesisDetailPanel';
-    import ThesisListActionBtn from './ThesisListActionBtn.vue';
+    import ThesisListActionBtn from './ThesisListActionBtn';
 
     export default Vue.extend({
         components: {ThesisListActionBtn, ThesisDetailPanel},

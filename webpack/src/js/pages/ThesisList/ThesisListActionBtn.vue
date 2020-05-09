@@ -69,17 +69,13 @@
                             <td>{{ $t('Supervisor') }}</td>
                             <td>{{ thesis.supervisor.full_name }}</td>
                         </tr>
+                        <tr class="subtitle-1" v-if="thesis.opponent">
+                            <td>{{ $t('Opponent') }}</td>
+                            <td>{{ thesis.opponent.full_name }}</td>
+                        </tr>
                         <tr class="subtitle-1" v-if="thesis.category">
                             <td>{{ $t('Category') }}</td>
                             <td>{{ thesis.category.title }}</td>
-                        </tr>
-                        <tr class="subtitle-1" v-if="thesis.opponent">
-                            <td>{{ $t('Opponent') }}</td>
-                            <td>{{ thesis.opponent.full_name }}</td>
-                        </tr>
-                        <tr class="subtitle-1" v-if="thesis.opponent">
-                            <td>{{ $t('Opponent') }}</td>
-                            <td>{{ thesis.opponent.full_name }}</td>
                         </tr>
                         <tr class="subtitle-1">
                             <td class="col-2">{{ $t('Abstract') }}</td>
@@ -100,9 +96,11 @@
                 <v-card-actions>
                     <v-subheader class="ma-3">{{ $t('After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews.') }}</v-subheader>
                   <v-spacer></v-spacer>
+                    <!-- TODO: AJAX call, you know it man-->
                   <v-btn
                       color="success" class="ma-3" x-large
                       @click="sendToReviewDialog = false"
+                      :disabled="!(thesis.opponent && thesis.supervisor)"
                   >{{ $t('Send to review') }}</v-btn>
                 </v-card-actions>
               </v-card>
