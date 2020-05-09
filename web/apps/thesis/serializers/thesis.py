@@ -1,6 +1,8 @@
 from rest_framework.fields import DateField
+from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
+from apps.accounts.models import User
 from apps.accounts.serializers import UserSerializer
 from apps.attachment.serializers import AttachmentSerializer
 from apps.review.serializers import ReviewSerializer
@@ -10,8 +12,12 @@ from apps.thesis.serializers import CategorySerializer
 
 class ThesisBaseSerializer(ModelSerializer):
     authors = UserSerializer(read_only=True, many=True)
+
     supervisor = UserSerializer(read_only=True)
     opponent = UserSerializer(read_only=True)
+
+    supervisor_id = PrimaryKeyRelatedField(write_only=True, queryset=User.school_users.teachers(), source='supervisor')
+    opponent_id = PrimaryKeyRelatedField(write_only=True, queryset=User.school_users.teachers(), source='opponent')
 
     class Meta:
         model = Thesis
@@ -23,7 +29,9 @@ class ThesisBaseSerializer(ModelSerializer):
 
             'authors',
             'supervisor',
+            'supervisor_id',
             'opponent',
+            'opponent_id',
         )
 
 class ThesisSubmitSerializer(ThesisBaseSerializer):

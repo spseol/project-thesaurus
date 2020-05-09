@@ -22,7 +22,7 @@ class UserFilterOptionsViewSet(ReadOnlyModelViewSet):
     def get_queryset(self):
         queryset = User.school_users.with_school_account()  # type: UserQueryset
 
-        if self.request.user.is_teacher or self.request.user.is_manager:
+        if self.request.user.is_teacher or self.request.user.is_manager or self.request.user.is_superuser:
             return queryset
 
         return queryset.teachers()

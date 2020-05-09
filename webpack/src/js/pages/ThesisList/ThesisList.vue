@@ -49,20 +49,36 @@
                 </template>
             </template>
 
-            <!-- dynamic slots for all "author" FKs -->
             <template
                 v-for="key in 'supervisor opponent'.split(' ')"
-                v-slot:[`item.${key}.full_name`]="{ item }"
+                v-slot:[`item.${key}.full_name`]="props"
+                v-has-perm:thesis.change_thesis
             >
-                <a
-                    v-if="item[key]"
-                    v-text="item[key].full_name"
+                <!-- edit dialog for users with permission to edit -->
+                <v-edit-dialog
+                    v-if="isThesisEditAllowed(props.item)"
+                    :return-value="userEditDialogModel"
+                    @save="persistThesisEdit(props.item.id, {[key + '_id']: userEditDialogModel.value})"
+                    @open="userEditDialogModel = props.item[key] ? {text: props.item[key].full_name, value: props.item[key].id} : null"
+                >
+                    {{ (props.item[key] || {full_name: '---'}).full_name }}
+                    <template v-slot:input>
+                        <v-combobox
+                            :items="teacherOptions"
+                            v-model="userEditDialogModel"
+                            return-object autofocus
+                            :label="$t(key)"
+                        ></v-combobox>
+                    </template>
+                </v-edit-dialog>
+
+                <!-- filter link for users without permission -->
+                <a v-else-if="props.item[key]"
+                    v-text="props.item[key].full_name"
                     @click="addUserFilterFromDataTable(item[key].username)"
                 ></a>
-                <!-- TODO: editable at least opponent-->
             </template>
         </v-data-table>
-
 
         <portal to="navbar-center">
             <v-toolbar dense color="transparent" elevation="0">
@@ -117,14 +133,14 @@
             </v-toolbar>
         </portal>
     </div>
-
-
 </template>
 
 <script type="text/tsx">
     import * as _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
+    import hasPerm from '../../user';
+    import {eventBus} from '../../utils';
     import ThesisService from './thesis-service';
     import ThesisDetailPanel from './ThesisDetailPanel';
     import ThesisListActionBtn from './ThesisListActionBtn.vue';
@@ -137,12 +153,16 @@
                 totalCount: 0,
                 loading: true,
                 options: {},
-                service: new ThesisService(),
+                thesisService: new ThesisService(),
 
                 userOptions: [],
                 categoryOptions: [],
+                teacherOptions: [],
                 filterItems: [],
-                categoryFilter: null
+                categoryFilter: null,
+
+                userEditDialogModel: {},
+                hasThesisEditPerm: false
             };
         },
         methods: {
@@ -161,11 +181,20 @@
             isPossibleUserFilter({username}) {
                 return !!_.find(this.userOptions, {username});
             },
+            isThesisEditAllowed({state}) {
+                // TODO: list all states
+                return this.hasThesisEditPerm && state != 'published';
+            },
 
+            async persistThesisEdit(thesisId, data) {
+                await Axios.patch(`/api/v1/thesis/${thesisId}`, data);
+                eventBus.flash({color: 'success', text: this.$t('Successfully saved!')});
+                await this.load();
+            },
             async load() {
                 this.loading = true;
 
-                const resp = await this.service.loadData(
+                const resp = await this.thesisService.loadData(
                     this.options,
                     _.filter(_.concat(this.filterItems, this.categoryFilter)),
                     this.headers
@@ -207,8 +236,10 @@
                 this.debouncedLoad,
                 {deep: true}
             );
+            this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
             this.userOptions = (await Axios.get('/api/v1/user-filter-options')).data;
             this.categoryOptions = (await Axios.get('/api/v1/category-options')).data;
+            this.hasThesisEditPerm = await hasPerm('thesis.change_thesis');
         }
     });
 </script>

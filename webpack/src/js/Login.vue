@@ -37,6 +37,7 @@
                                             required
                                             :error="!!message"
                                             v-model="credentials.username"
+                                            autofocus
                                             :rules="[v => !!v || 'Username is required']"
                                         />
 
