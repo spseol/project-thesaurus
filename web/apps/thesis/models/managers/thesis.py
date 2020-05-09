@@ -26,9 +26,9 @@ class ThesisApiManager(Manager):
                 )
             ),
             open_reservations_count=Count(
-                'thesis_reservation',
+                'reservation_thesis',
                 filter=Q(
-                    thesis_reservation__state=Reservation.State.FINISHED,
+                    reservation_thesis__state=Reservation.State.FINISHED,
                     _negated=True,
                 )
             )

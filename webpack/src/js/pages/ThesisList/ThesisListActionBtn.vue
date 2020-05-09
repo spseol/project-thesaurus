@@ -47,13 +47,12 @@
 
         <v-btn
             v-if="thesis.state === 'ready_for_review'"
-            v-text="$t('Waiting for review')"
             x-small depressed disabled
             v-has-perm:thesis.change_thesis
-        ></v-btn>
+        >{{ $t('Waiting for review') }} ({{ 2 - thesis.reviews.length }})</v-btn>
 
         <v-dialog v-model="sendToReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '50vw'">
-            <v-card>
+            <v-card :loading="loading">
                 <v-card-title
                     class="headline grey lighten-2"
                     primary-title
@@ -95,36 +94,49 @@
                 <v-divider></v-divider>
                 <v-card-actions>
                     <v-subheader class="ma-3">{{ $t('After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews.') }}</v-subheader>
-                  <v-spacer></v-spacer>
+                    <v-spacer></v-spacer>
                     <!-- TODO: AJAX call, you know it man-->
-                  <v-btn
-                      color="success" class="ma-3" x-large
-                      @click="sendToReviewDialog = false"
-                      :disabled="!(thesis.opponent && thesis.supervisor)"
-                  >{{ $t('Send to review') }}</v-btn>
+                    <v-btn
+                        color="success" class="ma-3" x-large
+                        @click="sendToReview"
+                        :disabled="!(thesis.opponent && thesis.supervisor)"
+                    >{{ $t('Send to review') }}</v-btn>
                 </v-card-actions>
               </v-card>
         </v-dialog>
     </span>
 </template>
-<script>
+<script type="text/tsx">
     import _ from 'lodash';
+    import Axios from '../../axios';
+    import {eventBus} from '../../utils';
 
     export default {
         name: 'ThesisListActionBtn',
         props: {
-            thesis: {},
+            thesis: {}
         },
         data() {
             return {
+                loading: false,
                 sendToReviewDialog: false,
-                publishDialog: false,
+                publishDialog: false
             };
         },
         methods: {
             getAttachment(type) {
                 return _.find(this.thesis.attachments, {type_attachment: {identifier: type}});
             },
+            async sendToReview() {
+                this.loading = true;
+
+                await Axios.patch(`/api/v1/thesis/${this.thesis.id}/send_to_review`);
+                eventBus.flash({color: 'success', text: this.$t('Thesis has been sent to supervisor and opponent.')});
+                this.sendToReviewDialog = false;
+                this.loading = false;
+
+                this.$emit('reload');
+            }
         },
     };
 </script>

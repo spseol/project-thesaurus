@@ -28,7 +28,7 @@
                     <v-col class="grow">
                         <h2 class="mb-1">{{ $t('Thesis waiting for review') }}</h2>
                         {{ thesis.title }} <br>
-                        {{ thesis.authors.map(a => a.full_name).join(',') }}
+                        {{ thesis.authors.map(a => a.full_name).join(', ') }}
                     </v-col>
                     <v-col class="shrink">
                         <v-btn large :to="{name: 'review-detail', params: {thesisId: thesis.id}}">

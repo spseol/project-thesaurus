@@ -14,7 +14,7 @@ from apps.accounts.models import User
 from apps.api.permissions import RestrictedViewModelPermissions
 from apps.attachment.models import Attachment, TypeAttachment
 from apps.thesis.models import Thesis, Category
-from apps.thesis.serializers import ThesisFullPublicSerializer, ThesisFullInternalSerializer
+from apps.thesis.serializers import ThesisFullPublicSerializer, ThesisFullInternalSerializer, ThesisBaseSerializer
 from apps.thesis.serializers.thesis import ThesisSubmitSerializer
 
 
@@ -112,6 +112,16 @@ class ThesisViewSet(ModelViewSet):
                 thesis=thesis,
                 type_attachment=TypeAttachment.objects.get_by_identifier(TypeAttachment.Identifier.THESIS_POSTER),
             )
+
+        return Response(data=serializer.data)
+
+    @action(methods=['patch'], detail=True)
+    @transaction.atomic
+    def send_to_review(self, request: Request, *args, **kwargs):
+        thesis = self.get_object()  # type: Thesis
+        serializer = ThesisBaseSerializer(instance=thesis, data=dict(state=Thesis.State.READY_FOR_REVIEW), partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
 
         return Response(data=serializer.data)
 

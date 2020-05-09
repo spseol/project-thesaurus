@@ -20,8 +20,8 @@
                             ></v-text-field>
 
                             <v-text-field
-                                :label="$t('Review author')" :suffix="$t(reviewingUserRole)"
-                                :value="(thesis[reviewingUserRole] || {full_name: $t('Unknown')}).full_name"
+                                :label="$t('Review author')" :suffix="$t(reviewerRole)"
+                                :value="(thesis[reviewerRole] || {full_name: $t('Unknown')}).full_name"
                                 disabled
                                 filled
                             ></v-text-field>
@@ -131,9 +131,8 @@
 <script type="text/tsx">
     import _ from 'lodash';
     import Vue from 'vue';
-    import colors from 'vuetify/lib/util/colors';
     import Axios from '../../axios';
-    import {eventBus, pageContext} from '../../utils';
+    import {eventBus, GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_4, pageContext} from '../../utils';
 
 
     export default Vue.extend({
@@ -168,14 +167,14 @@
             };
         },
         computed: {
-            reviewingUserRole() {
+            reviewerRole() {
                 return {
                     [this.thesis.supervisor?.username]: 'supervisor',
                     [this.thesis.opponent?.username]: 'opponent'
                 }[this.review?.user?.username || pageContext.username];
             },
             gradings() {
-                return _.filter([
+                return _.compact([
                     this.reviewingUserRole == 'supervisor' ? this.$t('Students independence during processing') : null,
                     this.$t('Theoretical part of the work, comprehensibility of the text'),
                     this.$t('Methods and procedures used'),
@@ -188,27 +187,12 @@
                 return _.find(this.thesis.attachments, {type_attachment: {identifier: 'thesis_text'}});
             },
             gradeProposalOptions() {
-                return _.map(_.reverse(_.filter(this.grades4)), (grade, i) => ([4 - i, grade]));
+                return _.map(_.reverse(_.compact(this.grades4)), (grade, i) => ([4 - i, grade]));
             }
         },
         methods: {
             valueToColor(v, scale = 3) {
-                if (scale === 3) {
-                    return {
-                        3: colors.green.lighten1,
-                        2: colors.blue.lighten2,
-                        1: colors.red.lighten1,
-                        0: colors.grey.lighten1
-                    }[v];
-                } else {
-                    return {
-                        4: colors.green.lighten1,
-                        3: colors.blue.lighten2,
-                        2: colors.orange.base,
-                        1: colors.red.lighten1,
-                        0: colors.grey.lighten1
-                    }[v];
-                }
+                return (scale === 3 ? GRADE_COLOR_SCALE_3 : GRADE_COLOR_SCALE_4)[v];
             },
             async submit() {
                 this.loading = true;
@@ -221,7 +205,7 @@
                 )).data;
                 this.loading = false;
 
-                if (resp.pk) {
+                if (resp.id) {
                     eventBus.flash({text: this.$t('Review has been submitted.')});
                     this.$router.push({name: 'dashboard'});
                 } else {
@@ -232,10 +216,10 @@
         },
         watch: {
             thesisLoaded(to) {
-                this.thesis = _.cloneDeep(to);
+                this.thesis = Object.assign({}, this.thesis, _.cloneDeep(to));
             },
             reviewLoaded(to) {
-                this.review = _.cloneDeep(to);
+                this.review = Object.assign({}, this.review, _.cloneDeep(to));
             }
         }
     });

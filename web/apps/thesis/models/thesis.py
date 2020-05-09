@@ -107,7 +107,7 @@ class Thesis(BaseTimestampedModel):
         """Is this Thesis currently available for reservation?"""
         from .reservation import Reservation
 
-        return not self.thesis_reservation.filter(
+        return not self.reservation_thesis.filter(
             state__in=(
                 Reservation.State.READY,
                 Reservation.State.RUNNING,
@@ -119,9 +119,18 @@ class Thesis(BaseTimestampedModel):
         """Returns count of reservations for this thesis in states"""
         from .reservation import Reservation
 
-        return self.thesis_reservation.exclude(
+        return self.reservation_thesis.exclude(
             state__in=Reservation.State.FINISHED,
         ).count()
+
+    def check_reviews_state(self):
+        if self.review_thesis.filter(
+                user=self.supervisor
+        ).exists() and self.review_thesis.filter(
+            user=self.opponent
+        ).exists():
+            self.state = self.State.REVIEWED
+            self.save(update_fields=['state'])
 
 
 class ThesisAuthor(BaseTimestampedModel):

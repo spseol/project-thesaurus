@@ -16,17 +16,18 @@ class AttachmentManager(Manager):
             thesis,
             type_attachment,
     ):
+        file_type: Optional[filetype.Type] = filetype.guess(uploaded.file)
+
+        if not file_type:
+            raise ValueError()
+
         attachment = self.model(
             thesis=thesis,
             type_attachment=type_attachment,
+            content_type=file_type.mime,
         )
 
-        kind: Optional[filetype.Type] = filetype.guess(uploaded.file)
-
-        if not kind:
-            raise ValueError()
-
-        file_path = attachment.build_file_path(suffix=kind.extension)
+        file_path = attachment.build_file_path(file_type=file_type)
 
         with transaction.atomic():
             default_storage.save(

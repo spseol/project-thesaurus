@@ -47,8 +47,11 @@ class Review(BaseTimestampedModel):
     )
 
     # TODO: state?
-
     class Meta:
         verbose_name = _('Review')
         verbose_name_plural = _('Reviews')
         ordering = ('thesis', 'user')
+
+    def save(self, **kwargs):
+        super().save(**kwargs)
+        self.thesis.check_reviews_state()

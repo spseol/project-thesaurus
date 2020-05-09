@@ -29,11 +29,12 @@
                     </tr>
                     <tr v-if="thesis.abstract">
                         <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Abstract') }}</td>
-                        <td class="text-justify">{{ thesis.abstract }}</td>
+                        <td class="text-justify py-1">{{ thesis.abstract }}</td>
                     </tr>
                     <template v-has-perm:attachment.view_attachment>
                         <tr v-for="attachment in thesis.attachments">
                             <td class="text-left text-md-right">
+                                <!-- TODO: dynamic icon -->
                                 <v-icon>mdi-pdf-box</v-icon>
                             </td>
                             <td>

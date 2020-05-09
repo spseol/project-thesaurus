@@ -40,6 +40,7 @@ class ThesisBaseSerializer(ModelSerializer):
             'opponent_id',
         )
 
+
 class ThesisSubmitSerializer(ThesisBaseSerializer):
     class Meta:
         model = Thesis
@@ -47,6 +48,7 @@ class ThesisSubmitSerializer(ThesisBaseSerializer):
             'id',
             'abstract',
         )
+
 
 class ThesisFullPublicSerializer(ThesisBaseSerializer):
     category = CategorySerializer(read_only=True)

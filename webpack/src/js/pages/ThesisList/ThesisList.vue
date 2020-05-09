@@ -25,7 +25,11 @@
 
             <template v-slot:item.state="{ item }">
                 <div class="text-center">
-                    <ThesisListActionBtn :thesis="item" :title="item.state"></ThesisListActionBtn>
+                    <ThesisListActionBtn
+                        :thesis="item"
+                        :title="item.state"
+                        @reload="load"
+                    ></ThesisListActionBtn>
                 </div>
             </template>
 
@@ -236,6 +240,7 @@
                 this.debouncedLoad,
                 {deep: true}
             );
+            // TODO: only if has perms
             this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
             this.userOptions = (await Axios.get('/api/v1/user-filter-options')).data;
             this.categoryOptions = (await Axios.get('/api/v1/category-options')).data;

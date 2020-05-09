@@ -39,10 +39,6 @@ class BaseTypeModel(BaseModel):
         null=True,
         blank=True
     )
-    name = CharField(
-        verbose_name=_('Name'),
-        max_length=256
-    )
     description = TextField(
         verbose_name=_('Description'),
         null=True,
@@ -59,4 +55,4 @@ class BaseTypeModel(BaseModel):
         abstract = True
 
     def __str__(self):
-        return self.name or self.get_identifier_display()
+        return self.get_identifier_display()

@@ -16,9 +16,8 @@ class DashboardView(APIView):
         )
         theses_ready_for_review = Thesis.objects.filter(
             Q(supervisor=user) | Q(opponent=user),
-            Q(review_thesis__user=user, _negated=True),
             state=Thesis.State.READY_FOR_REVIEW,
-        )
+        ).exclude(review_thesis__user=user)
 
         # TODO: theses waiting for physical submit
         # TODO: theses waiting for reservation pickup

@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import colors from 'vuetify/lib/util/colors';
 
 class Context {
     username: string;
@@ -46,6 +47,19 @@ class EventBus extends Vue {
 
 const eventBus = new EventBus();
 
+export const GRADE_COLOR_SCALE_3 = {
+    3: colors.green.lighten1,
+    2: colors.blue.lighten2,
+    1: colors.red.lighten1,
+    0: colors.grey.lighten1
+};
+export const GRADE_COLOR_SCALE_4 = {
+    4: colors.green.lighten1,
+    3: colors.blue.lighten2,
+    2: colors.orange.base,
+    1: colors.red.lighten1,
+    0: colors.grey.lighten1
+};
 export {
     pageContext,
     readFileAsync,
