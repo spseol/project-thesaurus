@@ -5,13 +5,14 @@ from django.views.i18n import JSONCatalog
 from rest_framework.routers import DefaultRouter
 
 from .views.attachment import AttachmentViewSet
-from .views.category import CategoryOptionsViewSet
+from .views.category import CategoryOptionsViewSet, ThesisYearViewSet
 from .views.dashboard import DashboardView
 from .views.login import LoginView
 from .views.reservation import ReservationViewSet
 from .views.review import ReviewViewSet
 from .views.thesis import ThesisViewSet
 from .views.user import UserFilterOptionsViewSet, StudentOptionsViewSet, TeacherOptionsViewSet, UserPermView
+from ..review.views import ReviewPdfView
 
 last_modified_date = timezone.now()
 
@@ -25,6 +26,7 @@ router.register(r'user-filter-options', UserFilterOptionsViewSet, basename='user
 router.register(r'student-options', StudentOptionsViewSet, basename='student')
 router.register(r'teacher-options', TeacherOptionsViewSet, basename='teacher')
 router.register(r'category-options', CategoryOptionsViewSet)
+router.register(r'thesis-year-options', ThesisYearViewSet)
 
 app_name = 'api'
 urlpatterns = [

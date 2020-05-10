@@ -134,6 +134,11 @@
                 <v-btn icon v-if="categoryFilter" @click="categoryFilter = null">
                     <v-icon>mdi-close</v-icon>
                 </v-btn>
+
+                <v-select
+                    :items="thesisYearOptions" v-model="thesisYearFilter" clearable
+                    flat solo-inverted hide-details prepend-inner-icon="mdi-calendar"
+                ></v-select>
             </v-toolbar>
         </portal>
     </div>
@@ -162,8 +167,10 @@
                 userOptions: [],
                 categoryOptions: [],
                 teacherOptions: [],
+                thesisYearOptions: [],
                 filterItems: [],
                 categoryFilter: null,
+                thesisYearFilter: null,
 
                 userEditDialogModel: {},
                 hasThesisEditPerm: false
@@ -200,7 +207,7 @@
 
                 const resp = await this.thesisService.loadData(
                     this.options,
-                    _.filter(_.concat(this.filterItems, this.categoryFilter)),
+                    _.filter(_.concat(this.filterItems, this.categoryFilter, this.thesisYearFilter)),
                     this.headers
                 );
                 this.items = resp.data.results;
@@ -236,7 +243,7 @@
 
             this.debouncedLoad = _.debounce(this.load, 200);
             this.$watch(
-                (self) => ([self.options, self.filterItems, self.categoryFilter]),
+                (self) => ([self.options, self.filterItems, self.categoryFilter, self.thesisYearFilter]),
                 this.debouncedLoad,
                 {deep: true}
             );
@@ -244,6 +251,7 @@
             this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
             this.userOptions = (await Axios.get('/api/v1/user-filter-options')).data;
             this.categoryOptions = (await Axios.get('/api/v1/category-options')).data;
+            this.thesisYearOptions = (await Axios.get('/api/v1/thesis-year-options')).data;
             this.hasThesisEditPerm = await hasPerm('thesis.change_thesis');
         }
     });
