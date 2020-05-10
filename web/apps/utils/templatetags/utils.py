@@ -2,6 +2,7 @@ import json
 
 from django import template
 from django.conf import settings
+from django.db.models import Choices, Model
 
 register = template.Library()
 
@@ -14,3 +15,18 @@ def to_json(v):
 @register.simple_tag
 def get_version(*_):
     return settings.VERSION
+
+
+@register.filter(name='zip')
+def zip_lists(a, b):
+    return zip(a, b)
+
+
+@register.filter
+def get_choices_display(value, choices: Choices):
+    return choices(value).label
+
+
+@register.simple_tag
+def get_verbose_field_name(instance: Model, field_name: str):
+    return instance._meta.get_field(field_name).verbose_name

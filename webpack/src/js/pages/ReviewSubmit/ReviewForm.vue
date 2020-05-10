@@ -9,21 +9,18 @@
                         <v-col cols="12" md="6">
                             <v-text-field
                                 :label="$t('Student name')" :value="thesis.authors.map(a => a.full_name).join(', ')"
-                                disabled
-                                filled
+                                readonly filled
                             ></v-text-field>
 
                             <v-text-field
                                 :label="$t('Thesis name')" :value="thesis.title"
-                                disabled
-                                filled
+                                readonly filled
                             ></v-text-field>
 
                             <v-text-field
                                 :label="$t('Review author')" :suffix="$t(reviewerRole)"
                                 :value="(thesis[reviewerRole] || {full_name: $t('Unknown')}).full_name"
-                                disabled
-                                filled
+                                readonly filled
                             ></v-text-field>
                             <v-row class="mb-4" no-gutters v-if="thesisTextAttachment">
                                 <v-spacer></v-spacer>

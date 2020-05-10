@@ -34,6 +34,7 @@ urlpatterns = [
     path('v1/login', LoginView.as_view()),
     path('v1/dashboard', DashboardView.as_view()),
     path('v1/has-perm/<str:perm>', UserPermView.as_view(), name='has-perm'),
+    path('v1/review-pdf-detail/<uuid:pk>', ReviewPdfView.as_view(), name='review-pdf-detail'),
 
     path('i18n/catalog', last_modified(lambda req, **kw: last_modified_date)(JSONCatalog.as_view(domain='django'))),
     path('i18n/', include('django.conf.urls.i18n')),
