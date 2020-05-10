@@ -72,7 +72,9 @@
   "Review author": "Posudek vypracoval",
   "review": {
     "gradingNote": "Pokud se hodnocení vedoucího a oponenta liší o více jak dva stupně (výborná - nevyhovující), bude vypracován třetí nezávislý posudek.",
-    "submitHint": "Odesláním potvrzuji správnost a konečnost tohoto posudku."
+    "submitHint": "Odesláním potvrzuji správnost a konečnost tohoto posudku.",
+    "submittedAt": "Posudek potvrzen dne",
+    "justSubmitted": "Posudek byl vložen."
   },
   "Dashboard": "Přehled",
   "Submit thesis": "Odevzdat práci",
@@ -93,11 +95,23 @@
   "Thesis assigment": "Text zadání",
   "Download thesis assigment": "Stáhnout zadání práce",
   "Download thesis text": "Stáhnout text práce",
-  "After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews": {
-    "": ""
+  "page": {
+    "404title": "Stránka nenalezena",
+    "404note": "Tuto stránku se obhužel nepodařilo nalézt."
   },
-  "Thesis admission was successfully prepared": {
-    " ": ""
+  "Review": "Posudek",
+  "Review PDF detail": "PDF posudek práce",
+  "Successfully saved!": "Úspěšně uloženo!",
+  "Submit external review": "Vložit externí posudek",
+  "thesis": {
+    "sendToReviewNote": "Po odeslání práce k posouzení bude moci vedoucí a oponent stáhnout práci a zadat své posudky.",
+    "justSentToReview": "Práce byla odeslána k posouzení.",
+    "justPublished": "Práce byla zveřejněna.",
+    "justSubmitted": "Práce byla odevzdána.",
+    "justPrepared": "Práce byla vytořena a je připravena pro odevzdání."
   },
-  "Thesis has been successfully submitted!": ""
+  "Thesis poster": "Plakát práce",
+  "dashboard": {
+    "nothingNote": "Aktuálně není potřeba žádná akce."
+  }
 }

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-06 00:49+0000\n"
-"PO-Revision-Date: 2020-05-06 03:50+0300\n"
+"POT-Creation-Date: 2020-05-10 20:15+0000\n"
+"PO-Revision-Date: 2020-05-10 23:18+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -27,103 +27,235 @@ msgstr "Uživatel"
 msgid "Users"
 msgstr "Uživatelé"
 
-#: apps/api/views/review.py:28
-msgid "Creating review for this thesis is not allowed in this case."
-msgstr "Zadání posudku není povoleno v této konstelaci."
-
-#: apps/attachment/models/attachment.py:16
+#: apps/attachment/models/attachment.py:36
 msgid "Target thesis"
 msgstr "Práce"
 
-#: apps/attachment/models/attachment.py:24
+#: apps/attachment/models/attachment.py:44
 msgid "Type of attachment"
 msgstr "Typ přílohy"
 
-#: apps/attachment/models/attachment.py:28
+#: apps/attachment/models/attachment.py:48
 msgid "File with thesis"
 msgstr "Soubor s prací"
 
-#: apps/attachment/models/attachment.py:36
+#: apps/attachment/models/attachment.py:61
 msgid "Attachment"
 msgstr "Příloha"
 
-#: apps/attachment/models/attachment.py:37
+#: apps/attachment/models/attachment.py:62
 msgid "Attachments"
 msgstr "Přílohy"
 
-#: apps/attachment/models/attachment.py:59
+#: apps/attachment/models/attachment.py:79
 msgid "Thesis text"
 msgstr "Text práce"
 
-#: apps/attachment/models/attachment.py:60
+#: apps/attachment/models/attachment.py:80
 msgid "Thesis assigment"
 msgstr "Text zadání"
 
-#: apps/attachment/models/attachment.py:61
+#: apps/attachment/models/attachment.py:81
 msgid "Supervisor review"
 msgstr "Posudek vedoucího"
 
-#: apps/attachment/models/attachment.py:62
+#: apps/attachment/models/attachment.py:82
 msgid "Opponent review"
 msgstr "Posudek oponenta"
 
-#: apps/attachment/models/attachment.py:65 apps/utils/models/base.py:36
+#: apps/attachment/models/attachment.py:83
+msgid "Thesis poster"
+msgstr "Plakát práce"
+
+#: apps/attachment/models/attachment.py:86 apps/utils/models/base.py:36
 msgid "Identifier"
 msgstr "Identifikátor"
 
-#: apps/attachment/models/attachment.py:74
+#: apps/attachment/models/attachment.py:98
 msgid "List of allowed mime/content types"
 msgstr "Seznam povolených typů souborů"
 
-#: apps/attachment/models/attachment.py:79
+#: apps/attachment/models/attachment.py:103
 msgid "Type attachment"
 msgstr "Typ přílohy"
 
-#: apps/attachment/models/attachment.py:80
+#: apps/attachment/models/attachment.py:104
 msgid "Types attachments"
 msgstr "Typy příloh"
 
-#: apps/review/models/review.py:26
+#: apps/review/models/review.py:16
+msgid "Excellent"
+msgstr "Výborná"
+
+#: apps/review/models/review.py:17
+msgid "Very well"
+msgstr "Velmi dobrá"
+
+#: apps/review/models/review.py:18
+msgid "Great"
+msgstr "Dobrá"
+
+#: apps/review/models/review.py:19
+msgid "Not sufficient"
+msgstr "Nedostatečná"
+
+#: apps/review/models/review.py:22
+msgid "Over average"
+msgstr "Nadprůměrná"
+
+#: apps/review/models/review.py:23
+msgid "Average"
+msgstr "Průměrná"
+
+#: apps/review/models/review.py:24
+msgid "Under average"
+msgstr "Podprůměrná"
+
+#: apps/review/models/review.py:38
 msgid "Review comment"
 msgstr "Komentář"
 
-#: apps/review/models/review.py:29
+#: apps/review/models/review.py:41
 msgid "Review questions"
 msgstr "Otázky k obhajobě"
 
-#: apps/review/models/review.py:32
+#: apps/review/models/review.py:44
 msgid "Difficulty"
 msgstr "Obtížnost"
 
-#: apps/review/models/review.py:33
+#: apps/review/models/review.py:45
 msgid "As value between 1 and 3 inclusive, higher is harder."
 msgstr "Jako hodnota mezi 1 a 3 včetně, vyšší je těžší."
 
-#: apps/review/models/review.py:39
+#: apps/review/models/review.py:53 apps/review/models/review.py:61
 msgid "As value between 1 and 4 inclusive, higher is better."
 msgstr "Jako hodnota mezi 1 a 4 včetně, vyšší je lepší."
 
-#: apps/review/models/review.py:42
+#: apps/review/models/review.py:56
 msgid "Grades"
 msgstr "Známky"
 
-#: apps/review/models/review.py:45
+#: apps/review/models/review.py:59
 msgid "Proposed grade"
 msgstr "Navrhovaná známka"
 
-#: apps/review/models/review.py:50
+#: apps/review/models/review.py:67
+#: apps/review/templates/review/review_detail.html:8
 msgid "Review"
 msgstr "Posudek"
 
-#: apps/review/models/review.py:51
+#: apps/review/models/review.py:68
 msgid "Reviews"
 msgstr "Posudky"
+
+#: apps/review/models/review.py:78
+msgid "Students independence during processing"
+msgstr "Samostatnost studenta při zpracování"
+
+#: apps/review/models/review.py:79
+msgid "Theoretical part of the work, comprehensibility of the text"
+msgstr "Teoretická část práce, srozumitelnost textu"
+
+#: apps/review/models/review.py:80
+msgid "Methods and procedures used"
+msgstr "Použité metody a postupy"
+
+#: apps/review/models/review.py:81
+msgid "Formal editing, work with sources, citations in the text"
+msgstr "Formální úprava, práce s literaturou, citace v textu"
+
+#: apps/review/models/review.py:82
+msgid "Graphic design of the thesis"
+msgstr "Grafická úprava práce"
+
+#: apps/review/models/review.py:83
+msgid ""
+"Interpretation of conclusions, their originality and their own contribution "
+"to the work"
+msgstr "Interpretace závěrů, jejich originalita a vlastní přínos práce"
+
+#: apps/review/serializers.py:49
+msgid ""
+"Review has been already posted by this user or this user is not allowed to "
+"post review for this thesis."
+msgstr ""
+"Posudek byl od tohoto uživatele již přijat anebo tento uživatel není "
+"oprávněn k vložení posudku k této práci."
+
+#: apps/review/templates/review/review_detail.html:94
+msgid "Absolvent thesis review"
+msgstr "Posudek absolventské práce"
+
+#: apps/review/templates/review/review_detail.html:99
+msgid "First and last name"
+msgstr "Jméno a příjmení"
+
+#: apps/review/templates/review/review_detail.html:107
+msgid "Thesis title"
+msgstr "Název práce"
+
+#: apps/review/templates/review/review_detail.html:111
+msgid "Review by"
+msgstr "Posudek vypracoval"
+
+#: apps/review/templates/review/review_detail.html:115
+msgid "Supervisor / opponent"
+msgstr "Vedoucí / oponent práce"
+
+#: apps/review/templates/review/review_detail.html:119
+msgid "Criteriums of thesis grading"
+msgstr "Kritéria hodnocení práce"
+
+#: apps/review/templates/review/review_detail.html:121
+msgid "Grade"
+msgstr "Stupeň hodnocení"
+
+#: apps/review/templates/review/review_detail.html:127
+msgid "Difficulty of selected topic"
+msgstr "Náročnost zvoleného tématu"
+
+#: apps/review/templates/review/review_detail.html:138
+msgid "Comment"
+msgstr "Odůvodnění hodnocení práce"
+
+#: apps/review/templates/review/review_detail.html:144
+msgid "Questions"
+msgstr "Otázky k obhajobě"
+
+#: apps/review/templates/review/review_detail.html:154
+msgid "In"
+msgstr "V"
+
+#: apps/review/templates/review/review_detail.html:156
+msgid "at day"
+msgstr "dne"
+
+#: apps/review/templates/review/review_detail.html:161
+msgid "Signature"
+msgstr "Podpis"
+
+#: apps/review/templates/review/review_detail.html:169
+msgid ""
+"If the evaluation of the leader and the opponent differs by more than two "
+"degrees (excellent - unsatisfactory), it will be prepared third independent "
+"opinion."
+msgstr ""
+"Pokud se hodnocení vedoucího a oponenta liší o více jak dva stupně (výborná "
+"- nevyhovující), bude vypracován třetí nezávislý posudek."
+
+#: apps/review/templates/review/review_detail.html:172
+msgid "Generated automatically by THESAURUS at"
+msgstr "Automaticky vygenerováno systémem THESAURUS v"
+
+#: apps/review/templates/review/review_detail.html:173
+msgid "Available online on"
+msgstr "Dostupné online na"
 
 #: apps/thesis/models/category.py:11 apps/thesis/models/thesis.py:75
 msgid "Title"
 msgstr "Název"
 
-#: apps/thesis/models/category.py:16 apps/utils/models/base.py:52
+#: apps/thesis/models/category.py:16 apps/utils/models/base.py:48
 msgid "Order"
 msgstr "Pořadí"
 
@@ -197,7 +329,7 @@ msgstr "Publikováno"
 
 #: apps/thesis/models/thesis.py:29
 msgid "Corresponding category for thesis."
-msgstr "Odpovídající kategorie práce"
+msgstr "Odpovídající kategorie práce."
 
 #: apps/thesis/models/thesis.py:35
 msgid "Authors"
@@ -239,11 +371,11 @@ msgstr "Práce"
 msgid "Theses"
 msgstr "Práce"
 
-#: apps/thesis/models/thesis.py:141
+#: apps/thesis/models/thesis.py:150
 msgid "Thesis author relation"
 msgstr "Vazba autora k práci"
 
-#: apps/thesis/models/thesis.py:142
+#: apps/thesis/models/thesis.py:151
 msgid "Thesis author relations"
 msgstr "Vazby autorů k pracem"
 
@@ -256,10 +388,6 @@ msgid "modified"
 msgstr "modifikováno"
 
 #: apps/utils/models/base.py:43
-msgid "Name"
-msgstr "Název"
-
-#: apps/utils/models/base.py:47
 msgid "Description"
 msgstr "Popis"
 
@@ -270,3 +398,9 @@ msgstr "Čeština"
 #: thesaurus/settings.py:133
 msgid "English"
 msgstr "English"
+
+#~ msgid "Creating review for this thesis is not allowed in this case."
+#~ msgstr "Zadání posudku není povoleno v této konstelaci."
+
+#~ msgid "Name"
+#~ msgstr "Název"

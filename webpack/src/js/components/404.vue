@@ -5,8 +5,8 @@
                 ☹
             </v-col>
             <v-col cols="12" md="3" class="md-md-12 ml-md-10">
-                <h1 class="display-3 font-weight-medium">{{ $t('Page not found') }}</h1>
-                <p class="subtitle-1">{{ $t('Sorry, but this page was not found.') }}</p>
+                <h1 class="display-3 font-weight-medium">{{ $t('page.404title') }}</h1>
+                <p class="subtitle-1">{{ $t('page.404note') }}</p>
             </v-col>
         </v-row>
     </v-container>

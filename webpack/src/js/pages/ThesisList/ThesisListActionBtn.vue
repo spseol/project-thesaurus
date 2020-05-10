@@ -46,19 +46,19 @@
         ></v-btn>
 
         <template v-if="thesis.state === 'ready_for_review'">
-            <v-hover v-slot:default="{ hover }" style="min-width: 10em">
+            <v-hover v-slot:default="{ hover }" style="min-width: 15em">
                 <v-badge
                     color="primary" overlap :value="!hover"
                     :content="2 - thesis.reviews.length"
                 >
                     <v-btn
                         v-if="!hover"
-                        small depressed disabled
+                        small depressed disabled block
                         v-has-perm:thesis.change_thesis
                     >{{ $t('Waiting for review') }}</v-btn>
                     <v-btn
                         v-if="hover" @click="submitExternalReviewDialog = true"
-                        small depressed outlined color="info"
+                        small depressed outlined color="info" block
                         v-has-perm:thesis.change_thesis
                     >{{ $t('Submit external review') }}</v-btn>
                 </v-badge>
@@ -109,7 +109,7 @@
                 </v-card-text>
                 <v-divider></v-divider>
                 <v-card-actions>
-                    <v-subheader class="ma-3">{{ $t('After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews.') }}</v-subheader>
+                    <v-subheader class="ma-3">{{ $t('thesis.sendToReviewNote') }}</v-subheader>
                     <v-spacer></v-spacer>
                     <v-btn
                         color="success" class="ma-3" x-large
@@ -171,7 +171,7 @@
                 this.loading = true;
 
                 await Axios.patch(`/api/v1/thesis/${this.thesis.id}/send_to_review`);
-                eventBus.flash({color: 'success', text: this.$t('Thesis has been sent to supervisor and opponent.')});
+                eventBus.flash({color: 'success', text: this.$t('thesis.justSentToReview')});
                 this.sendToReviewDialog = false;
                 this.loading = false;
 
@@ -179,7 +179,7 @@
             },
             async publish() {
                 await Axios.patch(`/api/v1/thesis/${this.thesis.id}/publish`);
-                eventBus.flash({color: 'success', text: this.$t('Thesis has been published.')});
+                eventBus.flash({color: 'success', text: this.$t('thesis.justPublished')});
 
                 this.$emit('reload');
             }

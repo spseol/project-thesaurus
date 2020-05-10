@@ -114,7 +114,7 @@
                                 </v-row>
                                 <v-row no-gutters v-if="this.review.id">
                                     <v-alert type="info" outlined width="100%">
-                                        {{$t('Review has been submited at')}} {{ (new
+                                        {{$t('review.submittedAt')}} {{ (new
                                         Date(this.review.created)).toLocaleString() }}.
                                     </v-alert>
                                 </v-row>
@@ -209,7 +209,7 @@
                 this.loading = false;
 
                 if (resp.id) {
-                    eventBus.flash({text: this.$t('Review has been submitted.')});
+                    eventBus.flash({text: this.$t('review.justSubmitted')});
                     this.$router.push({name: 'dashboard'});
                 } else {
                     this.messages = resp;

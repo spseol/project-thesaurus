@@ -60,7 +60,6 @@
   "Over average": "Over average",
   "Average": "Average",
   "Under average": "Under average",
-  "Student\\'s independence during processing (to be filled in only by the supervisor)": "Student\\'s independence during processing (to be filled in only by the supervisor)",
   "Theoretical part of the work, comprehensibility of the text": "Theoretical part of the work, comprehensibility of the text",
   "Methods and procedures used": "Methods and procedures used",
   "Formal editing, work with sources, citations in the text": "Formal editing, work with sources, citations in the text",
@@ -75,7 +74,9 @@
   "Review author": "Review author",
   "review": {
     "gradingNote": "If the evaluation of the leader and the opponent differs by more than two degrees (excellent - unsatisfactory), it will be prepared third independent opinion.",
-    "submitHint": "By submitting, I confirm the accuracy and finality of this review."
+    "submitHint": "By submitting, I confirm the accuracy and finality of this review.",
+    "submittedAt": "Submitted at",
+    "justSubmitted": "Review has been submitted."
   },
   "Dashboard": "Dashboard",
   "Submit thesis": "Submit thesis",
@@ -96,11 +97,24 @@
   "Thesis assigment": "Thesis assigment",
   "Download thesis assigment": "Download thesis assigment",
   "Download thesis text": "Download thesis text",
-  "After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews": {
-    "": ""
+  "Thesis has been successfully submitted!": "Thesis has been successfully submitted!",
+  "thesis": {
+    "justPrepared": "Thesis has been created and it's ready for submit.",
+    "justPublished": "Thesis has been published.",
+    "justSentToReview": "Thesis has been sent to supervisor and opponent.",
+    "sendToReviewNote": "After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews.",
+    "justSubmitted": "Thesis has been successfully submitted!"
   },
-  "Thesis admission was successfully prepared": {
-    " ": ""
+  "page": {
+    "404title": "Page not found",
+    "404note": "Sorry, this page has not been found."
   },
-  "Thesis has been successfully submitted!": "Thesis has been successfully submitted!"
+  "Review": "Review",
+  "Review PDF detail": "Review PDF detail",
+  "Successfully saved!": "Successfully saved!",
+  "Submit external review": "Submit external review",
+  "Thesis poster": "Thesis poster",
+  "dashboard": {
+    "nothingNote": "Unfortunately I have nothing special for you."
+  }
 }

@@ -39,7 +39,7 @@
             </v-alert>
 
             <v-alert v-if="!(theses_ready_for_review.length + theses_ready_for_submit.length)" type="info" outlined>
-                {{ $t('Unfortunately I have nothing special for you.') }}
+                {{ $t('dashboard.nothingNote') }}
             </v-alert>
         </v-card-text>
     </v-card>

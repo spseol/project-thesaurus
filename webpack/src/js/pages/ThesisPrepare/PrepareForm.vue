@@ -155,7 +155,7 @@
                 });
 
                 if (resp.data.id) {
-                    eventBus.flash({text: this.$t('Thesis admission was successfully prepared. ')});
+                    eventBus.flash({text: this.$t('thesis.justPrepared')});
                     this.$router.push({name: 'thesis-list'});
                 } else {
                     this.messages = resp.data;

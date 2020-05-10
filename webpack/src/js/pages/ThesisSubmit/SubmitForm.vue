@@ -89,7 +89,7 @@
 
                 if (resp.data.id) {
                     eventBus.flash({
-                        text: this.$t('Thesis has been successfully submitted!')
+                        text: this.$t('thesis.justSubmitted')
                     });
                     this.$router.push({name: 'dashboard'});
                 } else {
