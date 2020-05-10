@@ -57,6 +57,10 @@
                                     {{ $t('Review') }}
                                     {{ review.user.full_name || review.user.username }}
                                 </v-btn>
+
+                                <v-btn small outlined color="info" :href="review.url" target="_blank">
+                                    {{ $t('Review PDF detail') }} {{ review.user.full_name || review.user.username }}
+                                </v-btn>
                             </td>
                         </tr>
                     </template>

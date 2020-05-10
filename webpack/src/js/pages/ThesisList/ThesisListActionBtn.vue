@@ -34,7 +34,7 @@
             v-if="thesis.state === 'reviewed'"
             v-text="$t('Publish')"
             small color="primary" elevation="0"
-            @click="publishDialog = true"
+            @click="publish"
             v-has-perm:thesis.change_thesis
         ></v-btn>
 
@@ -45,11 +45,27 @@
             v-has-perm:thesis.change_thesis
         ></v-btn>
 
-        <v-btn
-            v-if="thesis.state === 'ready_for_review'"
-            x-small depressed disabled
-            v-has-perm:thesis.change_thesis
-        >{{ $t('Waiting for review') }} ({{ 2 - thesis.reviews.length }})</v-btn>
+        <template v-if="thesis.state === 'ready_for_review'">
+            <v-hover v-slot:default="{ hover }" style="min-width: 10em">
+                <v-badge
+                    color="primary" overlap :value="!hover"
+                    :content="2 - thesis.reviews.length"
+                >
+                    <v-btn
+                        v-if="!hover"
+                        small depressed disabled
+                        v-has-perm:thesis.change_thesis
+                    >{{ $t('Waiting for review') }}</v-btn>
+                    <v-btn
+                        v-if="hover" @click="submitExternalReviewDialog = true"
+                        small depressed outlined color="info"
+                        v-has-perm:thesis.change_thesis
+                    >{{ $t('Submit external review') }}</v-btn>
+                </v-badge>
+            </v-hover>
+
+        </template>
+
 
         <v-dialog v-model="sendToReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '50vw'">
             <v-card :loading="loading">
@@ -95,7 +111,6 @@
                 <v-card-actions>
                     <v-subheader class="ma-3">{{ $t('After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews.') }}</v-subheader>
                     <v-spacer></v-spacer>
-                    <!-- TODO: AJAX call, you know it man-->
                     <v-btn
                         color="success" class="ma-3" x-large
                         @click="sendToReview"
@@ -104,6 +119,31 @@
                 </v-card-actions>
               </v-card>
         </v-dialog>
+
+        <v-dialog v-model="submitExternalReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '35vw'">
+            <v-card :loading="loading">
+                <v-form>
+                    <v-card-title
+                        class="headline grey lighten-2"
+                        primary-title
+                    >{{ thesis.title }}</v-card-title>
+                    <v-card-text class="pt-3">
+                    <v-file-input :label="$t('Review')">
+
+                    </v-file-input>
+                    TODO
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="success" class="ma-3" x-large
+                    >{{ $t('Submit review') }}</v-btn>
+                    </v-card-actions>
+                </v-form>
+            </v-card>
+        </v-dialog>
+
     </span>
 </template>
 <script type="text/tsx">
@@ -120,7 +160,7 @@
             return {
                 loading: false,
                 sendToReviewDialog: false,
-                publishDialog: false
+                submitExternalReviewDialog: false
             };
         },
         methods: {
@@ -136,7 +176,13 @@
                 this.loading = false;
 
                 this.$emit('reload');
+            },
+            async publish() {
+                await Axios.patch(`/api/v1/thesis/${this.thesis.id}/publish`);
+                eventBus.flash({color: 'success', text: this.$t('Thesis has been published.')});
+
+                this.$emit('reload');
             }
-        },
+        }
     };
 </script>

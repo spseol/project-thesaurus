@@ -18,6 +18,24 @@ from apps.thesis.serializers import ThesisFullPublicSerializer, ThesisFullIntern
 from apps.thesis.serializers.thesis import ThesisSubmitSerializer
 
 
+def _state_change_action(name, state: Thesis.State):
+    # TODO: simple FSM validation?
+    def _action_method(self, request: Request, *args, **kwargs):
+        thesis = self.get_object()  # type: Thesis
+        serializer = ThesisBaseSerializer(instance=thesis, data=dict(state=state), partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data=serializer.data)
+
+    _action_method.__name__ = name
+
+    return transaction.atomic(
+        action(methods=['patch'], detail=True)(
+            _action_method
+        )
+    )
+
+
 class CanSubmitThesisPermission(BasePermission):
     def has_object_permission(self, request, view, thesis: Thesis):
         user = request.user  # type: User
@@ -112,15 +130,8 @@ class ThesisViewSet(ModelViewSet):
 
         return Response(data=serializer.data)
 
-    @action(methods=['patch'], detail=True)
-    @transaction.atomic
-    def send_to_review(self, request: Request, *args, **kwargs):
-        thesis = self.get_object()  # type: Thesis
-        serializer = ThesisBaseSerializer(instance=thesis, data=dict(state=Thesis.State.READY_FOR_REVIEW), partial=True)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-
-        return Response(data=serializer.data)
+    send_to_review = _state_change_action('send_to_review', Thesis.State.READY_FOR_REVIEW)
+    publish = _state_change_action('publish', Thesis.State.PUBLISHED)
 
     def get_serializer_class(self):
         class DynamicThesisSerializer(ThesisFullInternalSerializer):

@@ -1,6 +1,7 @@
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
-from rest_framework.relations import PrimaryKeyRelatedField
+from rest_framework.fields import DateTimeField
+from rest_framework.relations import PrimaryKeyRelatedField, HyperlinkedIdentityField
 from rest_framework.serializers import ModelSerializer
 
 from apps.accounts.serializers import UserSerializer
@@ -12,10 +13,15 @@ class ReviewSerializer(ModelSerializer):
     thesis = PrimaryKeyRelatedField(queryset=Thesis.objects.get_queryset())
     user = UserSerializer(read_only=True)
 
+    url = HyperlinkedIdentityField(view_name='api:review-pdf-detail')
+
+    created = DateTimeField(read_only=True, format=None)
+
     class Meta:
         model = Review
         fields = (
             'id',
+            'url',
             'thesis',
             'user',
             'comment',
@@ -23,6 +29,7 @@ class ReviewSerializer(ModelSerializer):
             'difficulty',
             'grades',
             'grade_proposal',
+            'created',
         )
 
     def validate(self, attrs):

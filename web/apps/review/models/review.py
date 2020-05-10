@@ -20,7 +20,7 @@ class Review(BaseTimestampedModel):
 
     class DifficultyChoices(IntegerChoices):
         OVER_AVERAGE = 3, _('Over average')
-        AVERAGE = 2, _('Very well')
+        AVERAGE = 2, _('Average')
         UNDER_AVERAGE = 1, _('Under average')
 
     thesis = models.ForeignKey(
@@ -74,11 +74,11 @@ class Review(BaseTimestampedModel):
 
     @property
     def gradings(self):
-        return filter(None, (
+        return tuple(filter(None, (
             self.thesis.supervisor == self.user and _('Students independence during processing'),
             _('Theoretical part of the work, comprehensibility of the text'),
             _('Methods and procedures used'),
             _('Formal editing, work with sources, citations in the text'),
             _('Graphic design of the thesis'),
             _('Interpretation of conclusions, their originality and their own contribution to the work')
-        ))
+        )))

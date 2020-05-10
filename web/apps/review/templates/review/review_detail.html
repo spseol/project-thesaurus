@@ -38,15 +38,20 @@
         }
 
         table tr td:nth-child(1) {
-            width: 35%;
+            width: 33%;
+            font-size: 3mm;
         }
 
         .comment {
-            min-height: 70mm;
+            min-height: 80mm;
         }
 
         .questions {
-            min-height: 50mm;
+            min-height: 40mm;
+        }
+
+        .right {
+            float: right;
         }
 
         .row-bottom-divider {
@@ -114,7 +119,7 @@
         <td><strong>{% trans "Criteriums of thesis grading" %}</strong></td>
         <td>
             <strong>{% trans "Grade" %}</strong>
-            <small>({% for label in review.GradesChoices.labels %}{{ label }}{% if not forloop.last %},
+            <small class="right">({% for l in review.GradesChoices.labels %}{{ l.lower }}{% if not forloop.last %},
             {% endif %}{% endfor %})</small>
         </td>
     </tr>
@@ -147,10 +152,10 @@
     <tr class="row-bottom-divider row-higher">
         <td>
             {% trans "In" %}
-            <span style="float: right">
+            <span class="right">
             {% trans "at day" %}
             {{ review.created|date:"d.m.Y" }}
-                </span>
+            </span>
         </td>
         <td>
             {% trans "Signature" %}:

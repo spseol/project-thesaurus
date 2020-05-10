@@ -112,6 +112,12 @@
                                         {{ $t('Submit') }}
                                     </v-btn>
                                 </v-row>
+                                <v-row no-gutters v-if="this.review.id">
+                                    <v-alert type="info" outlined width="100%">
+                                        {{$t('Review has been submited at')}} {{ (new
+                                        Date(this.review.created)).toLocaleString() }}.
+                                    </v-alert>
+                                </v-row>
                             </div>
                         </v-col>
                     </v-row>

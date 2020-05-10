@@ -41,7 +41,8 @@
                     v-for="(author, i) in item.authors"
                 >
                     <span v-if="i !== 0">, </span>
-                    <template v-if="isPossibleUserFilter(author)">
+                    <!-- TODO: think about idea of clickable filters -->
+                    <template v-if="false && isPossibleUserFilter(author)">
                         <a
                             v-text="author.full_name"
                             @click="addUserFilterFromDataTable(author.username)"
@@ -79,7 +80,7 @@
                 <!-- filter link for users without permission -->
                 <a v-else-if="props.item[key]"
                     v-text="props.item[key].full_name"
-                    @click="addUserFilterFromDataTable(item[key].username)"
+                    @click="addUserFilterFromDataTable(props.item[key].username)"
                 ></a>
             </template>
         </v-data-table>
