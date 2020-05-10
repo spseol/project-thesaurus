@@ -33,21 +33,18 @@ class ThesisViewSet(ModelViewSet):
         'abstract',
         'registration_number',
         'state',
-        'authors__username',
+        '=authors__username',
         'authors__first_name',
         'authors__last_name',
-        'supervisor__username',
+        '=supervisor__username',
         'supervisor__first_name',
         'supervisor__last_name',
-        'opponent__username',
+        '=opponent__username',
         'opponent__first_name',
         'opponent__last_name',
-        'category__id',
+        '=category__id',
         'category__title',
-        # TODO: fix filtering by date
-        # TODO: https://stackoverflow.com/questions/33358120/django-rest-framework-month-and-year-as-numberfilter
-        # 'published_at__year',
-        # 'published_at__month',
+        '=published_at_year',
     )
 
     def get_queryset(self):

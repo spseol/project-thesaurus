@@ -1,4 +1,5 @@
-from django.db.models import Manager, Exists, Count, Q, OuterRef
+from django.db.models import Manager, Exists, Count, Q, OuterRef, CharField
+from django.db.models.functions import ExtractYear, Cast
 
 
 class ThesisApiManager(Manager):
@@ -31,5 +32,6 @@ class ThesisApiManager(Manager):
                     reservation_thesis__state=Reservation.State.FINISHED,
                     _negated=True,
                 )
-            )
+            ),
+            published_at_year=Cast(ExtractYear('published_at'), CharField())
         )
