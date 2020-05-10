@@ -24,6 +24,8 @@ django-stubs = "*"
 filetype = "*"
 drf-pdf = "*"
 djangorestframework-stubs = "*"
+django-weasyprint = "*"
+weasyprint = "*"
 
 [dev-packages]
 
