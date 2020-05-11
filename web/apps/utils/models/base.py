@@ -4,6 +4,8 @@ from django.db.models import Model, UUIDField, CharField, TextField, PositiveSma
 from django.utils.translation import gettext as _
 from django_extensions.db.fields import CreationDateTimeField, ModificationDateTimeField
 
+from apps.utils.models.managers import BaseTypeModelManager
+
 
 class BaseModel(Model):
     """Base model with UUID primary key."""
@@ -37,10 +39,6 @@ class BaseTypeModel(BaseModel):
         null=True,
         blank=True
     )
-    name = CharField(
-        verbose_name=_('Name'),
-        max_length=256
-    )
     description = TextField(
         verbose_name=_('Description'),
         null=True,
@@ -50,9 +48,11 @@ class BaseTypeModel(BaseModel):
         verbose_name=_('Order'),
     )
 
+    objects = BaseTypeModelManager()
+
     class Meta:
         ordering = "order",
         abstract = True
 
     def __str__(self):
-        return self.name or self.identifier
+        return self.get_identifier_display()

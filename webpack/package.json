@@ -1,6 +1,6 @@
 {
   "name": "thesaurus-web",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Frontend part for project Thesaurus - theses evidence and reservation system.",
   "author": "Josef Kolar",
   "license": "MIT",
@@ -43,6 +43,7 @@
     "webpack4-bundle-tracker": "0.0.1-beta"
   },
   "devDependencies": {
+    "@babel/plugin-proposal-optional-chaining": "^7.9.0",
     "@types/lodash": "^4.14.150",
     "@types/qs": "^6.9.1",
     "image-webpack-loader": "^6.0.0",

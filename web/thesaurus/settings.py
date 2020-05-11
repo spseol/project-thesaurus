@@ -44,17 +44,15 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.api',
     'apps.attachment',
-    'apps.app',
+    'apps.frontend',
     'apps.thesis',
+    'apps.review',
     'apps.utils',
 
     'loginas',
-    'crispy_forms',
     'webpack_loader',
     'debug_toolbar',
     'rest_framework',
-    'rest_framework_datatables',
-
     'django_extensions',
 ]
 
@@ -62,8 +60,8 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'apps.utils.middleware.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -76,7 +74,13 @@ LOGIN_REDIRECT_URL = LOGOUT_REDIRECT_URL = '/'
 
 LOGIN_URL = '/login'
 
+APPEND_SLASH = False
+
 AUTH_USER_MODEL = 'accounts.User'
+
+LOCALE_MIDDLEWARE_IGNORE_URLS = (
+    r'^/api/.*',
+)
 
 TEMPLATES = [
     {
@@ -147,6 +151,8 @@ LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 STATIC_URL = '/static/'
 
 STATIC_ROOT = '/usr/src/static'
+
+MEDIA_ROOT = '/usr/src/media'
 
 WEBPACK_LOADER = {
     'DEFAULT': {

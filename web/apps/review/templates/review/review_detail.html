@@ -1,0 +1,180 @@
+{% load i18n %}
+{% load zip get_choices_display get_verbose_field_name from utils %}
+{% load static from static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% trans "Review" %} {{ review.thesis.title }}</title>
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            font-size: 3.5mm;
+            font-family: sans-serif;
+        }
+
+        body {
+            margin: 5mm 10mm 5mm;
+        }
+
+        h1 {
+            font-size: 5mm;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        table {
+            border: .7mm solid dimgray;
+            border-collapse: collapse;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        table td {
+            border: .25mm solid dimgray;
+            padding: 1mm 1.5mm;
+        }
+
+        table tr td:nth-child(1) {
+            width: 33%;
+            font-size: 3mm;
+        }
+
+        .comment {
+            min-height: 80mm;
+        }
+
+        .questions {
+            min-height: 40mm;
+        }
+
+        .right {
+            float: right;
+        }
+
+        .row-bottom-divider {
+            border-bottom: .7mm solid dimgray;
+        }
+
+        .row-higher td {
+            padding-top: 2mm;
+            padding-bottom: 2mm;
+        }
+
+        img {
+            margin: 0 auto;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 0;
+            text-align: center;
+            left: 0;
+            right: 0;
+            padding-bottom: 10mm;
+            font-size: 3mm;
+            color: darkgray;
+        }
+
+        footer a {
+            color: dimgray;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <img src="file:{% static "review/header.svg" %}" align="center">
+    <h1>{% trans "Absolvent thesis review" %}</h1>
+</header>
+<table>
+    <tbody>
+    <tr>
+        <td>{% trans "First and last name" %}</td>
+        <td>
+            {% for author in review.thesis.authors.all %}
+                {{ author.full_name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </td>
+    </tr>
+    <tr>
+        <td>{% trans "Thesis title" %}</td>
+        <td>{{ review.thesis.title }}</td>
+    </tr>
+    <tr>
+        <td>{% trans "Review by" %}</td>
+        <td>{{ review.user.full_name }}</td>
+    </tr>
+    <tr class="row-bottom-divider">
+        <td>{% trans "Supervisor / opponent" %}</td>
+        <td>{{ review.thesis.supervisor.full_name }} / {{ review.thesis.opponent.full_name }}</td>
+    </tr>
+    <tr>
+        <td><strong>{% trans "Criteriums of thesis grading" %}</strong></td>
+        <td>
+            <strong>{% trans "Grade" %}</strong>
+            <small class="right">({% for l in review.GradesChoices.labels %}{{ l.lower }}{% if not forloop.last %},
+            {% endif %}{% endfor %})</small>
+        </td>
+    </tr>
+    <tr>
+        <td>{% trans "Difficulty of selected topic" %}</td>
+        <td>{{ review.get_difficulty_display }}</td>
+    </tr>
+    {% for grading, grade in review.gradings|zip:review.grades %}
+        <tr{% if forloop.last %} class="row-bottom-divider"{% endif %}>
+            <td>{{ grading }}</td>
+            <td>{{ grade|get_choices_display:review.GradesChoices }}</td>
+        </tr>
+    {% endfor %}
+    <tr class="row-bottom-divider">
+        <td colspan="2" class="comment">
+            <strong>{% trans "Comment" %}</strong><br>
+            {{ review.comment }}
+        </td>
+    </tr>
+    <tr class="row-bottom-divider">
+        <td colspan="2" class="questions">
+            <strong>{% trans "Questions" %}</strong><br>
+            {{ review.questions }}
+        </td>
+    </tr>
+    <tr class="row-bottom-divider">
+        <td>{% get_verbose_field_name review "grade_proposal" %}</td>
+        <td>{{ review.get_grade_proposal_display }}</td>
+    </tr>
+    <tr class="row-bottom-divider row-higher">
+        <td>
+            {% trans "In" %}
+            <span class="right">
+            {% trans "at day" %}
+            {{ review.created|date:"d.m.Y" }}
+            </span>
+        </td>
+        <td>
+            {% trans "Signature" %}:
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<footer>
+    <small>
+        {% trans "If the evaluation of the leader and the opponent differs by more than two degrees (excellent - unsatisfactory), it will be prepared third independent opinion." %}
+    </small>
+    <br><br>
+    {% trans "Generated automatically by THESAURUS at" %} {% now "d.m.Y H:i" %}. <br>
+    {% trans "Available online on" %}
+    {# TODO: is this the best way to build url?  #}
+    <a href="{{ request.build_absolute_uri }}">
+        {{ request.build_absolute_uri }}
+    </a>.
+</footer>
+</body>
+</html>

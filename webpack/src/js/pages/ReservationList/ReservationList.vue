@@ -5,7 +5,7 @@
             :items="filteredItems"
             :search="search"
             show-select
-            items-per-page="1000"
+            :items-per-page="1000"
             sort-by="created"
             :footer-props="{
                 'disable-items-per-page': true,

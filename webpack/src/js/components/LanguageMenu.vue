@@ -28,14 +28,15 @@
     import * as _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../axios';
+    import {pageContext} from '../utils';
 
     export default Vue.extend({
         data: () => ({
-            languages: window.Thesaurus.settings.languages,
-            locale: window.Thesaurus.settings.locale,
+            languages: pageContext.languages,
+            locale: pageContext.locale,
             localeName: (_.find(
-                window.Thesaurus.settings.languages,
-                ([code, name]) => code == window.Thesaurus.settings.locale
+                pageContext.languages,
+                ([code, name]) => code == pageContext.locale
             ) || ['en', 'Unknown'])[1]
         }),
         methods: {

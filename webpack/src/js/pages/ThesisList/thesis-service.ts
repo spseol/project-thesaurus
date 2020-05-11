@@ -6,10 +6,10 @@ import Axios from '../../axios';
 export default class ThesisService {
     async loadData(options: DataOptions, filter: Array<any>, headers: Array<DataTableHeader>) {
         const {page, sortBy, sortDesc} = options;
+        let header;
+        const remap = (value) => ((header = _.find(headers, {value})) && header.mapped) ? header.mapped : value.replace('.', '__');
 
-        const remap = (value) => value.replace('.', '__');
-
-        return await Axios.get(`/api/v1/thesis/?${qs.stringify({
+        return await Axios.get(`/api/v1/thesis?${qs.stringify({
             page,
             search: _.map(filter, (i) => i.username || i.id || i).join(' '),
             ordering: _.map(
@@ -17,10 +17,5 @@ export default class ThesisService {
                 ([col, desc]) => `${desc ? '-' : ''}${remap(col).split('.')[0]}`
             ).join(',')
         })}`);
-    }
-
-    // TODO: improve typing
-    async loadUserOptions(): Promise<Array<Object>> {
-        return (await Axios.get('/api/v1/user-options/')).data;
     }
 }

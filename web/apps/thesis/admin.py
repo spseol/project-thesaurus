@@ -1,10 +1,15 @@
 from django.contrib.admin import ModelAdmin, register
 
-from apps.thesis.models import Thesis, Reservation, Category
+from apps.thesis.models import Thesis, Reservation, Category, ThesisAuthor
 
 
 @register(Thesis)
 class ThesisAdmin(ModelAdmin):
+    pass
+
+
+@register(ThesisAuthor)
+class ThesisAuthorAdmin(ModelAdmin):
     pass
 
 

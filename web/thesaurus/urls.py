@@ -1,18 +1,4 @@
-"""thesaurus URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/3.0/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.app, name='app')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='app')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+"""thesaurus URL Configuration"""
 
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
@@ -20,8 +6,9 @@ from django.contrib import admin
 from django.contrib.auth import views
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.urls import path, include, re_path
+from loginas.views import user_logout
 
-from apps.app.views import AppView
+from apps.frontend.views import AppView
 
 urlpatterns = [
     path('admin/', include('loginas.urls')),
@@ -32,8 +19,8 @@ urlpatterns = [
 
 urlpatterns += i18n_patterns(
     path('login', views.LoginView.as_view(), name='login'),
-    path('logout', views.LogoutView.as_view(), name='logout'),
-    re_path('.*', AppView.as_view(), name='home')
+    path('logout', user_logout, name='logout'),
+    re_path('.*', AppView.as_view(), name='home'),
 )
 
 if settings.DEBUG:

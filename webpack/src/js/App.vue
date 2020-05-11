@@ -7,14 +7,14 @@
             v-model="drawer"
         >
             <div class="v-navigation-drawer__content d-flex flex-column justify-space-between">
-
                 <v-list nav shaped>
-
                     <v-list-item-group color="primary">
                         <v-list-item
                             v-for="item in items"
                             :key="item.text"
                             :to="item.to"
+                            v-has-perm:[item.perm]
+                            exact
                         >
                             <v-list-item-action>
                                 <v-icon>{{ item.icon }}</v-icon>
@@ -31,7 +31,7 @@
                 <div>
                     <LanguageMenu/>
 
-                    <v-list-item v-if="djangoAdminUrl" :href="djangoAdminUrl">
+                    <v-list-item v-if="pageContext.djangoAdminUrl" :href="pageContext.djangoAdminUrl">
                         <v-list-item-action>
                             <v-icon>mdi-share</v-icon>
                         </v-list-item-action>
@@ -49,7 +49,7 @@
 
         <v-app-bar app color="primary accent-3" clipped-left>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
-            <v-btn :to="{name: 'home'}" :text="true" class="primary--text hidden-sm-and-down">
+            <v-btn :to="{name: 'dashboard'}" :text="true" class="primary--text hidden-sm-and-down">
                 <v-toolbar-title
                     class="ml-0 pl-1 d-md-flex hidden-sm-and-down black--text"
                 >
@@ -65,7 +65,7 @@
 
             <v-spacer/>
             <span class="font-weight-medium">
-            {{ username }}
+            {{ pageContext.username }}
             </span>
             <v-btn icon href="/logout" x-large class="mr-2">
                 <v-icon large>mdi-logout</v-icon>
@@ -76,7 +76,6 @@
             <v-container fluid>
                 <v-fade-transition mode="out-in">
                     <router-view></router-view>
-
                 </v-fade-transition>
             </v-container>
         </v-content>
@@ -85,8 +84,21 @@
             app
         >
             <v-spacer></v-spacer>
-            <span class="px-4"><a href="https://github.com/spseol/project-thesaurus">v{{ version }}</a> &copy; 2020</span>
+            <span class="px-4"><a href="https://github.com/spseol/project-thesaurus">v{{ pageContext.version }}</a> &copy; 2020</span>
         </v-footer>
+
+        <v-snackbar
+            v-model="flash.show"
+            :timeout="flash.timeout"
+            :color="flash.color || 'info'"
+            right top
+        >
+            {{ flash.text }}
+            <v-btn text @click="flash.show = false">
+                <v-icon>mdi-close</v-icon>
+            </v-btn>
+        </v-snackbar>
+
     </v-app>
 </template>
 
@@ -94,23 +106,49 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import LanguageMenu from './components/LanguageMenu';
+    import {eventBus, pageContext} from './utils';
 
     export default Vue.extend({
         components: {LanguageMenu},
         data() {
+            // @ts-ignore
+            let $t = (key) => this.$t(key);
             return {
-                username: window['Thesaurus'].settings.username,
-                djangoAdminUrl: window['Thesaurus'].settings.djangoAdminUrl,
-                version: window['Thesaurus'].settings.version,
-                drawer: this.$vuetify.breakpoint.mdAndUp,
+                pageContext,
+                drawer: this.$vuetify.breakpoint.mdAndUp && this.$route.name != '404',
+                flash: {show: false},
                 items: [
-                    {icon: 'mdi-book-multiple', text: this.$t('Theses'), to: {name: 'thesis-list'}},
-                    {icon: 'mdi-book-plus', text: this.$t('Prepare admission'), to: {name: 'thesis-prepare'}},
-                    {icon: 'mdi-calendar-account', text: this.$t('Reservations'), to: {name: 'reservations'}},
-                    {icon: 'mdi-printer', text: this.$t('Exports'), to: {name: 'exports'}},
-                    {icon: 'mdi-settings', text: this.$t('Settings'), to: {name: 'settings'}}
+                    {icon: 'mdi-home', text: $t('Dashboard'), to: {name: 'dashboard'}},
+                    {icon: 'mdi-book-multiple', text: $t('Theses'), to: {name: 'thesis-list'}},
+                    {
+                        icon: 'mdi-book-plus',
+                        text: $t('Prepare admission'),
+                        to: {name: 'thesis-prepare'},
+                        perm: 'thesis.add_thesis'
+                    },
+                    // {icon: 'mdi-pencil', text: this.$t('Submit review'), to: {name: 'reviews'}, perm: 'thesis.add_review'},
+                    {
+                        icon: 'mdi-calendar-account',
+                        text: $t('Reservations'),
+                        to: {name: 'reservations'},
+                        perm: 'thesis.view_reservation'
+                    },
+                    {icon: 'mdi-printer', text: $t('Exports'), to: {name: 'exports'}},
+                    {icon: 'mdi-settings', text: $t('Settings'), to: {name: 'settings'}}
                 ]
             };
+        },
+        watch: {
+            $route(to, from) {
+                if (to.name == '404')
+                    this.drawer = false;
+            }
+        },
+        created() {
+            eventBus.$on('flash', (flash) => {
+                this.flash = Object.assign({}, this.flash, flash);
+                this.flash.show = true;
+            });
         }
     });
 </script>

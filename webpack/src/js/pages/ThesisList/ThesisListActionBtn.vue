@@ -1,0 +1,188 @@
+<template>
+    <span>
+        <template v-if="thesis.state === 'published'">
+            <v-btn
+                v-if="thesis.reservable && thesis.available_for_reservation"
+                v-text="$t('Borrow')"
+                small color="info" outlined
+            ></v-btn>
+            <v-btn
+                v-if="thesis.reservable && !thesis.available_for_reservation && thesis.open_reservations_count === 1"
+                v-text="$t('Make pre-reservation')"
+                small color="info" outlined
+            ></v-btn>
+            <v-btn
+                v-if="thesis.reservable && !thesis.available_for_reservation && thesis.open_reservations_count > 1"
+                v-text="$t('Borrowed')"
+                x-small depressed
+            ></v-btn>
+            <v-btn
+                v-if="!thesis.reservable"
+                v-text="$t('Not reservable')"
+                x-small depressed
+            ></v-btn>
+        </template>
+        <v-btn
+            v-if="thesis.state === 'submitted'"
+            v-text="$t('Send to review')"
+            small color="primary" elevation="0"
+            @click="sendToReviewDialog = true"
+            v-has-perm:thesis.change_thesis
+        ></v-btn>
+
+        <v-btn
+            v-if="thesis.state === 'reviewed'"
+            v-text="$t('Publish')"
+            small color="primary" elevation="0"
+            @click="publish"
+            v-has-perm:thesis.change_thesis
+        ></v-btn>
+
+        <v-btn
+            v-if="thesis.state === 'ready_for_submit'"
+            v-text="$t('Waiting for submit')"
+            x-small depressed disabled
+            v-has-perm:thesis.change_thesis
+        ></v-btn>
+
+        <template v-if="thesis.state === 'ready_for_review'">
+            <v-hover v-slot:default="{ hover }" style="min-width: 15em">
+                <v-badge
+                    color="primary" overlap :value="!hover"
+                    :content="2 - thesis.reviews.length"
+                >
+                    <v-btn
+                        v-if="!hover"
+                        small depressed disabled block
+                        v-has-perm:thesis.change_thesis
+                    >{{ $t('Waiting for review') }}</v-btn>
+                    <v-btn
+                        v-if="hover" @click="submitExternalReviewDialog = true"
+                        small depressed outlined color="info" block
+                        v-has-perm:thesis.change_thesis
+                    >{{ $t('Submit external review') }}</v-btn>
+                </v-badge>
+            </v-hover>
+
+        </template>
+
+
+        <v-dialog v-model="sendToReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '50vw'">
+            <v-card :loading="loading">
+                <v-card-title
+                    class="headline grey lighten-2"
+                    primary-title
+                >{{ thesis.title }}</v-card-title>
+                <v-card-text class="pt-3">
+                    <v-simple-table>
+                        <tbody>
+                        <tr class="subtitle-1">
+                            <td>{{ $tc('Authors', thesis.authors.length) }}</td>
+                            <td>{{ thesis.authors.map(a => a.full_name).join(', ') }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.supervisor">
+                            <td>{{ $t('Supervisor') }}</td>
+                            <td>{{ thesis.supervisor.full_name }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.opponent">
+                            <td>{{ $t('Opponent') }}</td>
+                            <td>{{ thesis.opponent.full_name }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.category">
+                            <td>{{ $t('Category') }}</td>
+                            <td>{{ thesis.category.title }}</td>
+                        </tr>
+                        <tr class="subtitle-1">
+                            <td class="col-2">{{ $t('Abstract') }}</td>
+                            <td class="text-justify">{{ thesis.abstract }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="getAttachment('thesis_assigment')">
+                            <td>{{ $t('Thesis assigment') }}</td>
+                            <td><v-btn outlined :href="getAttachment('thesis_assigment').url" small target="_blank">{{ $t('Download thesis assigment') }}</v-btn></td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="getAttachment('thesis_text')">
+                            <td>{{ $t('Thesis text') }}</td>
+                            <td><v-btn outlined :href="getAttachment('thesis_text').url" small target="_blank">{{ $t('Download thesis text') }}</v-btn></td>
+                        </tr>
+                        </tbody>
+                    </v-simple-table>
+                </v-card-text>
+                <v-divider></v-divider>
+                <v-card-actions>
+                    <v-subheader class="ma-3">{{ $t('thesis.sendToReviewNote') }}</v-subheader>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="success" class="ma-3" x-large
+                        @click="sendToReview"
+                        :disabled="!(thesis.opponent && thesis.supervisor)"
+                    >{{ $t('Send to review') }}</v-btn>
+                </v-card-actions>
+              </v-card>
+        </v-dialog>
+
+        <v-dialog v-model="submitExternalReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '35vw'">
+            <v-card :loading="loading">
+                <v-form>
+                    <v-card-title
+                        class="headline grey lighten-2"
+                        primary-title
+                    >{{ thesis.title }}</v-card-title>
+                    <v-card-text class="pt-3">
+                    <v-file-input :label="$t('Review')">
+
+                    </v-file-input>
+                    TODO
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                        color="success" class="ma-3" x-large
+                    >{{ $t('Submit review') }}</v-btn>
+                    </v-card-actions>
+                </v-form>
+            </v-card>
+        </v-dialog>
+
+    </span>
+</template>
+<script type="text/tsx">
+    import _ from 'lodash';
+    import Axios from '../../axios';
+    import {eventBus} from '../../utils';
+
+    export default {
+        name: 'ThesisListActionBtn',
+        props: {
+            thesis: {}
+        },
+        data() {
+            return {
+                loading: false,
+                sendToReviewDialog: false,
+                submitExternalReviewDialog: false
+            };
+        },
+        methods: {
+            getAttachment(type) {
+                return _.find(this.thesis.attachments, {type_attachment: {identifier: type}});
+            },
+            async sendToReview() {
+                this.loading = true;
+
+                await Axios.patch(`/api/v1/thesis/${this.thesis.id}/send_to_review`);
+                eventBus.flash({color: 'success', text: this.$t('thesis.justSentToReview')});
+                this.sendToReviewDialog = false;
+                this.loading = false;
+
+                this.$emit('reload');
+            },
+            async publish() {
+                await Axios.patch(`/api/v1/thesis/${this.thesis.id}/publish`);
+                eventBus.flash({color: 'success', text: this.$t('thesis.justPublished')});
+
+                this.$emit('reload');
+            }
+        }
+    };
+</script>

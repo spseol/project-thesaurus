@@ -1,5 +1,4 @@
 <template>
-
     <v-card :loading="loading">
         <v-card-title>{{ $t('Prepare admission') }}</v-card-title>
         <v-card-text>
@@ -7,23 +6,24 @@
                 ref="form"
                 v-model="valid"
                 @submit.prevent="submit"
-                lazy-validation
             >
                 <v-text-field
                     v-model="thesis.title"
                     :counter="128"
                     :rules="[v => !!v]"
                     :label="$t('Title')"
+                    :error-messages="messages.title"
                     required
                 ></v-text-field>
 
-                <v-text-field
-                    v-model="thesis.registration_number"
-                    :counter="4"
-                    :rules="[v => !!v, v => /[A-Z]\d{3}/.test(v) || 'Not in format AXXX.']"
-                    :label="$t('Registration number')"
-                    required
-                ></v-text-field>
+                <!--                <v-text-field-->
+                <!--                    v-model="thesis.registration_number"-->
+                <!--                    :counter="4"-->
+                <!--                    :rules="[v => !!v, v => /[A-Z]\d{3}/.test(v) || 'Not in format AXXX.']"-->
+                <!--                    :label="$t('Registration number')"-->
+                <!--                    :error-messages="messages.title"-->
+                <!--                    required-->
+                <!--                ></v-text-field>-->
 
                 <v-autocomplete
                     v-model="thesis.authors"
@@ -35,20 +35,23 @@
                     hide-no-data
                     :label="$t('Author(s)')"
                     :rules="[v => v.length > 0]"
+                    :error-messages="messages.authors"
                 ></v-autocomplete>
 
                 <v-autocomplete
-                    v-model="thesis.supervisor"
+                    v-model="thesis.supervisor_id"
                     :items="teacherOptions"
                     hide-no-data
                     :label="$t('Supervisor')"
                     :rules="[v => !!v]"
+                    :error-messages="messages.supervisor_id"
                 ></v-autocomplete>
 
                 <v-radio-group
                     :label="$t('Category')"
                     v-model="thesis.category"
                     row
+                    :error-messages="messages.category"
                     :rules="[v => !!v]"
                 >
                     <v-radio
@@ -69,6 +72,7 @@
                     accept="application/pdf"
                     :label="$t('Thesis admission')"
                     v-model="thesis.admission"
+                    :error-messages="messages.admission"
                 ></v-file-input>
 
                 <v-row no-gutters>
@@ -90,12 +94,14 @@
     import qs from 'qs';
     import Vue from 'vue';
     import Axios from '../../axios';
+    import {eventBus, readFileAsync} from '../../utils';
 
     export default Vue.extend({
         name: 'ThesisPrepareForm',
         data: () => ({
             valid: false,
             loading: false,
+            messages: {},
 
             search: '',
             select: null,
@@ -109,7 +115,7 @@
                 authors: [],
                 published_at: new Date().toISOString().substr(0, 7).replace('-', '/'),
                 category: null,
-                supervisor: null,
+                supervisor_id: null,
                 admission: null
             }
         }),
@@ -123,22 +129,9 @@
             async queryStudentOptions(search) {
                 this.loading = true;
 
-                this.studentOptions = (await Axios.get(`/api/v1/student-options/?${qs.stringify({search})}`)).data;
+                this.studentOptions = (await Axios.get(`/api/v1/student-options?${qs.stringify({search})}`)).data;
 
                 this.loading = false;
-            },
-            readFileAsync(file) {
-                return new Promise((resolve, reject) => {
-                    let reader = new FileReader();
-
-                    reader.onload = () => {
-                        resolve(reader.result);
-                    };
-
-                    reader.onerror = reject;
-
-                    reader.readAsArrayBuffer(file);
-                });
             },
             async submit() {
                 this.$refs.form.validate();
@@ -149,23 +142,29 @@
                     admission: undefined
                 };
                 if (this.thesis.admission) {
-                    data.admission = await this.readFileAsync(this.thesis.admission);
+                    data.admission = await readFileAsync(this.thesis.admission);
                 }
 
                 for (let key in data) {
                     formData.append(key, this.thesis[key]);
                 }
-
-                await Axios.post('/api/v1/thesis/', formData, {
+                const resp = await Axios.post('/api/v1/thesis', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data'
                     }
                 });
+
+                if (resp.data.id) {
+                    eventBus.flash({text: this.$t('thesis.justPrepared')});
+                    this.$router.push({name: 'thesis-list'});
+                } else {
+                    this.messages = resp.data;
+                }
             }
         },
         async created() {
-            this.categoryOptions = (await Axios.get('/api/v1/category-options/')).data;
-            this.teacherOptions = (await Axios.get('/api/v1/teacher-options/')).data;
+            this.categoryOptions = (await Axios.get('/api/v1/category-options')).data;
+            this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
         }
     });
 </script>

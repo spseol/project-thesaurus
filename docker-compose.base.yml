@@ -13,6 +13,7 @@ services:
     volumes:
       - ./web/:/usr/src/app/
       - django_static_files:/usr/src/static
+      - django_media_files:/usr/src/media
       - webpack_build:/var/build/
     expose:
       - 8000
@@ -40,7 +41,7 @@ services:
     build: ./nginx
     container_name: thesaurus_webserver
     ports:
-      - 8080:80
+      - 127.0.0.1:8080:80
     volumes:
       - django_static_files:/static
       - webpack_build:/build
@@ -61,5 +62,6 @@ services:
 volumes:
   postgres_data:
   django_static_files:
+  django_media_files:
   node_modules:
   webpack_build:

@@ -1,5 +1,5 @@
 from django.apps import AppConfig
 
 
-class ThesisConfig(AppConfig):
+class AttachmentConfig(AppConfig):
     name = 'apps.attachment'

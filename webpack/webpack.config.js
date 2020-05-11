@@ -73,6 +73,7 @@ module.exports = {
                             hmr: process.env.NODE_ENV === 'development',
                             // if hmr does not work, this is a forceful method.
                             reloadAll: true,
+                            ignoreOrder: true,
                         },
                     },
                     {loader: 'css-loader'},
