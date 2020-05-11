@@ -19,7 +19,7 @@ class CategoryOptionsViewSet(ReadOnlyModelViewSet):
 class ThesisYearViewSet(GenericViewSet):
     queryset = Thesis.objects.annotate(
         published_at_year=ExtractYear('published_at')
-    ).values('published_at_year').distinct()
+    ).values('published_at_year').distinct().order_by('-published_at')
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())

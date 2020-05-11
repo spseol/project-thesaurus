@@ -88,17 +88,10 @@
         <portal to="navbar-center">
             <v-toolbar dense color="transparent" elevation="0">
                 <v-combobox
-                    :items="userOptions"
-                    flat
-                    solo-inverted solo
-                    hide-details
-                    clearable
-                    hide-selected
-                    prepend-inner-icon="mdi-magnify"
-                    label="Search"
-                    v-model="filterItems"
-                    multiple
-                    chips
+                    v-model="filterItems" multiple :items="userOptions"
+                    flat solo-inverted solo prepend-inner-icon="mdi-magnify"
+                    hide-details clearable hide-selected chips
+                    :label="$t('Search')"
                     :filter="userOptionsFilter"
                     menu-props="closeOnContentClick"
                 >
@@ -223,7 +216,7 @@
                 const headers = [
                     {text: '', value: 'data-table-expand'},
 
-                    {text: this.$t('Title'), value: 'title'},
+                    {text: this.$t('Title'), value: 'title', width: '30%'},
                     lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
                     {text: this.$t('Category'), value: 'category.title'},
 
@@ -231,12 +224,16 @@
 
                     {text: this.$t('Authors'), value: 'authors'},
 
-                    lgAndUp && {text: this.$t('Supervisor'), value: 'supervisor.full_name'},
-                    lgAndUp && {text: this.$t('Opponent'), value: 'opponent.full_name'}
+                    lgAndUp && {
+                        text: this.$t('Supervisor'),
+                        value: 'supervisor.full_name',
+                        mapped: 'supervisor__last_name'
+                    },
+                    lgAndUp && {text: this.$t('Opponent'), value: 'opponent.full_name', mapped: 'opponent__last_name'}
                 ];
 
-                headers.push({text: '', value: 'state'});
-                return _.filter(headers, _.isPlainObject);
+                headers.push({text: '', value: 'state', width: '18em'});
+                return _.compact(headers);
             }
         },
         async created() {

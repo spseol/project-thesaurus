@@ -6,8 +6,8 @@ import Axios from '../../axios';
 export default class ThesisService {
     async loadData(options: DataOptions, filter: Array<any>, headers: Array<DataTableHeader>) {
         const {page, sortBy, sortDesc} = options;
-
-        const remap = (value) => value.replace('.', '__');
+        let header;
+        const remap = (value) => ((header = _.find(headers, {value})) && header.mapped) ? header.mapped : value.replace('.', '__');
 
         return await Axios.get(`/api/v1/thesis?${qs.stringify({
             page,
