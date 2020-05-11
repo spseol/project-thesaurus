@@ -1,8 +1,15 @@
-from django.db.models import Manager, Exists, Count, Q, OuterRef, CharField
+from django.db.models import Exists, Count, Q, OuterRef, CharField, QuerySet, Manager
 from django.db.models.functions import ExtractYear, Cast
 
 
-class ThesisApiManager(Manager):
+class ThesisManager(Manager):
+    def published(self) -> 'QuerySet':
+        return self.filter(
+            state=self.model.State.PUBLISHED
+        )
+
+
+class ThesisApiManager(ThesisManager):
     def get_queryset(self):
         from apps.thesis.models import Reservation
 
@@ -21,6 +28,7 @@ class ThesisApiManager(Manager):
                 queryset=Reservation.objects.filter(
                     thesis=OuterRef('pk'),
                     state__in=(
+                        Reservation.State.CREATED,
                         Reservation.State.READY,
                         Reservation.State.RUNNING,
                     ),
@@ -28,10 +36,7 @@ class ThesisApiManager(Manager):
             ),
             open_reservations_count=Count(
                 'reservation_thesis',
-                filter=Q(
-                    reservation_thesis__state=Reservation.State.FINISHED,
-                    _negated=True,
-                )
+                filter=~Q(reservation_thesis__state=Reservation.State.FINISHED),
             ),
             published_at_year=Cast(ExtractYear('published_at'), CharField())
         )

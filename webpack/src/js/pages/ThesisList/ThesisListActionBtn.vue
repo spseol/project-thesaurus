@@ -2,13 +2,13 @@
     <span>
         <template v-if="thesis.state === 'published'">
             <v-btn
-                v-if="thesis.reservable && thesis.available_for_reservation"
-                v-text="$t('Borrow')"
+                v-if="thesis.reservable && thesis.available_for_reservation && thesis.open_reservations_count === 0"
+                v-text="$t('Borrow')" @click="createReservationDialog = true"
                 small color="info" outlined
             ></v-btn>
             <v-btn
                 v-if="thesis.reservable && !thesis.available_for_reservation && thesis.open_reservations_count === 1"
-                v-text="$t('Make pre-reservation')"
+                v-text="$t('Make pre-reservation')" @click="createReservationDialog = true"
                 small color="info" outlined
             ></v-btn>
             <v-btn
@@ -68,10 +68,13 @@
                 <v-card-title
                     class="headline grey lighten-2"
                     primary-title
-                >{{ thesis.title }}</v-card-title>
+                >{{ $t('Send to review') }}</v-card-title>
                 <v-card-text class="pt-3">
                     <v-simple-table>
                         <tbody>
+                        <tr>
+                            <td colspan="2" class="subtitle-1">{{ thesis.title }}</td>
+                        </tr>
                         <tr class="subtitle-1">
                             <td>{{ $tc('Authors', thesis.authors.length) }}</td>
                             <td>{{ thesis.authors.map(a => a.full_name).join(', ') }}</td>
@@ -140,6 +143,58 @@
             </v-card>
         </v-dialog>
 
+        <v-dialog v-model="createReservationDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '35vw'">
+            <v-card :loading="loading">
+                <v-form>
+                    <v-card-title
+                        class="headline grey lighten-2"
+                        primary-title
+                    >{{ $t('New reservation for thesis borrow') }}</v-card-title>
+                    <v-card-text class="pt-3">
+                        <v-simple-table>
+                        <tbody>
+                        <tr>
+                            <td colspan="2" class="subtitle-1">{{ thesis.title }}</td>
+                        </tr>
+                        <tr class="subtitle-1">
+                            <td>{{ $tc('Authors', thesis.authors.length) }}</td>
+                            <td>{{ thesis.authors.map(a => a.full_name).join(', ') }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.supervisor">
+                            <td>{{ $t('Supervisor') }}</td>
+                            <td>{{ thesis.supervisor.full_name }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.opponent">
+                            <td>{{ $t('Opponent') }}</td>
+                            <td>{{ thesis.opponent.full_name }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.category">
+                            <td>{{ $t('Category') }}</td>
+                            <td>{{ thesis.category.title }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.published_at">
+                            <td>{{ $t('Published at') }}</td>
+                            <td>{{ thesis.published_at }}</td>
+                        </tr>
+                        <tr class="subtitle-1" v-if="thesis.abstract">
+                            <td class="col-2">{{ $t('Abstract') }}</td>
+                            <td class="text-justify">{{ thesis.abstract }}</td>
+                        </tr>
+                        </tbody>
+                    </v-simple-table>
+                    </v-card-text>
+                    <v-divider></v-divider>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            @click="createReservation"
+                            color="success" class="ma-3" x-large
+                        >{{ $t('Create reservation') }}</v-btn>
+                    </v-card-actions>
+                </v-form>
+            </v-card>
+        </v-dialog>
+
     </span>
 </template>
 <script type="text/tsx">
@@ -156,7 +211,8 @@
             return {
                 loading: false,
                 sendToReviewDialog: false,
-                submitExternalReviewDialog: false
+                submitExternalReviewDialog: false,
+                createReservationDialog: false
             };
         },
         methods: {
@@ -169,6 +225,23 @@
                 await Axios.patch(`/api/v1/thesis/${this.thesis.id}/send_to_review`);
                 eventBus.flash({color: 'success', text: this.$t('thesis.justSentToReview')});
                 this.sendToReviewDialog = false;
+                this.loading = false;
+
+                this.$emit('reload');
+            },
+            async createReservation() {
+                this.loading = true;
+
+                const {data} = await Axios.post(`/api/v1/reservation`, {
+                    thesis: this.thesis.id
+                });
+                if (data.id) {
+                    eventBus.flash({color: 'success', text: this.$t('reservation.justCreated')});
+                    this.createReservationDialog = false;
+                } else {
+                    eventBus.flash({color: 'primary', text: data.toString()});
+                }
+
                 this.loading = false;
 
                 this.$emit('reload');

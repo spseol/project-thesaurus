@@ -18,12 +18,24 @@
                 </div>
             </template>
 
-            <template v-slot:item.actions="{ item }">
-                <v-btn v-if="item.state === 'created'" small color="success" v-text="$t('Prepared for pickup')" outlined></v-btn>
-                <v-btn v-if="item.state === 'ready'" small color="info" v-text="$t('Picked up')" outlined></v-btn>
-                <v-btn v-if="item.state === 'running'" small color="primary" v-text="$t('Returned')" outlined></v-btn>
+            <template v-slot:item.created="{ item }">
+                {{ (new Date(item.created)).toLocaleString() }}
             </template>
 
+            <template v-slot:item.actions="{ item }">
+                <v-btn
+                    v-if="item.state === 'created'" @click="changeState(item, 'ready')"
+                    small color="success" v-text="$t('Prepared for pickup')" outlined
+                ></v-btn>
+                <v-btn
+                    v-if="item.state === 'ready'" @click="changeState(item, 'running')"
+                    small color="info" v-text="$t('Picked up')" outlined
+                ></v-btn>
+                <v-btn
+                    v-if="item.state === 'running'" @click="changeState(item, 'finished')"
+                    small color="primary" v-text="$t('Returned')" outlined
+                ></v-btn>
+            </template>
         </v-data-table>
 
         <portal to="navbar-center">
@@ -59,6 +71,7 @@
     import _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
+    import {eventBus} from '../../utils';
 
     export default Vue.extend({
         name: 'ReservationList',
@@ -98,11 +111,25 @@
             stateToTitle(state) {
                 return {
                     all: this.$t('All'),
-                    created: this.$t('Added'),
+                    created: this.$t('Created'),
                     ready: this.$t('Ready'),
                     running: this.$t('Running'),
                     finished: this.$t('Finished')
                 }[state] || '';
+            },
+            async changeState(reservation, state) {
+                this.loading = true;
+
+                const {data} = await Axios.patch(`/api/v1/reservation/${reservation.id}`, {
+                    state
+                });
+                if (data.id) {
+                    eventBus.flash({color: 'success', text: this.$t('reservation.stateChanged')});
+                } else {
+                    eventBus.flash({color: 'primary', text: data.toString()});
+                }
+                this.items = (await Axios.get(`/api/v1/reservation`)).data;
+                this.loading = false;
             }
         },
         async created() {

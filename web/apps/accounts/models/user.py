@@ -37,7 +37,7 @@ class User(AbstractUser):
     def get_full_name(self):
         return f'{self.degree_before or ""}' \
                f'{self.first_name} {self.last_name}' \
-               f'{("," + self.degree_after) if self.degree_after else ""}'.strip()
+               f'{("," + self.degree_after) if self.degree_after else ""}'.strip() or self.username
 
     full_name = property(get_full_name)
 

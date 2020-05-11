@@ -4,10 +4,10 @@ from functools import cached_property
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
 from django.db import models
-from django.db.models import TextChoices, Manager
+from django.db.models import TextChoices
 from django.utils.translation import gettext as _
 
-from apps.thesis.models.managers.thesis import ThesisApiManager
+from apps.thesis.models.managers.thesis import ThesisApiManager, ThesisManager
 from apps.utils.models import BaseTimestampedModel
 
 
@@ -97,7 +97,7 @@ class Thesis(BaseTimestampedModel):
         default='', blank=True, null=True, max_length=8,
     )
 
-    objects = Manager()
+    objects = ThesisManager()
     api_objects = ThesisApiManager()
 
     class Meta:
