@@ -45,7 +45,7 @@
             v-has-perm:thesis.change_thesis
         ></v-btn>
 
-        <template v-if="thesis.state === 'ready_for_review'">
+        <template v-if="thesis.state === 'ready_for_review'" v-has-perm:thesis.change_thesis>
             <v-hover v-slot:default="{ hover }" style="min-width: 15em">
                 <v-badge
                     color="primary" overlap :value="!hover"
@@ -54,18 +54,14 @@
                     <v-btn
                         v-if="!hover"
                         small depressed disabled block
-                        v-has-perm:thesis.change_thesis
                     >{{ $t('Waiting for review') }}</v-btn>
                     <v-btn
                         v-if="hover" @click="submitExternalReviewDialog = true"
                         small depressed outlined color="info" block
-                        v-has-perm:thesis.change_thesis
                     >{{ $t('Submit external review') }}</v-btn>
                 </v-badge>
             </v-hover>
-
         </template>
-
 
         <v-dialog v-model="sendToReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '50vw'">
             <v-card :loading="loading">

@@ -6,7 +6,8 @@
             :options.sync="options"
             :server-items-length="totalCount"
             :loading="loading"
-            sort-by="registration_number"
+            sort-by="published_at"
+            sort-desc
             show-expand
             :footer-props="{
                 'disable-items-per-page': true,
@@ -237,13 +238,11 @@
             }
         },
         async created() {
-            await this.load();
-
             this.debouncedLoad = _.debounce(this.load, 200);
             this.$watch(
                 (self) => ([self.options, self.filterItems, self.categoryFilter, self.thesisYearFilter]),
                 this.debouncedLoad,
-                {deep: true}
+                {deep: true, immediate: true}
             );
             // TODO: only if has perms
             this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
