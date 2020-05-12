@@ -1,4 +1,3 @@
-from django.db import transaction
 from rest_framework.viewsets import ModelViewSet
 
 from apps.api.permissions import RestrictedViewModelPermissions
@@ -15,10 +14,3 @@ class ReviewViewSet(ModelViewSet):
     )
     permission_classes = (RestrictedViewModelPermissions,)
     serializer_class = ReviewSerializer
-
-    @transaction.atomic
-    def perform_create(self, serializer: ReviewSerializer):
-        serializer.save(
-            user=self.request.user,  # TODO: Current user default?
-        )
-    # TODO: perform update?

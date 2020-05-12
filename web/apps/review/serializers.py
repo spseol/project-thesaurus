@@ -1,6 +1,6 @@
 from django.utils.translation import gettext as _
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import DateTimeField
+from rest_framework.fields import DateTimeField, CurrentUserDefault, HiddenField
 from rest_framework.relations import PrimaryKeyRelatedField, HyperlinkedIdentityField
 from rest_framework.serializers import ModelSerializer
 
@@ -11,7 +11,9 @@ from apps.thesis.models import Thesis
 
 class ReviewSerializer(ModelSerializer):
     thesis = PrimaryKeyRelatedField(queryset=Thesis.objects.get_queryset())
+
     user = UserSerializer(read_only=True)
+    user_id = HiddenField(default=CurrentUserDefault(), source='user', write_only=True)
 
     url = HyperlinkedIdentityField(view_name='api:review-pdf-detail')
 
@@ -24,6 +26,7 @@ class ReviewSerializer(ModelSerializer):
             'url',
             'thesis',
             'user',
+            'user_id',
             'comment',
             'questions',
             'difficulty',

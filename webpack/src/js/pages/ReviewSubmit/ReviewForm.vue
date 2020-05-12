@@ -31,16 +31,13 @@
                             </v-row>
                             <v-textarea
                                 :label="$t('Review comment')"
-                                :rules="[v => !!v]"
-                                outlined
-                                rows="14"
+                                :rules="[v => !!v]" hint="TODO?"
+                                outlined rows="14" no-resize :auto-grow="false" counter
                                 v-model="review.comment"
                             ></v-textarea>
                             <v-textarea
-                                :label="$t('Thesis defence questions')"
-                                hide-details
-                                outlined
-                                rows="8"
+                                :label="$t('Thesis defence questions')" hint="TODO? required?"
+                                outlined rows="8" no-resize :auto-grow="false" counter
                                 v-model="review.questions"
                             ></v-textarea>
                         </v-col>

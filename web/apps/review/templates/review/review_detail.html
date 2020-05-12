@@ -1,3 +1,4 @@
+{% load utils %}
 {% load i18n %}
 {% load zip get_choices_display get_verbose_field_name from utils %}
 {% load static from static %}
@@ -13,6 +14,11 @@
             padding: 0;
             font-size: 3.5mm;
             font-family: sans-serif;
+        }
+
+        @page {
+            size: A4;
+            margin: 0;
         }
 
         body {
@@ -43,11 +49,25 @@
         }
 
         .comment {
-            min-height: 80mm;
+            height: 60mm;
+            max-height: 60mm;
+            overflow: hidden;
+            white-space: pre-line;
+            text-align: justify;
+
         }
 
         .questions {
-            min-height: 40mm;
+            height: 40mm;
+            max-height: 40mm;
+            overflow: hidden;
+            white-space: pre-line;
+            text-align: justify;
+        }
+
+        p {
+            padding-top: 0;
+            margin-top: 0;
         }
 
         .right {
@@ -65,11 +85,6 @@
 
         img {
             margin: 0 auto;
-        }
-
-        @page {
-            size: A4;
-            margin: 0;
         }
 
         footer {
@@ -134,15 +149,15 @@
         </tr>
     {% endfor %}
     <tr class="row-bottom-divider">
-        <td colspan="2" class="comment">
-            <strong>{% trans "Comment" %}</strong><br>
-            {{ review.comment }}
+        <td colspan="2">
+            <strong>{% trans "Comment" %}</strong>
+            <p class="comment">{{ review.comment.strip }}</p>
         </td>
     </tr>
     <tr class="row-bottom-divider">
-        <td colspan="2" class="questions">
-            <strong>{% trans "Questions" %}</strong><br>
-            {{ review.questions }}
+        <td colspan="2">
+            <strong>{% trans "Questions" %}</strong>
+            <p class="questions">{{ review.questions.strip }}</p>
         </td>
     </tr>
     <tr class="row-bottom-divider">
@@ -171,9 +186,8 @@
     <br><br>
     {% trans "Generated automatically by THESAURUS at" %} {% now "d.m.Y H:i" %}. <br>
     {% trans "Available online on" %}
-    {# TODO: is this the best way to build url?  #}
-    <a href="{{ request.build_absolute_uri }}">
-        {{ request.build_absolute_uri }}
+    <a href="{% absolute_url "api:review-pdf-detail" review.pk %}">
+        {% absolute_url "api:review-pdf-detail" review.pk %}
     </a>.
 </footer>
 </body>
