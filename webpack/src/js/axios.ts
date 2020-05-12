@@ -12,12 +12,11 @@ const config: AxiosRequestConfig = {
 const Axios: AxiosInstance = OrigAxios.create(config);
 
 Axios.interceptors.response.use(null, (error) => {
-    if (error.response.status === 403) {
+    if (error?.response.status === 403) {
         eventBus.flash({color: 'warning', text: error.response.data?.detail || 'Access denied.'});
-    } else if (error.response.status >= 500) {
+    } else if (error?.response.status >= 500) {
         eventBus.flash({color: 'error', text: error.response.data?.error || 'Server error.'});
     }
-    console.warn(error.response.data);
     return Promise.reject(error);
 });
 

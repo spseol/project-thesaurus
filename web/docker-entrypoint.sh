@@ -22,7 +22,7 @@ case $1 in
     ;;
   runserver_prod)
     # runtime under django user
-    run "gunicorn thesaurus.asgi -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000"
+    run "python manage.py collectstatic --noinput && gunicorn thesaurus.asgi -k uvicorn.workers.UvicornWorker -b 0.0.0.0:8000"
     ;;
   *)
     exec "$@"

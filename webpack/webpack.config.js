@@ -27,7 +27,7 @@ module.exports = {
         // for example ../build/head.[hash].js
         publicPath,
         path: buildDir,
-        filename: '[name].[hash:6].js',
+        filename: '[name].[hash:8].js',
     },
     module: {
         rules: [
@@ -126,7 +126,11 @@ module.exports = {
             path: buildDir,
             filename: 'webpack-stats.json',
         }),
-        new MiniCssExtractPlugin(),
+        new MiniCssExtractPlugin({
+            filename: '[name].[hash:8].css',
+            chunkFilename: '[id].[hash:8].css',
+            ignoreOrder: true, // vuetify-plugin/loader problem
+        }),
         new VueLoaderPlugin(),
         new VuetifyLoaderPlugin({progressiveImages: true}),
     ],

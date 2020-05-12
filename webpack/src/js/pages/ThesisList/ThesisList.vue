@@ -245,12 +245,20 @@
                 this.debouncedLoad,
                 {deep: true, immediate: true}
             );
+            [
+                this.userOptions,
+                this.categoryOptions,
+                this.thesisYearOptions
+            ] = _.map(await Promise.all([
+                Axios.get('/api/v1/user-filter-options'),
+                Axios.get('/api/v1/category-options'),
+                Axios.get('/api/v1/thesis-year-options')
+            ]), _.property('data'));
+
+            this.hasThesisEditPerm = await hasPerm('thesis.change_thesis');
+
             // TODO: only if has perms
             this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
-            this.userOptions = (await Axios.get('/api/v1/user-filter-options')).data;
-            this.categoryOptions = (await Axios.get('/api/v1/category-options')).data;
-            this.thesisYearOptions = (await Axios.get('/api/v1/thesis-year-options')).data;
-            this.hasThesisEditPerm = await hasPerm('thesis.change_thesis');
         }
     });
 </script>
