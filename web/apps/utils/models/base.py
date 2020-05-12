@@ -1,7 +1,7 @@
 from uuid import uuid4
 
 from django.db.models import Model, UUIDField, CharField, TextField, PositiveSmallIntegerField
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_extensions.db.fields import CreationDateTimeField, ModificationDateTimeField
 
 from apps.utils.models.managers import BaseTypeModelManager

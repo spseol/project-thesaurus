@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.db.models import CharField
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models.managers import UserQueryset
 
