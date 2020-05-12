@@ -21,7 +21,7 @@ urlpatterns = [
 ]
 
 urlpatterns += i18n_patterns(
-    path('login', views.LoginView.as_view(), name='login'),
+    path('login', views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
     path('logout', user_logout, name='logout'),
     re_path('.*', AppView.as_view(), name='home'),
 )

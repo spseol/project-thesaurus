@@ -45,7 +45,7 @@
                 let resp = await Axios.post('/api/i18n/setlang/', {
                     language: code
                 });
-                // TODO: router call?
+                // manually override router baseUrl
                 window.location.href = `/${code}`;
             }
         }

@@ -15,7 +15,7 @@
 
             <template v-slot:item.state="{ item }" class="text-center">
                 <div class="text-center">
-                    <v-chip outlined :color="stateToColor(item.state)">{{ stateToTitle(item.state) }}</v-chip>
+                    <v-chip outlined :color="stateToColor(item.state)">{{ item.state }}</v-chip>
                 </div>
             </template>
 
@@ -59,9 +59,9 @@
                     mandatory
                 >
                     <v-btn
-                        v-for="value in stateOptions"
+                        v-for="{text, value} in stateOptions"
                         :key="value" :value="value"
-                        v-text="stateToTitle(value)"
+                        v-text="text"
                     ></v-btn>
 
                 </v-btn-toggle>
@@ -95,7 +95,7 @@
                 search: '',
                 stateFilter: 'all',
                 // TODO: needed?
-                stateOptions: ['all', 'created', 'ready', 'running', 'finished'],
+                stateOptions: [],
                 options: {}
             };
         },
@@ -113,15 +113,6 @@
                     created: 'success',
                     ready: 'info',
                     running: 'primary'
-                }[state] || '';
-            },
-            stateToTitle(state) {
-                return {
-                    all: this.$t('All'),
-                    created: this.$t('Created'),
-                    ready: this.$t('Ready'),
-                    running: this.$t('Running'),
-                    finished: this.$t('Finished')
                 }[state] || '';
             },
             async changeState(reservation, state) {
@@ -147,6 +138,11 @@
         async created() {
             await this.load();
             this.$watch('options', async () => this.load());
+
+            this.stateOptions = [
+                {text: this.$t('All'), value: this.stateFilter},
+                ...(await Axios.get('/api/v1/reservation-state-options')).data
+            ];
         }
     });
 </script>

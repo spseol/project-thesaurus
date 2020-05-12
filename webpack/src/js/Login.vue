@@ -38,7 +38,7 @@
                                             :error="!!message"
                                             v-model="credentials.username"
                                             autofocus
-                                            :rules="[v => !!v || 'Username is required']"
+                                            :rules="[v => !!v || $t('Username is required')]"
                                         />
 
                                         <v-text-field
@@ -49,7 +49,7 @@
                                             required
                                             v-model="credentials.password"
                                             :error="!!message"
-                                            :rules="[v => !!v || 'Password is required']"
+                                            :rules="[v => !!v || $t('Password is required')]"
                                         />
                                         <v-alert v-if="message" text type="error" v-text="message"/>
                                     </v-card-text>
@@ -136,8 +136,6 @@
         }
     }
 
-    // TODO: invalid?
-    // animation: v-shake .6s map-get($transition, 'swing')
     .show-form-enter-active {
         transition: 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     }

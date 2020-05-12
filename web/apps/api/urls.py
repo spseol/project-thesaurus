@@ -8,7 +8,7 @@ from .views.attachment import AttachmentViewSet
 from .views.category import CategoryOptionsViewSet, ThesisYearViewSet
 from .views.dashboard import DashboardView
 from .views.login import LoginView
-from .views.reservation import ReservationViewSet
+from .views.reservation import ReservationViewSet, ReservationStateOptionsViewSet
 from .views.review import ReviewViewSet
 from .views.thesis import ThesisViewSet
 from .views.user import UserFilterOptionsViewSet, StudentOptionsViewSet, TeacherOptionsViewSet, UserPermView
@@ -27,6 +27,7 @@ router.register(r'student-options', StudentOptionsViewSet, basename='student')
 router.register(r'teacher-options', TeacherOptionsViewSet, basename='teacher')
 router.register(r'category-options', CategoryOptionsViewSet)
 router.register(r'thesis-year-options', ThesisYearViewSet)
+router.register(r'reservation-state-options', ReservationStateOptionsViewSet, basename='reservation-state')
 
 app_name = 'api'
 urlpatterns = [

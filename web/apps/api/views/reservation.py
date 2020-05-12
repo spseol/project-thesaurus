@@ -2,6 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 
 from apps.thesis.models import Reservation
 from apps.thesis.serializers import ReservationSerializer
+from apps.utils.views import ModelChoicesOptionsView
 
 
 class ReservationViewSet(ModelViewSet):
@@ -17,3 +18,7 @@ class ReservationViewSet(ModelViewSet):
         'thesis__title',
         'thesis__registration_number',
     )
+
+
+class ReservationStateOptionsViewSet(ModelChoicesOptionsView):
+    choices = Reservation.State
