@@ -4,7 +4,8 @@
             :headers="headers"
             :items="filteredItems"
             :search="search"
-            :items-per-page="1000"
+            :options.sync="options"
+            :items-per-page="20"
             sort-by="created"
             :footer-props="{
                 'disable-items-per-page': true,
@@ -88,7 +89,9 @@
                 items: [],
                 search: '',
                 stateFilter: 'all',
-                stateOptions: ['all', 'created', 'ready', 'running', 'finished']
+                // TODO: needed?
+                stateOptions: ['all', 'created', 'ready', 'running', 'finished'],
+                options: {}
             };
         },
         computed: {
@@ -127,12 +130,18 @@
                 } else {
                     eventBus.flash({color: 'primary', text: data.toString()});
                 }
-                this.items = (await Axios.get(`/api/v1/reservation`)).data;
+                await this.load();
                 this.loading = false;
+            },
+            async load() {
+                const {page = 1} = this.options;
+                // TODO: async API search
+                this.items = (await Axios.get(`/api/v1/reservation?page=${page}`)).data;//.results;
             }
         },
         async created() {
-            this.items = (await Axios.get(`/api/v1/reservation`)).data;
+            await this.load();
+            this.$watch('options', async () => this.load());
         }
     });
 </script>

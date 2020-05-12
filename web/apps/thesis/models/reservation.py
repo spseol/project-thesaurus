@@ -41,6 +41,7 @@ class Reservation(BaseTimestampedModel):
     class Meta:
         verbose_name = _('Reservation')
         verbose_name_plural = _('Reservations')
+        ordering = ('created',)
 
     def __str__(self):
         return _('Reservation {} for {}').format(

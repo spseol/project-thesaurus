@@ -1,13 +1,15 @@
 from rest_framework.viewsets import ModelViewSet
 
-from apps.api.permissions import RestrictedViewModelPermissions
 from apps.thesis.models import Reservation
 from apps.thesis.serializers import ReservationSerializer
 
 
 class ReservationViewSet(ModelViewSet):
-    queryset = Reservation.objects.all()
-    permission_classes = (RestrictedViewModelPermissions,)
+    queryset = Reservation.objects.select_related(
+        'thesis',
+        'for_user',
+    )
+    # permission_classes = (RestrictedViewModelPermissions,)
     serializer_class = ReservationSerializer
     pagination_class = None  # TODO: needed pagination?
     search_fields = (

@@ -10,6 +10,7 @@ from apps.thesis.models import Reservation, Thesis
 class ReservationSerializer(ModelSerializer):
     thesis = PrimaryKeyRelatedField(
         queryset=Thesis.objects.published(),
+        style=dict(base_template='input.html'),
     )
 
     for_user = UserSerializer(read_only=True)
@@ -17,6 +18,7 @@ class ReservationSerializer(ModelSerializer):
         write_only=True, source='for_user',
         queryset=User.objects.all(),
         default=CurrentUserDefault(),
+        style=dict(base_template='input.html'),
     )
 
     thesis_title = CharField(source='thesis.title', read_only=True)
