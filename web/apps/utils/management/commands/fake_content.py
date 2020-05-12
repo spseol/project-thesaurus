@@ -4,7 +4,6 @@ from operator import methodcaller
 from random import choice, randint, sample, triangular, random
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Group
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django_seed import Seed
@@ -28,32 +27,38 @@ class Command(BaseCommand):
             Category.objects.update_or_create(title=title)
 
         categories = tuple(Category.objects.all())
+
+        teachers = tuple(get_user_model().objects.all().filter(groups__name='teacher'))
+        students = tuple(get_user_model().objects.all().filter(groups__name='student'))
+
         seeder: Seeder = Seed.seeder(locale='cz_CZ')
-        seeder.add_entity(get_user_model(), 30)
-        seeder.add_entity(Thesis, 200, dict(
+        # seeder.add_entity(get_user_model(), 30)
+        seeder.add_entity(Thesis, 10, dict(
             registration_number=lambda *_: ''.join((choice(string.ascii_uppercase), str(randint(100, 999)))),
             published_at=lambda *_: date(randint(2004, 2020), choice((4, 5)), 1),
             category=lambda *_: choice(categories),
             title=lambda *_: choice(TITLES),
             abstract=lambda *_: ' '.join(sample(ABSTRACTS, int(triangular(5, 15)))),
-            reservable=lambda *_: random() > .2
+            reservable=lambda *_: random() > .2,
+            state=lambda *_: choice(Thesis.State.values),
+            supervisor=lambda *_: choice(teachers),
+            opponent=lambda *_: choice(teachers),
         ))
-        seeder.add_entity(Reservation, 40, dict(
-            state=lambda *_: choice(Reservation.State.values)
+        seeder.add_entity(Reservation, 5, dict(
+            state=lambda *_: choice(Reservation.State.values),
+            for_user=lambda *_: choice(students),
         ))
 
         inserted = seeder.execute()
 
-        all_users = tuple(get_user_model().objects.all())
-
         for thesis in map(lambda i: Thesis.objects.get(pk=i), inserted[Thesis]):
-            thesis.authors.add(choice(all_users))
+            thesis.authors.add(choice(students))
             if random() > .85:
-                thesis.authors.add(choice(all_users))
+                thesis.authors.add(choice(students))
 
-        teacher = Group.objects.get_or_create(name='teacher')[0]
-        for user in sample(all_users, 10):
-            teacher.user_set.add(user)
+        # teacher = Group.objects.get_or_create(name='teacher')[0]
+        # for user in sample(students, 10):
+        #     teacher.user_set.add(user)
 
 
 TITLES = """
