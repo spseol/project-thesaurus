@@ -10,7 +10,7 @@
 
                 <v-textarea
                     outlined hide-details
-                    rows="15"
+                    rows="15" class="mb-5"
                     :label="$t('Abstract')"
                     v-model="thesis.abstract"
                     :rules="[v => !!v]"

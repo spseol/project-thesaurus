@@ -69,7 +69,8 @@ class Attachment(BaseTimestampedModel):
     @property
     def public_file_name(self):
         file_type = get_type(mime=self.content_type)
-        return f'{self.thesis.registration_number or slugify(self.thesis.title)}.{file_type.extension}'
+        return f'{self.thesis.registration_number or slugify(self.thesis.title)}-' \
+               f'{slugify(self.type_attachment.identifier)}.{file_type.extension}'
 
 
 class TypeAttachment(BaseTypeModel):

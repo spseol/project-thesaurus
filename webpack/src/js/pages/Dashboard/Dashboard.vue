@@ -38,7 +38,7 @@
                 </v-row>
             </v-alert>
 
-            <v-alert type="info" outlined prominent>
+            <v-alert type="info" outlined prominent v-if="reservations_ready_for_prepare.length">
                 <v-row align="center">
                     <v-col class="grow">
                         <h2 class="mb-1">

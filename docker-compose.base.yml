@@ -44,6 +44,7 @@ services:
       - 127.0.0.1:8080:80
     volumes:
       - django_static_files:/static
+      - django_media_files:/media
       - webpack_build:/build
     depends_on:
       - web

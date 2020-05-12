@@ -156,6 +156,8 @@ STATIC_ROOT = '/usr/src/static'
 
 MEDIA_ROOT = '/usr/src/media'
 
+MEDIA_URL = '/media/'
+
 WEBPACK_LOADER = {
     'DEFAULT': {
         'CACHE': not DEBUG,
