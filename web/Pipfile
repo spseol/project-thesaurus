@@ -25,6 +25,7 @@ filetype = "*"
 djangorestframework-stubs = "*"
 django-weasyprint = "*"
 weasyprint = "*"
+uvicorn = "*"
 
 [dev-packages]
 
