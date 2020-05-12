@@ -3,10 +3,11 @@ import PortalVue from 'portal-vue';
 import VueRouter from 'vue-router';
 import Vuetify from 'vuetify';
 import VueI18n from 'vue-i18n';
-import {cs as csVuetify, en as enVuetify} from 'vuetify/es5/locale';
+import csVuetify from 'vuetify/es5/locale/cs';
+import enVuetify from 'vuetify/es5/locale/en';
 import colors from 'vuetify/es5/util/colors';
-import '../scss/index.scss';
 
+import '../scss/index.scss';
 import csLocal from './locale/cs.json';
 import enLocal from './locale/en.json';
 import App from './App';

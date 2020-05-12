@@ -12,13 +12,11 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 module.exports = {
     optimization: {
         splitChunks: {
-            name: false,
-            cacheGroups: {
-                common: {
-                    name: 'common',
-                    chunks: 'all',
-                },
-            },
+            name: 'common',
+            chunks: 'all',
+        },
+        runtimeChunk: {
+            name: 'vendor',
         },
     },
     entry: {
@@ -130,6 +128,6 @@ module.exports = {
         }),
         new MiniCssExtractPlugin(),
         new VueLoaderPlugin(),
-        new VuetifyLoaderPlugin(),
+        new VuetifyLoaderPlugin({progressiveImages: true}),
     ],
 };
