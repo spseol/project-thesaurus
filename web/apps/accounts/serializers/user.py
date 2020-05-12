@@ -19,7 +19,8 @@ class UserOptionSerializer(UserSerializer):
     text = CharField(source='full_name')
 
     class Meta(UserSerializer.Meta):
-        fields = UserSerializer.Meta.fields + (
+        fields = (
+            'username',
             'value',
             'text',
         )

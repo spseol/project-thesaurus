@@ -3,3 +3,7 @@
 .VSliderCustom__label--gray .v-slider__tick-label {
   color: map_get($grey, 'base');
 }
+
+.text-transform-none {
+  text-transform: none;
+}

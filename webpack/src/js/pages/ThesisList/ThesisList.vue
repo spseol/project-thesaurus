@@ -123,7 +123,7 @@
                 >
                     <v-btn
                         v-for="{text, value} in categoryOptions"
-                        :value="value" v-text="text" :key="value" class="text-case-unset"
+                        :value="value" v-text="text" :key="value" class="text-transform-none"
                     ></v-btn>
                 </v-btn-toggle>
 
@@ -179,11 +179,16 @@
                 );
             },
             removeFromFilter(item) {
+                // TODO: eeeh
                 this.filterItems.splice(this.filterItems.indexOf(item), 1);
                 this.filterItems = [...this.filterItems];
             },
             userOptionsFilter(item, queryText, itemText) {
-                return itemText.toLowerCase().includes(queryText.toLowerCase());
+                itemText = itemText.toLowerCase();
+                return _.some(
+                    queryText.toLowerCase().split(/\s+/g),
+                    token => itemText.includes(token)
+                );
             },
             isPossibleUserFilter({username}) {
                 return !!_.find(this.userOptions, {username});
@@ -194,6 +199,7 @@
             },
 
             async persistThesisEdit(thesisId, data) {
+                this.loading = true;
                 await Axios.patch(`/api/v1/thesis/${thesisId}`, data);
                 eventBus.flash({color: 'success', text: this.$t('Successfully saved!')});
                 await this.load();
@@ -241,10 +247,18 @@
         async created() {
             this.debouncedLoad = _.debounce(this.load, 200);
             this.$watch(
-                (self) => ([self.options, self.filterItems, self.categoryFilter, self.thesisYearFilter]),
+                (s) => ([s.options]),
                 this.debouncedLoad,
                 {deep: true, immediate: true}
             );
+            this.$watch(
+                (s) => ([s.filterItems, s.categoryFilter, s.thesisYearFilter]),
+                () => {
+                    this.options.page = 1;
+                    this.debouncedLoad();
+                }
+            );
+
             [
                 this.userOptions,
                 this.categoryOptions,
@@ -262,9 +276,3 @@
         }
     });
 </script>
-
-<style lang="scss" scoped>
-    .text-case-none {
-        text-transform: none;
-    }
-</style>

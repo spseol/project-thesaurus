@@ -1,3 +1,4 @@
+from django.db.models import Count
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
@@ -20,8 +21,12 @@ class UserFilterOptionsViewSet(ReadOnlyModelViewSet):
     )
 
     def get_queryset(self):
-        queryset = User.school_users.with_school_account()  # type: UserQueryset
+        queryset = User.school_users.with_school_account().teachers()  # type: UserQueryset
 
+        queryset = queryset.annotate(
+            thesis_count=Count('thesis_supervisor') + Count('thesis_opponent')
+        ).order_by('-thesis_count')
+        # TODO: add students for role>=teacher?
         if self.request.user.is_teacher or self.request.user.is_manager or self.request.user.is_superuser:
             return queryset
 
