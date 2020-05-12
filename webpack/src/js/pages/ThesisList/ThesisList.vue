@@ -29,6 +29,7 @@
                     <ThesisListActionBtn
                         :thesis="item"
                         :title="item.state"
+                        :loading="loading"
                         @reload="load"
                     ></ThesisListActionBtn>
                 </div>

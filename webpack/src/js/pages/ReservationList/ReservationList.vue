@@ -1,6 +1,7 @@
 <template>
     <div>
         <v-data-table
+            :loading="loading"
             :headers="headers"
             :items="filteredItems"
             :search="search"
@@ -23,18 +24,20 @@
             </template>
 
             <template v-slot:item.actions="{ item }">
-                <v-btn
-                    v-if="item.state === 'created'" @click="changeState(item, 'ready')"
-                    small color="success" v-text="$t('Prepared for pickup')" outlined
-                ></v-btn>
-                <v-btn
-                    v-if="item.state === 'ready'" @click="changeState(item, 'running')"
-                    small color="info" v-text="$t('Picked up')" outlined
-                ></v-btn>
-                <v-btn
-                    v-if="item.state === 'running'" @click="changeState(item, 'finished')"
-                    small color="primary" v-text="$t('Returned')" outlined
-                ></v-btn>
+                <div class="text-center">
+                    <v-btn
+                        v-if="item.state === 'created'" @click="changeState(item, 'ready')" :disabled="loading"
+                        small color="success" v-text="$t('Prepared for pickup')" outlined
+                    ></v-btn>
+                    <v-btn
+                        v-if="item.state === 'ready'" @click="changeState(item, 'running')" :disabled="loading"
+                        small color="info" v-text="$t('Picked up')" outlined
+                    ></v-btn>
+                    <v-btn
+                        v-if="item.state === 'running'" @click="changeState(item, 'finished')" :disabled="loading"
+                        small color="primary" v-text="$t('Returned')" outlined
+                    ></v-btn>
+                </div>
             </template>
         </v-data-table>
 
@@ -86,6 +89,8 @@
                     {text: this.$t('Actions'), value: 'actions'}
                     // {name: this.$t('State'), value: 'state'},
                 ],
+
+                loading: false,
                 items: [],
                 search: '',
                 stateFilter: 'all',

@@ -4,12 +4,12 @@
             <v-btn
                 v-if="thesis.reservable && thesis.available_for_reservation && thesis.open_reservations_count === 0"
                 v-text="$t('Borrow')" @click="createReservationDialog = true"
-                small color="info" outlined
+                small color="info" outlined :disabled="loading"
             ></v-btn>
             <v-btn
                 v-if="thesis.reservable && !thesis.available_for_reservation && thesis.open_reservations_count === 1"
                 v-text="$t('Make pre-reservation')" @click="createReservationDialog = true"
-                small color="info" outlined
+                small color="info" outlined :disabled="loading"
             ></v-btn>
             <v-btn
                 v-if="thesis.reservable && !thesis.available_for_reservation && thesis.open_reservations_count > 1"
@@ -27,6 +27,7 @@
             v-text="$t('Send to review')"
             small color="primary" elevation="0"
             @click="sendToReviewDialog = true"
+            :disabled="loading"
             v-has-perm:thesis.change_thesis
         ></v-btn>
 
@@ -35,6 +36,7 @@
             v-text="$t('Publish')"
             small color="primary" elevation="0"
             @click="publish"
+            :disabled="loading"
             v-has-perm:thesis.change_thesis
         ></v-btn>
 
@@ -64,7 +66,7 @@
         </template>
 
         <v-dialog v-model="sendToReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '50vw'">
-            <v-card :loading="loading">
+            <v-card :loading="dialogLoading">
                 <v-card-title
                     class="headline grey lighten-2"
                     primary-title
@@ -120,7 +122,7 @@
         </v-dialog>
 
         <v-dialog v-model="submitExternalReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '35vw'">
-            <v-card :loading="loading">
+            <v-card :loading="dialogLoading">
                 <v-form>
                     <v-card-title
                         class="headline grey lighten-2"
@@ -144,7 +146,7 @@
         </v-dialog>
 
         <v-dialog v-model="createReservationDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '35vw'">
-            <v-card :loading="loading">
+            <v-card :loading="dialogLoading">
                 <v-form>
                     <v-card-title
                         class="headline grey lighten-2"
@@ -205,11 +207,12 @@
     export default {
         name: 'ThesisListActionBtn',
         props: {
-            thesis: {}
+            thesis: {type: Object, required: true},
+            loading: {type: Boolean}
         },
         data() {
             return {
-                loading: false,
+                dialogLoading: false,
                 sendToReviewDialog: false,
                 submitExternalReviewDialog: false,
                 createReservationDialog: false
@@ -220,17 +223,17 @@
                 return _.find(this.thesis.attachments, {type_attachment: {identifier: type}});
             },
             async sendToReview() {
-                this.loading = true;
+                this.dialogLoading = true;
 
                 await Axios.patch(`/api/v1/thesis/${this.thesis.id}/send_to_review`);
                 eventBus.flash({color: 'success', text: this.$t('thesis.justSentToReview')});
                 this.sendToReviewDialog = false;
-                this.loading = false;
+                this.dialogLoading = false;
 
                 this.$emit('reload');
             },
             async createReservation() {
-                this.loading = true;
+                this.dialogLoading = true;
 
                 const {data} = await Axios.post(`/api/v1/reservation`, {
                     thesis: this.thesis.id
@@ -242,7 +245,7 @@
                     eventBus.flash({color: 'primary', text: data.toString()});
                 }
 
-                this.loading = false;
+                this.dialogLoading = false;
 
                 this.$emit('reload');
             },
