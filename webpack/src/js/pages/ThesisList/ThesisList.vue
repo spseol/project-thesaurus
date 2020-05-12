@@ -123,7 +123,7 @@
                 >
                     <v-btn
                         v-for="{text, value} in categoryOptions"
-                        :value="value" v-text="text" :key="value"
+                        :value="value" v-text="text" :key="value" class="text-case-unset"
                     ></v-btn>
                 </v-btn-toggle>
 
@@ -254,3 +254,9 @@
         }
     });
 </script>
+
+<style lang="scss" scoped>
+    .text-case-none {
+        text-transform: none;
+    }
+</style>
