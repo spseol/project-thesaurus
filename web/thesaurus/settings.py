@@ -160,7 +160,7 @@ MEDIA_URL = '/media/'
 
 WEBPACK_LOADER = {
     'DEFAULT': {
-        'CACHE': not DEBUG,
+        'CACHE': False,
         'BUNDLE_DIR_NAME': './',  # must end with slash
         'STATS_FILE': config('BUILD_DIR', default='') + 'webpack-stats.json',
     }
@@ -171,11 +171,14 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
-    'DEFAULT_FILTER_BACKENDS': [
+    'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
         'apps.api.utils.filters.RelatedOrderingFilter',
-    ],
+    ),
+    'DEFAULT_PERMISSION_CLASSES': (
+        'apps.api.permissions.RestrictedViewModelPermissions',
+    ),
 
     'PAGE_SIZE': 20,
 }

@@ -1,4 +1,5 @@
 from django.db.models import Q
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -8,6 +9,8 @@ from apps.thesis.serializers import ThesisBaseSerializer, ReservationSerializer
 
 
 class DashboardView(APIView):
+    permission_classes = (IsAuthenticated,)  # handling perms by own (no default)
+
     def get(self, request: Request):
         user = self.request.user
         theses_ready_for_submit = Thesis.objects.filter(

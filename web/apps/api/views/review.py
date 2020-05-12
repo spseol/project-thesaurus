@@ -1,6 +1,5 @@
 from rest_framework.viewsets import ModelViewSet
 
-from apps.api.permissions import RestrictedViewModelPermissions
 from apps.review.models import Review
 from apps.review.serializers import ReviewSerializer
 
@@ -12,5 +11,4 @@ class ReviewViewSet(ModelViewSet):
     ).prefetch_related(
         'thesis__authors',
     )
-    permission_classes = (RestrictedViewModelPermissions,)
     serializer_class = ReviewSerializer

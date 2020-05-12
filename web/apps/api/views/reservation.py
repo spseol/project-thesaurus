@@ -9,7 +9,6 @@ class ReservationViewSet(ModelViewSet):
         'thesis',
         'for_user',
     )
-    # permission_classes = (RestrictedViewModelPermissions,)
     serializer_class = ReservationSerializer
     pagination_class = None  # TODO: needed pagination?
     search_fields = (

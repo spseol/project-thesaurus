@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts.models import User
-from apps.api.permissions import RestrictedViewModelPermissions
 from apps.attachment.models import Attachment, TypeAttachment
 from apps.thesis.models import Thesis, Category
 from apps.thesis.serializers import ThesisFullPublicSerializer, ThesisFullInternalSerializer, ThesisBaseSerializer
@@ -45,7 +44,6 @@ class CanSubmitThesisPermission(BasePermission):
 
 class ThesisViewSet(ModelViewSet):
     queryset = Thesis.api_objects.get_queryset()
-    permission_classes = (RestrictedViewModelPermissions,)
     search_fields = (
         'title',
         'abstract',

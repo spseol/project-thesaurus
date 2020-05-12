@@ -13,7 +13,7 @@ from apps.accounts.models import User
 
 
 class LoginView(APIView):
-    permission_classes = [permissions.AllowAny]
+    permission_classes = (permissions.AllowAny,)
 
     error_messages = AuthenticationForm.error_messages
 

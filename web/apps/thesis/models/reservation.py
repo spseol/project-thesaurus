@@ -36,8 +36,6 @@ class Reservation(BaseTimestampedModel):
         max_length=32,
     )
 
-    # TODO: think about 'pre-reservations'
-
     class Meta:
         verbose_name = _('Reservation')
         verbose_name_plural = _('Reservations')

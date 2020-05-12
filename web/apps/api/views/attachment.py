@@ -4,14 +4,12 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
-from apps.api.permissions import RestrictedViewModelPermissions
 from apps.attachment.models import Attachment
 from apps.attachment.models.managers import default_storage
 
 
 class AttachmentViewSet(GenericViewSet):
     queryset = Attachment.objects.all()
-    permission_classes = (RestrictedViewModelPermissions,)
 
     def retrieve(self, request, *args, **kwargs):
         attachment = self.get_object()  # type: Attachment
