@@ -250,6 +250,7 @@
                 (s) => ([s.options]),
                 this.debouncedLoad,
                 {deep: true, immediate: true}
+<<<<<<< Updated upstream
             );
             this.$watch(
                 (s) => ([s.filterItems, s.categoryFilter, s.thesisYearFilter]),
@@ -257,6 +258,8 @@
                     this.options.page = 1;
                     this.debouncedLoad();
                 }
+=======
+>>>>>>> Stashed changes
             );
 
             [
