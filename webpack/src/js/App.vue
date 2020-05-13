@@ -119,7 +119,12 @@
                 flash: {show: false},
                 items: [
                     {icon: 'mdi-home', text: $t('Dashboard'), to: {name: 'dashboard'}},
-                    {icon: 'mdi-book-multiple', text: $t('Theses'), to: {name: 'thesis-list'}},
+                    {
+                        icon: 'mdi-book-multiple',
+                        text: $t('Theses'),
+                        to: {name: 'thesis-list'},
+                        perm: 'thesis.view_thesis'
+                    },
                     {
                         icon: 'mdi-book-plus',
                         text: $t('Prepare admission'),
@@ -133,7 +138,12 @@
                         to: {name: 'reservations'},
                         perm: 'thesis.view_reservation'
                     },
-                    {icon: 'mdi-printer', text: $t('Exports'), to: {name: 'exports'}},
+                    {
+                        icon: 'mdi-printer',
+                        text: $t('Exports'),
+                        to: {name: 'exports'},
+                        perm: 'accounts.view_user'
+                    },
                     {icon: 'mdi-settings', text: $t('Settings'), to: {name: 'settings'}}
                 ]
             };

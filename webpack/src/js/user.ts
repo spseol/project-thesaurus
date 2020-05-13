@@ -14,6 +14,9 @@ async function hasPermUncached(perm: string): Promise<boolean> {
     return (await Axios.get(`/api/v1/has-perm/${perm}`)).data;
 }
 
+/**
+ * @type {(perm: string) => Promise<Boolean>}
+ */
 const hasPerm = memoize(hasPermUncached);
 
 export default hasPerm;

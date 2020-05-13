@@ -7,6 +7,7 @@ from rest_framework.routers import DefaultRouter
 from .views.attachment import AttachmentViewSet
 from .views.category import CategoryOptionsViewSet, ThesisYearViewSet
 from .views.dashboard import DashboardView
+from .views.exports import ThesesCompetitionViewSet
 from .views.login import LoginView
 from .views.reservation import ReservationViewSet, ReservationStateOptionsViewSet
 from .views.review import ReviewViewSet
@@ -21,6 +22,7 @@ router.register(r'thesis', ThesisViewSet)
 router.register(r'reservation', ReservationViewSet)
 router.register(r'attachment', AttachmentViewSet)
 router.register(r'review', ReviewViewSet)
+router.register(r'theses-competition', ThesesCompetitionViewSet, basename='theses-competition')
 
 router.register(r'user-filter-options', UserFilterOptionsViewSet, basename='user')
 router.register(r'student-options', StudentOptionsViewSet, basename='student')

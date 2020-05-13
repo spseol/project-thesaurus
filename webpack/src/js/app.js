@@ -13,7 +13,7 @@ import enLocal from './locale/en.json';
 import App from './App';
 import Axios from './axios';
 import hasPerm from './user';
-import {pageContext} from './utils';
+import {eventBus, pageContext} from './utils';
 
 export default function createVue(opts = {}) {
     Vue.use(VueI18n);
@@ -77,20 +77,39 @@ export default function createVue(opts = {}) {
     const router = new VueRouter({
         routes: [
             {path: '/', component: () => import('./pages/Dashboard/Page'), name: 'dashboard'},
-            {path: '/thesis/list', component: () => import('./pages/ThesisList/Page'), name: 'thesis-list'},
+            {
+                path: '/thesis/list',
+                component: () => import('./pages/ThesisList/Page'),
+                name: 'thesis-list',
+            },
             {
                 path: '/thesis/prepare',
                 component: () => import('./pages/ThesisPrepare/Page'),
                 name: 'thesis-prepare',
+                meta: {perm: 'thesis.add_thesis'},
             },
             {
                 path: '/thesis/submit/:id',
                 component: () => import('./pages/ThesisSubmit/Page'),
                 name: 'thesis-submit',
             },
-            {path: '/reservations', component: () => import('./pages/ReservationList/Page'), name: 'reservations'},
-            {path: '/exports', component: {template: '<div>Nonono</div>'}, name: 'exports'},
-            {path: '/settings', component: {template: '<div>Nonono</div>'}, name: 'settings'},
+            {
+                path: '/reservations',
+                component: () => import('./pages/ReservationList/Page'),
+                name: 'reservations',
+                meta: {perm: 'thesis.view_reservation'},
+            },
+            {
+                path: '/exports',
+                component: () => import('./pages/Exports/Page'),
+                name: 'exports',
+                meta: {perm: 'accounts.view_user'},
+            },
+            {
+                path: '/settings',
+                component: {template: '<div>Nonono</div>'},
+                name: 'settings',
+            },
             {
                 path: '/review/:thesisId/:reviewId?',
                 component: () => import('./pages/ReviewSubmit/Page'),
@@ -101,6 +120,24 @@ export default function createVue(opts = {}) {
         ],
         mode: 'history',
         base: `${locale}/`,
+    });
+
+    router.beforeEach((to, from, next) => {
+        if (to.meta?.perm) {
+            hasPerm(to.meta.perm).then(allow => {
+                if (allow) {
+                    next();
+                } else {
+                    eventBus.flash({color: 'warning', text: i18n.t('Permission denied')});
+                    next({name: 'dashboard'});
+                }
+            }).catch(() => {
+                eventBus.flash({color: 'warning', text: i18n.t('Unknown problem')});
+                next({name: 'dashboard'});
+            });
+        } else {
+            next();
+        }
     });
 
     return new Vue({

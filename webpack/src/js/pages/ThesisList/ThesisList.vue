@@ -271,8 +271,8 @@
 
             this.hasThesisEditPerm = await hasPerm('thesis.change_thesis');
 
-            // TODO: only if has perms
-            this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
+            if (await hasPerm('accounts.view_user'))
+                this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
         }
     });
 </script>
