@@ -113,5 +113,18 @@
   "Thesis poster": "Plakát práce",
   "dashboard": {
     "nothingNote": "Aktuálně není potřeba žádná akce."
-  }
+  },
+  "Username is required": "Vyplňte přihlašovací jméno",
+  "Password is required": "Vyplňte heslo",
+  "Reservations waiting for prepare": "Nové rezervace čekající na přípravu",
+  "Go to reservations": "Zařídit to",
+  "Recent theses": "Poslední publikované práce",
+  "Theses competition": "Soutěž vedoucích a oponentů",
+  "reservation": {
+    "stateChanged": "Stav rezervace úspěšně změněn.",
+    "justCreated": "Rezervace byla úspěšně zaevidována."
+  },
+  "New reservation for thesis borrow": "Nová rezerace na výpůjčku práce",
+  "Published at": "Publikováno",
+  "Create reservation": "Vytvořit rezervaci"
 }

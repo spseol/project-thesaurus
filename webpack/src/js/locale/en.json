@@ -116,5 +116,18 @@
   "Thesis poster": "Thesis poster",
   "dashboard": {
     "nothingNote": "Unfortunately I have nothing special for you."
-  }
+  },
+  "Username is required": "Username is required",
+  "Password is required": "Password is required",
+  "Reservations waiting for prepare": "Reservations waiting for prepare",
+  "Go to reservations": "Go to reservations",
+  "Recent theses": "Recent theses",
+  "Theses competition": "Theses competition",
+  "reservation": {
+    "stateChanged": "Reservation state has been changed.",
+    "justCreated": "Reservation has been just created."
+  },
+  "New reservation for thesis borrow": "New reservation for thesis borrow",
+  "Published at": "Published at",
+  "Create reservation": "Create reservation"
 }
