@@ -18,7 +18,7 @@ from ..review.views import ReviewPdfView
 last_modified_date = timezone.now()
 
 router = DefaultRouter(trailing_slash=False)
-router.register(r'thesis', ThesisViewSet)
+router.register(r'thesis', ThesisViewSet, basename='thesis')
 router.register(r'reservation', ReservationViewSet)
 router.register(r'attachment', AttachmentViewSet)
 router.register(r'review', ReviewViewSet)
@@ -27,8 +27,8 @@ router.register(r'theses-competition', ThesesCompetitionViewSet, basename='these
 router.register(r'user-filter-options', UserFilterOptionsViewSet, basename='user')
 router.register(r'student-options', StudentOptionsViewSet, basename='student')
 router.register(r'teacher-options', TeacherOptionsViewSet, basename='teacher')
-router.register(r'category-options', CategoryOptionsViewSet)
-router.register(r'thesis-year-options', ThesisYearViewSet)
+router.register(r'category-options', CategoryOptionsViewSet, basename='category')
+router.register(r'thesis-year-options', ThesisYearViewSet, basename='thesis-year')
 router.register(r'reservation-state-options', ReservationStateOptionsViewSet, basename='reservation-state')
 
 app_name = 'api'

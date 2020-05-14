@@ -4,6 +4,7 @@ from django.db.models import Q, QuerySet
 from django.shortcuts import get_list_or_404
 from django.utils.dateparse import parse_date
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
@@ -40,6 +41,15 @@ class CanSubmitThesisPermission(BasePermission):
         user = request.user  # type: User
 
         return user in thesis.authors.get_queryset() and thesis.state == Thesis.State.READY_FOR_SUBMIT
+
+
+class CanSubmitExternalThesisReviewPermission(BasePermission):
+    def has_object_permission(self, request, view, thesis: Thesis):
+        user = request.user  # type: User
+
+        return user.has_perms(
+            ('review.add_review', 'attachment.add_attachment')
+        ) and thesis.state == Thesis.State.READY_FOR_REVIEW
 
 
 class ThesisViewSet(ModelViewSet):
@@ -130,6 +140,27 @@ class ThesisViewSet(ModelViewSet):
 
     send_to_review = _state_change_action('send_to_review', Thesis.State.READY_FOR_REVIEW)
     publish = _state_change_action('publish', Thesis.State.PUBLISHED)
+
+    @action(methods=['post'], detail=True, permission_classes=[CanSubmitExternalThesisReviewPermission])
+    @transaction.atomic
+    def submit_external_review(self, request: Request, *args, **kwargs):
+        thesis = self.get_object()
+
+        review_type_attachment = TypeAttachment.IDENTIFIER_BY_REVIEWER.get(request.data.get('reviewer'))
+
+        review_file = request.FILES.get('review')
+        if not (review_type_attachment and review_file):
+            raise ValidationError()
+
+        attachment = Attachment.objects.create_from_upload(
+            uploaded=review_file,
+            thesis=thesis,
+            type_attachment=TypeAttachment.objects.get_by_identifier(review_type_attachment),
+        )
+
+        thesis.check_reviews_state()
+
+        return Response(data=dict(id=attachment.id))
 
     def get_serializer_class(self):
         class DynamicThesisSerializer(ThesisFullInternalSerializer):

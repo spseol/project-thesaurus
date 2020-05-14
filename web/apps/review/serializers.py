@@ -10,7 +10,10 @@ from apps.thesis.models import Thesis
 
 
 class ReviewSerializer(ModelSerializer):
-    thesis = PrimaryKeyRelatedField(queryset=Thesis.objects.get_queryset())
+    thesis = PrimaryKeyRelatedField(
+        queryset=Thesis.objects.get_queryset(),
+        style=dict(base_template='input.html'),
+    )
 
     user = UserSerializer(read_only=True)
     user_id = HiddenField(default=CurrentUserDefault(), source='user', write_only=True)

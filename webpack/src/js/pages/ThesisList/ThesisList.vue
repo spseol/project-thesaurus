@@ -179,7 +179,6 @@
                 );
             },
             removeFromFilter(item) {
-                // TODO: eeeh
                 this.filterItems.splice(this.filterItems.indexOf(item), 1);
                 this.filterItems = [...this.filterItems];
             },

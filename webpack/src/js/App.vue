@@ -74,9 +74,9 @@
 
         <v-content>
             <v-container fluid>
-                <!--                <v-fade-transition mode="out-in">-->
+                <v-fade-transition mode="out-in">
                     <router-view></router-view>
-                <!--                </v-fade-transition>-->
+                </v-fade-transition>
             </v-container>
         </v-content>
 

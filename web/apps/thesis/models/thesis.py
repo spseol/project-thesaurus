@@ -130,11 +130,24 @@ class Thesis(BaseTimestampedModel):
         ).count()
 
     def check_reviews_state(self):
-        if self.review_thesis.filter(
-                user=self.supervisor
-        ).exists() and self.review_thesis.filter(
-            user=self.opponent
-        ).exists():
+        from apps.attachment.models import TypeAttachment
+        if (
+                self.review_thesis.filter(
+                    user=self.supervisor
+                ).exists()  # has internal review
+                or
+                self.attachment_thesis.filter(
+                    type_attachment__identifier=TypeAttachment.Identifier.SUPERVISOR_REVIEW
+                ).exists()  # or has external
+        ) and (
+                self.review_thesis.filter(
+                    user=self.opponent
+                ).exists()
+                or
+                self.attachment_thesis.filter(
+                    type_attachment__identifier=TypeAttachment.Identifier.OPPONENT_REVIEW
+                ).exists()
+        ):
             self.state = self.State.REVIEWED
             self.save(update_fields=['state'])
 

@@ -51,7 +51,7 @@
             <v-hover v-slot:default="{ hover }" style="min-width: 15em">
                 <v-badge
                     color="primary" overlap :value="!hover"
-                    :content="2 - thesis.reviews.length"
+                    :content="availableExternalReviewersOptions.length"
                 >
                     <v-btn
                         v-if="!hover"
@@ -128,18 +128,32 @@
                         class="headline grey lighten-2"
                         primary-title
                     >{{ thesis.title }}</v-card-title>
-                    <v-card-text class="pt-3">
-                    <v-file-input :label="$t('Review')">
-
-                    </v-file-input>
-                    TODO
+                    <v-card-text class="pt-3 d-flex flex-column">
+                        <v-file-input
+                            accept="application/pdf"
+                            :label="$t('External review')"
+                            v-model="externalReview.review"
+                        ></v-file-input>
+                        <v-btn-toggle
+                            group class="align-self-center"
+                            mandatory color="primary"
+                            v-model="externalReview.reviewer"
+                        >
+                            <v-btn
+                                v-for="[key, user] in availableExternalReviewersOptions"
+                                :key="key" :value="key"
+                            >
+                                <strong>{{ $t(key) }}</strong>: {{ user.full_name }}
+                            </v-btn>
+                        </v-btn-toggle>
                     </v-card-text>
                     <v-divider></v-divider>
                     <v-card-actions>
                     <v-spacer></v-spacer>
                     <v-btn
-                        color="success" class="ma-3" x-large
-                    >{{ $t('Submit review') }}</v-btn>
+                        :disabled="!(externalReview.reviewer && externalReview.review)"
+                        color="success" class="ma-3" x-large @click="submitExternalReview"
+                    >{{ $t('Submit external review') }}</v-btn>
                     </v-card-actions>
                 </v-form>
             </v-card>
@@ -202,7 +216,7 @@
 <script type="text/tsx">
     import _ from 'lodash';
     import Axios from '../../axios';
-    import {eventBus} from '../../utils';
+    import {eventBus, readFileAsync} from '../../utils';
 
     export default {
         name: 'ThesisListActionBtn',
@@ -215,12 +229,69 @@
                 dialogLoading: false,
                 sendToReviewDialog: false,
                 submitExternalReviewDialog: false,
-                createReservationDialog: false
+                createReservationDialog: false,
+
+                externalReview: {
+                    reviewer: null,
+                    review: null
+                },
+                externalReviewSelectedReviewer: null
             };
+        },
+        computed: {
+            availableExternalReviewersOptions() {
+                return _.map(_.filter(
+                    ['supervisor', 'opponent'],
+                    (key) => (
+                        // show option to upload if:
+                        !_.find( // does not already have uploaded review
+                            this.thesis.attachments,
+                            {
+                                type_attachment: {identifier: `${key}_review`}
+                            }
+                        ) && // and
+                        this.thesis[key]?.id && // has set user
+                        !_.find( // but without internal review
+                            this.thesis.reviews,
+                            {
+                                user: {id: this.thesis[key].id}
+                            }
+                        )
+                    )
+                    // format to [key, User]
+                ), (k) => [k, this.thesis[k]]);
+            }
         },
         methods: {
             getAttachment(type) {
                 return _.find(this.thesis.attachments, {type_attachment: {identifier: type}});
+            },
+            async submitExternalReview() {
+                this.dialogLoading = true;
+
+                let formData = new FormData();
+
+                await readFileAsync(this.externalReview.review);
+                formData.append('review', this.externalReview.review);
+                formData.append('reviewer', this.externalReview.reviewer);
+
+                const resp = await Axios.post(`/api/v1/thesis/${this.thesis.id}/submit_external_review`, formData, {
+                    headers: {'Content-Type': 'multipart/form-data'}
+                });
+
+                if (resp.data.id) {
+                    eventBus.flash({
+                        text: this.$t('review.external.justSubmitted')
+                    });
+                    this.submitExternalReviewDialog = false;
+                } else {
+                    eventBus.flash({
+                        text: this.$t('review.external.submitFailed')
+                    });
+                }
+
+                this.$emit('reload');
+                this.dialogLoading = false;
             },
             async sendToReview() {
                 this.dialogLoading = true;

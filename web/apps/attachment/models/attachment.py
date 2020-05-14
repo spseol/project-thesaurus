@@ -83,6 +83,11 @@ class TypeAttachment(BaseTypeModel):
         OPPONENT_REVIEW = 'opponent_review', _('Opponent review')
         THESIS_POSTER = 'thesis_poster', _('Thesis poster')
 
+    IDENTIFIER_BY_REVIEWER = {
+        'supervisor': Identifier.SUPERVISOR_REVIEW,
+        'opponent': Identifier.OPPONENT_REVIEW,
+    }
+
     identifier = models.CharField(
         verbose_name=_('Identifier'),
         unique=True,

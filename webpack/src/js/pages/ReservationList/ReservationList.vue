@@ -15,7 +15,7 @@
 
             <template v-slot:item.state="{ item }" class="text-center">
                 <div class="text-center">
-                    <v-chip outlined :color="stateToColor(item.state)">{{ item.state }}</v-chip>
+                    <v-chip outlined :color="stateToColor(item.state)">{{ stateToLabel(item.state) }}</v-chip>
                 </div>
             </template>
 
@@ -95,13 +95,14 @@
                 );
             },
             headers() {
+                const customStateSort = ['created', 'ready', 'running', 'finished'];
                 return [
                     {text: this.$t('For user'), value: 'for_user.full_name'},
                     {text: this.$t('Thesis SN'), value: 'thesis_registration_number'},
                     {text: this.$t('Thesis'), value: 'thesis_title'},
                     {text: this.$t('Created'), value: 'created'},
-                    {text: this.$t('State'), value: 'state'},
-                    {text: this.$t('Actions'), value: 'actions'},
+                    {text: this.$t('State'), value: 'state', sort: (t) => customStateSort.indexOf(t)},
+                    {text: this.$t('Actions'), value: 'actions', sortable: false},
                     // {name: this.$t('State'), value: 'state'},
                 ];
             },
@@ -122,11 +123,14 @@
                     running: 'primary',
                 }[state] || '';
             },
+            stateToLabel(state) {
+                return (_.find(this.stateOptions, {value: state}) || {text: '---'}).text;
+            },
             async changeState(reservation, state) {
                 this.loading = true;
 
                 const {data} = await Axios.patch(`/api/v1/reservation/${reservation.id}`, {
-                    state
+                    state,
                 });
                 if (data.id) {
                     eventBus.flash({color: 'success', text: this.$t('reservation.stateChanged')});
@@ -140,12 +144,12 @@
                 const {page = 1} = this.options;
                 // TODO: async API search
                 this.items = (await Axios.get(`/api/v1/reservation?page=${page}`)).data;//.results;
-            }
+            },
         },
         async created() {
             await this.load();
             this.$watch('options', async () => this.load());
-        }
+        },
     });
 </script>
 
