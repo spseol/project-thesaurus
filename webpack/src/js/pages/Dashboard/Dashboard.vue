@@ -13,7 +13,7 @@
                         {{ thesis.authors.map(a => a.full_name).join(', ') }}
                     </v-col>
                     <v-col class="shrink">
-                        <v-btn large :to="{name: 'thesis-submit', params: {id: thesis.id}}">
+                        <v-btn large :to="$i18nRoute({name: 'thesis-submit', params: {id: thesis.id}})">
                             {{ $t('Submit thesis') }}
                         </v-btn>
                     </v-col>
@@ -31,7 +31,7 @@
                         {{ thesis.authors.map(a => a.full_name).join(', ') }}
                     </v-col>
                     <v-col class="shrink">
-                        <v-btn large :to="{name: 'review-detail', params: {thesisId: thesis.id}}">
+                        <v-btn large :to="$i18nRoute({name: 'review-detail', params: {thesisId: thesis.id}})">
                             {{ $t('Submit review') }}
                         </v-btn>
                     </v-col>
@@ -48,7 +48,7 @@
                         {{ reservedThesesRegistrationNumbers.join(', ') }}
                     </v-col>
                     <v-col class="shrink">
-                        <v-btn large :to="{name: 'reservations'}">
+                        <v-btn large :to="$i18nRoute({name: 'reservations'})">
                             {{ $t('Go to reservations') }}
                         </v-btn>
                     </v-col>

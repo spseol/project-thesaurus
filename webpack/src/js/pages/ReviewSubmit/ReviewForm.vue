@@ -155,8 +155,6 @@
                 loading: false,
                 valid: true,
                 non_field_error_messages: [],
-                grades4: [$t('Excellent'), $t('Very well'), $t('Great'), $t('Not sufficient'), ''].reverse(),
-                grades3: [$t('Over average'), $t('Average'), $t('Under average'), ''].reverse(),
                 review: {
                     difficulty: 0,
                     grade_proposal: 0,
@@ -167,6 +165,18 @@
             };
         },
         computed: {
+            grades4() {
+                return [
+                    this.$t('Excellent'), this.$t('Very well'),
+                    this.$t('Great'), this.$t('Not sufficient'), ''
+                ].reverse();
+            },
+            grades3() {
+                return [
+                    this.$t('Over average'), this.$t('Average'),
+                    this.$t('Under average'), ''
+                ].reverse();
+            },
             reviewerRole() {
                 return {
                     [this.thesis.supervisor?.username]: 'supervisor',
@@ -207,7 +217,7 @@
 
                 if (resp.id) {
                     eventBus.flash({text: this.$t('review.justSubmitted')});
-                    this.$router.push({name: 'dashboard'});
+                    this.$router.push(this.$i18nRoute({name: 'dashboard'}));
                 } else {
                     this.messages = resp;
                     this.non_field_error_messages = resp.non_field_errors;

@@ -13,7 +13,7 @@
             </Podium>
             <v-container fluid>
                 <v-row justify="space-around" align="start">
-                    <v-col cols="12" sm="6" lg="3" v-for="items in nextPlaces">
+                    <v-col cols="12" sm="6" lg="3" v-for="(items, i) in nextPlaces" :key="i">
                         <v-card>
                             <v-list>
                                 <v-list-item

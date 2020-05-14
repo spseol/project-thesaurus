@@ -70,7 +70,7 @@
     </div>
 </template>
 
-<script type="text/tsx">
+<script>
     import _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
@@ -80,39 +80,46 @@
         name: 'ReservationList',
         data() {
             return {
-                headers: [
-                    {text: this.$t('For user'), value: 'for_user.full_name'},
-                    {text: this.$t('Thesis SN'), value: 'thesis_registration_number'},
-                    {text: this.$t('Thesis'), value: 'thesis_title'},
-                    {text: this.$t('Created'), value: 'created'},
-                    {text: this.$t('State'), value: 'state'},
-                    {text: this.$t('Actions'), value: 'actions'}
-                    // {name: this.$t('State'), value: 'state'},
-                ],
-
                 loading: false,
                 items: [],
                 search: '',
                 stateFilter: 'all',
-                // TODO: needed?
-                stateOptions: [],
-                options: {}
+                options: {},
             };
         },
         computed: {
             filteredItems() {
                 return _.filter(
                     this.items,
-                    i => this.stateFilter == 'all' || i.state == this.stateFilter
+                    i => this.stateFilter === 'all' || i.state === this.stateFilter,
                 );
-            }
+            },
+            headers() {
+                return [
+                    {text: this.$t('For user'), value: 'for_user.full_name'},
+                    {text: this.$t('Thesis SN'), value: 'thesis_registration_number'},
+                    {text: this.$t('Thesis'), value: 'thesis_title'},
+                    {text: this.$t('Created'), value: 'created'},
+                    {text: this.$t('State'), value: 'state'},
+                    {text: this.$t('Actions'), value: 'actions'},
+                    // {name: this.$t('State'), value: 'state'},
+                ];
+            },
+        },
+        asyncComputed: {
+            async stateOptions() {
+                return [
+                    {text: this.$t('All'), value: this.stateFilter},
+                    ...(await Axios.get('/api/v1/reservation-state-options')).data,
+                ];
+            },
         },
         methods: {
             stateToColor(state) {
                 return {
                     created: 'success',
                     ready: 'info',
-                    running: 'primary'
+                    running: 'primary',
                 }[state] || '';
             },
             async changeState(reservation, state) {
@@ -138,11 +145,6 @@
         async created() {
             await this.load();
             this.$watch('options', async () => this.load());
-
-            this.stateOptions = [
-                {text: this.$t('All'), value: this.stateFilter},
-                ...(await Axios.get('/api/v1/reservation-state-options')).data
-            ];
         }
     });
 </script>

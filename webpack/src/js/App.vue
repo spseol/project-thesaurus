@@ -10,9 +10,9 @@
                 <v-list nav shaped>
                     <v-list-item-group color="primary">
                         <v-list-item
-                            v-for="item in items"
+                            v-for="item in menuItems"
                             :key="item.text"
-                            :to="item.to"
+                            :to="$i18nRoute(item.to)"
                             v-has-perm:[item.perm]
                             exact
                         >
@@ -49,7 +49,7 @@
 
         <v-app-bar app color="primary accent-3" clipped-left>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
-            <v-btn :to="{name: 'dashboard'}" :text="true" class="primary--text hidden-sm-and-down">
+            <v-btn :to="$i18nRoute({name: 'dashboard'})" :text="true" class="primary--text hidden-sm-and-down">
                 <v-toolbar-title
                     class="ml-0 pl-1 d-md-flex hidden-sm-and-down black--text"
                 >
@@ -74,9 +74,9 @@
 
         <v-content>
             <v-container fluid>
-                <v-fade-transition mode="out-in">
+                <!--                <v-fade-transition mode="out-in">-->
                     <router-view></router-view>
-                </v-fade-transition>
+                <!--                </v-fade-transition>-->
             </v-container>
         </v-content>
 
@@ -116,37 +116,41 @@
             return {
                 pageContext,
                 drawer: this.$vuetify.breakpoint.mdAndUp && this.$route.name != '404',
-                flash: {show: false},
-                items: [
-                    {icon: 'mdi-home', text: $t('Dashboard'), to: {name: 'dashboard'}},
+                flash: {show: false}
+            };
+        },
+        computed: {
+            menuItems() {
+                return [
+                    {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'dashboard'}},
                     {
                         icon: 'mdi-book-multiple',
-                        text: $t('Theses'),
+                        text: this.$t('Theses'),
                         to: {name: 'thesis-list'},
                         perm: 'thesis.view_thesis'
                     },
                     {
                         icon: 'mdi-book-plus',
-                        text: $t('Prepare admission'),
+                        text: this.$t('Prepare admission'),
                         to: {name: 'thesis-prepare'},
                         perm: 'thesis.add_thesis'
                     },
-                    // {icon: 'mdi-pencil', text: this.$t('Submit review'), to: {name: 'reviews'}, perm: 'thesis.add_review'},
+                    // {icon: 'mdi-pencil', text: this.this.$t('Submit review'), to: {name: 'reviews'}, perm: 'thesis.add_review'},
                     {
                         icon: 'mdi-calendar-account',
-                        text: $t('Reservations'),
+                        text: this.$t('Reservations'),
                         to: {name: 'reservations'},
                         perm: 'thesis.view_reservation'
                     },
                     {
                         icon: 'mdi-printer',
-                        text: $t('Exports'),
+                        text: this.$t('Exports'),
                         to: {name: 'exports'},
                         perm: 'accounts.view_user'
                     },
-                    {icon: 'mdi-settings', text: $t('Settings'), to: {name: 'settings'}}
-                ]
-            };
+                    {icon: 'mdi-settings', text: this.$t('Settings'), to: {name: 'settings'}}
+                ];
+            }
         },
         watch: {
             $route(to, from) {

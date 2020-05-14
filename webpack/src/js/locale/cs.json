@@ -9,6 +9,8 @@
   "Author": "Autor",
   "Supervisor": "Vedoucí",
   "Opponent": "Oponent",
+  "supervisor": "vedoucí",
+  "opponent": "oponent",
   "Registration number": "Evidenční číslo",
   "Year": "Rok",
   "Django Administration": "Django administrace",
@@ -84,8 +86,6 @@
   "Thesis submit": "Odevzdat práci",
   "Thesis title": "Název práce",
   "Unknown": "Neznámý",
-  "supervisor": "vedoucí",
-  "opponent": "oponent",
   "Thesis text": "Text práce",
   "Download": "Stáhnout",
   "Send to review": "Odeslat k posouzení",
@@ -97,7 +97,7 @@
   "Download thesis text": "Stáhnout text práce",
   "page": {
     "404title": "Stránka nenalezena",
-    "404note": "Tuto stránku se obhužel nepodařilo nalézt."
+    "404note": "Tuto stránku se bohužel nepodařilo nalézt."
   },
   "Review": "Posudek",
   "Review PDF detail": "PDF posudek práce",

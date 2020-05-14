@@ -50,10 +50,10 @@
                                 <v-icon>mdi-book-information-variant</v-icon>
                             </td>
                             <td>
-                                <v-btn small outlined color="primary" :to="{
+                                <v-btn small outlined color="primary" :to="$i18nRoute({
                                     name: 'review-detail',
                                     params: {thesisId: thesis.id, reviewId: review.id}
-                                }">
+                                })">
                                     {{ $t('Review') }}
                                     {{ review.user.full_name || review.user.username }}
                                 </v-btn>
