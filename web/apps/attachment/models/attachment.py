@@ -1,7 +1,9 @@
-from django.contrib.postgres.fields import ArrayField
+from operator import itemgetter
+
 from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
+from django_better_admin_arrayfield.models.fields import ArrayField
 from filetype import Type as FileType, get_type
 from filetype.types.archive import Pdf, Zip, Rar, Tar, Gz
 from filetype.types.image import Png
@@ -82,6 +84,7 @@ class TypeAttachment(BaseTypeModel):
         SUPERVISOR_REVIEW = 'supervisor_review', _('Supervisor review')
         OPPONENT_REVIEW = 'opponent_review', _('Opponent review')
         THESIS_POSTER = 'thesis_poster', _('Thesis poster')
+        THESIS_ATTACHMENT = 'thesis_attachment', _('Thesis attachment')
 
     IDENTIFIER_BY_REVIEWER = {
         'supervisor': Identifier.SUPERVISOR_REVIEW,
@@ -102,6 +105,9 @@ class TypeAttachment(BaseTypeModel):
         ),
         default=_default_allowed_content_types,
         verbose_name=_('List of allowed mime/content types'),
+        help_text=_('Available options: {}').format(
+            ', '.join(tuple(map(itemgetter(0), _content_type_choices())))
+        ),
         blank=True,
     )
 

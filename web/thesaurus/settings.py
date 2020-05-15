@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'debug_toolbar',
     'rest_framework',
     'django_extensions',
+    'django_better_admin_arrayfield',
 ]
 
 MIDDLEWARE = [

@@ -26,6 +26,7 @@ djangorestframework-stubs = "*"
 django-weasyprint = "*"
 weasyprint = "*"
 uvicorn = "*"
+django-better-admin-arrayfield = "*"
 
 [dev-packages]
 
