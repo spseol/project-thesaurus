@@ -83,7 +83,7 @@ FROM knihy k
         if ',' in name:
             name, degree_after = name.rsplit(',', 1)
 
-        parts = [last_name, first_name, *degrees_before] = tuple(filter(None, name.strip().rsplit(' ', 2)[::-1]))
+        [last_name, first_name, *degrees_before] = tuple(filter(None, name.strip().rsplit(' ', 2)[::-1]))
 
         username = '.'.join(map(slugify, (last_name.strip(), first_name.strip())))
 

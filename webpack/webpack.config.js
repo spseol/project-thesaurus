@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const publicPath = process.env.PUBLIC_PATH || '//localhost:3000/static/';
 const buildDir = process.env.BUILD_DIR || path.resolve('./build');
 
