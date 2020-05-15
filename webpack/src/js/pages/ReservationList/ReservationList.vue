@@ -110,7 +110,7 @@
         asyncComputed: {
             async stateOptions() {
                 return [
-                    {text: this.$t('All'), value: this.stateFilter},
+                    {text: this.$t('All'), value: 'all'},
                     ...(await Axios.get('/api/v1/reservation-state-options')).data,
                 ];
             },

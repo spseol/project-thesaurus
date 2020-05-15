@@ -1,9 +1,7 @@
 <template>
     <v-app>
         <v-navigation-drawer
-            app
-            dark
-            :clipped="true"
+            app dark clipped
             v-model="drawer"
         >
             <div class="v-navigation-drawer__content d-flex flex-column justify-space-between">
@@ -53,9 +51,9 @@
                 <v-toolbar-title
                     class="ml-0 pl-1 d-md-flex hidden-sm-and-down black--text"
                 >
-                    <img height="35" src="../img/thesaurus.svg" class="pr-2" alt="Project Thesaurus">
+                    <img height="35" src="../img/thesaurus.svg" class="pr-0 pr-md-2" alt="Project Thesaurus">
 
-                    <span class="font-weight-bold mt-1">THESAURUS</span>
+                    <span class="font-weight-bold mt-1 hidden-md-and-down">THESAURUS</span>
                 </v-toolbar-title>
             </v-btn>
 
