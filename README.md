@@ -1,5 +1,20 @@
-# Project Thesaurus
+# Project Thesaurus [![GitHub license](https://img.shields.io/github/license/spseol/project-thesaurus.svg)](https://github.com/spseol/project-thesaurus/blob/master/LICENSE) [![GitHub release](https://img.shields.io/github/tag/spseol/project-thesaurus.svg)](https://GitHub.com/spseol/project-thesaurus/releases/)
+
+
 System used fo publication, evidence and managing theses and attachments to them. 
+
+
+
+![Made with Python](https://img.shields.io/badge/Made%20with-Python-4584b6.svg)
+![Made with Vue.js](https://img.shields.io/badge/Made%20with-Vue.js-42b883.svg)
+![Made with Docker](https://img.shields.io/badge/Made%20with-Docker-0db7ed.svg)
+![Made with Django](https://img.shields.io/badge/Made%20with-Django-092e20.svg)
+![Made with Django](https://img.shields.io/badge/Made%20with-Webpack-8ED5FA.svg)
+![Made with Django](https://img.shields.io/badge/Made%20with-PostgreSQL-cc3b03.svg)
+[![Language grade: Python](https://img.shields.io/lgtm/grade/python/g/spseol/project-thesaurus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/spseol/project-thesaurus/context:python)
+[![Language grade: JavaScript](https://img.shields.io/lgtm/grade/javascript/g/spseol/project-thesaurus.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/spseol/project-thesaurus/context:javascript)
+
+
 
 ## Structure
 Project is using docker-compose to compose all required Docker containers to run:

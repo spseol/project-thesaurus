@@ -82,7 +82,11 @@
             app
         >
             <v-spacer></v-spacer>
-            <span class="px-4"><a href="https://github.com/spseol/project-thesaurus">v{{ pageContext.version }}</a> &copy; 2020</span>
+            <span class="px-4">
+                <a href="https://github.com/spseol/project-thesaurus">
+                <v-icon>mdi-github</v-icon>
+                    v{{ pageContext.version }}
+                </a> &copy; 2020</span>
         </v-footer>
 
         <v-snackbar

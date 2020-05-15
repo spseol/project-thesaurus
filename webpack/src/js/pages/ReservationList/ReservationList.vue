@@ -45,26 +45,18 @@
         <portal to="navbar-center" v-if="$route.name === 'reservation-list'">
             <v-toolbar dense color="transparent" elevation="0">
                 <v-text-field
-                    flat
-                    solo-inverted solo
-                    hide-details
-                    prepend-inner-icon="mdi-magnify"
+                    flat solo-inverted solo clearable
+                    hide-details prepend-inner-icon="mdi-magnify"
                     v-model="search"
                     :label="$t('Search')"
-                    clearable
                 ></v-text-field>
 
-                <v-btn-toggle
-                    v-model="stateFilter"
-                    group
-                    mandatory
-                >
+                <v-btn-toggle v-model="stateFilter" group mandatory>
                     <v-btn
                         v-for="{text, value} in stateOptions"
                         :key="value" :value="value"
                         v-text="text"
                     ></v-btn>
-
                 </v-btn-toggle>
             </v-toolbar>
         </portal>
