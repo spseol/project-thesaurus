@@ -99,11 +99,8 @@
                 >
                     <template v-slot:selection="{ attrs, item, select, selected }">
                         <v-chip
-                            v-bind="attrs"
-                            :input-value="selected"
-                            close
-                            @click="select"
-                            @click:close="removeFromFilter(item)"
+                            v-bind="attrs" :input-value="selected"
+                            close @click="select" @click:close="removeFromFilter(item)"
                         >
                             <v-avatar left>
                                 <v-icon v-if="item.id">mdi-account</v-icon>

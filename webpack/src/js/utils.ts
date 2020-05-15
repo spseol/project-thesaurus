@@ -37,6 +37,7 @@ const pageContext = new Context();
 class Flash extends Object {
     text: string;
     color?: string;
+    type?: string;
 }
 
 class EventBus extends Vue {

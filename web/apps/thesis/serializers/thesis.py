@@ -47,6 +47,7 @@ class ThesisSubmitSerializer(ThesisBaseSerializer):
         fields = (
             'id',
             'abstract',
+            'reservable',
         )
 
 

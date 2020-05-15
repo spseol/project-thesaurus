@@ -183,7 +183,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'apps.api.permissions.RestrictedViewModelPermissions',
     ),
-
+    'EXCEPTION_HANDLER': 'apps.api.utils.exceptions.exception_handler',
     'PAGE_SIZE': 20,
 }
 

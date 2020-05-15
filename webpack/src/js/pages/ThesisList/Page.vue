@@ -11,7 +11,6 @@
     import ThesisList from './ThesisList';
 
     export default Vue.extend({
-        name: 'Page',
         components: {ThesisList}
     });
 </script>

@@ -90,7 +90,7 @@
         <v-snackbar
             v-model="flash.show"
             :timeout="flash.timeout"
-            :color="flash.color || 'info'"
+            :color="flash.color || flash.type || 'info'"
             right top
         >
             {{ flash.text }}

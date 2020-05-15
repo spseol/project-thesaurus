@@ -167,7 +167,7 @@
         computed: {
             grades4() {
                 return [
-                    this.$t('Excellent'), this.$t('Very well'),
+                    this.$t('Excellent'), this.$t('grades.veryWell'),
                     this.$t('Great'), this.$t('Not sufficient'), ''
                 ].reverse();
             },
