@@ -87,7 +87,8 @@
             </template>
         </v-data-table>
 
-        <portal to="navbar-center">
+        <!-- didnt find any better way to stop portal in case of another page view with disabled keep-alive -->
+        <portal to="navbar-center" v-if="$route.name === 'thesis-list'">
             <v-toolbar dense color="transparent" elevation="0">
                 <v-combobox
                     v-model="filterItems" multiple :items="userOptions"

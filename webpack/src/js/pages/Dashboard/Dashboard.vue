@@ -48,7 +48,7 @@
                         {{ reservedThesesRegistrationNumbers.join(', ') }}
                     </v-col>
                     <v-col class="shrink">
-                        <v-btn large :to="$i18nRoute({name: 'reservations'})">
+                        <v-btn large :to="$i18nRoute({name: 'reservation-list'})">
                             {{ $t('Go to reservations') }}
                         </v-btn>
                     </v-col>

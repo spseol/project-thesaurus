@@ -71,7 +71,7 @@ export default function createVue(opts = {}) {
         routes: [
             {
                 path: '/:locale/', // unknown locales handles Django itself by locale middleware
-                component: {template: '<router-view></router-view>'},
+                component: {template: '<keep-alive><router-view></router-view></keep-alive>'},
                 children: [
                     {path: '', component: () => import('./pages/Dashboard/Page'), name: 'dashboard'},
                     {
@@ -91,9 +91,9 @@ export default function createVue(opts = {}) {
                         name: 'thesis-submit',
                     },
                     {
-                        path: 'reservations',
+                        path: 'reservations/list',
                         component: () => import('./pages/ReservationList/Page'),
-                        name: 'reservations',
+                        name: 'reservation-list',
                         meta: {perm: 'thesis.view_reservation'},
                     },
                     {

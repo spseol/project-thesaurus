@@ -22,7 +22,7 @@
             <span v-has-perm:thesis.view_reservation v-if="thesis.reservable">
                 <v-badge :content="thesis.open_reservations_count || 0" overlap v-if="thesis.open_reservations_count > 0">
                     <v-btn
-                        v-text="$t('Borrowed')" :to="$i18nRoute({name: 'reservations'})"
+                        v-text="$t('Borrowed')" :to="$i18nRoute({name: 'reservation-list'})"
                         x-small depressed
                     ></v-btn>
                 </v-badge>
