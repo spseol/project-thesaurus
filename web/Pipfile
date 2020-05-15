@@ -24,9 +24,11 @@ django-stubs = "*"
 filetype = "*"
 djangorestframework-stubs = "*"
 django-weasyprint = "*"
-weasyprint = "*"
+WeasyPrint = "*"
 uvicorn = "*"
 django-better-admin-arrayfield = "*"
+bleach = "*"
+django-bleach = "*"
 
 [dev-packages]
 

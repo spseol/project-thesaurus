@@ -22,7 +22,7 @@
         }
 
         body {
-            margin: 5mm 10mm 5mm;
+            margin: 5mm 10mm;
         }
 
         h1 {
@@ -49,25 +49,24 @@
         }
 
         .comment {
-            height: 60mm;
-            max-height: 60mm;
-            overflow: hidden;
-            white-space: pre-line;
-            text-align: justify;
-
+            height: 70mm;
         }
 
         .questions {
-            height: 40mm;
-            max-height: 40mm;
-            overflow: hidden;
-            white-space: pre-line;
-            text-align: justify;
+            height: 50mm;
         }
 
-        p {
-            padding-top: 0;
-            margin-top: 0;
+        .questions, .comment {
+            overflow: hidden;
+            text-align: justify;
+            hyphens: auto;
+            white-space: normal;
+        }
+
+        .questions ul, .comment ul {
+            margin-top: .4em;
+            margin-bottom: .4em;
+            padding-left: 4mm;
         }
 
         .right {
@@ -93,7 +92,7 @@
             text-align: center;
             left: 0;
             right: 0;
-            padding-bottom: 10mm;
+            padding-bottom: 5mm;
             font-size: 3mm;
             color: darkgray;
         }
@@ -140,24 +139,30 @@
     </tr>
     <tr>
         <td>{% trans "Difficulty of selected topic" %}</td>
-        <td>{{ review.get_difficulty_display }}</td>
+        <td>
+            <strong>{{ review.get_difficulty_display }}</strong>
+            <small class="right">({% for l in review.DifficultyChoices.labels %}{{ l.lower }}{% if not forloop.last %},
+            {% endif %}{% endfor %})</small>
+        </td>
     </tr>
     {% for grading, grade in review.gradings|zip:review.grades %}
         <tr{% if forloop.last %} class="row-bottom-divider"{% endif %}>
             <td>{{ grading }}</td>
-            <td>{{ grade|get_choices_display:review.GradesChoices }}</td>
+            <td><strong>{{ grade|get_choices_display:review.GradesChoices }}</strong></td>
         </tr>
     {% endfor %}
     <tr class="row-bottom-divider">
         <td colspan="2">
             <strong>{% trans "Comment" %}</strong>
-            <p class="comment">{{ review.comment.strip }}</p>
+            <div class="comment">
+                {{ review.comment.strip|safe }}
+            </div>
         </td>
     </tr>
     <tr class="row-bottom-divider">
         <td colspan="2">
             <strong>{% trans "Questions" %}</strong>
-            <p class="questions">{{ review.questions.strip }}</p>
+            <div class="questions">{{ review.questions.strip|safe }}</div>
         </td>
     </tr>
     <tr class="row-bottom-divider">
@@ -183,7 +188,7 @@
     <small>
         {% trans "If the evaluation of the leader and the opponent differs by more than two degrees (excellent - unsatisfactory), it will be prepared third independent opinion." %}
     </small>
-    <br><br>
+    <br>
     {% trans "Generated automatically by THESAURUS at" %} {% now "d.m.Y H:i" %}. <br>
     {% trans "Available online on" %}
     <a href="{% absolute_url "api:review-pdf-detail" review.pk %}">

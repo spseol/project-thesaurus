@@ -8,6 +8,8 @@ import enVuetify from 'vuetify/es5/locale/en';
 import colors from 'vuetify/es5/util/colors';
 import VueAsyncComputed from 'vue-async-computed';
 
+import {TiptapVuetifyPlugin} from 'tiptap-vuetify';
+
 import '../scss/index.scss';
 import csLocal from './locale/cs.json';
 import enLocal from './locale/en.json';
@@ -16,7 +18,6 @@ import hasPerm from './user';
 import Axios from './axios';
 import {eventBus, pageContext} from './utils';
 import {DjangoPermsPlugin, I18nRoutePlugin} from './plugins';
-
 
 export default function createVue(opts = {}) {
     Vue.use(VueI18n);
@@ -60,12 +61,14 @@ export default function createVue(opts = {}) {
         },
     });
 
-    const i18n = new VueI18n({
-        locale,
-        messages: {cs: csLocal, en: enLocal},
-    });
+    const i18n = new VueI18n({locale, messages: {cs: csLocal, en: enLocal}});
 
     Axios.defaults.headers['Accept-Language'] = locale;
+
+    Vue.use(TiptapVuetifyPlugin, {
+        vuetify,
+        iconsGroup: 'mdi',
+    });
 
     const router = new VueRouter({
         routes: [

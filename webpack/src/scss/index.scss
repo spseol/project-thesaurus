@@ -1,4 +1,5 @@
 @import "~vuetify/src/styles/main.sass";
+@import "~tiptap-vuetify/dist/main.css";
 
 .VSliderCustom__label--gray .v-slider__tick-label {
   color: map_get($grey, 'base');

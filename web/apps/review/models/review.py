@@ -5,6 +5,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
+from django_bleach.models import BleachField
 
 from apps.utils.models import BaseTimestampedModel
 
@@ -34,11 +35,13 @@ class Review(BaseTimestampedModel):
         related_name='review_user'
     )
 
-    comment = models.TextField(
+    comment = BleachField(
         verbose_name=_('Review comment'),
+        strip_tags=True,
     )
-    questions = models.TextField(
+    questions = BleachField(
         verbose_name=_('Review questions'),
+        strip_tags=True,
     )
     difficulty = models.PositiveSmallIntegerField(
         verbose_name=_('Difficulty'),

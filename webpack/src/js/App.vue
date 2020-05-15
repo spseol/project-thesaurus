@@ -150,7 +150,7 @@
                         to: {name: 'exports'},
                         perm: 'accounts.view_user'
                     },
-                    {icon: 'mdi-settings', text: this.$t('Settings'), to: {name: 'settings'}}
+                    {icon: 'mdi-cog', text: this.$t('Settings'), to: {name: 'settings'}}
                 ];
             }
         },

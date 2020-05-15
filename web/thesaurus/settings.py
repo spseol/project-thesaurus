@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'django_better_admin_arrayfield',
+    'django_bleach',
 ]
 
 MIDDLEWARE = [
