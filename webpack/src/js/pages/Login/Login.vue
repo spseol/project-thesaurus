@@ -1,25 +1,14 @@
 <template>
     <v-app class="app">
         <v-content>
-            <v-container
-                class="fill-height"
-                fluid
-            >
-                <v-row
-                    justify="center"
-                >
-                    <v-col
-                        cols="12"
-                        sm="8"
-                        md="4"
-                        lg="3"
-                    >
-
+            <v-container class="fill-height" fluid>
+                <v-row justify="center">
+                    <v-col cols="12" sm="8" md="4" lg="3">
                         <v-form v-model="formValid">
                             <transition name="show-form">
                                 <v-card class="elevation-12 mt-n12" :loading="loading" v-if="showForm">
                                     <v-card-title class="primary justify-center">
-                                        <v-img :src="require('../img/thesaurus.svg')"
+                                        <v-img :src="require('../../../img/thesaurus.svg')"
                                             width="80%" max-width="300px"
                                             class="ma-3 mb-5" alt="Project Thesaurus"
                                         />
@@ -80,7 +69,7 @@
 
 <script type="text/tsx">
     import Vue from 'vue';
-    import Axios from './axios';
+    import Axios from '../../axios';
 
     export default Vue.extend({
         name: 'Login',
@@ -111,14 +100,14 @@
         mounted() {
             setTimeout(() => {
                 this.showForm = true;
-            }, 0);
+            }, 100);
         }
     });
 </script>
 
 <style lang="scss" scoped>
     .app {
-        background: url('../img/background-mask.png') no-repeat center center;
+        background: url('../../../img/background-mask.png') no-repeat center center;
         background-size: cover;
         position: relative;
 
@@ -129,7 +118,7 @@
             left: 0;
             bottom: 0;
             content: '';
-            background: url('../img/background.jpg') no-repeat center center;
+            background: url('../../../img/background.jpg') no-repeat center center;
             background-size: cover;
             filter: blur(0px);
             opacity: .1;

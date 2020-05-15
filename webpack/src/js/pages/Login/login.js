@@ -1,4 +1,4 @@
-import createVue from './app';
+import createVue from './../../app';
 import Login from './Login';
 
 createVue({

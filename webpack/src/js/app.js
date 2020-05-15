@@ -15,14 +15,7 @@ import App from './App';
 import hasPerm from './user';
 import Axios from './axios';
 import {eventBus, pageContext} from './utils';
-
-const I18nRoutePlugin = {
-    install(Vue, options) {
-        Vue.prototype.$i18nRoute = function(to) {
-            return Object.assign({}, to, {params: {locale: this.$i18n.locale, ...(to.params || {})}});
-        };
-    },
-};
+import {DjangoPermsPlugin, I18nRoutePlugin} from './plugins';
 
 
 export default function createVue(opts = {}) {
@@ -32,28 +25,8 @@ export default function createVue(opts = {}) {
     Vue.use(VueAsyncComputed);
     Vue.use(PortalVue);
     Vue.use(I18nRoutePlugin);
+    Vue.use(DjangoPermsPlugin);
     Vue.config.productionTip = false;
-
-    // TODO: think about https://github.com/mblarsen/vue-browser-acl
-    Vue.directive('has-perm', {
-        inserted(el, bindings, vnode) {
-            if (!bindings.arg) return;
-
-            // dot is modifier sign for vue directives and app splitter for Django perms, needed manual parse
-            const perm = bindings.arg.indexOf('.') >= 0 ? bindings.arg : bindings.rawName.replace(/v-has-perm:/g, '');
-
-            el.style.display = 'none';
-            hasPerm(perm).then((allowed) => {
-                if (allowed)
-                    el.style.display = null;
-                else
-                    el.style.display = 'none';
-
-            }).catch(() => {
-                el.style.display = 'none';
-            });
-        },
-    });
 
     const {locale} = pageContext;
 

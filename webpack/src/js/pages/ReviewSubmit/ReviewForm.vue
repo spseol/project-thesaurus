@@ -24,7 +24,7 @@
                             ></v-text-field>
                             <v-row no-gutters justify="center" class="mb-5">
                                 <v-btn
-                                    v-for="attachment in thesis.attachments"
+                                    v-for="attachment in thesis.attachments" :key="attachment.id"
                                     :href="attachment.url"
                                     color="primary" target="_blank" outlined class="ma-2"
                                 >

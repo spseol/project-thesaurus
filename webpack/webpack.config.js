@@ -20,8 +20,8 @@ module.exports = {
         },
     },
     entry: {
-        main: './src/js/index.ts',
-        login: './src/js/login.js',
+        main: path.join(__dirname, './src/js/index.ts'),
+        login: path.join(__dirname, './src/js/pages/Login/login.js'),
     },
     output: {
         // for example ../build/head.[hash].js
