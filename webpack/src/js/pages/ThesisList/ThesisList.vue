@@ -92,45 +92,45 @@
                 <v-combobox
                     v-model="filterItems" multiple :items="userOptions"
                     flat solo-inverted solo prepend-inner-icon="mdi-magnify"
-                    hide-details clearable hide-selected chips
+                    hide-details clearable chips
                     :label="$t('Search')"
                     :filter="userOptionsFilter"
                     menu-props="closeOnContentClick"
                 >
-                    <template v-slot:selection="{ attrs, item, select, selected }">
-                        <v-chip
+                    <template v-slot:selection="{ attrs, item, select, selected, index, value }">
+                        <!-- chip if item is user or manually types text -->
+                        <v-chip v-if="!item.value || index === 0"
                             v-bind="attrs" :input-value="selected"
                             close @click="select" @click:close="removeFromFilter(item)"
                         >
                             <v-avatar left>
-                                <v-icon v-if="item.id">mdi-account</v-icon>
+                                <v-icon v-if="item.value">mdi-account</v-icon>
                                 <v-icon v-else>mdi-format-letter-case</v-icon>
                             </v-avatar>
                             <strong>{{ item.text || item }}</strong>
                         </v-chip>
+
+                        <span
+                            v-if="index === 1 && filterItems.length - manualFilterItems.length - (filterItems[0].value ? 1 : 0) > 0"
+                            class="caption order-last"
+                        >(+{{ filterItems.length - manualFilterItems.length - (filterItems[0].value ? 1 : 0) }} others)</span>
                     </template>
 
                     <template v-slot:item="{ item }">
                         {{ item.text || item }}
                     </template>
                 </v-combobox>
-                <v-btn-toggle
-                    v-model="categoryFilter"
-                    group
-                >
-                    <v-btn
-                        v-for="{text, value} in categoryOptions"
-                        :value="value" v-text="text" :key="value" class="text-transform-none"
-                    ></v-btn>
-                </v-btn-toggle>
-
-                <v-btn icon v-if="categoryFilter" @click="categoryFilter = null">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-
-                <v-select
+                <v-divider v-if="$vuetify.breakpoint.lgAndUp" vertical class="mx-2"></v-divider>
+                <v-select v-if="$vuetify.breakpoint.lgAndUp"
+                    :items="categoryOptions" v-model="categoryFilter" clearable
+                    solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline"
+                    :label="$t('Category')"
+                ></v-select>
+                <v-divider vertical class="mx-2" v-if="$vuetify.breakpoint.mdAndUp"></v-divider>
+                <v-select v-if="$vuetify.breakpoint.mdAndUp"
                     :items="thesisYearOptions" v-model="thesisYearFilter" clearable
                     flat solo-inverted hide-details prepend-inner-icon="mdi-calendar"
+                    :label="$t('Publication year')"
                 ></v-select>
             </v-toolbar>
         </portal>
@@ -238,6 +238,9 @@
 
                 headers.push({text: '', value: 'state', width: '18em'});
                 return _.compact(headers);
+            },
+            manualFilterItems() {
+                return _.filter(this.filterItems, _.isString);
             }
         },
         async created() {
