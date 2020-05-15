@@ -243,12 +243,12 @@
         async created() {
             this.debouncedLoad = _.debounce(this.load, 200);
             this.$watch(
-                (s) => ([s.options]),
+                (vm) => ([vm.options, vm.$i18n.locale]),
                 this.debouncedLoad,
                 {deep: true, immediate: true}
             );
             this.$watch(
-                (s) => ([s.filterItems, s.categoryFilter, s.thesisYearFilter]),
+                (vm) => ([vm.filterItems, vm.categoryFilter, vm.thesisYearFilter]),
                 () => {
                     this.options.page = 1;
                     this.debouncedLoad();

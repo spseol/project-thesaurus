@@ -29,7 +29,7 @@
                     <v-col cols="12" lg="6">
                         <v-combobox
                             :label="$t('Keywords')" prepend-icon="mdi-format-letter-starts-with"
-                            chips clearable v-model="thesis.keywords" multiple
+                            chips clearable v-model="thesis.keywords" multiple outlined
                             :delimiters="', '.split('')"
                         >
                             <!--    TODO: save keywords -->

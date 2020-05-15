@@ -3,7 +3,7 @@
         <v-card :loading="loading">
             <v-card-title>{{ $t('Thesis review') }}</v-card-title>
             <v-card-text>
-                <!-- TODO: https://stackoverflow.com/a/55915597-->
+                <!-- TODO: disable all? https://stackoverflow.com/a/55915597 -->
                 <v-form @submit.prevent="submit" v-model="valid">
                     <v-row>
                         <v-col cols="12" md="6">
@@ -22,12 +22,15 @@
                                 :value="(thesis[reviewerRole] || {full_name: $t('Unknown')}).full_name"
                                 readonly filled
                             ></v-text-field>
-                            <v-row class="mb-4" no-gutters v-if="thesisTextAttachment">
-                                <v-spacer></v-spacer>
-                                <v-btn :href="thesisTextAttachment.url" color="info" large target="_blank">
-                                    {{ $t('Download thesis text') }}
+                            <v-row no-gutters justify="center" class="mb-5">
+                                <v-btn
+                                    v-for="attachment in thesis.attachments"
+                                    :href="attachment.url"
+                                    color="primary" target="_blank" outlined class="ma-2"
+                                >
+                                    <v-icon color="grey">${{ attachment.type_attachment.identifier }}</v-icon>
+                                    {{ $t('Download') }} {{ attachment.type_attachment.name }}
                                 </v-btn>
-                                <v-spacer></v-spacer>
                             </v-row>
                             <v-textarea
                                 :label="$t('Review comment')"

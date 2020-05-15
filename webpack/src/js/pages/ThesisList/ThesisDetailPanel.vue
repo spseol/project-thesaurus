@@ -34,8 +34,7 @@
                     <template v-has-perm:attachment.view_attachment>
                         <tr v-for="attachment in thesis.attachments">
                             <td class="text-left text-md-right">
-                                <!-- TODO: dynamic icon -->
-                                <v-icon>mdi-pdf-box</v-icon>
+                                <v-icon>${{ attachment.type_attachment.identifier }}</v-icon>
                             </td>
                             <td>
                                 <v-btn small outlined color="primary" :href="attachment.url" target="_blank">

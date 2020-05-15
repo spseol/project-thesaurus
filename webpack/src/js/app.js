@@ -75,6 +75,16 @@ export default function createVue(opts = {}) {
                 },
             },
         },
+        icons: {
+            values: {
+                thesis_assigment: 'mdi-file-pdf',
+                thesis_text: 'mdi-file-pdf',
+                thesis_poster: 'mdi-image',
+                supervisor_review: 'mdi-file-pdf',
+                opponent_review: 'mdi-file-pdf',
+                thesis_attachment: 'mdi-folder-zip',
+            },
+        },
     });
 
     const i18n = new VueI18n({

@@ -62,6 +62,7 @@ class Attachment(BaseTimestampedModel):
     class Meta:
         verbose_name = _('Attachment')
         verbose_name_plural = _('Attachments')
+        ordering = ('thesis', 'type_attachment__order')
 
     def build_file_path(self, file_type: FileType):
         pk = str(self.id)
