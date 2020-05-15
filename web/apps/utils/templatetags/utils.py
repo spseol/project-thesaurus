@@ -1,21 +1,15 @@
-import json
+import re
+from audioop import reverse
 
 from django import template
 from django.conf import settings
 from django.db.models import Choices, Model
+from django.http import HttpRequest
 from django.urls import reverse
+from django.utils import translation
+from django.utils.html import json_script
 
 register = template.Library()
-
-
-@register.filter(is_safe=True)
-def to_json(v):
-    return json.dumps(v)
-
-
-@register.simple_tag
-def get_version(*_):
-    return settings.VERSION
 
 
 @register.filter(name='zip')
@@ -38,3 +32,16 @@ def absolute_url(context, view_name, *args, **kwargs):
     return context['request'].build_absolute_uri(
         reverse(view_name, args=args, kwargs=kwargs)
     )
+
+
+@register.simple_tag(takes_context=True)
+def page_context(context, element_id, _re_language=re.compile(r'[_-]'), *args, **kwargs):
+    request: HttpRequest = context['request']
+
+    return json_script(dict(
+        locale=_re_language.split(translation.get_language())[0],
+        username=request.user.get_username(),
+        djangoAdminUrl=reverse('admin:index') if request.user.is_staff else '',
+        languages=[(k, translation.gettext(v)) for k, v in settings.LANGUAGES],
+        version=settings.VERSION,
+    ), element_id)

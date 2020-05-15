@@ -1,6 +1,6 @@
 {% load static i18n %}
 {% load render_entrypoint from webpack_loader %}
-{% load to_json get_version from utils %}
+{% load page_context from utils %}
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE }}">
 <head>
@@ -14,18 +14,12 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static "favicon-32x32.png" %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "favicon-16x16.png" %}">
     <link rel="manifest" href="{% static "site.webmanifest" %}">
-    {% get_available_languages as languages %}
+
+    {% page_context "page-context" %}
     <script>
         window.Thesaurus = (window.Thesaurus || {});
-        window.Thesaurus.pageContext = {
-            locale: '{{ LANGUAGE_CODE }}'.split(/[_-]/)[0],
-            username: '{{ user.get_username }}',
-            djangoAdminUrl: '{% if user.is_staff %}{% url "admin:index" %}{% endif %}',
-            languages: JSON.parse('{{ languages|to_json|escapejs }}'),
-            version: '{% get_version %}',
-        };
+        window.Thesaurus.pageContext = JSON.parse(document.getElementById('page-context').textContent);
     </script>
-
     {% block bundles %}
         {% render_entrypoint 'main' 'js' attrs='defer' %}
         {% render_entrypoint 'main' 'css' %}
