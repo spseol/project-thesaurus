@@ -22,7 +22,7 @@
     "fibers": "^4.0.2",
     "file-loader": "^6.0.0",
     "lodash": "^4.17.15",
-    "node-sass": "^4.13.1",
+    "node-sass": "^4.14.1",
     "portal-vue": "^2.1.7",
     "postcss-loader": "^3.0.0",
     "postcss-object-fit-images": "^1.1.2",
@@ -30,7 +30,8 @@
     "sass": "^1.26.3",
     "sass-loader": "^8.0.2",
     "style-loader": "^1.1.4",
-    "tiptap-vuetify": "^2.17.0",
+    "tiptap": "^1.27.1",
+    "tiptap-vuetify": "^2.18.0",
     "vue": "^2.6.11",
     "vue-async-computed": "^3.8.2",
     "vue-cli-plugin-vuetify-preset-reply": "^1.0.3",
@@ -40,7 +41,7 @@
     "vuetify-loader": "^1.4.3",
     "webpack": "^4.42.1",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.10.3",
+    "webpack-dev-server": "^3.11.0",
     "webpack4-bundle-tracker": "0.0.1-beta"
   },
   "devDependencies": {
