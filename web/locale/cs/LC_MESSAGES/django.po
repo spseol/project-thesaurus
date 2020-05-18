@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-18 01:01+0000\n"
-"PO-Revision-Date: 2020-05-15 04:05+0300\n"
+"POT-Creation-Date: 2020-05-18 21:24+0000\n"
+"PO-Revision-Date: 2020-05-19 00:24+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -93,11 +93,11 @@ msgstr "Dostupné možnosti: {}"
 
 #: apps/attachment/models/attachment.py:116
 msgid "Is public"
-msgstr ""
+msgstr "Dostupná veřejně"
 
 #: apps/attachment/models/attachment.py:121
 msgid "Max size in bytes"
-msgstr ""
+msgstr "Maximální velikost [B]"
 
 #: apps/attachment/models/attachment.py:127
 msgid "Type attachment"

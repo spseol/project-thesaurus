@@ -36,7 +36,7 @@
                             <h3 class="my-5">{{ $t('Review comment') }}</h3>
                             <tiptap-vuetify
                                 v-model="review.comment"
-                                :placeholder="$t('Thesis is ...')"
+                                :placeholder="$t('review.commentPlaceholder')"
                                 :extensions="tipTapExtensions"
                                 :card-props="{flat: true, outlined: true, solo: true}" minHeight="200px"
                                 :editor-properties="{autoFocus: true}"
@@ -46,7 +46,7 @@
                             <h3 class="mb-5">{{ $t('Thesis defence questions') }}</h3>
                             <tiptap-vuetify
                                 v-model="review.questions"
-                                :placeholder="$t('Could you please ...')"
+                                :placeholder="$t('review.questionsPlaceholder')"
                                 :extensions="tipTapExtensions"
                                 :card-props="{flat: true, outlined: true, solo: true}" minHeight="150px"
                             ></tiptap-vuetify>

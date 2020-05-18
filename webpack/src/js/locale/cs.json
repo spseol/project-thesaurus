@@ -8,6 +8,7 @@
   "Author": "Autor",
   "Author(s)": "Autor/ři",
   "Authors": "Autoři",
+  "Available": "Dostupná",
   "Average": "Průměrná",
   "Borrow": "Vypůjčit",
   "Borrowed": "Vypůjčená",
@@ -32,6 +33,7 @@
   "Graphic design of the thesis": "Grafická úprava práce",
   "Great": "Dobrá",
   "Interpretation of conclusions, their originality and their own contribution to the work": "Interpretace závěrů, jejich originalita a vlastní přínos práce",
+  "Keywords": "Klíčová slova",
   "Login": "Přihlásit se",
   "Make pre-reservation": "Rezervovat",
   "Make reservation": "Zarezervovat",
@@ -50,6 +52,7 @@
   "Prepare thesis": "Připravit práci",
   "Prepared for pickup": "Přichystána k vyzvednutí",
   "Project THESAURUS": "Projekt THESAURUS",
+  "Publication year": "Publikováno",
   "Publish": "Zveřejnit",
   "Published": "Publikováno",
   "Published at": "Publikováno",
@@ -85,6 +88,7 @@
   "Thesis SN": "Ev. č.",
   "Thesis admission": "Zadání práce",
   "Thesis assigment": "Text zadání",
+  "Thesis attachment": "Příloha práce",
   "Thesis defence questions": "Otázky k obhajobě",
   "Thesis name": "Název práce",
   "Thesis poster": "Plakát práce",
@@ -105,6 +109,9 @@
   "dashboard": {
     "nothingNote": "Aktuálně není potřeba žádná akce."
   },
+  "grades": {
+    "veryWell": "Velmi dobrá"
+  },
   "opponent": "oponent",
   "page": {
     "403note": "Na zobrazení této stránky nemáte oprávnění.",
@@ -117,12 +124,14 @@
     "stateChanged": "Stav rezervace úspěšně změněn."
   },
   "review": {
+    "commentPlaceholder": "Práce je ...",
     "external": {
       "justSubmitted": "Externí posudek byl úspěšně vložen.",
       "submitFailed": "Vložení externího posudku selhalo."
     },
     "gradingNote": "Pokud se hodnocení vedoucího a oponenta liší o více jak dva stupně (výborná - nevyhovující), bude vypracován třetí nezávislý posudek.",
     "justSubmitted": "Posudek byl vložen.",
+    "questionsPlaceholder": "Vysvětlete prosím ...",
     "submitHint": "Odesláním potvrzuji správnost a konečnost tohoto posudku.",
     "submittedAt": "Posudek potvrzen dne"
   },
@@ -135,15 +144,12 @@
     "reservableHint": "Udělení nesouhlasu s publikací práce musí být předem schváleno vedoucím a ředitelstvím školy.",
     "sendToReviewNote": "Po odeslání práce k posouzení bude moci vedoucí a oponent stáhnout práci a zadat své posudky.",
     "submit": {
+      "hintAbstractSame": "Vložený abstrakt se shoduje s tím v práci.",
       "hintAdmission": "V práci je vloženo zadání práce.",
       "hintAttachment": "Přiložil jsem přílohy, pokud mám.",
       "hintPoster": "Přiložil jsem plakát, pokud mám.",
-      "hintThesisFinal": "Odevzdávám konečnou verzi práce.",
-      "hintAbstractSame": "Vložený abstrakt se shoduje s tím v práci.",
-      "hintSubmitApprove": "Souhlasím s odevzdáním práce."
+      "hintSubmitApprove": "Souhlasím s odevzdáním práce.",
+      "hintThesisFinal": "Odevzdávám konečnou verzi práce."
     }
-  },
-  "grades": {
-    "veryWell": "Velmi dobrá"
   }
 }
