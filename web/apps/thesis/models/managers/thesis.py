@@ -19,6 +19,7 @@ class ThesisApiManager(ThesisManager):
             'opponent',
         ).prefetch_related(
             'authors',
+            'authors__groups',
             'attachment_thesis',
             'attachment_thesis__type_attachment',
             'review_thesis',

@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import Q, QuerySet
+from django.db.models import Q, QuerySet, OuterRef, Exists, F
 from django.shortcuts import get_list_or_404
 from django.utils.dateparse import parse_date
 from rest_framework.decorators import action
@@ -13,7 +13,7 @@ from rest_framework.viewsets import ModelViewSet
 from apps.accounts.models import User
 from apps.api.permissions import CanSubmitThesisPermission, CanSubmitExternalThesisReviewPermission
 from apps.attachment.models import Attachment, TypeAttachment
-from apps.thesis.models import Thesis, Category
+from apps.thesis.models import Thesis, Category, Reservation
 from apps.thesis.serializers import ThesisFullPublicSerializer, ThesisFullInternalSerializer, ThesisBaseSerializer
 from apps.thesis.serializers.thesis import ThesisSubmitSerializer
 
@@ -61,10 +61,20 @@ class ThesisViewSet(ModelViewSet):
         qs = super().get_queryset()  # type: QuerySet
         user = self.request.user  # type: User
 
+        qs = qs.annotate(
+            _reservable=F('reservable') and Exists(
+                queryset=Reservation.open_reservations.filter(
+                    thesis_id=OuterRef('pk'),
+                    for_user=user,
+                ),
+                negated=True,
+            )
+        )
+
         # in case of request for one object include also thesis waiting for submit by one author
         include_waiting_for_submit = self.action in ('retrieve', 'submit')
 
-        if user.has_perm('thesis.change_thesis'):
+        if user.has_perm('thesis.change_thesis'):  # can see all of them
             return qs
 
         # no perms to see all thesis, so filter only published ones

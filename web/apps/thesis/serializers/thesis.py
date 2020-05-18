@@ -1,4 +1,4 @@
-from rest_framework.fields import DateField
+from rest_framework.fields import DateField, BooleanField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
@@ -54,6 +54,7 @@ class ThesisSubmitSerializer(ThesisBaseSerializer):
 class ThesisFullPublicSerializer(ThesisBaseSerializer):
     category = CategorySerializer(read_only=True)
     published_at = DateField(format="%Y/%m", required=False, read_only=True)
+    reservable = BooleanField(read_only=True, source='_reservable')  # set by queryset from viewset
 
     class Meta:
         model = Thesis

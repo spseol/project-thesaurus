@@ -1,8 +1,9 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.db.models import TextChoices
+from django.db.models import TextChoices, Manager
 from django.utils.translation import gettext_lazy as _
 
+from apps.thesis.models.managers.reservation import OpenReservationsManager
 from apps.utils.models import BaseTimestampedModel
 
 
@@ -35,6 +36,9 @@ class Reservation(BaseTimestampedModel):
         default=State.CREATED.value,
         max_length=32,
     )
+
+    objects = Manager()
+    open_reservations = OpenReservationsManager()
 
     class Meta:
         verbose_name = _('Reservation')

@@ -26,4 +26,8 @@ export declare class Thesis extends Object {
     authors: Array<User>;
     attachments: Array<Attachment>;
     reviews: Array<object>;
+
+    available_for_reservation: boolean;
+    reservable: boolean;
+    open_reservations_count: number;
 }
