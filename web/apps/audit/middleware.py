@@ -11,5 +11,5 @@ class AuditMiddleware(MiddlewareMixin):
 
     def process_request(self, request):
         cursor = connection.cursor()
-        cursor.execute('CREATE TEMPORARY TABLE _user_tmp (username text)')
-        cursor.execute('INSERT INTO "_user_tmp" VALUES (%s)', [request.user.username])
+        cursor.execute('CREATE TEMPORARY TABLE _user_tmp (user_id integer)')
+        cursor.execute('INSERT INTO "_user_tmp" VALUES (%s)', [request.user.id or None])

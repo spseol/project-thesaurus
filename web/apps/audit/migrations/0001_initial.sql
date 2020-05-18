@@ -50,7 +50,7 @@ CREATE TABLE audit.logged_actions
     schema_name       text                     not null,
     table_name        text                     not null,
     relid             oid                      not null,
-    session_user_name text,
+    user_id           integer,
     action_tstamp_tx  TIMESTAMP WITH TIME ZONE NOT NULL,
     action_tstamp_stm TIMESTAMP WITH TIME ZONE NOT NULL,
     action_tstamp_clk TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -69,7 +69,7 @@ COMMENT ON COLUMN audit.logged_actions.event_id IS 'Unique identifier for each a
 COMMENT ON COLUMN audit.logged_actions.schema_name IS 'Database schema audited table for this event is in';
 COMMENT ON COLUMN audit.logged_actions.table_name IS 'Non-schema-qualified table name of table event occured in';
 COMMENT ON COLUMN audit.logged_actions.relid IS 'Table OID. Changes with drop/create. Get with ''tablename''::regclass';
-COMMENT ON COLUMN audit.logged_actions.session_user_name IS 'Login / session user whose statement caused the audited event';
+COMMENT ON COLUMN audit.logged_actions.user_id IS 'IF of user causing this log, or NULL if not logged.';
 COMMENT ON COLUMN audit.logged_actions.action_tstamp_tx IS 'Transaction start timestamp for tx in which audited event occurred';
 COMMENT ON COLUMN audit.logged_actions.action_tstamp_stm IS 'Statement start timestamp for tx in which audited event occurred';
 COMMENT ON COLUMN audit.logged_actions.action_tstamp_clk IS 'Wall clock time at which audited event''s trigger call occurred';
@@ -90,7 +90,7 @@ DECLARE
     audit_row     audit.logged_actions;
     excluded_cols text[] = ARRAY []::text[];
     tmp_exists    boolean;
-    username      text;
+    user_id       integer;
 BEGIN
     IF TG_WHEN <> 'AFTER' THEN
         RAISE EXCEPTION 'audit.if_modified_func() may only run as an AFTER trigger';
@@ -99,7 +99,7 @@ BEGIN
     -- THESAURUS custom username lookup
     SELECT to_regclass('_user_tmp') IS NOT NULL INTO tmp_exists;
     IF tmp_exists THEN
-        SELECT "_user_tmp"."username" INTO username FROM "_user_tmp" LIMIT 1;
+        SELECT "_user_tmp"."user_id" INTO user_id FROM "_user_tmp" LIMIT 1;
     END IF;
 
     audit_row = ROW (
@@ -107,7 +107,7 @@ BEGIN
         TG_TABLE_SCHEMA::text, -- schema_name
         TG_TABLE_NAME::text, -- table_name
         TG_RELID, -- relation OID for much quicker searches
-        coalesce(username, session_user::text), -- logged user or session_user_name
+        user_id, -- logged user id or 0
         current_timestamp, -- action_tstamp_tx
         statement_timestamp(), -- action_tstamp_stm
         clock_timestamp(), -- action_tstamp_clk
@@ -140,7 +140,8 @@ BEGIN
     ELSIF (TG_LEVEL = 'STATEMENT' AND TG_OP IN ('INSERT', 'UPDATE', 'DELETE', 'TRUNCATE')) THEN
         audit_row.statement_only = 't';
     ELSE
-        RAISE EXCEPTION '[audit.if_modified_func] - Trigger func added as trigger for unhandled case: %, %',TG_OP, TG_LEVEL;
+        RAISE EXCEPTION '[audit.if_modified_func] - Trigger func added as trigger for unhandled case: %, %', TG_OP,
+            TG_LEVEL;
         RETURN NULL;
     END IF;
     INSERT INTO audit.logged_actions VALUES (audit_row.*);
