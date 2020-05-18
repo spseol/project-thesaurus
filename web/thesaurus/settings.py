@@ -113,6 +113,9 @@ DATABASES = {
         "PASSWORD": config("SQL_PASSWORD", default="password"),
         "HOST": config("SQL_HOST", default="localhost"),
         "PORT": config("SQL_PORT", default="5432"),
+        'OPTIONS': {
+            'options': '-c search_path=public,audit'
+        },
     }
 }
 
