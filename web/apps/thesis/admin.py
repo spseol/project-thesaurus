@@ -1,11 +1,25 @@
-from django.contrib.admin import ModelAdmin, register
+from django.contrib.admin import ModelAdmin, register, TabularInline
 
 from apps.thesis.models import Thesis, Reservation, Category, ThesisAuthor
 
 
+class AuthorInline(TabularInline):
+    model = ThesisAuthor
+    extra = 1
+
+
 @register(Thesis)
 class ThesisAdmin(ModelAdmin):
-    pass
+    search_fields = (
+        'title',
+        'abstract',
+    )
+
+    # inlines = (AuthorInline, )
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return qs.prefetch_related('authors')
 
 
 @register(ThesisAuthor)

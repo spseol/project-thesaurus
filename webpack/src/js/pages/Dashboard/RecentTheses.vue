@@ -1,6 +1,6 @@
 <template>
     <v-card>
-        <v-card-title>{{ $t('Recent theses') }}</v-card-title>
+        <v-card-title>{{ $t('Recent') }}</v-card-title>
         <v-card-text>
             TODO
         </v-card-text>

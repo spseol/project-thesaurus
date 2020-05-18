@@ -11,7 +11,7 @@ class Reservation(BaseTimestampedModel):
     """Reservation defined by thesis and user, which want to borrow the thesis."""
 
     class State(TextChoices):
-        CREATED = 'created', _('Created')
+        CREATED = 'created', _('Waiting for prepare')
         READY = 'ready', _('Ready for pickup')
         RUNNING = 'running', _('Running')
         FINISHED = 'finished', _('Finished')

@@ -16,6 +16,18 @@ export declare class Attachment extends Object {
     type_attachment: TypeAttachment;
 }
 
+
+export declare class Reservation extends Object {
+    id: string;
+    thesis: string;
+    for_user: User;
+    thesis_label: string;
+    thesis_registration_number: string;
+    created: string;
+    state: string;
+    state_label: string;
+}
+
 export declare class Thesis extends Object {
     id: string;
     title: string;

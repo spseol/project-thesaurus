@@ -12,6 +12,8 @@ class ReservationViewSet(ModelViewSet):
     queryset = Reservation.objects.select_related(
         'thesis',
         'for_user',
+    ).prefetch_related(
+        'thesis__authors',
     )
     serializer_class = ReservationSerializer
     pagination_class = None  # TODO: needed pagination?
@@ -21,6 +23,18 @@ class ReservationViewSet(ModelViewSet):
         'thesis__title',
         'thesis__registration_number',
     )
+
+    def get_queryset(self):
+        qs = super().get_queryset()
+
+        if self.request.user.has_perm('thesis.change_reservation'):
+            return qs
+
+        return qs.exclude(
+            state=Reservation.State.FINISHED
+        ).filter(
+            for_user=self.request.user
+        )
 
     def perform_create(self, serializer: ReservationSerializer):
         user = serializer.validated_data.get('for_user')  # type: User

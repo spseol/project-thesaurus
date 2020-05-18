@@ -1,5 +1,6 @@
 import re
 from functools import cached_property
+from operator import attrgetter
 
 from django.contrib.auth import get_user_model
 from django.core.validators import RegexValidator
@@ -48,7 +49,7 @@ class Thesis(BaseTimestampedModel):
         on_delete=models.PROTECT,
         verbose_name=_('Opponent'),
         related_name='thesis_opponent',
-        null=True,
+        null=True, blank=True,
     )
 
     registration_number = models.CharField(
@@ -78,7 +79,7 @@ class Thesis(BaseTimestampedModel):
 
     abstract = models.TextField(
         verbose_name=_('Abstract'),
-        null=True,
+        null=True, blank=True,
     )
 
     published_at = models.DateField(
@@ -106,7 +107,7 @@ class Thesis(BaseTimestampedModel):
         verbose_name_plural = _('Theses')
 
     def __str__(self):
-        return f'{self.title} ({", ".join(tuple(map(str, self.authors.all()))) or "---"})'.strip()
+        return f'{self.title} ({", ".join(tuple(map(attrgetter("full_name"), self.authors.all()))) or "---"})'.strip()
 
     @cached_property
     def available_for_reservation(self) -> bool:

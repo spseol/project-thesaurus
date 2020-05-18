@@ -19,7 +19,7 @@
             ></v-btn>
 
             <!-- Can view reservations -> show state of #reservations, without possibility to create -->
-            <span v-has-perm:thesis.view_reservation v-if="thesis.reservable">
+            <span v-has-perm:thesis.change_reservation v-if="thesis.reservable">
                 <v-badge :content="thesis.open_reservations_count || 0" overlap v-if="thesis.open_reservations_count > 0">
                     <v-btn
                         v-text="$t('Borrowed')" :to="$i18nRoute({name: 'reservation-list'})"

@@ -21,8 +21,9 @@ class ReservationSerializer(ModelSerializer):
         style=dict(base_template='input.html'),
     )
 
-    thesis_title = CharField(source='thesis.title', read_only=True)
+    thesis_label = CharField(source='thesis.__str__', read_only=True)
     thesis_registration_number = CharField(source='thesis.registration_number', read_only=True)
+    state_label = CharField(source='get_state_display', read_only=True)
 
     class Meta:
         model = Reservation
@@ -32,11 +33,13 @@ class ReservationSerializer(ModelSerializer):
             'thesis',
             'for_user',
             'for_user_id',
-            'thesis_title',
+            'thesis_label',
             'thesis_registration_number',
             'created',
             'state',
+            'state_label',
         )
+
         read_only_fields = (
             'created',
         )

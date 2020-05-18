@@ -92,7 +92,7 @@
                 return [
                     {text: this.$t('For user'), value: 'for_user.full_name'},
                     {text: this.$t('Thesis SN'), value: 'thesis_registration_number'},
-                    {text: this.$t('Thesis'), value: 'thesis_title'},
+                    {text: this.$t('Thesis'), value: 'thesis_label'},
                     {text: this.$t('Created'), value: 'created'},
                     {text: this.$t('State'), value: 'state', sort: (t) => customStateSort.indexOf(t)},
                     {text: this.$t('Actions'), value: 'actions', sortable: false},

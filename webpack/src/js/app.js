@@ -97,7 +97,7 @@ export default function createVue(opts = {}) {
                         path: 'reservations/list',
                         component: () => import('./pages/ReservationList/Page'),
                         name: 'reservation-list',
-                        meta: {perm: 'thesis.view_reservation'},
+                        meta: {perm: 'thesis.change_reservation'},
                     },
                     {
                         path: 'exports',

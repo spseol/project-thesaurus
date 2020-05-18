@@ -23,7 +23,7 @@ class DashboardView(APIView):
         ).exclude(review_thesis__user=user)
 
         reservations_ready_for_prepare = ()
-        if self.request.user.has_perm('thesis.view_reservation'):
+        if self.request.user.has_perm('thesis.change_reservation'):
             reservations_ready_for_prepare = Reservation.objects.filter(
                 state=Reservation.State.CREATED,
             )

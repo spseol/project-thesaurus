@@ -142,7 +142,7 @@
                         icon: 'mdi-calendar-account',
                         text: this.$t('Reservations'),
                         to: {name: 'reservation-list'},
-                        perm: 'thesis.view_reservation'
+                        perm: 'thesis.change_reservation'
                     },
                     {
                         icon: 'mdi-printer',
