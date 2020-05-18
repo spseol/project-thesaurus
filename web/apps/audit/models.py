@@ -1,12 +1,20 @@
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import HStoreField
 from django.db import models
+from django.db.models import TextChoices
 from django.utils.translation import gettext_lazy as _
 
 from .managers import AuditLogManager
 
 
 class AuditLog(models.Model):
+    # I = insert, D = delete, U = update, T = truncate
+    class ActionChoices(TextChoices):
+        INSERT = 'I', _('Insert')
+        DELETE = 'D', _('Delete')
+        UPDATE = 'U', _('Update')
+        TRUNCATE = 'T', _('Truncate')
+
     event_id = models.IntegerField(primary_key=True, editable=False)
     schema_name = models.CharField(_("Schema name"), max_length=64)
     table_name = models.CharField(_("Table name"), max_length=64)
@@ -17,7 +25,7 @@ class AuditLog(models.Model):
     action_tstamp_clk = models.DateTimeField(_("Wall clock time"))
     transaction_id = models.BigIntegerField(_("Transaction ID"))
     client_query = models.TextField(_("Client query"))
-    action = models.CharField(_("Action"), max_length=1)
+    action = models.CharField(_("Action"), max_length=1, choices=ActionChoices.choices)
     row_data = HStoreField(_("Row data"), null=True)
     changed_fields = HStoreField(_("Changed fields"), null=True)
     statement_only = models.BooleanField(_("Statement only"))
