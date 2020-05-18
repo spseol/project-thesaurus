@@ -1,5 +1,5 @@
-# -*- coding: UTF-8 -*-
-from __future__ import unicode_literals
+import operator
+from functools import reduce
 
 from django.db.models import Manager, Q
 
@@ -20,11 +20,14 @@ class LoggedActionsManager(Manager):
 
     @staticmethod
     def _get_filters(models, key_value):
-        query = Q()
-        for m in models:
-            key = ''.join(('row_data__', str(m.key_name)))
-            key_dict = {key: key_value,
-                        'table_name': m.model}
-            query |= Q(**key_dict)
-
-        return query
+        return reduce(
+            operator.or_,
+            map(
+                lambda m: Q(**{
+                    f'row_data__{str(m.key_name)}': key_value,
+                    'table_name': m.model
+                }),
+                models
+            ),
+            Q(),
+        )
