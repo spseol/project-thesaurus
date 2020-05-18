@@ -19,14 +19,10 @@
                                     </v-card-title>
                                     <v-card-text class="pt-5">
                                         <v-text-field
-                                            :label="$t('Username')"
-                                            name="login"
+                                            :label="$t('Username')" name="login" type="text" required autofocus
                                             prepend-icon="mdi-account"
-                                            type="text"
-                                            required
                                             :error="!!message"
                                             v-model="credentials.username"
-                                            autofocus
                                             :rules="[v => !!v || $t('Username is required')]"
                                         />
 
@@ -83,6 +79,7 @@
         methods: {
             async login() {
                 this.loading = true;
+                // TODO: next url?
                 const response = await Axios.post(
                     '/api/v1/login',
                     this.credentials, {

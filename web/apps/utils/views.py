@@ -1,6 +1,9 @@
 from typing import Type
 
 from django.db.models import Choices
+from django.http import HttpRequest
+from django.views.defaults import server_error as django_server_error
+from rest_framework.exceptions import server_error as drf_server_error
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -16,3 +19,10 @@ class ModelChoicesOptionsView(ViewSetMixin, APIView):
             lambda choice: dict(value=choice[0], text=choice[1]),
             self.choices.choices,
         ))
+
+
+def server_error(request: HttpRequest, *args, **kwargs):
+    if request.path_info.startswith('r/api/'):
+        return drf_server_error(request, *args, **kwargs)
+
+    return django_server_error(*args, **kwargs)

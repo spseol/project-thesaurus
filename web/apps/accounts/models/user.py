@@ -8,8 +8,6 @@ from apps.accounts.models.managers import UserQueryset
 class User(AbstractUser):
     """Replacement for default Django user with some additional stuff."""
 
-    # TODO: custom fields? class?
-
     degree_before = CharField(
         verbose_name=_('Degree before'),
         null=True, blank=True, max_length=16,

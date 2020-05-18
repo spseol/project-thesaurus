@@ -112,6 +112,17 @@ class TypeAttachment(BaseTypeModel):
         blank=True,
     )
 
+    is_public = models.BooleanField(
+        verbose_name=_('Is public'),
+        default=False,
+    )
+
+    max_size = models.BigIntegerField(
+        verbose_name=_('Max size in bytes'),
+        default=5 * 1024 * 1024,  # 5 MB
+        null=True, blank=True,
+    )
+
     class Meta:
         verbose_name = _('Type attachment')
         verbose_name_plural = _('Types attachments')

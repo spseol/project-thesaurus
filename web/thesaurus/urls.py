@@ -10,8 +10,7 @@ from loginas.views import user_logout
 
 from apps.frontend.views import AppView
 
-# TODO: custom handler wih router non-API and API
-handler500 = 'rest_framework.exceptions.server_error'
+handler500 = 'apps.utils.views.server_error'
 
 urlpatterns = [
     path('admin/', include('loginas.urls')),
