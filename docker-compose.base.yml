@@ -40,7 +40,7 @@ services:
 
   webserver:
     build: ./nginx
-    image: thejoeejoee/thesaurus-webserver:latest
+    image: thejoeejoee/thesaurus-nginx:latest
     container_name: thesaurus_webserver
     ports:
       - 127.0.0.1:8080:80
@@ -53,6 +53,7 @@ services:
 
   webpack:
     build: ./webpack
+    image: thejoeejoee/thesaurus-webpack:latest
     container_name: thesaurus_webpack
     volumes:
       - ./webpack/:/usr/src/app
