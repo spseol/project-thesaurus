@@ -3,7 +3,7 @@ services:
   web:
     command: runserver
     env_file:
-      - ./web/.env.dev
+      - django/.env.dev
 
   db:
     ports:

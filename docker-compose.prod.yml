@@ -3,7 +3,7 @@ services:
   web:
     command: runserver_prod
     env_file:
-      - ./web/.env.prod
+      - django/.env.prod
 
   webpack:
     command: build

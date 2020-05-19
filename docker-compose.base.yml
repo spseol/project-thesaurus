@@ -8,17 +8,18 @@ version: '2.2'
 
 services:
   web:
-    build: ./web
+    build: django
+    image: thejoeejoee/thesaurus-web:latest
     container_name: thesaurus_web
     volumes:
-      - ./web/:/usr/src/app/
+      - ./django/:/usr/src/app/
       - django_static_files:/usr/src/static
       - django_media_files:/usr/src/media
       - webpack_build:/var/build/
     expose:
       - 8000
     env_file:
-      - ./web/.env.base
+      - django/.env.base
     environment:
       - THESAURUS_VERSION=${THESAURUS_VERSION}
     depends_on:
@@ -39,6 +40,7 @@ services:
 
   webserver:
     build: ./nginx
+    image: thejoeejoee/thesaurus-webserver:latest
     container_name: thesaurus_webserver
     ports:
       - 127.0.0.1:8080:80
