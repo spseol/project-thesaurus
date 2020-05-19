@@ -5,12 +5,12 @@
             <span v-has-group:student>
                 <v-btn v-has-perm:thesis.add_reservation
                     v-if="thesis.reservable && thesis.available_for_reservation && thesis.open_reservations_count === 0"
-                    v-text="$t('Borrow')" @click="createReservationDialog = true"
+                    v-text="$t('Borrow')" @click="preReservation = !(createReservationDialog = true)"
                     small color="info" outlined :disabled="loading"
                 ></v-btn>
                 <v-btn v-has-perm:thesis.add_reservation
-                    v-if="thesis.reservable && !thesis.available_for_reservation && thesis.open_reservations_count === 1"
-                    v-text="$t('Make pre-reservation')" @click="createReservationDialog = true"
+                    v-if="thesis.reservable && thesis.available_for_reservation && thesis.open_reservations_count === 1"
+                    v-text="$t('Make pre-reservation')" @click="preReservation = createReservationDialog = true"
                     small color="info" outlined :disabled="loading"
                 ></v-btn>
                 <v-btn v-has-perm:thesis.add_reservation
@@ -190,7 +190,7 @@
                     <v-card-title
                         class="headline grey lighten-2"
                         primary-title
-                    >{{ $t('New reservation for thesis borrow') }}</v-card-title>
+                    >{{ preReservation ? $t('New pre reservation for thesis borrow') : $t('Borrow') }}</v-card-title>
                     <v-card-text class="pt-3">
                         <v-simple-table>
                         <tbody>
@@ -223,14 +223,20 @@
                         </tr>
                         </tbody>
                     </v-simple-table>
+                        <v-alert v-if="preReservation" type="info" outlined class="mt-3">
+                            {{ $t('reservation.currentlyBorrowed') }}
+                        </v-alert>
+                        <v-alert v-if="!preReservation" type="success" outlined class="mt-3">
+                            {{ $t('reservation.directBorrow') }}
+                        </v-alert>
                     </v-card-text>
                     <v-divider></v-divider>
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn
                             @click="createReservation"
-                            color="success" class="ma-3" x-large
-                        >{{ $t('Create reservation') }}</v-btn>
+                            :color="preReservation ? 'info' : 'success'" class="ma-3" x-large
+                        >{{ preReservation ? $t('Create reservation') : $t('Borrow thesis') }}</v-btn>
                     </v-card-actions>
                 </v-form>
             </v-card>
@@ -255,6 +261,7 @@
                 sendToReviewDialog: false,
                 submitExternalReviewDialog: false,
                 createReservationDialog: false,
+                preReservation: false,
 
                 externalReview: {
                     reviewer: null,
