@@ -8,34 +8,33 @@
                         <td colspan="2" class="display-1">{{ thesis.title }}</td>
                     </tr>
                     <tr>
-                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Author') }}</td>
+                        <td class="font-weight-bold text-left text-md-right col-1">{{ $t('Author') }}</td>
                         <td>{{ thesis.authors.map(o => o.full_name).join(', ') }}</td>
                     </tr>
                     <tr v-if="thesis.supervisor">
-                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Supervisor') }}</td>
+                        <td class="font-weight-bold text-left text-md-right col-1">{{ $t('Supervisor') }}</td>
                         <td>{{ thesis.supervisor.full_name }}</td>
                     </tr>
                     <tr v-if="thesis.opponent">
-                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Opponent') }}</td>
+                        <td class="font-weight-bold text-left text-md-right col-1">{{ $t('Opponent') }}</td>
                         <td>{{ thesis.opponent.full_name }}</td>
                     </tr>
                     <tr>
-                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Year') }}</td>
+                        <td class="font-weight-bold text-left text-md-right col-1">{{ $t('Year') }}</td>
                         <td>{{ thesis.published_at }}</td>
                     </tr>
                     <tr>
-                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Category') }}</td>
+                        <td class="font-weight-bold text-left text-md-right col-1">{{ $t('Category') }}</td>
                         <td>{{ thesis.category.title }}</td>
                     </tr>
                     <tr v-if="thesis.abstract">
-                        <td class="font-weight-bold text-left text-md-right col-md-1">{{ $t('Abstract') }}</td>
+                        <td class="font-weight-bold text-left text-md-right col-1">{{ $t('Abstract') }}</td>
                         <td class="text-justify py-1">{{ thesis.abstract }}</td>
                     </tr>
                     <template v-has-perm:attachment.view_attachment>
                         <tr v-for="attachment in thesis.attachments">
                             <td class="text-left text-md-right">
-                                <!-- TODO: dynamic icon -->
-                                <v-icon>mdi-pdf-box</v-icon>
+                                <v-icon>${{ attachment.type_attachment.identifier }}</v-icon>
                             </td>
                             <td>
                                 <v-btn small outlined color="primary" :href="attachment.url" target="_blank">
@@ -50,10 +49,10 @@
                                 <v-icon>mdi-book-information-variant</v-icon>
                             </td>
                             <td>
-                                <v-btn small outlined color="primary" :to="{
+                                <v-btn small outlined color="primary" :to="$i18nRoute({
                                     name: 'review-detail',
                                     params: {thesisId: thesis.id, reviewId: review.id}
-                                }">
+                                })">
                                     {{ $t('Review') }}
                                     {{ review.user.full_name || review.user.username }}
                                 </v-btn>

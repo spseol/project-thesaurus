@@ -6,6 +6,7 @@ class Context {
     locale: string;
     djangoAdminUrl: string;
     languages: Array<string>;
+    groups: Array<string>;
     version: string;
 
     constructor() {
@@ -37,6 +38,7 @@ const pageContext = new Context();
 class Flash extends Object {
     text: string;
     color?: string;
+    type?: string;
 }
 
 class EventBus extends Vue {

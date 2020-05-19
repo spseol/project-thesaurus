@@ -1,0 +1,36 @@
+[[source]]
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+Django = "~=3.0"
+psycopg2-binary = "*"
+gunicorn = "*"
+django-extensions = "*"
+python-decouple = "*"
+django-debug-toolbar = "*"
+Faker = "*"
+Werkzeug = "*"
+setuptools = "*"
+django-seed = "*"
+djangorestframework = "*"
+django-filter = "*"
+django-loginas = "*"
+django-webpack4-loader = "*"
+funcy = "*"
+django-positions = "*"
+django-stubs = "*"
+filetype = "*"
+djangorestframework-stubs = "*"
+django-weasyprint = "*"
+WeasyPrint = "*"
+uvicorn = "*"
+django-better-admin-arrayfield = "*"
+bleach = "*"
+django-bleach = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"

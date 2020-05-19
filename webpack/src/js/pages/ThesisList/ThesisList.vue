@@ -6,7 +6,8 @@
             :options.sync="options"
             :server-items-length="totalCount"
             :loading="loading"
-            sort-by="registration_number"
+            sort-by="published_at"
+            sort-desc
             show-expand
             :footer-props="{
                 'disable-items-per-page': true,
@@ -28,6 +29,7 @@
                     <ThesisListActionBtn
                         :thesis="item"
                         :title="item.state"
+                        :loading="loading"
                         @reload="load"
                     ></ThesisListActionBtn>
                 </div>
@@ -85,53 +87,51 @@
             </template>
         </v-data-table>
 
-        <portal to="navbar-center">
+        <!-- didnt find any better way to stop portal in case of another page view with disabled keep-alive -->
+        <portal to="navbar-center" v-if="$route.name === 'thesis-list'">
             <v-toolbar dense color="transparent" elevation="0">
                 <v-combobox
                     v-model="filterItems" multiple :items="userOptions"
                     flat solo-inverted solo prepend-inner-icon="mdi-magnify"
-                    hide-details clearable hide-selected chips
+                    hide-details clearable chips
                     :label="$t('Search')"
                     :filter="userOptionsFilter"
                     menu-props="closeOnContentClick"
                 >
-                    <template v-slot:selection="{ attrs, item, select, selected }">
-                        <v-chip
-                            v-bind="attrs"
-                            :input-value="selected"
-                            close
-                            @click="select"
-                            @click:close="removeFromFilter(item)"
+                    <template v-slot:selection="{ attrs, item, select, selected, index, value }">
+                        <!-- chip if item is user or manually types text -->
+                        <v-chip v-if="!item.value || index === 0"
+                            v-bind="attrs" :input-value="selected"
+                            close @click="select" @click:close="removeFromFilter(item)"
                         >
                             <v-avatar left>
-                                <v-icon v-if="item.id">mdi-account</v-icon>
+                                <v-icon v-if="item.value">mdi-account</v-icon>
                                 <v-icon v-else>mdi-format-letter-case</v-icon>
                             </v-avatar>
                             <strong>{{ item.text || item }}</strong>
                         </v-chip>
+                        <!-- maybe too much magic -->
+                        <span
+                            v-if="index === 1 && filterItems.length - manualFilterItems.length - (filterItems[0].value ? 1 : 0) > 0"
+                            class="caption order-last"
+                        >(+{{ filterItems.length - manualFilterItems.length - (filterItems[0].value ? 1 : 0) }} others)</span>
                     </template>
 
                     <template v-slot:item="{ item }">
                         {{ item.text || item }}
                     </template>
                 </v-combobox>
-                <v-btn-toggle
-                    v-model="categoryFilter"
-                    group
-                >
-                    <v-btn
-                        v-for="{text, value} in categoryOptions"
-                        :value="value" v-text="text" :key="value"
-                    ></v-btn>
-                </v-btn-toggle>
-
-                <v-btn icon v-if="categoryFilter" @click="categoryFilter = null">
-                    <v-icon>mdi-close</v-icon>
-                </v-btn>
-
-                <v-select
+                <v-divider v-if="$vuetify.breakpoint.lgAndUp" vertical class="mx-2"></v-divider>
+                <v-select v-if="$vuetify.breakpoint.lgAndUp"
+                    :items="categoryOptions" v-model="categoryFilter" clearable
+                    solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline"
+                    :label="$t('Category')"
+                ></v-select>
+                <v-divider vertical class="mx-2" v-if="$vuetify.breakpoint.mdAndUp"></v-divider>
+                <v-select v-if="$vuetify.breakpoint.mdAndUp"
                     :items="thesisYearOptions" v-model="thesisYearFilter" clearable
                     flat solo-inverted hide-details prepend-inner-icon="mdi-calendar"
+                    :label="$t('Publication year')"
                 ></v-select>
             </v-toolbar>
         </portal>
@@ -142,7 +142,7 @@
     import * as _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
-    import hasPerm from '../../user';
+    import {hasPerm} from '../../user';
     import {eventBus} from '../../utils';
     import ThesisService from './thesis-service';
     import ThesisDetailPanel from './ThesisDetailPanel';
@@ -181,7 +181,11 @@
                 this.filterItems = [...this.filterItems];
             },
             userOptionsFilter(item, queryText, itemText) {
-                return itemText.toLowerCase().includes(queryText.toLowerCase());
+                itemText = itemText.toLowerCase();
+                return _.some(
+                    queryText.toLowerCase().split(/\s+/g),
+                    token => itemText.includes(token)
+                );
             },
             isPossibleUserFilter({username}) {
                 return !!_.find(this.userOptions, {username});
@@ -192,6 +196,7 @@
             },
 
             async persistThesisEdit(thesisId, data) {
+                this.loading = true;
                 await Axios.patch(`/api/v1/thesis/${thesisId}`, data);
                 eventBus.flash({color: 'success', text: this.$t('Successfully saved!')});
                 await this.load();
@@ -234,23 +239,40 @@
 
                 headers.push({text: '', value: 'state', width: '18em'});
                 return _.compact(headers);
+            },
+            manualFilterItems() {
+                return _.filter(this.filterItems, _.isString);
             }
         },
         async created() {
-            await this.load();
-
             this.debouncedLoad = _.debounce(this.load, 200);
             this.$watch(
-                (self) => ([self.options, self.filterItems, self.categoryFilter, self.thesisYearFilter]),
+                (vm) => ([vm.options, vm.$i18n.locale]),
                 this.debouncedLoad,
-                {deep: true}
+                {deep: true, immediate: true}
             );
-            // TODO: only if has perms
-            this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
-            this.userOptions = (await Axios.get('/api/v1/user-filter-options')).data;
-            this.categoryOptions = (await Axios.get('/api/v1/category-options')).data;
-            this.thesisYearOptions = (await Axios.get('/api/v1/thesis-year-options')).data;
+            this.$watch(
+                (vm) => ([vm.filterItems, vm.categoryFilter, vm.thesisYearFilter]),
+                () => {
+                    this.options.page = 1;
+                    this.debouncedLoad();
+                }
+            );
+
+            [
+                this.userOptions,
+                this.categoryOptions,
+                this.thesisYearOptions
+            ] = _.map(await Promise.all([
+                Axios.get('/api/v1/user-filter-options'),
+                Axios.get('/api/v1/category-options'),
+                Axios.get('/api/v1/thesis-year-options')
+            ]), _.property('data'));
+
             this.hasThesisEditPerm = await hasPerm('thesis.change_thesis');
+
+            if (await hasPerm('accounts.view_user'))
+                this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
         }
     });
 </script>

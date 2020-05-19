@@ -23,8 +23,6 @@ while (( $# > 0 )); do
 
   fake    ) docker-compose run --rm web python manage.py fake_content -c10 -s50 ;;  # create fake data in django database
 
-  upd     ) docker-compose up -d ;;  # start all docker images in daemon mode
-  up      ) docker-compose up; exit ;;  # start all docker images
   logs    ) docker-compose logs --tail=50 -f $rest ; exit ;;  # show docker logs
 
   prod    ) # production settings

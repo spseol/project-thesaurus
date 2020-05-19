@@ -32,21 +32,37 @@
 
     export default Vue.extend({
         data: () => ({
-            languages: pageContext.languages,
-            locale: pageContext.locale,
-            localeName: (_.find(
-                pageContext.languages,
-                ([code, name]) => code == pageContext.locale
-            ) || ['en', 'Unknown'])[1]
+            languages: pageContext.languages
         }),
+        computed: {
+            localeName() {
+                return (_.find(
+                    pageContext.languages,
+                    ([code, name]) => code == this.locale
+                ) || ['en', 'Unknown'])[1];
+            },
+            locale: {
+                get() {
+                    return this.$i18n.locale;
+                },
+                set(locale) {
+                    this.$root.$i18n.locale = locale;
+                }
+            }
+        },
         methods: {
-            async setLang(code) {
-                if (code == this.locale) return;
+            async setLang(language) {
+                if (language == this.locale) return;
                 let resp = await Axios.post('/api/i18n/setlang/', {
-                    language: code
+                    language
                 });
-                // TODO: router call?
-                window.location.href = `/${code}`;
+                this.locale = language;
+                Axios.defaults.headers['Accept-Language'] = language;
+                this.$router.push({
+                    params: {...(this.$route.params || {}), locale: language},
+                    name: this.$route.name
+                });
+                return;
             }
         }
     });

@@ -1,0 +1,21 @@
+{% load static i18n %}
+{% load render_entrypoint from webpack_loader %}
+{% load page_context from utils %}
+<!DOCTYPE html>
+<html lang="{{ LANGUAGE_CODE }}">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Thesaurus{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Josef Kolar, github.com/thejoeejoee">
+
+    {% block head %}{% endblock head %}
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900;display=fallback" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@5.1.45/css/materialdesignicons.min.css" rel="stylesheet">
+</head>
+<body>
+{% block body %}{% endblock %}
+</body>
+</html>

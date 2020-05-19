@@ -1,0 +1,9 @@
+{% extends "base_error.html" %}
+{% load i18n %}
+
+{% block title %}{% trans "Server error" %} | Thesaurus{% endblock %}
+
+{% block text %}
+    <h1>{% trans "Server error" %}</h1>
+    <p>Sorry :-(</p>
+{% endblock %}

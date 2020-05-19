@@ -1,5 +1,4 @@
 const path = require('path');
-const webpack = require('webpack');
 const publicPath = process.env.PUBLIC_PATH || '//localhost:3000/static/';
 const buildDir = process.env.BUILD_DIR || path.resolve('./build');
 
@@ -12,24 +11,22 @@ const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
 module.exports = {
     optimization: {
         splitChunks: {
-            name: false,
-            cacheGroups: {
-                common: {
-                    name: 'common',
-                    chunks: 'all',
-                },
-            },
+            name: 'common',
+            chunks: 'all',
+        },
+        runtimeChunk: {
+            name: 'vendor',
         },
     },
     entry: {
-        main: './src/js/index.ts',
-        login: './src/js/login.js',
+        main: path.join(__dirname, './src/js/index.ts'),
+        login: path.join(__dirname, './src/js/pages/Login/login.js'),
     },
     output: {
         // for example ../build/head.[hash].js
         publicPath,
         path: buildDir,
-        filename: '[name].[hash:6].js',
+        filename: '[name].[hash:8].js',
     },
     module: {
         rules: [
@@ -128,8 +125,12 @@ module.exports = {
             path: buildDir,
             filename: 'webpack-stats.json',
         }),
-        new MiniCssExtractPlugin(),
+        new MiniCssExtractPlugin({
+            filename: '[name].[hash:8].css',
+            chunkFilename: '[id].[hash:8].css',
+            ignoreOrder: true, // vuetify-plugin/loader problem
+        }),
         new VueLoaderPlugin(),
-        new VuetifyLoaderPlugin(),
+        new VuetifyLoaderPlugin({progressiveImages: true}),
     ],
 };

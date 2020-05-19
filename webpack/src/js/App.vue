@@ -1,18 +1,16 @@
 <template>
     <v-app>
         <v-navigation-drawer
-            app
-            dark
-            :clipped="true"
+            app dark clipped
             v-model="drawer"
         >
             <div class="v-navigation-drawer__content d-flex flex-column justify-space-between">
-                <v-list nav shaped>
+                <v-list nav>
                     <v-list-item-group color="primary">
                         <v-list-item
-                            v-for="item in items"
+                            v-for="item in menuItems"
                             :key="item.text"
-                            :to="item.to"
+                            :to="$i18nRoute(item.to)"
                             v-has-perm:[item.perm]
                             exact
                         >
@@ -49,13 +47,13 @@
 
         <v-app-bar app color="primary accent-3" clipped-left>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
-            <v-btn :to="{name: 'dashboard'}" :text="true" class="primary--text hidden-sm-and-down">
+            <v-btn :to="$i18nRoute({name: 'dashboard'})" :text="true" class="primary--text hidden-sm-and-down">
                 <v-toolbar-title
                     class="ml-0 pl-1 d-md-flex hidden-sm-and-down black--text"
                 >
-                    <img height="35" src="../img/thesaurus.svg" class="pr-2" alt="Project Thesaurus">
+                    <img height="35" src="../img/thesaurus.svg" class="pr-0 pr-md-2" alt="Project Thesaurus">
 
-                    <span class="font-weight-bold mt-1">THESAURUS</span>
+                    <span class="font-weight-bold mt-1 hidden-md-and-down">THESAURUS</span>
                 </v-toolbar-title>
             </v-btn>
 
@@ -84,13 +82,17 @@
             app
         >
             <v-spacer></v-spacer>
-            <span class="px-4"><a href="https://github.com/spseol/project-thesaurus">v{{ pageContext.version }}</a> &copy; 2020</span>
+            <span class="px-4">
+                <a href="https://github.com/spseol/project-thesaurus">
+                <v-icon>mdi-github</v-icon>
+                    v{{ pageContext.version }}
+                </a> &copy; 2020</span>
         </v-footer>
 
         <v-snackbar
             v-model="flash.show"
             :timeout="flash.timeout"
-            :color="flash.color || 'info'"
+            :color="flash.color || flash.type || 'info'"
             right top
         >
             {{ flash.text }}
@@ -116,27 +118,41 @@
             return {
                 pageContext,
                 drawer: this.$vuetify.breakpoint.mdAndUp && this.$route.name != '404',
-                flash: {show: false},
-                items: [
-                    {icon: 'mdi-home', text: $t('Dashboard'), to: {name: 'dashboard'}},
-                    {icon: 'mdi-book-multiple', text: $t('Theses'), to: {name: 'thesis-list'}},
+                flash: {show: false}
+            };
+        },
+        computed: {
+            menuItems() {
+                return [
+                    {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'dashboard'}},
+                    {
+                        icon: 'mdi-book-multiple',
+                        text: this.$t('Theses'),
+                        to: {name: 'thesis-list'},
+                        perm: 'thesis.view_thesis'
+                    },
                     {
                         icon: 'mdi-book-plus',
-                        text: $t('Prepare admission'),
+                        text: this.$t('Prepare admission'),
                         to: {name: 'thesis-prepare'},
                         perm: 'thesis.add_thesis'
                     },
-                    // {icon: 'mdi-pencil', text: this.$t('Submit review'), to: {name: 'reviews'}, perm: 'thesis.add_review'},
+                    // {icon: 'mdi-pencil', text: this.this.$t('Submit review'), to: {name: 'reviews'}, perm: 'thesis.add_review'},
                     {
                         icon: 'mdi-calendar-account',
-                        text: $t('Reservations'),
-                        to: {name: 'reservations'},
-                        perm: 'thesis.view_reservation'
+                        text: this.$t('Reservations'),
+                        to: {name: 'reservation-list'},
+                        perm: 'thesis.change_reservation'
                     },
-                    {icon: 'mdi-printer', text: $t('Exports'), to: {name: 'exports'}},
-                    {icon: 'mdi-settings', text: $t('Settings'), to: {name: 'settings'}}
-                ]
-            };
+                    {
+                        icon: 'mdi-printer',
+                        text: this.$t('Exports'),
+                        to: {name: 'exports'},
+                        perm: 'accounts.view_user'
+                    },
+                    {icon: 'mdi-cog', text: this.$t('Settings'), to: {name: 'settings'}}
+                ];
+            }
         },
         watch: {
             $route(to, from) {
@@ -146,7 +162,7 @@
         },
         created() {
             eventBus.$on('flash', (flash) => {
-                this.flash = Object.assign({}, this.flash, flash);
+                this.flash = Object.assign({}, flash);
                 this.flash.show = true;
             });
         }

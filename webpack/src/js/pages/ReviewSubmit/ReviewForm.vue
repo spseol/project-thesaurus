@@ -3,7 +3,7 @@
         <v-card :loading="loading">
             <v-card-title>{{ $t('Thesis review') }}</v-card-title>
             <v-card-text>
-                <!-- TODO: https://stackoverflow.com/a/55915597-->
+                <!-- TODO: disable all? https://stackoverflow.com/a/55915597 -->
                 <v-form @submit.prevent="submit" v-model="valid">
                     <v-row>
                         <v-col cols="12" md="6">
@@ -22,27 +22,34 @@
                                 :value="(thesis[reviewerRole] || {full_name: $t('Unknown')}).full_name"
                                 readonly filled
                             ></v-text-field>
-                            <v-row class="mb-4" no-gutters v-if="thesisTextAttachment">
-                                <v-spacer></v-spacer>
-                                <v-btn :href="thesisTextAttachment.url" color="info" large target="_blank">
-                                    {{ $t('Download thesis text') }}
+                            <v-row no-gutters justify="center" class="mb-5">
+                                <v-btn
+                                    v-for="attachment in thesis.attachments" :key="attachment.id"
+                                    :href="attachment.url"
+                                    color="primary" target="_blank" outlined class="ma-2"
+                                >
+                                    <v-icon color="grey">${{ attachment.type_attachment.identifier }}</v-icon>
+                                    {{ $t('Download') }} {{ attachment.type_attachment.name }}
                                 </v-btn>
-                                <v-spacer></v-spacer>
                             </v-row>
-                            <v-textarea
-                                :label="$t('Review comment')"
-                                :rules="[v => !!v]"
-                                outlined
-                                rows="14"
+                            <v-divider></v-divider>
+                            <h3 class="my-5">{{ $t('Review comment') }}</h3>
+                            <tiptap-vuetify
                                 v-model="review.comment"
-                            ></v-textarea>
-                            <v-textarea
-                                :label="$t('Thesis defence questions')"
-                                hide-details
-                                outlined
-                                rows="8"
+                                :placeholder="$t('review.commentPlaceholder')"
+                                :extensions="tipTapExtensions"
+                                :card-props="{flat: true, outlined: true, solo: true}" minHeight="200px"
+                                :editor-properties="{autoFocus: true}"
+                                class="mb-5"
+                            ></tiptap-vuetify>
+
+                            <h3 class="mb-5">{{ $t('Thesis defence questions') }}</h3>
+                            <tiptap-vuetify
                                 v-model="review.questions"
-                            ></v-textarea>
+                                :placeholder="$t('review.questionsPlaceholder')"
+                                :extensions="tipTapExtensions"
+                                :card-props="{flat: true, outlined: true, solo: true}" minHeight="150px"
+                            ></tiptap-vuetify>
                         </v-col>
                         <v-col class="d-flex flex-column justify-space-between" cols="12" md="6">
                             <div>
@@ -65,21 +72,13 @@
                                 ></v-slider>
 
                                 <div v-for="(grade, i) in review.grades">
-                                    <v-chip
-                                        :color="valueToColor(grade, 4)"
-                                        class="mt-7" v-text="gradings[i]"
+                                    <v-chip :color="valueToColor(grade, 4)" class="mt-7" v-text="gradings[i]"
                                     ></v-chip>
                                     <v-slider
-                                        :color="valueToColor(grade, 4)"
-                                        :max="4"
-                                        :min="0"
-                                        :rules="[v => v > 0]"
-                                        :step="1"
-                                        :thumb-color="valueToColor(grade, 4)"
-                                        :tick-labels="grades4"
+                                        :max="4" :min="0" :rules="[v => v > 0]" :step="1"
+                                        :thumb-color="valueToColor(grade, 4)" :color="valueToColor(grade, 4)"
+                                        :tick-labels="grades4" ticks="always" track-color="grey"
                                         class="VSliderCustom__label--gray"
-                                        ticks="always"
-                                        track-color="grey"
                                         v-model="review.grades[i]"
                                     ></v-slider>
                                 </div>
@@ -114,8 +113,8 @@
                                 </v-row>
                                 <v-row no-gutters v-if="this.review.id">
                                     <v-alert type="info" outlined width="100%">
-                                        {{$t('review.submittedAt')}} {{ (new
-                                        Date(this.review.created)).toLocaleString() }}.
+                                        {{$t('review.submittedAt')}}
+                                        {{ (new Date(this.review.created)).toLocaleString() }}.
                                     </v-alert>
                                 </v-row>
                             </div>
@@ -133,6 +132,7 @@
 
 <script type="text/tsx">
     import _ from 'lodash';
+    import {Bold, BulletList, History, Italic, Link, ListItem, TiptapVuetify} from 'tiptap-vuetify';
     import Vue from 'vue';
     import Axios from '../../axios';
     import {eventBus, GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_4, pageContext} from '../../utils';
@@ -140,6 +140,7 @@
 
     export default Vue.extend({
         name: 'ReviewForm',
+        components: {TiptapVuetify},
         props: {
             thesisLoaded: {
                 type: Object,
@@ -155,11 +156,10 @@
             const $t = (key) => this.$t(key);
             return {
                 thesis: {authors: [], opponent: {}, supervisor: {}},
+                tipTapExtensions: [History, Link, Bold, Italic, BulletList, ListItem],
                 loading: false,
                 valid: true,
                 non_field_error_messages: [],
-                grades4: [$t('Excellent'), $t('Very well'), $t('Great'), $t('Not sufficient'), ''].reverse(),
-                grades3: [$t('Over average'), $t('Average'), $t('Under average'), ''].reverse(),
                 review: {
                     difficulty: 0,
                     grade_proposal: 0,
@@ -170,6 +170,18 @@
             };
         },
         computed: {
+            grades4() {
+                return [
+                    this.$t('Excellent'), this.$t('grades.veryWell'),
+                    this.$t('Great'), this.$t('Not sufficient'), ''
+                ].reverse();
+            },
+            grades3() {
+                return [
+                    this.$t('Over average'), this.$t('Average'),
+                    this.$t('Under average'), ''
+                ].reverse();
+            },
             reviewerRole() {
                 return {
                     [this.thesis.supervisor?.username]: 'supervisor',
@@ -210,7 +222,7 @@
 
                 if (resp.id) {
                     eventBus.flash({text: this.$t('review.justSubmitted')});
-                    this.$router.push({name: 'dashboard'});
+                    this.$router.push(this.$i18nRoute({name: 'dashboard'}));
                 } else {
                     this.messages = resp;
                     this.non_field_error_messages = resp.non_field_errors;

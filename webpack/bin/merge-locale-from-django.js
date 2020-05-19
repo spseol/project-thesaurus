@@ -7,6 +7,17 @@ const LANGUAGES_DEFAULTS = {
     en: (key) => key,
     cs: (key) => '',
 };
+const sortedReplacer = (key, value) =>
+    value instanceof Object && !(value instanceof Array) ?
+        Object.keys(value)
+            .sort()
+            .reduce((sorted, key) => {
+                sorted[key] = value[key];
+                return sorted;
+            }, {}) :
+        value;
+
+
 for (let i in LANGUAGES) {
     const lang = LANGUAGES[i];
 
@@ -27,7 +38,7 @@ for (let i in LANGUAGES) {
             resultLocale[key] = savedLocale[key] || djangoLocale[key] || LANGUAGES_DEFAULTS[lang](key);
         }
 
-        fs.writeFileSync(localePath, JSON.stringify(resultLocale, null, 2));
+        fs.writeFileSync(localePath, JSON.stringify(resultLocale, sortedReplacer, 2));
         return true;
     }).catch((e) => {
         console.log('Something went wrong:', e);
