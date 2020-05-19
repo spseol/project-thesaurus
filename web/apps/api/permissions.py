@@ -1,6 +1,7 @@
 from rest_framework.permissions import DjangoModelPermissions, BasePermission
 
-from apps.thesis.models import Thesis
+from apps.accounts.models import User
+from apps.thesis.models import Thesis, Reservation
 
 
 class RestrictedViewModelPermissions(DjangoModelPermissions):
@@ -27,3 +28,13 @@ class CanSubmitExternalThesisReviewPermission(BasePermission):
         return user.has_perms(
             ('review.add_review', 'attachment.add_attachment')
         ) and thesis.state == Thesis.State.READY_FOR_REVIEW
+
+
+class CanCancelReservation(BasePermission):
+    def has_object_permission(self, request, view, reservation: Reservation):
+        user = request.user  # type: User
+
+        return user.has_perm('thesis.change_reservation') or (
+                reservation.for_user == user and reservation.state ==
+                Reservation.State.CREATED
+        )

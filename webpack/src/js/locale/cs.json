@@ -12,6 +12,9 @@
   "Average": "Průměrná",
   "Borrow": "Vypůjčit",
   "Borrowed": "Vypůjčená",
+  "Cancel": "Zrušit",
+  "Cancel reservation": "Zrušení rezervace",
+  "Cancel reservation?": "Zrušit rezervaci?",
   "Category": "Kategorie",
   "Classification proposal": "Návrh klasifikace",
   "Create reservation": "Vytvořit rezervaci",
@@ -38,9 +41,11 @@
   "Make pre-reservation": "Rezervovat",
   "Make reservation": "Zarezervovat",
   "Methods and procedures used": "Použité metody a postupy",
+  "My reservations": "Moje rezervace",
   "New reservation for thesis borrow": "Nová rezerace na výpůjčku práce",
   "Not reservable": "Nelze vypůjčit",
   "Not sufficient": "Nedostatečná",
+  "Open": "Otevřené",
   "Opponent": "Oponent",
   "Over average": "Nadprůměrná",
   "Password": "Heslo",
@@ -57,6 +62,7 @@
   "Published": "Publikováno",
   "Published at": "Publikováno",
   "Ready": "Připravené",
+  "Recent": "",
   "Recent theses": "Poslední publikované práce",
   "Registration number": "Evidenční číslo",
   "Reservations": "Rezervace",
@@ -120,8 +126,10 @@
     "404title": "Stránka nenalezena"
   },
   "reservation": {
+    "cancelQuestion": "Opravdu chcete zrušit na práci",
     "justCreated": "Rezervace byla úspěšně zaevidována.",
-    "stateChanged": "Stav rezervace úspěšně změněn."
+    "stateChanged": "Stav rezervace úspěšně změněn.",
+    "justCancelled": "Rezerace byla zrušena."
   },
   "review": {
     "commentPlaceholder": "Práce je ...",

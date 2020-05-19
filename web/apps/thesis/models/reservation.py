@@ -15,6 +15,9 @@ class Reservation(BaseTimestampedModel):
         READY = 'ready', _('Ready for pickup')
         RUNNING = 'running', _('Running')
         FINISHED = 'finished', _('Finished')
+        CANCELED = 'canceled', _('Canceled')
+
+    OPEN_RESERVATION_STATES = (State.CREATED, State.READY, State.RUNNING)
 
     thesis = models.ForeignKey(
         to='thesis.Thesis',

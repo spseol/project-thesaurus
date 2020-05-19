@@ -142,7 +142,7 @@
     import * as _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
-    import hasPerm from '../../user';
+    import {hasPerm} from '../../user';
     import {eventBus} from '../../utils';
     import ThesisService from './thesis-service';
     import ThesisDetailPanel from './ThesisDetailPanel';

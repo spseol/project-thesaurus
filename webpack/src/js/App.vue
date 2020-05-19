@@ -162,7 +162,7 @@
         },
         created() {
             eventBus.$on('flash', (flash) => {
-                this.flash = Object.assign({}, this.flash, flash);
+                this.flash = Object.assign({}, flash);
                 this.flash.show = true;
             });
         }

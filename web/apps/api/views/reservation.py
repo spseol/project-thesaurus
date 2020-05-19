@@ -1,8 +1,11 @@
 from django.utils.translation import gettext as _
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts.models import User
+from apps.api.permissions import CanCancelReservation
 from apps.thesis.models import Reservation, Thesis
 from apps.thesis.serializers import ReservationSerializer
 from apps.utils.views import ModelChoicesOptionsView
@@ -30,8 +33,8 @@ class ReservationViewSet(ModelViewSet):
         if self.request.user.has_perm('thesis.change_reservation'):
             return qs
 
-        return qs.exclude(
-            state=Reservation.State.FINISHED
+        return qs.filter(
+            state__in=Reservation.OPEN_RESERVATION_STATES
         ).filter(
             for_user=self.request.user
         )
@@ -49,6 +52,17 @@ class ReservationViewSet(ModelViewSet):
         # TODO: check also limit for borrowed theses per user
 
         serializer.save()
+
+    @action(detail=True, methods=['post'], permission_classes=[CanCancelReservation])
+    def cancel(self, request, *args, **kwargs):
+        reservation = self.get_object()  # type: Reservation
+        serializer = ReservationSerializer(
+            instance=reservation, data=dict(state=Reservation.State.CANCELED),
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data=serializer.data)
 
 
 class ReservationStateOptionsViewSet(ModelChoicesOptionsView):

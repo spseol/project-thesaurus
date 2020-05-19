@@ -14,7 +14,7 @@ import '../scss/index.scss';
 import csLocal from './locale/cs.json';
 import enLocal from './locale/en.json';
 import App from './App';
-import hasPerm from './user';
+import {hasPerm} from './user';
 import Axios from './axios';
 import {eventBus, pageContext} from './utils';
 import {DjangoPermsPlugin, I18nRoutePlugin} from './plugins';
@@ -126,21 +126,21 @@ export default function createVue(opts = {}) {
     });
 
     router.beforeEach((to, from, next) => {
-        if (to.meta?.perm) {
-            hasPerm(to.meta.perm).then(allow => {
-                if (allow) {
-                    next();
-                } else {
-                    eventBus.flash({color: 'warning', text: i18n.t('Permission denied')});
-                    next({name: '403'});
-                }
-            }).catch(() => {
-                eventBus.flash({color: 'warning', text: i18n.t('Unknown problem')});
-                next({name: '403'});
-            });
-        } else {
+        if (!(to.meta?.perm)) {
             next();
+            return;
         }
+        hasPerm(to.meta.perm).then(allow => {
+            if (allow) {
+                next();
+            } else {
+                eventBus.flash({color: 'warning', text: i18n.t('Permission denied')});
+                next({name: '403'});
+            }
+        }).catch(() => {
+            eventBus.flash({color: 'warning', text: i18n.t('Unknown problem')});
+            next({name: '403'});
+        });
     });
 
     return new Vue({

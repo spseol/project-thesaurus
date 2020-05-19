@@ -6,6 +6,7 @@ class Context {
     locale: string;
     djangoAdminUrl: string;
     languages: Array<string>;
+    groups: Array<string>;
     version: string;
 
     constructor() {

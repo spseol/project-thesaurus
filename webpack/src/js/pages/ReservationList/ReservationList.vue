@@ -50,14 +50,11 @@
                     v-model="search"
                     :label="$t('Search')"
                 ></v-text-field>
-
-                <v-btn-toggle v-model="stateFilter" group mandatory>
-                    <v-btn
-                        v-for="{text, value} in stateOptions"
-                        :key="value" :value="value"
-                        v-text="text"
-                    ></v-btn>
-                </v-btn-toggle>
+                <v-divider vertical class="mx-2"></v-divider>
+                <v-select
+                    v-model="stateFilter" :items="stateOptions" :label="$t('State')"
+                    solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline">
+                </v-select>
             </v-toolbar>
         </portal>
     </div>
@@ -76,7 +73,7 @@
                 loading: false,
                 items: [],
                 search: '',
-                stateFilter: 'all',
+                stateFilter: 'open',
                 options: {},
             };
         },
@@ -84,7 +81,9 @@
             filteredItems() {
                 return _.filter(
                     this.items,
-                    i => this.stateFilter === 'all' || i.state === this.stateFilter,
+                    i => (
+                        this.stateFilter === 'open' && ['created', 'ready', 'running'].indexOf(i.state) >= 0)
+                        || i.state === this.stateFilter,
                 );
             },
             headers() {
@@ -103,7 +102,7 @@
         asyncComputed: {
             async stateOptions() {
                 return [
-                    {text: this.$t('All'), value: 'all'},
+                    {text: this.$t('Open'), value: 'open'},
                     ...(await Axios.get('/api/v1/reservation-state-options')).data,
                 ];
             },

@@ -1,4 +1,5 @@
 import Axios from './axios';
+import {pageContext} from './utils';
 
 function memoize(method) {
     let cache = {};
@@ -14,9 +15,11 @@ async function hasPermUncached(perm: string): Promise<boolean> {
     return (await Axios.get(`/api/v1/has-perm/${perm}`)).data;
 }
 
+export async function hasGroup(group: string): Promise<boolean> {
+    return (await pageContext.groups.indexOf(group) >= 0);
+}
+
 /**
  * @type {(perm: string) => Promise<Boolean>}
  */
-const hasPerm = memoize(hasPermUncached);
-
-export default hasPerm;
+export const hasPerm = memoize(hasPermUncached);

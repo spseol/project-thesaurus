@@ -2,35 +2,41 @@
     <span>
         <template v-if="thesis.state === 'published'">
             <!-- Can add reservation -> show state and possibility to create a reservation -->
-            <v-btn v-has-perm:thesis.add_reservation
-                v-if="thesis.reservable && thesis.available_for_reservation && thesis.open_reservations_count === 0"
-                v-text="$t('Borrow')" @click="createReservationDialog = true"
-                small color="info" outlined :disabled="loading"
-            ></v-btn>
-            <v-btn v-has-perm:thesis.add_reservation
-                v-if="thesis.reservable && !thesis.available_for_reservation && thesis.open_reservations_count === 1"
-                v-text="$t('Make pre-reservation')" @click="createReservationDialog = true"
-                small color="info" outlined :disabled="loading"
-            ></v-btn>
-            <v-btn v-has-perm:thesis.add_reservation
-                v-if="thesis.reservable && !thesis.available_for_reservation && thesis.open_reservations_count > 1"
-                v-text="$t('Borrowed')"
-                x-small depressed
-            ></v-btn>
-
-            <!-- Can view reservations -> show state of #reservations, without possibility to create -->
-            <span v-has-perm:thesis.change_reservation v-if="thesis.reservable">
-                <v-badge :content="thesis.open_reservations_count || 0" overlap v-if="thesis.open_reservations_count > 0">
-                    <v-btn
-                        v-text="$t('Borrowed')" :to="$i18nRoute({name: 'reservation-list'})"
-                        x-small depressed
-                    ></v-btn>
-                </v-badge>
-
-                <v-btn v-if="thesis.available_for_reservation"
-                    v-text="$t('Available')"
+            <span v-has-group:student>
+                <v-btn v-has-perm:thesis.add_reservation
+                    v-if="thesis.reservable && thesis.available_for_reservation && thesis.open_reservations_count === 0"
+                    v-text="$t('Borrow')" @click="createReservationDialog = true"
+                    small color="info" outlined :disabled="loading"
+                ></v-btn>
+                <v-btn v-has-perm:thesis.add_reservation
+                    v-if="thesis.reservable && !thesis.available_for_reservation && thesis.open_reservations_count === 1"
+                    v-text="$t('Make pre-reservation')" @click="createReservationDialog = true"
+                    small color="info" outlined :disabled="loading"
+                ></v-btn>
+                <v-btn v-has-perm:thesis.add_reservation
+                    v-if="thesis.reservable && !thesis.available_for_reservation && thesis.open_reservations_count > 1"
+                    v-text="$t('Borrowed')"
                     x-small depressed
                 ></v-btn>
+            </span>
+
+            <!-- Can view reservations -> show state of #reservations, without possibility to create -->
+            <span v-has-group:teacher>
+                <span v-has-perm:thesis.change_reservation
+                    v-if="thesis.reservable"
+                >
+                    <v-badge :content="thesis.open_reservations_count || 0" overlap v-if="thesis.open_reservations_count > 0">
+                        <v-btn
+                            v-text="$t('Borrowed')" :to="$i18nRoute({name: 'reservation-list'})"
+                            x-small depressed
+                        ></v-btn>
+                    </v-badge>
+
+                    <v-btn v-if="thesis.available_for_reservation"
+                        v-text="$t('Available')"
+                        x-small depressed
+                    ></v-btn>
+                </span>
             </span>
 
             <!-- published but not reservable -->
@@ -41,28 +47,28 @@
             ></v-btn>
         </template>
         <v-btn
+            v-has-perm:thesis.change_thesis
             v-if="thesis.state === 'submitted'"
             v-text="$t('Send to review')"
             small color="primary" elevation="0"
             @click="sendToReviewDialog = true"
             :disabled="loading"
-            v-has-perm:thesis.change_thesis
         ></v-btn>
 
         <v-btn
+            v-has-perm:thesis.change_thesis
             v-if="thesis.state === 'reviewed'"
             v-text="$t('Publish')"
             small color="primary" elevation="0"
             @click="publish"
             :disabled="loading"
-            v-has-perm:thesis.change_thesis
         ></v-btn>
 
         <v-btn
+            v-has-perm:thesis.change_thesis
             v-if="thesis.state === 'ready_for_submit'"
             v-text="$t('Waiting for submit')"
             x-small depressed disabled
-            v-has-perm:thesis.change_thesis
         ></v-btn>
 
         <template v-if="thesis.state === 'ready_for_review'" v-has-perm:thesis.change_thesis>
@@ -71,6 +77,7 @@
                     color="primary" overlap :value="!hover"
                     :content="availableExternalReviewersOptions.length"
                 >
+                    <!-- TODO: detect external/internal s/o -->
                     <v-btn
                         v-if="!hover"
                         small depressed disabled block

@@ -12,6 +12,9 @@
   "Average": "Average",
   "Borrow": "Borrow",
   "Borrowed": "Borrowed",
+  "Cancel": "Cancel",
+  "Cancel reservation": "Cancel reservation",
+  "Cancel reservation?": "Cancel reservation?",
   "Category": "Category",
   "Classification proposal": "Classification proposal",
   "Create reservation": "Create reservation",
@@ -39,10 +42,12 @@
   "Make pre-reservation": "Make pre-reservation",
   "Make reservation": "Make reservation",
   "Methods and procedures used": "Methods and procedures used",
+  "My reservations": "My reservations",
   "New reservation for thesis borrow": "New reservation for thesis borrow",
   "Not reservable": "Not reservable",
   "Not sufficient": "Not sufficient",
   "Only created": "Only created",
+  "Open": "Open",
   "Opponent": "Opponent",
   "Over average": "Over average",
   "Password": "Password",
@@ -60,6 +65,7 @@
   "Published": "Published",
   "Published at": "Published at",
   "Ready": "Ready",
+  "Recent": "Recent",
   "Recent theses": "Recent theses",
   "Registration number": "Registration number",
   "Reservations": "Reservations",
@@ -126,8 +132,10 @@
     "404title": "Page not found"
   },
   "reservation": {
+    "cancelQuestion": "Are you sure about cancelling reservation for thesis",
     "justCreated": "Reservation has been just created.",
-    "stateChanged": "Reservation state has been changed."
+    "stateChanged": "Reservation state has been changed.",
+    "justCancelled": "Reservation has been cancelled."
   },
   "review": {
     "commentPlaceholder": "In my opinion ...",
