@@ -32,6 +32,6 @@ RUN apk add --virtual python-deps libffi-dev build-base cairo-dev cairo cairo-to
     && apk del python-deps
 
 # copy project
-COPY . /usr/src/app/
+COPY ./ /usr/src/app/
 
 ENTRYPOINT ["./docker-entrypoint.sh"]

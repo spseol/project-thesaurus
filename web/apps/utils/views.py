@@ -1,5 +1,6 @@
 from typing import Type
 
+from django.conf import settings
 from django.db.models import Choices
 from django.http import HttpRequest
 from django.views.defaults import server_error as django_server_error
@@ -22,7 +23,7 @@ class ModelChoicesOptionsView(ViewSetMixin, APIView):
 
 
 def server_error(request: HttpRequest, *args, **kwargs):
-    if request.path_info.startswith('r/api/'):
+    if settings.API_URL_PATTERN.match(request.path_info):
         return drf_server_error(request, *args, **kwargs)
 
-    return django_server_error(*args, **kwargs)
+    return django_server_error(request, *args, **kwargs)

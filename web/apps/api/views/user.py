@@ -1,4 +1,5 @@
 from django.db.models import Count
+from django.http import HttpRequest
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
@@ -57,5 +58,5 @@ class UserPermView(APIView):
     permission_classes = (IsAuthenticated,)
     renderer_classes = (JSONRenderer,)
 
-    def get(self, request, perm):
+    def get(self, request: HttpRequest, perm: str):
         return Response(request.user.has_perm(perm))

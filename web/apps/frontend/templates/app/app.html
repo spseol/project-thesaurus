@@ -1,1 +1,26 @@
 {% extends "base.html" %}
+
+{% load static i18n %}
+{% load render_entrypoint from webpack_loader %}
+{% load page_context from utils %}
+
+{% block head %}
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "apple-touch-icon.png" %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "favicon-32x32.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "favicon-16x16.png" %}">
+    <link rel="manifest" href="{% static "site.webmanifest" %}">
+
+    {% page_context "page-context" %}
+    <script>
+        window.Thesaurus = (window.Thesaurus || {});
+        window.Thesaurus.pageContext = JSON.parse(document.getElementById('page-context').textContent);
+    </script>
+    {% block bundles %}
+        {% render_entrypoint 'main' 'js' attrs='defer' %}
+        {% render_entrypoint 'main' 'css' %}
+    {% endblock bundles %}
+{% endblock %}
+
+{% block body %}
+    <div id="app"></div>
+{% endblock %}

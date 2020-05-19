@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% load i18n static %}
+
+{% block title %}{% trans "Server error" %} | Thesaurus{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <div class="logo">
+            <img src="{% static "thesaurus.svg" %}" alt="{% trans "Thesaurus logo" %}">
+        </div>
+        <div class="text">
+            {% block text %}
+
+            {% endblock %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block head %}
+    <style>
+        body {
+            background-color: #ff9800;
+            font-family: "Roboto", "Lucida Grande", Verdana, Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 60vw;
+            max-width: 800px;
+            height: 30vh;
+            max-height: 500px;
+            flex: 1 1 auto;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            margin-bottom: 200px;
+        }
+
+        .logo, .text {
+            width: 350px;
+            margin: 20px;
+        }
+
+        img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+    </style>
+{% endblock %}

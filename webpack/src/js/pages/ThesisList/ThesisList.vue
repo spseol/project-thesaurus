@@ -110,7 +110,7 @@
                             </v-avatar>
                             <strong>{{ item.text || item }}</strong>
                         </v-chip>
-
+                        <!-- maybe too much magic -->
                         <span
                             v-if="index === 1 && filterItems.length - manualFilterItems.length - (filterItems[0].value ? 1 : 0) > 0"
                             class="caption order-last"
