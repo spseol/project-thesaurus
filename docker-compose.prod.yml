@@ -10,3 +10,7 @@ services:
     environment:
       - NODE_ENV=production
       - PUBLIC_PATH=/static/
+
+  db:
+    ports:
+      - 0.0.0.0:15432:5432
