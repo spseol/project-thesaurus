@@ -19,7 +19,7 @@ while (( $# > 0 )); do
   logs    ) docker-compose logs --tail=50 -f $rest ; exit ;;  # show docker logs
 
   prod    ) # production settings
-            production_settings; echo 'production settings' ;;
+            production_settings; echo 'production settings, image version:' $IMAGE_VERSION ;;
   dev     ) # development settings
             echo "development settings" ;;
 
@@ -30,6 +30,10 @@ done
 }
 
 production_settings() {
+  export BRANCH=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
+  if [[ $BRANCH == 'master' ]]; then
+     export IMAGE_VERSION=$(git tag --merged | tail -n1)
+  fi
   export COMPOSE_FILE=docker-compose.base.yml:docker-compose.prod.yml
 }
 
@@ -91,4 +95,5 @@ cd $(dirname $0)
 
 unset CDPATH
 export COMPOSE_FILE=docker-compose.base.yml:docker-compose.dev.yml
+export IMAGE_VERSION=${IMAGE_VERSION:-latest}
 main__ $@

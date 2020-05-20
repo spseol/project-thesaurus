@@ -8,7 +8,7 @@ version: '3.3'
 
 services:
   web:
-    image: thejoeejoee/thesaurus-django:latest
+    image: thejoeejoee/thesaurus-django:${IMAGE_VERSION:-dev}
     container_name: thesaurus_web
     volumes:
       - ./django/:/usr/src/app/
@@ -35,7 +35,7 @@ services:
       - POSTGRES_DB=thesaurus
 
   webserver:
-    image: thejoeejoee/thesaurus-nginx:latest
+    image: thejoeejoee/thesaurus-nginx:${IMAGE_VERSION:-dev}
     container_name: thesaurus_webserver
     ports:
       - 127.0.0.1:8080:80
@@ -47,7 +47,7 @@ services:
       - web
 
   webpack:
-    image: thejoeejoee/thesaurus-webpack:latest
+    image: thejoeejoee/thesaurus-webpack:${IMAGE_VERSION:-dev}
     container_name: thesaurus_webpack
     volumes:
       - ./webpack/:/usr/src/app
