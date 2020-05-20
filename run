@@ -95,5 +95,5 @@ cd $(dirname $0)
 
 unset CDPATH
 export COMPOSE_FILE=docker-compose.base.yml:docker-compose.dev.yml
-export IMAGE_VERSION=${IMAGE_VERSION:-latest}
+export IMAGE_VERSION=${IMAGE_VERSION:-develop}
 main__ $@
