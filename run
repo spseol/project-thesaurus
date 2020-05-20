@@ -10,23 +10,16 @@ while (( $# > 0 )); do
   dc      ) docker-compose $rest; exit ;; # docker-compose [...args]
   da      ) docker-compose run --rm web python manage.py $rest; exit ;; # django-admin [...args]
 
-  dump_db  ) dump_db ;;  # dump postgresql database
-  load_db  ) load_db $rest; exit ;;  # load database from dump file [filename]
+  reload  ) (2>&1 reload_service > reload-service.log) &;; # reload service when code changed
 
-  djbuild ) build_django ;;   # download and build all images, migrate database
   webpack ) docker-compose run --entrypoint bash --rm webpack; exit;;  # login to webpack container
-  build   ) webpack_build ;; # build css+js client bundles and express bundle;
-
-  repl    ) docker-compose run --rm web python manage.py shell_plus --quiet-load ;; # django repl shell
-  django  ) docker-compose run --rm -u django web "${rest:-sh}"; exit ;; # login to django container as default user
-  root    ) docker-compose run --rm           web "${rest:-sh}"; exit ;;  # login to django container as root
-
-  fake    ) docker-compose run --rm web python manage.py fake_content -c10 -s50 ;;  # create fake data in django database
+  django  ) docker-compose run --rm           web "${rest:-sh}"; exit ;;  # login to django container
+  nginx   ) docker-compose run --rm           webserver "${rest:-sh}"; exit ;;  # login to django container
 
   logs    ) docker-compose logs --tail=50 -f $rest ; exit ;;  # show docker logs
 
   prod    ) # production settings
-            production_settings; echo 'production settings' $IMAGE_VERSION ;;
+            production_settings; echo 'production settings' ;;
   dev     ) # development settings
             echo "development settings" ;;
 
@@ -34,11 +27,6 @@ while (( $# > 0 )); do
   esac;
   shift 1;
 done
-}
-
-webpack_build() {
-  production_settings
-  docker-compose run --rm webpack build
 }
 
 production_settings() {
@@ -67,7 +55,6 @@ show_help() {
   fi
 }
 
-
 load_db() {
   dumpfile=$(ls *.sql -1t 2>/dev/null | head -n1)
   dumpfile=${1:-$dumpfile}
@@ -91,34 +78,13 @@ dump_db() {
   docker-compose exec db pg_dump --no-owner -U thesaurus -d thesaurus > "$DUMP"
 }
 
-build_django() {
-  docker-compose build
-  docker-compose run --rm web django-admin migrate
-  docker-compose run --rm web django-admin collectstatic --noinput
-}
-
-install_docker() {
-  # install docker and docker-compose on ubuntu
-  [ $UID = 0 ] || { echo 'must run as root' >&2; exit 1; }
-  USERNAME=$1
-  apt-get install -y \
-    apt-transport-https \
-    ca-certificates \
-    software-properties-common \
-    python3-pip
-
-  pip3 install -U docker-compose
-
-  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-  echo "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
-  apt-get update
-  apt-get install -y docker-ce
-
-  groupadd -f docker
-  if [[ -z $USERNAME ]]; then
-    usermod -aG docker $USERNAME
-  fi
-  systemctl enable docker
+reload_service() {
+  echo "--- reload start $(date -Iseconds) ---"
+  production_settings
+  docker-compose run --rm webpack
+  docker-compose run --rm web python manage.py migrate
+  docker-compose run --rm web python manage.py collectstatic --clear --noinput
+  echo '--- reload OK ---'
 }
 
 cd $(dirname $0)

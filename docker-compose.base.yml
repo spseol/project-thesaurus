@@ -1,4 +1,4 @@
-version: '2.2'
+version: '3.3'
 
 # TODO: add container for logging, perhaps ELK stack
 # https://hub.docker.com/r/sebp/elk/
@@ -8,7 +8,6 @@ version: '2.2'
 
 services:
   web:
-    build: django
     image: thejoeejoee/thesaurus-web:latest
     container_name: thesaurus_web
     volumes:
@@ -23,8 +22,7 @@ services:
     environment:
       - THESAURUS_VERSION=${THESAURUS_VERSION}
     depends_on:
-      db:
-        condition: service_healthy
+      - db
 
   db:
     image: postgres:12.0-alpine
@@ -35,11 +33,8 @@ services:
       - POSTGRES_USER=thesaurus
       - POSTGRES_PASSWORD=thesaurus
       - POSTGRES_DB=thesaurus
-    healthcheck:
-      test: "exit 0"
 
   webserver:
-    build: ./nginx
     image: thejoeejoee/thesaurus-nginx:latest
     container_name: thesaurus_webserver
     ports:
@@ -52,7 +47,6 @@ services:
       - web
 
   webpack:
-    build: ./webpack
     image: thejoeejoee/thesaurus-webpack:latest
     container_name: thesaurus_webpack
     volumes:

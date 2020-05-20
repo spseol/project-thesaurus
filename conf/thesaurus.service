@@ -1,0 +1,12 @@
+[Unit]
+Description=Thesaurus docker containers
+Requires=docker.service
+After=docker.service
+
+[Service]
+Restart=always
+ExecStart=/bin/bash -c "/srv/thesaurus/run prod dc up"
+ExecStop=/bin/bash -c "/srv/thesaurus/run prod dc down"
+ExecReload=/bin/bash -c "/srv/thesaurus/run reload"
+[Install]
+WantedBy=multi-user.target

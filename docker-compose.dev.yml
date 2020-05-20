@@ -1,6 +1,7 @@
-version: '2.2'
+version: '3.3'
 services:
   web:
+    build: ./django
     command: runserver
     env_file:
       - django/.env.dev
@@ -10,9 +11,11 @@ services:
       - 15432:5432
 
   webserver:
+    build: ./nginx
     command: [nginx-debug, '-g', 'daemon off;']
 
   webpack:
+    build: ./webpack
     command: dev
     ports:
       - 3000:3000

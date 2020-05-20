@@ -34,4 +34,7 @@ RUN apk add --virtual python-deps libffi-dev build-base cairo-dev cairo cairo-to
 # copy project
 COPY ./ /usr/src/app/
 
-ENTRYPOINT ["./docker-entrypoint.sh"]
+RUN wget -O /usr/src/wait-for https://raw.githubusercontent.com/eficode/wait-for/master/wait-for \
+    && chmod +x /usr/src/wait-for
+
+ENTRYPOINT ["/usr/src/wait-for", "db:5432", "--", "./docker-entrypoint.sh"]
