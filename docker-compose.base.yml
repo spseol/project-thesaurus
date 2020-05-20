@@ -8,7 +8,7 @@ version: '3.3'
 
 services:
   web:
-    image: thejoeejoee/thesaurus-web:latest
+    image: thejoeejoee/thesaurus-django:latest
     container_name: thesaurus_web
     volumes:
       - ./django/:/usr/src/app/
