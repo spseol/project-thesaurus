@@ -23,18 +23,15 @@
             <template v-slot:item.edit="{ item }">
                 <v-dialog max-width="65vw">
                     <template v-slot:activator="{ on }">
-                        <v-btn
-                            icon v-on="on" small
-                        >
+                        <v-btn icon v-on="on" small>
                             <v-icon>mdi-file-document-edit-outline</v-icon>
                         </v-btn>
                     </template>
-
                     <ThesisEditPanel
-
                         :thesis="item"
                         :category-options="categoryOptions"
                         :teacher-options="teacherOptions"
+                        @reload="load"
                     ></ThesisEditPanel>
                 </v-dialog>
             </template>
@@ -147,12 +144,15 @@
     import {hasPerm} from '../../user';
     import {eventBus} from '../../utils';
     import ThesisService from './thesis-service';
-    import ThesisDetailPanel from './ThesisDetailPanel';
     import ThesisEditPanel from './ThesisEditPanel';
     import ThesisListActionBtn from './ThesisListActionBtn';
 
     export default Vue.extend({
-        components: {ThesisEditPanel, ThesisListActionBtn, ThesisDetailPanel},
+        components: {
+            ThesisEditPanel,
+            ThesisListActionBtn,
+            ThesisDetailPanel: () => import('./ThesisDetailPanel')
+        },
         data() {
             return {
                 items: [],

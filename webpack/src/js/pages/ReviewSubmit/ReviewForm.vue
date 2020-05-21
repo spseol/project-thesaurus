@@ -9,18 +9,18 @@
                         <v-col cols="12" md="6">
                             <v-text-field
                                 :label="$t('Student name')" :value="thesis.authors.map(a => a.full_name).join(', ')"
-                                readonly filled
+                                readonly filled disabled
                             ></v-text-field>
 
                             <v-text-field
                                 :label="$t('Thesis name')" :value="thesis.title"
-                                readonly filled
+                                readonly filled disabled
                             ></v-text-field>
 
                             <v-text-field
                                 :label="$t('Review author')" :suffix="$t(reviewerRole)"
                                 :value="(thesis[reviewerRole] || {full_name: $t('Unknown')}).full_name"
-                                readonly filled
+                                readonly filled disabled
                             ></v-text-field>
                             <v-row no-gutters justify="center" class="mb-5">
                                 <v-btn
@@ -28,9 +28,10 @@
                                     :href="attachment.url"
                                     color="primary" target="_blank" outlined class="ma-2"
                                 >
-                                    <v-icon color="grey" class="mr-2">${{ attachment.type_attachment.identifier }}
+                                    <v-icon color="grey" class="mr-2">
+                                        ${{ attachment.type_attachment.identifier }}
                                     </v-icon>
-                                    {{ $t('Download') }} {{ attachment.type_attachment.name }}
+                                    {{ attachment.type_attachment.name }}
                                 </v-btn>
                             </v-row>
                             <v-divider></v-divider>
