@@ -20,8 +20,23 @@
                 </td>
             </template>
 
-            <template v-slot:item.title="{ item }">
-                {{ item.title }}
+            <template v-slot:item.edit="{ item }">
+                <v-dialog max-width="65vw">
+                    <template v-slot:activator="{ on }">
+                        <v-btn
+                            icon v-on="on" small
+                        >
+                            <v-icon>mdi-file-document-edit-outline</v-icon>
+                        </v-btn>
+                    </template>
+
+                    <ThesisEditPanel
+
+                        :thesis="item"
+                        :category-options="categoryOptions"
+                        :teacher-options="teacherOptions"
+                    ></ThesisEditPanel>
+                </v-dialog>
             </template>
 
             <template v-slot:item.state="{ item }">
@@ -35,24 +50,11 @@
                 </div>
             </template>
 
-            <template
-                v-slot:item.authors="{ item }"
-            >
+            <template v-slot:item.authors="{ item }">
                 <template
                     v-if="item.authors"
                     v-for="(author, i) in item.authors"
-                >
-                    <span v-if="i !== 0">, </span>
-                    <!-- TODO: think about idea of clickable filters -->
-                    <template v-if="false && isPossibleUserFilter(author)">
-                        <a
-                            v-text="author.full_name"
-                            @click="addUserFilterFromDataTable(author.username)"
-                        ></a>
-                    </template>
-                    <template v-else>
-                        {{ author.full_name }}
-                    </template>
+                ><span v-if="i !== 0">, </span>{{ author.full_name }}
                 </template>
             </template>
 
@@ -146,10 +148,11 @@
     import {eventBus} from '../../utils';
     import ThesisService from './thesis-service';
     import ThesisDetailPanel from './ThesisDetailPanel';
+    import ThesisEditPanel from './ThesisEditPanel';
     import ThesisListActionBtn from './ThesisListActionBtn';
 
     export default Vue.extend({
-        components: {ThesisListActionBtn, ThesisDetailPanel},
+        components: {ThesisEditPanel, ThesisListActionBtn, ThesisDetailPanel},
         data() {
             return {
                 items: [],
@@ -187,9 +190,6 @@
                     token => itemText.includes(token)
                 );
             },
-            isPossibleUserFilter({username}) {
-                return !!_.find(this.userOptions, {username});
-            },
             isThesisEditAllowed({state}) {
                 // TODO: list all states
                 return this.hasThesisEditPerm && state != 'published';
@@ -222,7 +222,8 @@
                     {text: '', value: 'data-table-expand'},
 
                     {text: this.$t('Title'), value: 'title', width: '30%'},
-                    lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
+
+                    this.hasThesisEditPerm && lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
                     {text: this.$t('Category'), value: 'category.title'},
 
                     mdAndUp && {text: this.$t('Year'), value: 'published_at'},
@@ -234,7 +235,8 @@
                         value: 'supervisor.full_name',
                         mapped: 'supervisor__last_name'
                     },
-                    lgAndUp && {text: this.$t('Opponent'), value: 'opponent.full_name', mapped: 'opponent__last_name'}
+                    lgAndUp && {text: this.$t('Opponent'), value: 'opponent.full_name', mapped: 'opponent__last_name'},
+                    this.hasThesisEditPerm && {text: '', value: 'edit'}
                 ];
 
                 headers.push({text: '', value: 'state', width: '18em'});

@@ -28,7 +28,8 @@
                                     :href="attachment.url"
                                     color="primary" target="_blank" outlined class="ma-2"
                                 >
-                                    <v-icon color="grey">${{ attachment.type_attachment.identifier }}</v-icon>
+                                    <v-icon color="grey" class="mr-2">${{ attachment.type_attachment.identifier }}
+                                    </v-icon>
                                     {{ $t('Download') }} {{ attachment.type_attachment.name }}
                                 </v-btn>
                             </v-row>
@@ -59,15 +60,12 @@
                                 ></v-chip>
                                 <v-slider
                                     :color="valueToColor(review.difficulty, 3)"
-                                    :max="3"
-                                    :min="0"
+                                    :max="3" :min="0" :step="1"
                                     :rules="[v => v > 0]"
-                                    :step="1"
                                     :thumb-color="valueToColor(review.difficulty, 3)"
                                     :tick-labels="grades3"
                                     class="VSliderCustom__label--gray"
-                                    ticks="always"
-                                    track-color="grey"
+                                    ticks="always" track-color="grey"
                                     v-model="review.difficulty"
                                 ></v-slider>
 
