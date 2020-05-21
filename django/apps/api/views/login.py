@@ -3,6 +3,7 @@ from typing import Optional
 from django.conf import settings
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
+from django.utils.http import url_has_allowed_host_and_scheme
 from funcy import project
 from rest_framework import permissions, status
 from rest_framework.request import Request
@@ -14,6 +15,8 @@ from apps.accounts.models import User
 
 class LoginView(APIView):
     permission_classes = (permissions.AllowAny,)
+
+    REDIRECT_FIELD_NAME = 'next'
 
     error_messages = AuthenticationForm.error_messages
 
@@ -30,7 +33,7 @@ class LoginView(APIView):
             return Response(
                 data=dict(success=True),
                 status=status.HTTP_202_ACCEPTED,
-                headers={'Location': settings.LOGIN_REDIRECT_URL}
+                headers={'Location': self.get_redirect_url() or settings.LOGIN_REDIRECT_URL}
             )
         elif user and not user.is_active:
             return Response(
@@ -46,3 +49,13 @@ class LoginView(APIView):
             ),
             status=status.HTTP_401_UNAUTHORIZED,
         )
+
+    def get_redirect_url(self):
+        """Return the user-originating redirect URL if it's safe."""
+        redirect_to = self.request.data.get(self.REDIRECT_FIELD_NAME)
+        url_is_safe = url_has_allowed_host_and_scheme(
+            url=redirect_to,
+            allowed_hosts=self.request._request.get_host(),
+            require_https=self.request.is_secure(),
+        )
+        return redirect_to if url_is_safe else ''

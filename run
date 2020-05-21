@@ -10,6 +10,8 @@ while (( $# > 0 )); do
   dc      ) docker-compose $rest; exit ;; # docker-compose [...args]
   da      ) docker-compose run --rm web python manage.py $rest; exit ;; # django-admin [...args]
 
+  dump_db ) dump_db $rest; exit ;; # dump database, optionally to [file]
+
   reload  ) (2>&1 reload_service > reload-service.log) &;; # reload service when code changed
 
   webpack ) docker-compose run --entrypoint bash --rm webpack; exit;;  # login to webpack container
@@ -67,7 +69,6 @@ load_db() {
   cp "$dumpfile" django/dbdump.sql
 
   # loading data
-  docker-compose down
   docker-compose run --rm web load_db
 
   # cleanup

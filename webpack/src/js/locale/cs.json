@@ -129,7 +129,9 @@
     "cancelQuestion": "Opravdu chcete zrušit na práci",
     "justCreated": "Rezervace byla úspěšně zaevidována.",
     "stateChanged": "Stav rezervace úspěšně změněn.",
-    "justCancelled": "Rezerace byla zrušena."
+    "justCancelled": "Rezerace byla zrušena.",
+    "currentlyBorrowed": "Práce je v tuto chvíli vypůjčená. V případě, že si ji zarezervujete a vrácena, budete notifikování e-mailem.",
+    "directBorrow": "Poté, co práce bude připravena k vyzvednutí, vás budeme informovat e-mailem."
   },
   "review": {
     "commentPlaceholder": "Práce je ...",
@@ -158,6 +160,14 @@
       "hintPoster": "Přiložil jsem plakát, pokud mám.",
       "hintSubmitApprove": "Souhlasím s odevzdáním práce.",
       "hintThesisFinal": "Odevzdávám konečnou verzi práce."
-    }
-  }
+    },
+    "invalidSNformat": "Není ve formátu <písmeno>XXX"
+  },
+  "Thesis edit": "",
+  "View": "Zobrazit",
+  "Delete": "Smazat",
+  "Attachments": "Přílohy",
+  "Save data": "Uložit data",
+  "New pre reservation for thesis borrow": "Nová rezerace pro výpůjčku práce",
+  "Borrow thesis": "Vypůjčit práci"
 }

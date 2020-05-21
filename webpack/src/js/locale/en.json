@@ -135,7 +135,9 @@
     "cancelQuestion": "Are you sure about cancelling reservation for thesis",
     "justCreated": "Reservation has been just created.",
     "stateChanged": "Reservation state has been changed.",
-    "justCancelled": "Reservation has been cancelled."
+    "justCancelled": "Reservation has been cancelled.",
+    "currentlyBorrowed": "",
+    "directBorrow": ""
   },
   "review": {
     "commentPlaceholder": "In my opinion ...",
@@ -164,6 +166,14 @@
       "hintPoster": "I attached poster if I have",
       "hintSubmitApprove": "I approve thesis submit",
       "hintThesisFinal": "Submitting thesis is in final version"
-    }
-  }
+    },
+    "invalidSNformat": "Not in format AXXX."
+  },
+  "Thesis edit": "",
+  "View": "",
+  "Delete": "",
+  "Attachments": "",
+  "Save data": "",
+  "New pre reservation for thesis borrow": "",
+  "Borrow thesis": ""
 }

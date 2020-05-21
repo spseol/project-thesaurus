@@ -13,7 +13,7 @@
                     <v-text-field
                         :label="$t('Registration number')" v-model="data.registration_number"
                         :counter="4"
-                        :rules="[v => !v || /[A-Z]\d{3}/.test(v) || $t('Not in format AXXX.')]"
+                        :rules="[v => !v || /[A-Z]\d{3}/.test(v) || $t('thesis.invalidSNformat')]"
                     ></v-text-field>
 
                     <v-radio-group
