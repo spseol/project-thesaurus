@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_better_admin_arrayfield',
     'django_bleach',
+    'django_python3_ldap',
 ]
 
 MIDDLEWARE = [
@@ -120,6 +121,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
     {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django_python3_ldap.auth.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
 ]
 
 # Internationalization
@@ -235,3 +241,31 @@ if DEBUG:
     # for django-debug-toolbar
     # remote_addr does not matter in debug mode in image
     INTERNAL_IPS = type(str('ContainsEverything'), (), {'__contains__': lambda *a: True})()
+
+###### LDAP
+# https://github.com/etianen/django-python3-ldap
+
+LDAP_AUTH_URL = f"ldap://{config('DOCKER_HOST_IP', cast=str)}:{config('LDAP_PORT', default=389)}"
+LDAP_AUTH_USE_TLS = False
+LDAP_AUTH_CONNECTION_USERNAME = config('LDAP_USERNAME', cast=str)
+LDAP_AUTH_CONNECTION_PASSWORD = config('LDAP_PASSWORD', cast=str)
+LDAP_AUTH_CONNECT_TIMEOUT = None
+LDAP_AUTH_RECEIVE_TIMEOUT = None
+
+LDAP_AUTH_SEARCH_BASE = config('LDAP_SEARCH_BASE', cast=str)
+LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = config('LDAP_ACTIVE_DIRECTORY_DOMAIN', cast=str)
+LDAP_AUTH_OBJECT_CLASS = "organizationalPerson"
+
+LDAP_AUTH_USER_FIELDS = dict(
+    username="sAMAccountName",
+    first_name="givenName",
+    last_name="sn",
+    email="userPrincipalName",
+)
+
+LDAP_AUTH_USER_LOOKUP_FIELDS = ("username",)
+
+LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
+LDAP_AUTH_SYNC_USER_RELATIONS = "apps.accounts.ldap.sync_user_relations"
+LDAP_AUTH_FORMAT_SEARCH_FILTERS = "django_python3_ldap.utils.format_search_filters"
+LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory_principal"

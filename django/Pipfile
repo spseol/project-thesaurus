@@ -29,8 +29,9 @@ uvicorn = "*"
 django-better-admin-arrayfield = "*"
 bleach = "*"
 django-bleach = "*"
+django-python3-ldap = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
