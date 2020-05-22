@@ -17,6 +17,11 @@ class User(AbstractUser):
         null=True, blank=True, max_length=16,
     )
 
+    school_class = CharField(
+        verbose_name=_('School class'),
+        default='', blank=True, null=True, max_length=8,
+    )
+
     objects = UserManager()
     school_users = UserQueryset.as_manager()
 
