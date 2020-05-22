@@ -38,7 +38,7 @@ teacher	Can view Category
 
 
 class Command(BaseCommand):
-    help = "..."
+    help = "Loads initial perms setup for groups student/teacher/manager."
 
     @transaction.atomic()
     def handle(self, *args, **kwargs):

@@ -1,11 +1,10 @@
-from django.contrib.admin import ModelAdmin, register, TabularInline
+from django.contrib.admin import ModelAdmin, register, StackedInline
 
 from apps.thesis.models import Thesis, Reservation, Category, ThesisAuthor
 
 
-class AuthorInline(TabularInline):
-    model = ThesisAuthor
-    extra = 1
+class AuthorInline(StackedInline):
+    model = Thesis.authors.through
 
 
 @register(Thesis)
@@ -35,7 +34,7 @@ class ThesisAdmin(ModelAdmin):
 
     autocomplete_fields = ('supervisor', 'opponent',)
 
-    # inlines = (AuthorInline, )
+    inlines = (AuthorInline,)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
