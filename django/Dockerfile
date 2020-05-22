@@ -25,16 +25,13 @@ RUN addgroup -S django \
     && chown django:django /usr/src/media
 
 # install python deps
-COPY ./Pipfile /usr/src/app/Pipfile
+COPY ./Pipfile ./Pipfile.lock /usr/src/app/
 RUN apk add --virtual python-deps libffi-dev build-base cairo-dev cairo cairo-tools \
     jpeg-dev zlib-dev freetype-dev lcms2-dev tiff-dev tk-dev tcl-dev \
-    && pipenv install --skip-lock --system --dev \
+    && pipenv install --system --dev \
     && apk del python-deps
 
 # copy project
 COPY ./ /usr/src/app/
 
-RUN wget -O /usr/src/wait-for https://raw.githubusercontent.com/eficode/wait-for/master/wait-for \
-    && chmod +x /usr/src/wait-for
-
-ENTRYPOINT ["/usr/src/wait-for", "db:5432", "--", "./docker-entrypoint.sh"]
+ENTRYPOINT ["./wait-for.sh", "db:5432", "--", "./docker-entrypoint.sh"]

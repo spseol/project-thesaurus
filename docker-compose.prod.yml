@@ -1,16 +1,17 @@
 version: '3.3'
 services:
   web:
+    image: thejoeejoee/thesaurus-django:${IMAGE_VERSION:-dev}
     command: runserver_prod
     env_file:
       - django/.env.prod
 
   webpack:
+    image: thejoeejoee/thesaurus-webpack:${IMAGE_VERSION:-dev}
     command: build
     environment:
       - NODE_ENV=production
       - PUBLIC_PATH=/static/
 
-  db:
-    ports:
-      - 0.0.0.0:15432:5432
+  webserver:
+    image: thejoeejoee/thesaurus-nginx:${IMAGE_VERSION:-dev}

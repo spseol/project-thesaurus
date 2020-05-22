@@ -8,7 +8,6 @@ version: '3.3'
 
 services:
   web:
-    image: thejoeejoee/thesaurus-django:${IMAGE_VERSION:-dev}
     container_name: thesaurus_web
     volumes:
       - django_static_files:/usr/src/static
@@ -28,13 +27,14 @@ services:
     container_name: thesaurus_db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
+    ports:
+      - 127.0.0.1:15432:5432
     environment:
       - POSTGRES_USER=thesaurus
       - POSTGRES_PASSWORD=thesaurus
       - POSTGRES_DB=thesaurus
 
   webserver:
-    image: thejoeejoee/thesaurus-nginx:${IMAGE_VERSION:-dev}
     container_name: thesaurus_webserver
     ports:
       - 127.0.0.1:8080:80
@@ -46,7 +46,6 @@ services:
       - web
 
   webpack:
-    image: thejoeejoee/thesaurus-webpack:${IMAGE_VERSION:-dev}
     container_name: thesaurus_webpack
     volumes:
       #      - node_modules:/usr/src/app/node_modules

@@ -8,10 +8,6 @@ services:
     env_file:
       - django/.env.dev
 
-  db:
-    ports:
-      - 15432:5432
-
   webserver:
     build: ./nginx
     command: [nginx-debug, '-g', 'daemon off;']
