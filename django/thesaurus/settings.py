@@ -7,24 +7,21 @@ import os
 import re
 from logging.config import dictConfig
 
-from decouple import config
+from decouple import AutoConfig
 from django.utils.log import DEFAULT_LOGGING
 from django.utils.translation import gettext_lazy as _
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = config("SECRET_KEY", default='...')
+config = AutoConfig(search_path='/run/secrets/')  # .env file is injected by docker secrets
+
+SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 
 VERSION = config('THESAURUS_VERSION', default='unknown')
 
-# 'ALLOWED_HOSTS' should be a single string of hosts with a space between each.
-# For example: 'ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default='').split(" ")
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -154,13 +151,13 @@ STATIC_ROOT = '/usr/src/static'
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
-MEDIA_ROOT = '/usr/src/media'
-
-MEDIA_URL = '/media/'
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+MEDIA_ROOT = '/usr/src/media'
+
+MEDIA_URL = '/media/'
 
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -190,7 +187,7 @@ CAN_LOGIN_AS = lambda request, target_user: request.user.is_superuser and not ta
 # Disable Django's logging setup
 LOGGING_CONFIG = None
 
-LOGLEVEL = os.environ.get('LOGLEVEL', 'info').upper()
+LOGLEVEL = config('LOGLEVEL', default='info').upper()
 
 dictConfig({
     'version': 1,
@@ -222,7 +219,7 @@ dictConfig({
             'handlers': ['console'],
         },
         # Our application code
-        'app': {
+        'apps': {
             'level': LOGLEVEL,
             'handlers': ['console'],
             # Avoid double logging because of root logger
