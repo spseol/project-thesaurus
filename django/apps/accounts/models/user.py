@@ -19,7 +19,7 @@ class User(AbstractUser):
 
     school_class = CharField(
         verbose_name=_('School class'),
-        default='', blank=True, null=True, max_length=8,
+        blank=True, null=True, max_length=8,
     )
 
     objects = UserManager()
