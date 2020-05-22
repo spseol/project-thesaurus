@@ -18,8 +18,8 @@ class Command(BaseCommand):
         super().__init__(**kwargs)
         self._conn = None
 
-        self._student_group = Group.objects.get(name='student')
-        self._teacher_group = Group.objects.get(name='teacher')
+        self._student_group = Group.objects.get_or_create(name='student')[0]
+        self._teacher_group = Group.objects.get_or_create(name='teacher')[0]
 
     def add_arguments(self, parser):
         parser.add_argument('file')
@@ -28,12 +28,15 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self._conn = sqlite3.connect(options.get('file'))
         self._conn.row_factory = sqlite3.Row
-        r = self._conn.execute("""SELECT k.*,
-       o.jmeno as o_jmeno,
-       v.jmeno as v_jmeno
-FROM knihy k
-         inner join oponenti o ON k.oponent = o.id
-         inner join oponenti v ON k.vedouci = v.id;""")
+        r = self._conn.execute("""
+        SELECT k.*,
+            o.jmeno as o_jmeno,
+            v.jmeno as v_jmeno
+        FROM knihy k
+            inner join oponenti o ON k.oponent = o.id
+            inner join oponenti v ON k.vedouci = v.id
+            order by k.ID;
+        """)
 
         # ['ID', 'ev_cislo', 'prace', 'ajmeno', 'vedouci', 'oponent', 'edatum', 'rok', 'typ', 'datumpridani', 'trida', 'souhlas', 'stav', 'abstrakt']
         # [152, 'S156', 'Syndrom CAN', 'And Klára ', 30,      1,     '2015-04-13', '2012-04-01', 'SL', '2015-04-13',
@@ -47,23 +50,24 @@ FROM knihy k
             t = Thesis(
                 registration_number=row['ev_cislo'],
                 title=row['prace'],
-                category=Category.objects.get(title=row['typ']),
+                category=Category.objects.get_or_create(title=row['typ'])[0],
                 published_at=parse_date(row['rok']),
                 reservable=str(row['souhlas']) == '1',
-                school_class=row['trida'],
                 state=Thesis.State.PUBLISHED,
             )
 
-            t.supervisor = self.get_or_create_user(name=row['v_jmeno'], thesis_id=row['ID'])
-            t.opponent = self.get_or_create_user(name=row['o_jmeno'], thesis_id=row['ID'])
+            t.supervisor = self.get_or_create_user(name=row['v_jmeno'], thesis_id=None)
+            t.opponent = self.get_or_create_user(name=row['o_jmeno'], thesis_id=None)
 
             t.opponent and self._teacher_group.user_set.add(t.opponent)
             t.supervisor and self._teacher_group.user_set.add(t.supervisor)
 
             for name in row['ajmeno'].split(','):
                 author = self.get_or_create_user(name=name, thesis_id=row['ID'])
+                author.school_class = row['trida']
                 self._student_group.user_set.add(author)
                 t.authors.add(author)
+                author.save(update_fields=['school_class'])
 
             t.save()
         self._teacher_group.save()
@@ -72,7 +76,7 @@ FROM knihy k
         self._fix_wrong_users()
 
     @staticmethod
-    def get_or_create_user(*, name: str, thesis_id: str) -> Optional[User]:
+    def get_or_create_user(*, name: str, thesis_id: Optional[str]) -> Optional[User]:
 
         name = name.replace('.', '. ').strip()
 
@@ -83,9 +87,17 @@ FROM knihy k
         if ',' in name:
             name, degree_after = name.rsplit(',', 1)
 
-        [last_name, first_name, *degrees_before] = tuple(filter(None, name.strip().rsplit(' ', 2)[::-1]))
+        [last_name, *degrees_before] = tuple(filter(None, name.strip().rsplit(' ', 2)[::-1]))
 
-        username = '.'.join(map(slugify, (last_name.strip(), first_name.strip())))
+        first_name = degrees_before[0] if degrees_before else ''
+
+        if thesis_id:
+            # is student
+            username = f'{last_name.strip()[:3].ljust(3, "0")}{thesis_id:05}'
+        else:
+            username = last_name.strip()
+
+        username = slugify(username.strip().lower())
 
         if User.objects.filter(username=username).exists():
             pass  # username = f'{username}.{thesis_id}'
@@ -96,7 +108,8 @@ FROM knihy k
                 last_name=last_name.strip(),
                 first_name=first_name.strip(),
                 degree_after=degree_after or None,
-                degree_before=''.join(degrees_before).replace(' ', '').replace('.', '. ') or None
+                degree_before=''.join(degrees_before[1:]).replace(' ', '').replace('.', '. ') or None,
+                is_active=False,  # activation by ldap sync
             ),
         )[0]
 
