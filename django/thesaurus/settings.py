@@ -21,7 +21,7 @@ DEBUG = config("DEBUG", cast=bool, default=False)
 
 VERSION = config('THESAURUS_VERSION', default='unknown')
 
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default='').split(" ")
+ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(" ")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
