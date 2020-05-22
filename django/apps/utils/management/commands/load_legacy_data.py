@@ -102,7 +102,7 @@ class Command(BaseCommand):
         if User.objects.filter(username=username).exists():
             pass  # username = f'{username}.{thesis_id}'
 
-        return User.objects.get_or_create(
+        user, was_created = User.objects.get_or_create(
             username=username,
             defaults=dict(
                 last_name=last_name.strip(),
@@ -111,7 +111,12 @@ class Command(BaseCommand):
                 degree_before=''.join(degrees_before[1:]).replace(' ', '').replace('.', '. ') or None,
                 is_active=False,  # activation by ldap sync
             ),
-        )[0]
+        )
+
+        if was_created:
+            print(f"User {name} has been created.")
+
+        return user
 
     def _fix_wrong_users(self):
         for user in User.objects.filter(first_name__iregex=r'(Ing|Mgr)\.'):

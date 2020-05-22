@@ -9,7 +9,7 @@ from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from apps.accounts.models import User
 from apps.accounts.models.managers import UserQueryset
-from apps.accounts.serializers import UserOptionSerializer
+from apps.accounts.serializers import UserOptionSerializer, StudentOptionSerializer
 
 
 class UserFilterOptionsViewSet(ReadOnlyModelViewSet):
@@ -37,7 +37,7 @@ class UserFilterOptionsViewSet(ReadOnlyModelViewSet):
 class StudentOptionsViewSet(ReadOnlyModelViewSet):
     queryset = User.school_users.students()
     pagination_class = None
-    serializer_class = UserOptionSerializer
+    serializer_class = StudentOptionSerializer
     search_fields = (
         'first_name',
         'last_name',

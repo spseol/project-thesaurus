@@ -33,6 +33,8 @@ class ThesisAdmin(ModelAdmin):
         'authors__school_class',
     )
 
+    autocomplete_fields = ('supervisor', 'opponent',)
+
     # inlines = (AuthorInline, )
 
     def get_queryset(self, request):
