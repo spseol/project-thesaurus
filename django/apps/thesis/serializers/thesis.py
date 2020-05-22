@@ -73,6 +73,8 @@ class ThesisFullInternalSerializer(ThesisFullPublicSerializer):
     attachments = AttachmentSerializer(many=True, source='attachment_thesis', read_only=True)
     reviews = ReviewSerializer(many=True, source='review_thesis', read_only=True)
 
+    # TODO: include s/o_is_active
+
     class Meta:
         model = Thesis
         fields = ThesisFullPublicSerializer.Meta.fields + (

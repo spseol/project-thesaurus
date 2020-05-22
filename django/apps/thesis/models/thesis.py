@@ -92,12 +92,6 @@ class Thesis(BaseTimestampedModel):
         default=True,
     )
 
-    # TODO: here or on User?
-    school_class = models.CharField(
-        verbose_name=_('School class'),
-        default='', blank=True, null=True, max_length=8,
-    )
-
     objects = ThesisManager()
     api_objects = ThesisApiManager()
 
