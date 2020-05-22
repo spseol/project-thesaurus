@@ -14,6 +14,13 @@ class UserSerializer(ModelSerializer):
         )
 
 
+class UserInternalSerializer(UserSerializer):
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields + (
+            'is_active',
+        )
+
+
 class UserOptionSerializer(UserSerializer):
     value = IntegerField(source='id')
     text = CharField(source='full_name')
