@@ -8,7 +8,7 @@ from apps.accounts.models import User
 @register(User)
 class UserAdmin(OldUserAdmin):
     change_form_template = 'loginas/change_form.html'
-    list_display = ('username', 'full_name', 'school_class', 'get_groups')
+    list_display = ('username', 'full_name', 'school_class', 'get_groups', 'is_active')
     list_filter = OldUserAdmin.list_filter + ('school_class',)
 
     def get_queryset(self, *args, **kwargs):

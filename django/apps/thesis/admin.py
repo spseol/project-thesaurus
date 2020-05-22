@@ -10,16 +10,34 @@ class AuthorInline(TabularInline):
 
 @register(Thesis)
 class ThesisAdmin(ModelAdmin):
+    list_display = (
+        '__str__',
+        'supervisor',
+        'opponent',
+        'category',
+        'registration_number',
+        'published_at',
+        'state',
+        'reservable',
+    )
     search_fields = (
         'title',
         'abstract',
+    )
+
+    date_hierarchy = 'published_at'
+
+    list_filter = (
+        'state',
+        'category',
+        'authors__school_class',
     )
 
     # inlines = (AuthorInline, )
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
-        return qs.prefetch_related('authors')
+        return qs.prefetch_related('authors').select_related('category', 'supervisor', 'opponent')
 
 
 @register(ThesisAuthor)
