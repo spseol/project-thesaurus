@@ -3,7 +3,7 @@ from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
 from apps.accounts.models import User
-from apps.accounts.serializers import UserSerializer
+from apps.accounts.serializers import UserSerializer, UserInternalSerializer
 from apps.attachment.serializers import AttachmentSerializer
 from apps.review.serializers import ReviewSerializer
 from apps.thesis.models import Thesis
@@ -72,6 +72,9 @@ class ThesisFullPublicSerializer(ThesisBaseSerializer):
 class ThesisFullInternalSerializer(ThesisFullPublicSerializer):
     attachments = AttachmentSerializer(many=True, source='attachment_thesis', read_only=True)
     reviews = ReviewSerializer(many=True, source='review_thesis', read_only=True)
+
+    supervisor = UserInternalSerializer(read_only=True)
+    opponent = UserInternalSerializer(read_only=True)
 
     class Meta:
         model = Thesis

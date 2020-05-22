@@ -48,11 +48,7 @@
             </template>
 
             <template v-slot:item.authors="{ item }">
-                <template
-                    v-if="item.authors"
-                    v-for="(author, i) in item.authors"
-                ><span v-if="i !== 0">, </span>{{ author.full_name }}
-                </template>
+                {{ item.authors.map(a => a.full_name).join(', ') }}
             </template>
 
             <template

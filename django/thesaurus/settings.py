@@ -7,24 +7,21 @@ import os
 import re
 from logging.config import dictConfig
 
-from decouple import config
+from decouple import AutoConfig
 from django.utils.log import DEFAULT_LOGGING
 from django.utils.translation import gettext_lazy as _
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = config("SECRET_KEY", default='...')
+config = AutoConfig(search_path='/run/secrets/')  # .env file is injected by docker secrets
+
+SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 
 VERSION = config('THESAURUS_VERSION', default='unknown')
 
-# 'ALLOWED_HOSTS' should be a single string of hosts with a space between each.
-# For example: 'ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default='').split(" ")
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -50,6 +47,7 @@ INSTALLED_APPS = [
     'django_extensions',
     'django_better_admin_arrayfield',
     'django_bleach',
+    'django_python3_ldap',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +123,11 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django_python3_ldap.auth.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
@@ -154,13 +157,13 @@ STATIC_ROOT = '/usr/src/static'
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
-MEDIA_ROOT = '/usr/src/media'
-
-MEDIA_URL = '/media/'
-
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+MEDIA_ROOT = '/usr/src/media'
+
+MEDIA_URL = '/media/'
 
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -190,7 +193,7 @@ CAN_LOGIN_AS = lambda request, target_user: request.user.is_superuser and not ta
 # Disable Django's logging setup
 LOGGING_CONFIG = None
 
-LOGLEVEL = os.environ.get('LOGLEVEL', 'info').upper()
+LOGLEVEL = config('LOGLEVEL', default='info').upper()
 
 dictConfig({
     'version': 1,
@@ -222,7 +225,7 @@ dictConfig({
             'handlers': ['console'],
         },
         # Our application code
-        'app': {
+        'apps': {
             'level': LOGLEVEL,
             'handlers': ['console'],
             # Avoid double logging because of root logger
@@ -238,3 +241,31 @@ if DEBUG:
     # for django-debug-toolbar
     # remote_addr does not matter in debug mode in image
     INTERNAL_IPS = type(str('ContainsEverything'), (), {'__contains__': lambda *a: True})()
+
+###### LDAP
+# https://github.com/etianen/django-python3-ldap
+
+LDAP_AUTH_URL = f"ldap://{config('DOCKER_HOST_IP', cast=str)}:{config('LDAP_PORT', default=389)}"
+LDAP_AUTH_USE_TLS = False
+LDAP_AUTH_CONNECTION_USERNAME = config('LDAP_USERNAME', cast=str)
+LDAP_AUTH_CONNECTION_PASSWORD = config('LDAP_PASSWORD', cast=str)
+LDAP_AUTH_CONNECT_TIMEOUT = None
+LDAP_AUTH_RECEIVE_TIMEOUT = None
+
+LDAP_AUTH_SEARCH_BASE = config('LDAP_SEARCH_BASE', cast=str)
+LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = config('LDAP_ACTIVE_DIRECTORY_DOMAIN', cast=str)
+LDAP_AUTH_OBJECT_CLASS = "organizationalPerson"
+
+LDAP_AUTH_USER_FIELDS = dict(
+    username="sAMAccountName",
+    first_name="givenName",
+    last_name="sn",
+    email="userPrincipalName",
+)
+
+LDAP_AUTH_USER_LOOKUP_FIELDS = ("username",)
+
+LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
+LDAP_AUTH_SYNC_USER_RELATIONS = "apps.accounts.ldap.sync_user_relations"
+LDAP_AUTH_FORMAT_SEARCH_FILTERS = "django_python3_ldap.utils.format_search_filters"
+LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory_principal"
