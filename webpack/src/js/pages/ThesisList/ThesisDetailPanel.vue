@@ -33,7 +33,7 @@
                     </tr>
                     <tr v-if="thesis.abstract">
                         <td class="font-weight-bold text-left text-md-right col-1">{{ $t('Abstract') }}</td>
-                        <td class="text-justify py-1">{{ thesis.abstract }}</td>
+                        <td class="py-1">{{ thesis.abstract }}</td>
                     </tr>
                     <template v-has-perm:attachment.view_attachment>
                         <tr v-for="attachment in thesis.attachments">

@@ -146,6 +146,16 @@ class Thesis(BaseTimestampedModel):
             self.state = self.State.REVIEWED
             self.save(update_fields=['state'])
 
+    STATE_HELP_TEXTS = {
+        State.CREATED: _("Thesis is created with basic information and it's waiting for state change."),
+        State.READY_FOR_SUBMIT: _("Thesis is currently waiting for submit from one of authors."),
+        State.SUBMITTED: _("Thesis has been submitted and it needs to be pushed to reviews."),
+        State.READY_FOR_REVIEW: _("Thesis is waiting for reviews from supervisor and opponent - also possible to add "
+                                  "external review."),
+        State.REVIEWED: _("Thesis has both reviews and it's waiting for publication."),
+        State.PUBLISHED: _("Thesis is public and it's possible to borrow it."),
+    }
+
 
 class ThesisAuthor(BaseTimestampedModel):
     author = models.ForeignKey(

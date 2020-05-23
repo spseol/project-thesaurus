@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, Tuple
 
 from django.conf import settings
 from django.db.models import Choices
@@ -17,9 +17,17 @@ class ModelChoicesOptionsView(ViewSetMixin, APIView):
 
     def list(self, request, *args, **kwargs):
         return Response(map(
-            lambda choice: dict(value=choice[0], text=choice[1]),
+            lambda choice: dict(
+                value=choice[0],
+                text=choice[1],
+                **self.choice_extra(choice),
+            ),
             self.choices.choices,
         ))
+
+    @staticmethod
+    def choice_extra(choice: Tuple[str, str]):
+        return dict()
 
 
 def server_error(request: HttpRequest, *args, **kwargs):

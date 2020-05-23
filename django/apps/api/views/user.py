@@ -45,7 +45,9 @@ class StudentOptionsViewSet(ReadOnlyModelViewSet):
 
 
 class TeacherOptionsViewSet(ReadOnlyModelViewSet):
-    queryset = User.school_users.teachers()
+    queryset = User.school_users.teachers().annotate(
+        thesis_count=Count('thesis_supervisor') + Count('thesis_opponent')
+    ).order_by('-thesis_count')
     pagination_class = None
     serializer_class = UserOptionSerializer
     search_fields = (

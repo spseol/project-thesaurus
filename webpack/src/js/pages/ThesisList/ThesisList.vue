@@ -21,7 +21,8 @@
             </template>
 
             <template v-slot:item.edit="{ item }">
-                <v-dialog max-width="65vw">
+                <v-dialog ref="editDialog" max-width="70vw" :fullscreen="$vuetify.breakpoint.smAndDown"
+                    v-model="item.editDialog">
                     <template v-slot:activator="{ on }">
                         <v-btn icon v-on="on" small>
                             <v-icon>mdi-file-document-edit-outline</v-icon>
@@ -31,7 +32,7 @@
                         :thesis="item"
                         :category-options="categoryOptions"
                         :teacher-options="teacherOptions"
-                        @reload="load"
+                        @reload="load" @close="item.editDialog = false"
                     ></ThesisEditPanel>
                 </v-dialog>
             </template>

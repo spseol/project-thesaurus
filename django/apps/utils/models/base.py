@@ -46,6 +46,7 @@ class BaseTypeModel(BaseModel):
     )
     order = PositiveSmallIntegerField(
         verbose_name=_('Order'),
+        default=0,
     )
 
     objects = BaseTypeModelManager()

@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Q, QuerySet, OuterRef, Exists, F
@@ -16,6 +18,7 @@ from apps.attachment.models import Attachment, TypeAttachment
 from apps.thesis.models import Thesis, Category, Reservation
 from apps.thesis.serializers import ThesisFullPublicSerializer, ThesisFullInternalSerializer, ThesisBaseSerializer
 from apps.thesis.serializers.thesis import ThesisSubmitSerializer
+from apps.utils.views import ModelChoicesOptionsView
 
 
 def _state_change_action(name, state: Thesis.State):
@@ -98,11 +101,13 @@ class ThesisViewSet(ModelViewSet):
             published_at=parse_date((serializer.initial_data.get('published_at') + '/01').replace('/', '-'))
         )
 
-        Attachment.objects.create_from_upload(
-            uploaded=self.request.FILES.get('admission'),
-            thesis=thesis,
-            type_attachment=TypeAttachment.objects.get_by_identifier(TypeAttachment.Identifier.THESIS_ASSIGMENT),
-        )
+        admission = self.request.FILES.get('admission')
+        if admission:
+            Attachment.objects.create_from_upload(
+                uploaded=admission,
+                thesis=thesis,
+                type_attachment=TypeAttachment.objects.get_by_identifier(TypeAttachment.Identifier.THESIS_ASSIGMENT),
+            )
 
         thesis.state = Thesis.State.READY_FOR_SUBMIT
         thesis.save()
@@ -174,3 +179,13 @@ class ThesisViewSet(ModelViewSet):
                 )))
 
         return DynamicThesisSerializer
+
+
+class ThesisStateOptionsViewSet(ModelChoicesOptionsView):
+    choices = Thesis.State
+
+    @staticmethod
+    def choice_extra(choice: Tuple[str, str]):
+        return dict(
+            help_text=Thesis.STATE_HELP_TEXTS.get(choice[0]),
+        )

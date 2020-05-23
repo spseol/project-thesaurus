@@ -11,7 +11,7 @@ from .views.exports import ThesesCompetitionViewSet
 from .views.login import LoginView
 from .views.reservation import ReservationViewSet, ReservationStateOptionsViewSet
 from .views.review import ReviewViewSet
-from .views.thesis import ThesisViewSet
+from .views.thesis import ThesisViewSet, ThesisStateOptionsViewSet
 from .views.user import UserFilterOptionsViewSet, StudentOptionsViewSet, TeacherOptionsViewSet, UserPermView
 from ..review.views import ReviewPdfView
 
@@ -30,6 +30,7 @@ router.register(r'teacher-options', TeacherOptionsViewSet, basename='teacher')
 router.register(r'category-options', CategoryOptionsViewSet, basename='category')
 router.register(r'thesis-year-options', ThesisYearViewSet, basename='thesis-year')
 router.register(r'reservation-state-options', ReservationStateOptionsViewSet, basename='reservation-state')
+router.register(r'thesis-state-options', ThesisStateOptionsViewSet, basename='thesis-state')
 
 app_name = 'api'
 urlpatterns = [
