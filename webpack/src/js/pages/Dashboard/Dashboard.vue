@@ -55,7 +55,23 @@
                 </v-row>
             </v-alert>
 
-            <v-alert v-if="!(theses_ready_for_review.length + theses_ready_for_submit.length + reservations_ready_for_prepare.length)" type="info" outlined>
+            <v-alert type="info" outlined prominent v-if="theses_just_submitted.length">
+                <v-row align="center">
+                    <v-col class="grow">
+                        <h2 class="mb-1">
+                            {{ $t('Just submitted theses waiting for check') }}
+                            ({{theses_just_submitted.length }})
+                        </h2>
+                    </v-col>
+                    <v-col class="shrink">
+                        <v-btn large :to="$i18nRoute({name: 'thesis-list'})">
+                            {{ $t('Go to theses') }}
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-alert>
+
+            <v-alert v-if="showNoData" type="info" outlined>
                 {{ $t('dashboard.nothingNote') }}
             </v-alert>
         </v-card-text>
@@ -72,7 +88,8 @@
             return {
                 theses_ready_for_submit: [],
                 theses_ready_for_review: [],
-                reservations_ready_for_prepare: []
+                reservations_ready_for_prepare: [],
+                theses_just_submitted: []
             };
         },
         async created() {
@@ -87,6 +104,10 @@
                     this.reservations_ready_for_prepare,
                     _.property('thesis_registration_number')
                 ).sort();
+            },
+            showNoData() {
+                return this.theses_ready_for_review.length && this.theses_ready_for_submit.length
+                    && this.reservations_ready_for_prepare.length && this.theses_just_submitted.length;
             }
         }
     };

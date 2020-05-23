@@ -28,6 +28,11 @@ class DashboardView(APIView):
                 state=Reservation.State.CREATED,
             )
 
+        theses_just_submitted = ()
+        if self.request.user.has_perm('thesis.change_thesis'):
+            theses_just_submitted = Thesis.objects.filter(
+                state=Thesis.State.SUBMITTED,
+            )
         # TODO: theses waiting for physical submit
 
         return Response(data=dict(
@@ -42,5 +47,9 @@ class DashboardView(APIView):
             reservations_ready_for_prepare=ReservationSerializer(
                 many=True,
                 instance=reservations_ready_for_prepare
+            ).data,
+            theses_just_submitted=ThesisBaseSerializer(
+                many=True,
+                instance=theses_just_submitted
             ).data,
         ))
