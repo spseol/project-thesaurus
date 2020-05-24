@@ -1,7 +1,7 @@
 from rest_framework.viewsets import ModelViewSet
 
 from apps.review.models import Review
-from apps.review.serializers import ReviewSerializer
+from apps.review.serializers import ReviewFullInternalSerializer, ReviewPublicSerializer
 
 
 class ReviewViewSet(ModelViewSet):
@@ -11,4 +11,14 @@ class ReviewViewSet(ModelViewSet):
     ).prefetch_related(
         'thesis__authors',
     )
-    serializer_class = ReviewSerializer
+
+    def get_serializer_class(self):
+        if self.request.user.has_perm('review.add_review'):
+            return ReviewFullInternalSerializer
+
+        if self.detail:
+            review: Review = self.get_object()
+            if self.request.user in review.thesis.authors.all():
+                return ReviewFullInternalSerializer
+
+        return ReviewPublicSerializer

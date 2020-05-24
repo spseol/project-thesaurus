@@ -71,25 +71,27 @@
             x-small depressed disabled
         ></v-btn>
 
-        <template v-if="thesis.state === 'ready_for_review'" v-has-perm:thesis.change_thesis>
-            <v-hover v-slot:default="{ hover }" style="min-width: 15em">
-                <v-badge
-                    color="primary" overlap :value="!hover && availableExternalReviewersOptions.length"
-                    :content="availableExternalReviewersOptions.length"
-                >
-                    <!-- TODO: detect external/internal s/o -->
-                    <v-btn
-                        v-if="!hover || !availableExternalReviewersOptions.length"
-                        small depressed disabled block
-                    >{{ $t('Waiting for review') }}</v-btn>
-                    <v-btn
-                        v-if="hover && availableExternalReviewersOptions.length"
-                        @click="submitExternalReviewDialog = true"
-                        small depressed outlined color="info" block
-                    >{{ $t('Submit external review') }}</v-btn>
-                </v-badge>
-            </v-hover>
-        </template>
+        <span v-has-perm:thesis.change_thesis>
+            <template v-if="thesis.state === 'ready_for_review'">
+                <v-hover v-slot:default="{ hover }" style="min-width: 15em">
+                    <v-badge
+                        color="primary" overlap :value="!hover && availableExternalReviewersOptions.length"
+                        :content="availableExternalReviewersOptions.length"
+                    >
+                        <!-- TODO: detect external/internal s/o -->
+                        <v-btn
+                            v-if="!hover || !availableExternalReviewersOptions.length"
+                            small depressed disabled block
+                        >{{ $t('Waiting for review') }}</v-btn>
+                        <v-btn
+                            v-if="hover && availableExternalReviewersOptions.length"
+                            @click="submitExternalReviewDialog = true"
+                            small depressed outlined color="info" block
+                        >{{ $t('Submit external review') }}</v-btn>
+                    </v-badge>
+                </v-hover>
+            </template>
+        </span>
 
         <v-dialog v-model="sendToReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '50vw'">
             <v-card :loading="dialogLoading">

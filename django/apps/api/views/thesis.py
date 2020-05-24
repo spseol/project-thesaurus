@@ -13,11 +13,18 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts.models import User
-from apps.api.permissions import CanSubmitThesisPermission, CanSubmitExternalThesisReviewPermission
+from apps.api.permissions import (
+    CanSubmitThesisPermission,
+    CanSubmitExternalThesisReviewPermission,
+    CanViewThesisFullInternalReview
+)
 from apps.attachment.models import Attachment, TypeAttachment
+from apps.review.serializers import ReviewFullInternalSerializer, ReviewPublicSerializer
 from apps.thesis.models import Thesis, Category, Reservation
-from apps.thesis.serializers import ThesisFullPublicSerializer, ThesisFullInternalSerializer, ThesisBaseSerializer
-from apps.thesis.serializers.thesis import ThesisSubmitSerializer
+from apps.thesis.serializers import (
+    ThesisFullPublicSerializer, ThesisFullInternalSerializer,
+    ThesisBaseSerializer, ThesisSubmitSerializer
+)
 from apps.utils.views import ModelChoicesOptionsView
 
 
@@ -74,16 +81,13 @@ class ThesisViewSet(ModelViewSet):
             )
         )
 
-        # in case of request for one object include also thesis waiting for submit by one author
-        include_waiting_for_submit = self.action in ('retrieve', 'submit')
-
         if user.has_perm('thesis.change_thesis'):  # can see all of them
             return qs
 
         # no perms to see all thesis, so filter only published ones
         return qs.filter(
             Q(state=Thesis.State.PUBLISHED) |
-            (Q(authors=user, state=Thesis.State.READY_FOR_SUBMIT) if include_waiting_for_submit else Q()) |
+            Q(authors=user) |
             Q(opponent=user, state=Thesis.State.READY_FOR_REVIEW) |
             Q(supervisor=user, state=Thesis.State.READY_FOR_REVIEW)
         )
@@ -167,6 +171,20 @@ class ThesisViewSet(ModelViewSet):
         thesis.check_reviews_state()
 
         return Response(data=dict(id=attachment.id))
+
+    @action(methods=['get'], detail=True)
+    def reviews(self, request, *args, **kwargs):
+        thesis = self.get_object()
+
+        serializer_class = ReviewPublicSerializer
+        if CanViewThesisFullInternalReview().has_object_permission(self.request, self, thesis):
+            serializer_class = ReviewFullInternalSerializer
+
+        return Response(
+            serializer_class(
+                instance=thesis.review_thesis, many=True, context=self.get_serializer_context()
+            ).data
+        )
 
     def get_serializer_class(self):
         class DynamicThesisSerializer(ThesisFullInternalSerializer):

@@ -63,7 +63,7 @@
 
             <v-spacer/>
             <span class="font-weight-medium">
-            {{ pageContext.username }}
+            {{ pageContext.user.full_name }}
             </span>
             <v-btn icon href="/logout" x-large class="mr-2">
                 <v-icon large>mdi-logout</v-icon>

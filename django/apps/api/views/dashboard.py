@@ -13,10 +13,6 @@ class DashboardView(APIView):
 
     def get(self, request: Request):
         user = self.request.user
-        theses_ready_for_submit = Thesis.objects.filter(
-            authors=user,
-            state=Thesis.State.READY_FOR_SUBMIT,
-        )
         theses_ready_for_review = Thesis.objects.filter(
             Q(supervisor=user) | Q(opponent=user),
             state=Thesis.State.READY_FOR_REVIEW,
@@ -33,13 +29,13 @@ class DashboardView(APIView):
             theses_just_submitted = Thesis.objects.filter(
                 state=Thesis.State.SUBMITTED,
             )
+
+        author_theses = Thesis.objects.filter(
+            authors=user,
+        )
         # TODO: theses waiting for physical submit
 
         return Response(data=dict(
-            theses_ready_for_submit=ThesisBaseSerializer(
-                many=True,
-                instance=theses_ready_for_submit
-            ).data,
             theses_ready_for_review=ThesisBaseSerializer(
                 many=True,
                 instance=theses_ready_for_review
@@ -51,5 +47,9 @@ class DashboardView(APIView):
             theses_just_submitted=ThesisBaseSerializer(
                 many=True,
                 instance=theses_just_submitted
+            ).data,
+            author_theses=ThesisBaseSerializer(
+                many=True,
+                instance=author_theses
             ).data,
         ))

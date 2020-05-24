@@ -38,3 +38,10 @@ class CanCancelReservation(BasePermission):
                 reservation.for_user == user and reservation.state ==
                 Reservation.State.CREATED
         )
+
+
+class CanViewThesisFullInternalReview(BasePermission):
+    def has_object_permission(self, request, view, thesis: Thesis):
+        user = request.user  # type: User
+
+        return user.has_perm('review.add_review') or user in thesis.authors.all()

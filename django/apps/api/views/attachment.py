@@ -14,6 +14,8 @@ class AttachmentViewSet(GenericViewSet):
     def retrieve(self, request, *args, **kwargs):
         attachment = self.get_object()  # type: Attachment
 
+        # TODO: check t_a.is_public
+
         if not default_storage.exists(attachment.file_path):
             logging.error('Attachment file not found on storage.')
             return Response('Attachment not found.', status=status.HTTP_404_NOT_FOUND)

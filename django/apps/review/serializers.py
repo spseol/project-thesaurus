@@ -9,12 +9,11 @@ from apps.review.models import Review
 from apps.thesis.models import Thesis
 
 
-class ReviewSerializer(ModelSerializer):
+class ReviewPublicSerializer(ModelSerializer):
     thesis = PrimaryKeyRelatedField(
         queryset=Thesis.objects.get_queryset(),
         style=dict(base_template='input.html'),
     )
-
     user = UserSerializer(read_only=True)
     user_id = HiddenField(default=CurrentUserDefault(), source='user', write_only=True)
 
@@ -30,8 +29,6 @@ class ReviewSerializer(ModelSerializer):
             'thesis',
             'user',
             'user_id',
-            'comment',
-            'questions',
             'difficulty',
             'grades',
             'grade_proposal',
@@ -40,7 +37,7 @@ class ReviewSerializer(ModelSerializer):
 
     def validate(self, attrs):
         thesis = attrs.get('thesis')
-        user = self.context['request'].user if not self.instance else self.instance.user
+        user = self.context.get('request').user if not self.instance else self.instance.user
 
         if not (
                 thesis.state == Thesis.State.READY_FOR_REVIEW and
@@ -56,3 +53,11 @@ class ReviewSerializer(ModelSerializer):
                                     'review for this thesis.'))
 
         return attrs
+
+
+class ReviewFullInternalSerializer(ReviewPublicSerializer):
+    class Meta(ReviewPublicSerializer.Meta):
+        fields = ReviewPublicSerializer.Meta.fields + (
+            'comment',
+            'questions',
+        )

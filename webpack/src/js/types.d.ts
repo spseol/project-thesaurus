@@ -39,6 +39,9 @@ export declare class Thesis extends Object {
     attachments: Array<Attachment>;
     reviews: Array<object>;
 
+    state: string;
+    state_label: string;
+
     available_for_reservation: boolean;
     reservable: boolean;
     open_reservations_count: number;

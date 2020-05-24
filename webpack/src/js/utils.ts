@@ -1,8 +1,10 @@
 import Vue from 'vue';
 import colors from 'vuetify/lib/util/colors';
+import {User} from './types';
 
-class Context {
-    username: string;
+class PageContext {
+    username: string; // TODO: deprecated
+    user: User;
     locale: string;
     djangoAdminUrl: string;
     languages: Array<string>;
@@ -33,7 +35,7 @@ function readFileAsync(file) {
     });
 }
 
-const pageContext = new Context();
+const pageContext = new PageContext();
 
 class Flash extends Object {
     text: string;

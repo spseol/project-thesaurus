@@ -28,6 +28,7 @@ student	Can view Thesis
 student	Can view Category
 student	Can add Reservation
 student	Can view Reservation
+student	Can view Review
 teacher	Can view Thesis
 teacher	Can add Review
 teacher	Can view Review
@@ -49,3 +50,4 @@ class Command(BaseCommand):
             g.permissions.add(
                 Permission.objects.get(name=p_name)
             )
+            print(line)

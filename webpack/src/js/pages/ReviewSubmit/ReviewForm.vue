@@ -34,24 +34,26 @@
                                     {{ attachment.type_attachment.name }}
                                 </v-btn>
                             </v-row>
-                            <v-divider></v-divider>
-                            <h3 class="my-5">{{ $t('Review comment') }}</h3>
-                            <tiptap-vuetify
-                                v-model="review.comment"
-                                :placeholder="$t('review.commentPlaceholder')"
-                                :extensions="tipTapExtensions"
-                                :card-props="{flat: true, outlined: true, solo: true}" minHeight="200px"
-                                :editor-properties="{autoFocus: true}"
-                                class="mb-5"
-                            ></tiptap-vuetify>
+                            <div v-if="showComments">
+                                <v-divider></v-divider>
+                                <h3 class="my-5">{{ $t('Review comment') }}</h3>
+                                <tiptap-vuetify
+                                    v-model="review.comment"
+                                    :placeholder="$t('review.commentPlaceholder')"
+                                    :extensions="tipTapExtensions"
+                                    :card-props="{flat: true, outlined: true, solo: true}" minHeight="200px"
+                                    :editor-properties="{autoFocus: true}"
+                                    class="mb-5"
+                                ></tiptap-vuetify>
 
-                            <h3 class="mb-5">{{ $t('Thesis defence questions') }}</h3>
-                            <tiptap-vuetify
-                                v-model="review.questions"
-                                :placeholder="$t('review.questionsPlaceholder')"
-                                :extensions="tipTapExtensions"
-                                :card-props="{flat: true, outlined: true, solo: true}" minHeight="150px"
-                            ></tiptap-vuetify>
+                                <h3 class="mb-5">{{ $t('Thesis defence questions') }}</h3>
+                                <tiptap-vuetify
+                                    v-model="review.questions"
+                                    :placeholder="$t('review.questionsPlaceholder')"
+                                    :extensions="tipTapExtensions"
+                                    :card-props="{flat: true, outlined: true, solo: true}" minHeight="150px"
+                                ></tiptap-vuetify>
+                            </div>
                         </v-col>
                         <v-col class="d-flex flex-column justify-space-between" cols="12" md="6">
                             <div>
@@ -61,13 +63,12 @@
                                 ></v-chip>
                                 <v-slider
                                     :color="valueToColor(review.difficulty, 3)"
-                                    :max="3" :min="0" :step="1"
-                                    :rules="[v => v > 0]"
+                                    :max="3" :min="0" :step="1" :rules="[v => v > 0]"
                                     :thumb-color="valueToColor(review.difficulty, 3)"
                                     :tick-labels="grades3"
                                     class="VSliderCustom__label--gray"
-                                    ticks="always" track-color="grey"
-                                    v-model="review.difficulty"
+                                    ticks="always" track-color="grey" :thumb-size="48"
+                                    v-model="review.difficulty" :disabled="disabled"
                                 ></v-slider>
 
                                 <div v-for="(grade, i) in review.grades">
@@ -76,19 +77,18 @@
                                     <v-slider
                                         :max="4" :min="0" :rules="[v => v > 0]" :step="1"
                                         :thumb-color="valueToColor(grade, 4)" :color="valueToColor(grade, 4)"
-                                        :tick-labels="grades4" ticks="always" track-color="grey"
-                                        class="VSliderCustom__label--gray"
-                                        v-model="review.grades[i]"
+                                        :tick-labels="grades4" ticks="always"
+                                        class="VSliderCustom__label--gray" :thumb-size="48"
+                                        v-model="review.grades[i]" :disabled="disabled"
                                     ></v-slider>
                                 </div>
                             </div>
                             <div>
                                 <v-divider></v-divider>
                                 <v-radio-group
-                                    :label="$t('Classification proposal')"
+                                    :label="$t('Classification proposal')" row
                                     :rules="[v => !!v]"
-                                    row
-                                    v-model="review.grade_proposal"
+                                    v-model="review.grade_proposal" :disabled="disabled"
                                 >
                                     <v-spacer></v-spacer>
                                     <v-radio
@@ -132,12 +132,12 @@
 <script type="text/tsx">
     import _ from 'lodash';
     import {Bold, BulletList, History, Italic, Link, ListItem, TiptapVuetify} from 'tiptap-vuetify';
-    import Vue from 'vue';
     import Axios from '../../axios';
+    import {hasPerm} from '../../user';
     import {eventBus, GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_4, pageContext} from '../../utils';
 
 
-    export default Vue.extend({
+    export default {
         name: 'ReviewForm',
         components: {TiptapVuetify},
         props: {
@@ -162,7 +162,7 @@
                 review: {
                     difficulty: 0,
                     grade_proposal: 0,
-                    grades: _.times(this.reviewingUserRole == 'supervisor' ? 6 : 5, () => 0),
+                    grades: _.times(this.reviewerRole == 'supervisor' ? 6 : 5, () => 0),
                     comment: null,
                     questions: null
                 }
@@ -189,7 +189,7 @@
             },
             gradings() {
                 return _.compact([
-                    this.reviewingUserRole == 'supervisor' ? this.$t('Students independence during processing') : null,
+                    this.reviewerRole == 'supervisor' ? this.$t('Students independence during processing') : null,
                     this.$t('Theoretical part of the work, comprehensibility of the text'),
                     this.$t('Methods and procedures used'),
                     this.$t('Formal editing, work with sources, citations in the text'),
@@ -197,11 +197,20 @@
                     this.$t('Interpretation of conclusions, their originality and their own contribution to the work')
                 ]);
             },
-            thesisTextAttachment() {
-                return _.find(this.thesis.attachments, {type_attachment: {identifier: 'thesis_text'}});
-            },
             gradeProposalOptions() {
                 return _.map(_.reverse(_.compact(this.grades4)), (grade, i) => ([4 - i, grade]));
+            },
+            disabled() {
+                return !!this.review.id;
+            }
+        },
+        asyncComputed: {
+            showComments: {
+                async get() {
+                    return (await hasPerm('review.add_review')) ||
+                        !!_.find(this.thesis.authors, {id: pageContext.user.id});
+                },
+                default: false
             }
         },
         methods: {
@@ -236,5 +245,5 @@
                 this.review = Object.assign({}, this.review, _.cloneDeep(to));
             }
         }
-    });
+    };
 </script>
