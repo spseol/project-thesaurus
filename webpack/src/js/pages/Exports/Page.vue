@@ -43,7 +43,7 @@
     import _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
-    import Podium from './Podidum';
+    import Podium from './Podidum.vue';
 
     export default Vue.extend({
         name: 'Page',

@@ -11,9 +11,8 @@
 
 <script type="text/tsx">
     import Vue from 'vue';
-    import ImportForm from './ImportForm';
-
-    import PrepareForm from './PrepareForm';
+    import ImportForm from './ImportForm.vue';
+    import PrepareForm from './PrepareForm.vue';
 
     export default Vue.extend({
         components: {ThesisPrepareForm: PrepareForm, ImportForm}

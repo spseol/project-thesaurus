@@ -141,14 +141,14 @@
     import {hasPerm} from '../../user';
     import {eventBus} from '../../utils';
     import ThesisService from './thesis-service';
-    import ThesisEditPanel from './ThesisEditPanel';
-    import ThesisListActionBtn from './ThesisListActionBtn';
+    import ThesisEditPanel from './ThesisEditPanel.vue';
+    import ThesisListActionBtn from './ThesisListActionBtn.vue';
 
     export default Vue.extend({
         components: {
             ThesisEditPanel,
             ThesisListActionBtn,
-            ThesisDetailPanel: () => import('./ThesisDetailPanel')
+            ThesisDetailPanel: () => import('./ThesisDetailPanel.vue')
         },
         data() {
             return {

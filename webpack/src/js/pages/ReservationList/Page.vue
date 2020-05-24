@@ -8,7 +8,7 @@
 
 <script type="text/tsx">
     import Vue from 'vue';
-    import ReservationList from './ReservationList';
+    import ReservationList from './ReservationList.vue';
 
     export default Vue.extend({
         name: 'Page',

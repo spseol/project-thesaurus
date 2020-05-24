@@ -12,12 +12,12 @@
     </v-row>
 </template>
 
-<script>
+<script type="text/tsx">
     import Vue from 'vue';
     import {hasGroup, hasPerm} from '../../user';
-    import Dashboard from './Dashboard';
+    import Dashboard from './Dashboard.vue';
     import MyReservations from './MyReservations.vue';
-    import RecentTheses from './RecentTheses';
+    import RecentTheses from './RecentTheses.vue';
 
     export default Vue.extend({
         name: 'Page',

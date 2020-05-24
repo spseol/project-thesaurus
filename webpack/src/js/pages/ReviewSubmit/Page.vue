@@ -8,7 +8,7 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import Axios from '../../axios';
-    import ReviewForm from './ReviewForm';
+    import ReviewForm from './ReviewForm.vue';
 
     async function loadData({thesisId, reviewId}) {
         let review = {}, thesis = {};

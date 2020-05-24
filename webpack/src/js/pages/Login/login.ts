@@ -1,5 +1,5 @@
 import createVue from './../../app';
-import Login from './Login';
+import Login from './Login.vue';
 
 createVue({
     router: undefined,
