@@ -42,7 +42,6 @@ def page_context(context, element_id, _re_language=re.compile(r'[_-]'), *args, *
 
     return json_script(dict(
         locale=_re_language.split(translation.get_language())[0],
-        username=request.user.get_username(),  # TODO: deprecated
         user=UserSerializer(instance=request.user).data,
         groups=tuple(request.user.groups.values_list('name', flat=True)),
         djangoAdminUrl=reverse('admin:index') if request.user.is_staff else '',

@@ -3,7 +3,6 @@ import colors from 'vuetify/lib/util/colors';
 import {User} from './types';
 
 class PageContext {
-    username: string; // TODO: deprecated
     user: User;
     locale: string;
     djangoAdminUrl: string;

@@ -185,7 +185,7 @@
                 return {
                     [this.thesis.supervisor?.username]: 'supervisor',
                     [this.thesis.opponent?.username]: 'opponent'
-                }[this.review?.user?.username || pageContext.username];
+                }[this.review?.user?.username || pageContext.user.username];
             },
             gradings() {
                 return _.compact([
