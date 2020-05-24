@@ -13,9 +13,9 @@ class ReservationSerializer(ModelSerializer):
         style=dict(base_template='input.html'),
     )
 
-    for_user = UserSerializer(read_only=True)
-    for_user_id = PrimaryKeyRelatedField(
-        write_only=True, source='for_user',
+    user = UserSerializer(read_only=True)
+    user_id = PrimaryKeyRelatedField(
+        write_only=True, source='user',
         queryset=User.objects.all(),
         default=CurrentUserDefault(),
         style=dict(base_template='input.html'),
@@ -31,8 +31,8 @@ class ReservationSerializer(ModelSerializer):
         fields = (
             'id',
             'thesis',
-            'for_user',
-            'for_user_id',
+            'user',
+            'user_id',
             'thesis_label',
             'thesis_registration_number',
             'created',

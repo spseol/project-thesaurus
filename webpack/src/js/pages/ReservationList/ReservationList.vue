@@ -89,7 +89,7 @@
             headers() {
                 const customStateSort = ['created', 'ready', 'running', 'finished'];
                 return [
-                    {text: this.$t('For user'), value: 'for_user.full_name'},
+                    {text: this.$t('For user'), value: 'user.full_name'},
                     {text: this.$t('Thesis SN'), value: 'thesis_registration_number'},
                     {text: this.$t('Thesis'), value: 'thesis_label'},
                     {text: this.$t('Created'), value: 'created'},

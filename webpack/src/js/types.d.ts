@@ -20,7 +20,7 @@ export declare class Attachment extends Object {
 export declare class Reservation extends Object {
     id: string;
     thesis: string;
-    for_user: User;
+    user: User;
     thesis_label: string;
     thesis_registration_number: string;
     created: string;

@@ -26,9 +26,9 @@ class Reservation(BaseTimestampedModel):
         on_delete=models.PROTECT,
     )
 
-    for_user = models.ForeignKey(
+    user = models.ForeignKey(
         to=get_user_model(),
-        related_name='reservation_for_user',
+        related_name='reservation_user',
         verbose_name=_('For user'),
         on_delete=models.PROTECT,
     )
@@ -51,5 +51,5 @@ class Reservation(BaseTimestampedModel):
     def __str__(self):
         return _('Reservation {} for {}').format(
             self.thesis,
-            self.for_user,
+            self.user,
         )

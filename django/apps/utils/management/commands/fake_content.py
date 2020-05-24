@@ -46,7 +46,7 @@ class Command(BaseCommand):
         ))
         seeder.add_entity(Reservation, 5, dict(
             state=lambda *_: choice(Reservation.State.values),
-            for_user=lambda *_: choice(students),
+            user=lambda *_: choice(students),
         ))
 
         inserted = seeder.execute()

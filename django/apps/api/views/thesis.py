@@ -75,7 +75,7 @@ class ThesisViewSet(ModelViewSet):
             _reservable=F('reservable') and Exists(
                 queryset=Reservation.open_reservations.filter(
                     thesis_id=OuterRef('pk'),
-                    for_user=user,
+                    user=user,
                 ),
                 negated=True,
             )

@@ -35,7 +35,7 @@ class CanCancelReservation(BasePermission):
         user = request.user  # type: User
 
         return user.has_perm('thesis.change_reservation') or (
-                reservation.for_user == user and reservation.state ==
+                reservation.user == user and reservation.state ==
                 Reservation.State.CREATED
         )
 

@@ -11213,7 +11213,7 @@
 							"_parent": {
 								"$ref": "AAAAAAFxw3fd9D2BFsU="
 							},
-							"name": "for_user",
+							"name": "user",
 							"end1": {
 								"_type": "ERDRelationshipEnd",
 								"_id": "AAAAAAFxw3nS/T6Pdts=",
