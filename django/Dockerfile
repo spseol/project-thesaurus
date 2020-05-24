@@ -7,6 +7,8 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+# same for postgres container
+ENV TZ Europe/Prague
 
 # configure users, dirs, install psycopg, install runtime deps
 RUN addgroup -S django \
@@ -17,12 +19,13 @@ RUN addgroup -S django \
     #   build deps
     && apk add --virtual build-deps gcc python3-dev musl-dev gettext-dev \
     #  runtime deps
-    && apk add postgresql-dev gettext cairo-dev pango-dev gdk-pixbuf openjpeg-dev font-noto \
+    && apk add postgresql-dev gettext cairo-dev pango-dev gdk-pixbuf openjpeg-dev font-noto tzdata \
     && pipenv install psycopg2-binary --skip-lock --dev \
     && apk del build-deps \
     && mkdir /usr/src/static /usr/src/media \
     && chown django:django /usr/src/static \
-    && chown django:django /usr/src/media
+    && chown django:django /usr/src/media \
+    && ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # install python deps
 COPY ./Pipfile ./Pipfile.lock /usr/src/app/

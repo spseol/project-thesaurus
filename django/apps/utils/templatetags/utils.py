@@ -40,11 +40,12 @@ def absolute_url(context, view_name, *args, **kwargs):
 def page_context(context, element_id, _re_language=re.compile(r'[_-]'), *args, **kwargs):
     request: HttpRequest = context['request']
 
+    user = request.user
     return json_script(dict(
         locale=_re_language.split(translation.get_language())[0],
-        user=UserSerializer(instance=request.user).data,
-        groups=tuple(request.user.groups.values_list('name', flat=True)),
-        djangoAdminUrl=reverse('admin:index') if request.user.is_staff else '',
+        user=UserSerializer(instance=user).data,
+        groups=tuple(user.groups.values_list('name', flat=True)),
+        djangoAdminUrl=reverse('admin:index') if user.is_staff else '',
         languages=[(k, translation.gettext(v)) for k, v in settings.LANGUAGES],
         version=settings.VERSION,
     ), element_id)

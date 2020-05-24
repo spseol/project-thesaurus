@@ -8,7 +8,7 @@ import VuetifyToast from 'vuetify-toast-snackbar';
 import csVuetify from 'vuetify/es5/locale/cs';
 import enVuetify from 'vuetify/es5/locale/en';
 import colors from 'vuetify/es5/util/colors';
-import Vuetify from 'vuetify/lib/index';
+import Vuetify, {VBtn, VIcon, VSnackbar} from 'vuetify/lib/index';
 
 import '../scss/index.scss';
 import App from './App.vue';
@@ -21,14 +21,23 @@ import {pageContext} from './utils';
 
 export default function createVue(opts = {}) {
     Vue.use(VueI18n);
-    Vue.use(Vuetify);
+    Vue.use(Vuetify, {
+        components: {
+            VSnackbar,
+            VBtn,
+            VIcon
+        }
+    });
     Vue.use(VueRouter);
     Vue.use(VueAsyncComputed);
     Vue.use(PortalVue);
     Vue.use(I18nRoutePlugin);
     Vue.use(DjangoPermsPlugin);
     Vue.use(VuetifyToast, {
-        queueable: true
+        queueable: true,
+        x: 'right',
+        y: 'top',
+        timeout: 6000
     });
 
     Vue.config.productionTip = false;

@@ -88,37 +88,21 @@
                     v{{ pageContext.version }}
                 </a> &copy; 2020</span>
         </v-footer>
-
-        <v-snackbar
-            v-model="flash.show"
-            :timeout="flash.timeout"
-            :color="flash.color || flash.type || 'info'"
-            right top
-        >
-            {{ flash.text }}
-            <v-btn text @click="flash.show = false">
-                <v-icon>mdi-close</v-icon>
-            </v-btn>
-        </v-snackbar>
-
     </v-app>
 </template>
 
 
 <script type="text/tsx">
     import Vue from 'vue';
-    import LanguageMenu from './components/LanguageMenu';
+    import LanguageMenu from './components/LanguageMenu.vue';
     import {eventBus, pageContext} from './utils';
 
     export default Vue.extend({
         components: {LanguageMenu},
         data() {
-            // @ts-ignore
-            let $t = (key) => this.$t(key);
             return {
                 pageContext,
                 drawer: this.$vuetify.breakpoint.mdAndUp && this.$route.name != '404',
-                flash: {show: false}
             };
         },
         computed: {
@@ -162,8 +146,7 @@
         },
         created() {
             eventBus.$on('flash', (flash) => {
-                this.flash = Object.assign({}, flash);
-                this.flash.show = true;
+                this.$toast(flash.text, flash);
             });
         }
     });

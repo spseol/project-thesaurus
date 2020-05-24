@@ -1,3 +1,4 @@
+from constance import config
 from django.utils.translation import gettext as _
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -49,7 +50,13 @@ class ReservationViewSet(ModelViewSet):
         ).exists():
             raise ValidationError(_('There is already existing reservation for this thesis by user.'))
 
-        # TODO: check also limit for borrowed theses per user
+        if Reservation.open_reservations.filter(
+                for_user=user,
+        ).count() + 1 > config.MAX_OPEN_RESERVATIONS_COUNT:
+            raise ValidationError(
+                _('Cannot create new reservation, maximum count of opened reservations/borrows is {}.').format(
+                    config.MAX_OPEN_RESERVATIONS_COUNT)
+            )
 
         serializer.save()
 

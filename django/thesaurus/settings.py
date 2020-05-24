@@ -8,6 +8,7 @@ import re
 from logging.config import dictConfig
 
 from decouple import AutoConfig
+from django.core.validators import MinValueValidator
 from django.utils.log import DEFAULT_LOGGING
 from django.utils.translation import gettext_lazy as _
 
@@ -31,6 +32,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'constance',
+    'constance.backends.database',
 
     'apps.accounts',
     'apps.api',
@@ -132,7 +135,7 @@ AUTHENTICATION_BACKENDS = [
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGES = (
-    ('cs', _('Čeština')),
+    ('cs', _('Czech')),
     ('en', _('English')),
 )
 
@@ -269,3 +272,20 @@ LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
 LDAP_AUTH_SYNC_USER_RELATIONS = "apps.accounts.ldap.sync_user_relations"
 LDAP_AUTH_FORMAT_SEARCH_FILTERS = "django_python3_ldap.utils.format_search_filters"
 LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory_principal"
+
+# custom app config
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
+    'MAX_OPEN_RESERVATIONS_COUNT': (
+        6,
+        _('Maximal count of opened reservations linked to one user (inclusive).'),
+        'non_negative_small_integer',
+    ),
+}
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'non_negative_small_integer': ['django.forms.fields.IntegerField', {
+        'validators': [
+            MinValueValidator(limit_value=0)
+        ]
+    }],
+}

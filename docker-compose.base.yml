@@ -33,6 +33,7 @@ services:
       - POSTGRES_USER=thesaurus
       - POSTGRES_PASSWORD=thesaurus
       - POSTGRES_DB=thesaurus
+      - TZ=Europe/Prague
 
   webserver:
     container_name: thesaurus_webserver
