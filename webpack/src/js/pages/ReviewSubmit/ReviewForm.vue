@@ -66,7 +66,7 @@
                                     :max="3" :min="0" :step="1" :rules="[v => v > 0]"
                                     :thumb-color="valueToColor(review.difficulty, 3)"
                                     :tick-labels="grades3"
-                                    class="VSliderCustom__label--gray"
+                                    class="VSliderCustom__label--grey"
                                     ticks="always" track-color="grey" :thumb-size="48"
                                     v-model="review.difficulty" :disabled="disabled"
                                 ></v-slider>
@@ -77,8 +77,8 @@
                                     <v-slider
                                         :max="4" :min="0" :rules="[v => v > 0]" :step="1"
                                         :thumb-color="valueToColor(grade, 4)" :color="valueToColor(grade, 4)"
-                                        :tick-labels="grades4" ticks="always"
-                                        class="VSliderCustom__label--gray" :thumb-size="48"
+                                        :tick-labels="grades4" ticks="always" track-color="grey"
+                                        class="VSliderCustom__label--grey" :thumb-size="48"
                                         v-model="review.grades[i]" :disabled="disabled"
                                     ></v-slider>
                                 </div>

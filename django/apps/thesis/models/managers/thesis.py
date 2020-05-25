@@ -1,5 +1,10 @@
+import typing
+
 from django.db.models import Exists, Count, Q, OuterRef, CharField, QuerySet, Manager
 from django.db.models.functions import ExtractYear, Cast
+
+if typing.TYPE_CHECKING:
+    from apps.thesis.models import Thesis
 
 
 class ThesisManager(Manager):
@@ -7,6 +12,29 @@ class ThesisManager(Manager):
         return self.filter(
             state=self.model.State.PUBLISHED
         )
+
+    @staticmethod
+    def check_state_after_review_submit(thesis: 'Thesis'):
+        from apps.attachment.models import TypeAttachment
+        if (
+                thesis.review_thesis.filter(
+                    user=thesis.supervisor
+                ).exists()  # has internal review
+                or
+                thesis.attachment_thesis.filter(
+                    type_attachment__identifier=TypeAttachment.Identifier.SUPERVISOR_REVIEW
+                ).exists()  # or has external
+        ) and (
+                thesis.review_thesis.filter(
+                    user=thesis.opponent
+                ).exists()
+                or
+                thesis.attachment_thesis.filter(
+                    type_attachment__identifier=TypeAttachment.Identifier.OPPONENT_REVIEW
+                ).exists()
+        ):
+            thesis.state = thesis.State.REVIEWED
+            thesis.save(update_fields=['state'])
 
 
 class ThesisApiManager(ThesisManager):

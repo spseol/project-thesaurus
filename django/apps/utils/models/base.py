@@ -3,6 +3,7 @@ from uuid import uuid4
 from django.db.models import Model, UUIDField, CharField, TextField, PositiveSmallIntegerField
 from django.utils.translation import gettext_lazy as _
 from django_extensions.db.fields import CreationDateTimeField, ModificationDateTimeField
+from django_lifecycle import LifecycleModelMixin
 
 from apps.utils.models.managers import BaseTypeModelManager
 
@@ -15,7 +16,7 @@ class BaseModel(Model):
         abstract = True
 
 
-class BaseTimestampedModel(BaseModel):
+class BaseTimestampedModel(LifecycleModelMixin, BaseModel):
     """Base model with stored creation and last modification date."""
     created = CreationDateTimeField(_('created'))
     modified = ModificationDateTimeField(_('modified'))
@@ -37,7 +38,8 @@ class BaseTypeModel(BaseModel):
         unique=True,
         max_length=128,
         null=True,
-        blank=True
+        blank=True,
+        choices=(),
     )
     description = TextField(
         verbose_name=_('Description'),
@@ -56,4 +58,5 @@ class BaseTypeModel(BaseModel):
         abstract = True
 
     def __str__(self):
+        # assuming choices on identifier
         return self.get_identifier_display()

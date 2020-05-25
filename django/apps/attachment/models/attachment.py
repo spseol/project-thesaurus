@@ -4,6 +4,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_better_admin_arrayfield.models.fields import ArrayField
+from django_lifecycle import hook, AFTER_CREATE
 from filetype import Type as FileType, get_type
 from filetype.types.archive import Pdf, Zip, Rar, Tar, Gz
 from filetype.types.image import Png
@@ -75,6 +76,19 @@ class Attachment(BaseTimestampedModel):
         return f'{self.thesis.registration_number or slugify(self.thesis.title)}-' \
                f'{slugify(self.type_attachment.identifier)}.{file_type.extension}'
 
+    @hook(AFTER_CREATE)
+    def check_thesis_state(self):
+        from apps.thesis.models import Thesis
+
+        Thesis.objects.check_state_after_review_submit(thesis=self.thesis)
+
+    @hook(AFTER_CREATE)
+    def notify_added_review(self):
+        from apps.emails.mailers.thesis import ThesisMailer
+
+        if self.type_attachment.identifier in TypeAttachment.REVIEWER_BY_IDENTIFIER:
+            ThesisMailer.on_external_review_added(attachment=self)
+
 
 class TypeAttachment(BaseTypeModel):
     """Type of attachment signalizing for which purpose has been attachment uploaded."""
@@ -91,6 +105,8 @@ class TypeAttachment(BaseTypeModel):
         'supervisor': Identifier.SUPERVISOR_REVIEW,
         'opponent': Identifier.OPPONENT_REVIEW,
     }
+
+    REVIEWER_BY_IDENTIFIER = dict(map(reversed, IDENTIFIER_BY_REVIEWER.items()))
 
     identifier = models.CharField(
         verbose_name=_('Identifier'),

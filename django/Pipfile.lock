@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "4918688e1539ffe4a075c16b06ebcae4e1563749fa9df5bfce91f65cdd31f0d3"
+            "sha256": "39af4fe25a596edfe4321fcc47c5d210efb949b51a868ed1f1a73a407e486ab0"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -122,6 +122,13 @@
             "index": "pypi",
             "version": "==0.6.1"
         },
+        "django-constance": {
+            "hashes": [
+                "sha256:12d827f9d5552ee39884fb6fb356f231f32b1ab8958acc715e3d1a6ecf913653"
+            ],
+            "index": "pypi",
+            "version": "==2.6.0"
+        },
         "django-debug-toolbar": {
             "hashes": [
                 "sha256:eabbefe89881bbe4ca7c980ff102e3c35c8e8ad6eb725041f538988f2f39a943",
@@ -146,6 +153,13 @@
             "index": "pypi",
             "version": "==2.2.0"
         },
+        "django-lifecycle": {
+            "hashes": [
+                "sha256:a94b964f883b7f83c3deda025193f52cad859e5bfe02f1b23f26a76c57ca2b88"
+            ],
+            "index": "pypi",
+            "version": "==0.7.5"
+        },
         "django-loginas": {
             "hashes": [
                 "sha256:0a6f956fdbb2184d8b33e7d71528dea1762f0507c7dcedfc9403996b0541c148",
@@ -153,6 +167,20 @@
             ],
             "index": "pypi",
             "version": "==0.3.8"
+        },
+        "django-mail-queue": {
+            "hashes": [
+                "sha256:91699eefab28881bae2d698121ae881de65a2e434341ab4016aa3f36faab46d3"
+            ],
+            "index": "pypi",
+            "version": "==3.2.4"
+        },
+        "django-picklefield": {
+            "hashes": [
+                "sha256:67a5e156343e3b032cac2f65565f0faa81635a99c7da74b0f07a0f5db467b646",
+                "sha256:e03cb181b7161af38ad6b573af127e4fe9b7cc2c455b42c1ec43eaad525ade0a"
+            ],
+            "version": "==2.1.1"
         },
         "django-positions": {
             "hashes": [

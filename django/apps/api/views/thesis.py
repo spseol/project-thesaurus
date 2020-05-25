@@ -168,8 +168,6 @@ class ThesisViewSet(ModelViewSet):
             type_attachment=TypeAttachment.objects.get_by_identifier(review_type_attachment),
         )
 
-        thesis.check_reviews_state()
-
         return Response(data=dict(id=attachment.id))
 
     @action(methods=['get'], detail=True)

@@ -1,0 +1,13 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block body %}
+    {% blocktrans %}
+        Hello,
+
+        for thesis {{ thesis }} has been added new review from {{ reviewer }} - available on address
+        <a href="{{ url }}">{{ url }}</a>.
+
+        Have a nice day!
+    {% endblocktrans %}
+{% endblock %}

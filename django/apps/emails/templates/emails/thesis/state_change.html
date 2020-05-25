@@ -1,0 +1,12 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block body %}
+    {% blocktrans %}
+        Hello,
+
+        thesis {{ thesis }} change state from {{ initial_state }} to {{ current_state }}.
+
+        Have a nice day!
+    {% endblocktrans %}
+{% endblock %}

@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.validators import ArrayMinLengthValidator, ArrayMaxLengthValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -6,6 +5,7 @@ from django.db import models
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
 from django_bleach.models import BleachField
+from django_lifecycle import hook, AFTER_CREATE
 
 from apps.utils.models import BaseTimestampedModel
 
@@ -30,7 +30,7 @@ class Review(BaseTimestampedModel):
         related_name='review_thesis'
     )
     user = models.ForeignKey(
-        to=get_user_model(),
+        to='accounts.User',
         on_delete=models.PROTECT,
         related_name='review_user'
     )
@@ -71,10 +71,6 @@ class Review(BaseTimestampedModel):
         verbose_name_plural = _('Reviews')
         ordering = ('thesis', 'user')
 
-    def save(self, **kwargs):
-        super().save(**kwargs)
-        self.thesis.check_reviews_state()
-
     @property
     def gradings(self):
         return tuple(filter(None, (
@@ -85,3 +81,13 @@ class Review(BaseTimestampedModel):
             _('Graphic design of the thesis'),
             _('Interpretation of conclusions, their originality and their own contribution to the work')
         )))
+
+    @hook(AFTER_CREATE)
+    def check_thesis_state(self):
+        from apps.thesis.models import Thesis
+        Thesis.objects.check_state_after_review_submit(thesis=self.thesis)
+
+    @hook(AFTER_CREATE)
+    def notify_authors(self):
+        from apps.emails.mailers.thesis import ThesisMailer
+        ThesisMailer.on_internal_review_added(review=self)

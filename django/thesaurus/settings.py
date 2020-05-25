@@ -12,9 +12,9 @@ from django.core.validators import MinValueValidator
 from django.utils.log import DEFAULT_LOGGING
 from django.utils.translation import gettext_lazy as _
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 config = AutoConfig(search_path='/run/secrets/')  # .env file is injected by docker secrets
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = config("SECRET_KEY")
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'apps.accounts',
     'apps.api',
     'apps.attachment',
+    'apps.emails',
     'apps.frontend',
     'apps.thesis',
     'apps.review',
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'webpack_loader',
     'debug_toolbar',
     'rest_framework',
+    'mailqueue',
     'django_extensions',
     'django_better_admin_arrayfield',
     'django_bleach',
@@ -65,23 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'thesaurus.urls'
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-LOGIN_REDIRECT_URL = LOGOUT_REDIRECT_URL = '/'
-
-LOGIN_URL = '/login'
-
-APPEND_SLASH = False
-
 AUTH_USER_MODEL = 'accounts.User'
-
-API_URL_PATTERN = re.compile(r'^/api/.*')
-
-LOCALE_MIDDLEWARE_IGNORE_URLS = (
-    API_URL_PATTERN,
-)
 
 TEMPLATES = [
     {
@@ -141,7 +127,7 @@ LANGUAGES = (
 
 LANGUAGE_CODE = 'en'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = config('TZ')
 
 USE_I18N = True
 
@@ -154,19 +140,11 @@ LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
-
-STATIC_ROOT = '/usr/src/static'
-
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
-
-MEDIA_ROOT = '/usr/src/media'
-
-MEDIA_URL = '/media/'
 
 WEBPACK_LOADER = {
     'DEFAULT': {
@@ -289,3 +267,43 @@ CONSTANCE_ADDITIONAL_FIELDS = {
         ]
     }],
 }
+
+# emailing
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+MAILQUEUE_QUEUE_UP: bool = config('EMAIL_USE_QUEUE', default=not DEBUG, cast=bool)
+MAILQUEUE_STORAGE = True
+
+MAIL_FROM_ADDRESS: str = config('MAIL_FROM_ADDRESS', default='noreply@thesaurus')
+MAIL_SUBJECT_TITLE: str = config('MAIL_SUBJECT_TITLE', default='Thesaurus')
+
+# urls definitions
+STATIC_URL = '/static/'
+
+STATIC_ROOT = '/usr/src/static'
+
+# public URL for building absolute urls
+PUBLIC_HOST: str = config('PUBLIC_HOST', cast=str)
+
+MEDIA_ROOT = '/usr/src/media'
+
+MEDIA_URL = '/media/'
+
+ROOT_URLCONF = 'thesaurus.urls'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+LOGIN_REDIRECT_URL = LOGOUT_REDIRECT_URL = '/'
+
+LOGIN_URL = '/login'
+
+APPEND_SLASH = False
+
+API_URL_PATTERN = re.compile(r'^/api/.*')
+
+LOCALE_MIDDLEWARE_IGNORE_URLS = (
+    API_URL_PATTERN,
+)

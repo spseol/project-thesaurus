@@ -29,11 +29,9 @@ def get_verbose_field_name(instance: Model, field_name: str):
     return instance._meta.get_field(field_name).verbose_name
 
 
-@register.simple_tag(takes_context=True)
-def absolute_url(context, view_name, *args, **kwargs):
-    return context['request'].build_absolute_uri(
-        reverse(view_name, args=args, kwargs=kwargs)
-    )
+@register.simple_tag
+def absolute_url(view_name, *args, **kwargs):
+    return f'{settings.PUBLIC_HOST.rstrip("/")}{reverse(view_name, args=args, kwargs=kwargs)}'
 
 
 @register.simple_tag(takes_context=True)
