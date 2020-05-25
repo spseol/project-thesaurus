@@ -52,20 +52,17 @@ class ThesisApiManager(ThesisManager):
             'attachment_thesis__type_attachment',
             'review_thesis',
             'review_thesis__user',
+            'reservation_thesis',
         ).annotate(
             available_for_reservation=~Exists(
                 queryset=Reservation.objects.filter(
                     thesis=OuterRef('pk'),
-                    state__in=(
-                        Reservation.State.CREATED,
-                        Reservation.State.READY,
-                        Reservation.State.RUNNING,
-                    ),
+                    state__in=Reservation.OPEN_RESERVATION_STATES,
                 )
             ),
             open_reservations_count=Count(
                 'reservation_thesis',
-                filter=~Q(reservation_thesis__state=Reservation.State.FINISHED),
+                filter=Q(reservation_thesis__state__in=Reservation.OPEN_RESERVATION_STATES),
             ),
             published_at_year=Cast(ExtractYear('published_at'), CharField())
         )
