@@ -11,16 +11,24 @@
                             <v-card-text>
                                 <v-text-field
                                     :label="$t('Title')" v-model="data.title" :rules="[v => !!v]"
+                                    :error-messages="messages.title"
                                 ></v-text-field>
 
                                 <v-text-field
                                     :label="$t('Registration number')" v-model="data.registration_number"
-                                    :counter="4"
+                                    :counter="4" :error-messages="messages.registration_number"
                                     :rules="[v => !v || /[A-Z]\d{3}/.test(v) || $t('thesis.invalidSNformat')]"
                                 ></v-text-field>
 
+                                <v-text-field
+                                    v-model="data.published_at"
+                                    :counter="7" :error-messages="messages.published_at"
+                                    :rules="[v => !!v, v => /\d{4}\/\d{2}/.test(v) || $t('thesis.invalidPublishedAtFormat')]"
+                                    :label="$t('Published')"
+                                ></v-text-field>
+
                                 <v-radio-group
-                                    :label="$t('Category')" row
+                                    :label="$t('Category')" row :error-messages="messages.category"
                                     v-model="data.category.id" :rules="[v => !!v]"
                                 >
                                     <v-radio
@@ -33,14 +41,14 @@
                                     v-model="data.supervisor.id"
                                     :items="teacherOptions" hide-no-data
                                     :label="$t('Supervisor')"
-                                    :rules="[v => !!v]"
+                                    :rules="[v => !!v]" :error-messages="messages.supervisor_id"
                                 ></v-autocomplete>
 
                                 <v-autocomplete
                                     v-model="data.opponent.id"
                                     :items="teacherOptions" hide-no-data
                                     :label="$t('Opponent')"
-                                    :rules="[v => !!v]"
+                                    :rules="[v => !!v]" :error-messages="messages.opponent_id"
                                 ></v-autocomplete>
 
                                 <v-autocomplete
@@ -49,7 +57,7 @@
                                     :items="studentOptions"
                                     :search-input.sync="search"
                                     cache-items multiple chips clearable deletable-chips small-chips
-                                    :label="$t('Author(s)')"
+                                    :label="$t('Author(s)')" :error-messages="messages.authors"
                                     :rules="[v => v.length > 0]"
                                 ></v-autocomplete>
                             </v-card-text>
@@ -59,10 +67,12 @@
                         <v-card elevation="0" outlined>
                             <v-card-subtitle class="font-weight-bold">{{ $t('State') }}</v-card-subtitle>
                             <v-card-text>
+                                <!-- TODO: remove this weird workaround -->
                                 <v-select
                                     :items="thesisStateOptions" v-model="data.state"
-                                    :hint="thesisStateOptions.find(({value}) => value === data.state).help_text"
+                                    :hint="((typeof thesisStateOptions === typeof []) ? thesisStateOptions : []).find(({value}) => value === data.state).help_text"
                                     persistent-hint flat solo outlined dense
+                                    :error-messages="messages.state"
                                 ></v-select>
                             </v-card-text>
                         </v-card>
@@ -132,6 +142,7 @@
     import _ from 'lodash';
     import qs from 'qs';
     import Axios from '../../axios';
+    import {eventBus} from '../../utils';
 
     export default {
         name: 'ThesisEditPanel',
@@ -147,7 +158,8 @@
                 search: '',
                 studentOptions: [],
                 thesisStateOptions: [],
-                authors: []
+                authors: [],
+                messages: {}
             };
         },
         watch: {
@@ -171,11 +183,21 @@
                     {
                         ...this.data,
                         supervisor_id: this.data.supervisor?.id,
-                        opponent_id: this.data.opponent?.id
+                        opponent_id: this.data.opponent?.id,
+                        authors: this.authors,
+                        category: this.data.category?.id
                     }
                 )).data;
+                if (resp.id) {
+                    eventBus.flash({
+                        color: 'success',
+                        text: this.$t('thesis.justSaved')
+                    });
+                    this.$emit('reload');
+                } else {
+                    this.messages = resp;
+                }
 
-                this.$emit('reload');
                 this.loading = false;
             }
         },

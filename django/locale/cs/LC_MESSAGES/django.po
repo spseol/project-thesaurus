@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-05-25 02:05+0200\n"
-"PO-Revision-Date: 2020-05-25 03:08+0300\n"
+"PO-Revision-Date: 2020-05-26 17:55+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -163,7 +163,7 @@ msgstr "Práce {} má nový posudek od {}"
 
 #: apps/emails/templates/emails/base.html:3
 msgid "Please, do not reply directly to this email."
-msgstr "Prosím, neodpovídejte na tento email."
+msgstr "Prosím, neodpovídej na tento email."
 
 #: apps/emails/templates/emails/base.html:4
 msgid "Sent automatically at"

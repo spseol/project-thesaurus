@@ -59,7 +59,7 @@ MIDDLEWARE = [
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.locale.LocaleMiddleware',
+    'apps.utils.middleware.LocaleMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -227,8 +227,9 @@ EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 MAILQUEUE_QUEUE_UP: bool = config('EMAIL_USE_QUEUE', default=not DEBUG, cast=bool)
 MAILQUEUE_STORAGE = True
 
-MAIL_FROM_ADDRESS: str = config('MAIL_FROM_ADDRESS', default='noreply@thesaurus')
+DEFAULT_FROM_EMAIL: str = config('MAIL_FROM_ADDRESS', default='noreply@thesaurus')
 MAIL_SUBJECT_TITLE: str = config('MAIL_SUBJECT_TITLE', default='Thesaurus')
+EMAIL_LANGUAGE = 'cs'
 
 # urls definitions
 STATIC_URL = '/static/'

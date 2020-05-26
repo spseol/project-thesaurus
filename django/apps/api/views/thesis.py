@@ -116,6 +116,18 @@ class ThesisViewSet(ModelViewSet):
         thesis.state = Thesis.State.READY_FOR_SUBMIT
         thesis.save()
 
+    @transaction.atomic
+    def perform_update(self, serializer: ThesisFullInternalSerializer):
+        serializer.save(
+            category=get_object_or_404(Category, pk=serializer.initial_data.get('category')),
+            authors=get_list_or_404(
+                get_user_model(),
+                # TODO: refactor to custom action /edit?
+                pk__in=serializer.initial_data.get('authors')
+            ),
+            published_at=parse_date((serializer.initial_data.get('published_at') + '/01').replace('/', '-'))
+        )
+
     @action(methods=['patch'], detail=True, permission_classes=[CanSubmitThesisPermission])
     @transaction.atomic
     def submit(self, request: Request, *args, **kwargs):

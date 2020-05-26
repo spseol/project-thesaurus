@@ -19,11 +19,11 @@ class ThesisBaseSerializer(ModelSerializer):
     opponent = UserSerializer(read_only=True)
 
     supervisor_id = PrimaryKeyRelatedField(
-        write_only=True, source='supervisor', allow_null=True,
+        write_only=True, source='supervisor', allow_null=True, required=False,
         queryset=User.school_users.teachers(),
     )
     opponent_id = PrimaryKeyRelatedField(
-        write_only=True, source='opponent', required=False,
+        write_only=True, source='opponent', allow_null=True, required=False,
         queryset=User.school_users.teachers()
     )
 

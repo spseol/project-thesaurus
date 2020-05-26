@@ -9,7 +9,7 @@ from django.core.validators import validate_email
 from django.template import Template
 from django.template.loader import get_template
 from django.utils.html import strip_tags
-from django.utils.translation import gettext_lazy as _
+from django.utils.translation import gettext_lazy as _, override
 from mailqueue.models import MailerMessage
 
 from apps.accounts.models import User
@@ -21,10 +21,11 @@ class BaseMailer(ABC):
     @contextmanager
     def _new_message() -> ContextManager[MailerMessage]:
         email = MailerMessage()
-        email.from_address = settings.MAIL_FROM_ADDRESS
+        email.from_address = settings.DEFAULT_FROM_EMAIL
 
         try:
-            yield email
+            with override(settings.EMAIL_LANGUAGE):
+                yield email
         except:
             raise
         else:

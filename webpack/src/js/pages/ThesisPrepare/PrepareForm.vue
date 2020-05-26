@@ -16,15 +16,6 @@
                     required
                 ></v-text-field>
 
-                <!--                <v-text-field-->
-                <!--                    v-model="thesis.registration_number"-->
-                <!--                    :counter="4"-->
-                <!--                    :rules="[v => !!v, v => /[A-Z]\d{3}/.test(v) || 'Not in format AXXX.']"-->
-                <!--                    :label="$t('Registration number')"-->
-                <!--                    :error-messages="messages.title"-->
-                <!--                    required-->
-                <!--                ></v-text-field>-->
-
                 <v-autocomplete
                     v-model="thesis.authors"
                     :loading="loading"
@@ -63,7 +54,7 @@
                 <v-text-field
                     v-model="thesis.published_at"
                     :counter="7"
-                    :rules="[v => !!v, v => /\d{4}\/\d{2}/.test(v) || 'Not in format YYYY/MM.']"
+                    :rules="[v => !!v, v => /\d{4}\/\d{2}/.test(v) || $t('thesis.publishedAtNotInFormat')]"
                     :label="$t('Published')"
                     required
                 ></v-text-field>

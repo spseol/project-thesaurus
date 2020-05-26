@@ -34,4 +34,4 @@ class UserOptionSerializer(UserSerializer):
 
 
 class StudentOptionSerializer(UserOptionSerializer):
-    text = CharField(source='full_student_name')
+    text = CharField(source='full_name')

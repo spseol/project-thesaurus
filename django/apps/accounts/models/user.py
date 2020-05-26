@@ -38,19 +38,15 @@ class User(AbstractUser):
         return self.groups.filter(name='manager').exists()
 
     def get_full_name(self):
-        return f'{self.degree_before or ""}' \
-               f'{self.first_name} {self.last_name}' \
-               f'{("," + self.degree_after) if self.degree_after else ""}'.strip() or self.username
+        return (
+                       (
+                           f'{self.degree_before or ""}'
+                           f'{self.first_name} {self.last_name}'
+                           f'{(", " + self.degree_after) if self.degree_after else ""}'
+                       ) + (f' ({self.school_class})' if self.school_class else '')
+               ).strip() or self.username
 
     full_name = property(get_full_name)
-
-    def get_full_student_name(self):
-        return f'{self.degree_before or ""}' \
-               f'{self.first_name} {self.last_name}' \
-               f'{("," + self.degree_after) if self.degree_after else ""}' \
-               f' ({self.school_class or ""})'.strip() or self.username
-
-    full_student_name = property(get_full_student_name)
 
     class Meta:
         verbose_name = _('User')
