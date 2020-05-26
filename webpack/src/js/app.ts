@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/browser';
+import {Vue as VueIntegration} from '@sentry/integrations';
 import PortalVue from 'portal-vue';
 import {TiptapVuetifyPlugin} from 'tiptap-vuetify';
 import Vue from 'vue';
@@ -19,6 +21,15 @@ import {DjangoPermsPlugin, I18nRoutePlugin} from './plugins';
 import {createRouter} from './router';
 import {pageContext} from './utils';
 
+declare var __SENTRY_DSN__: string;
+
+if (__SENTRY_DSN__) {
+    Sentry.init({
+        dsn: __SENTRY_DSN__,
+        integrations: [new VueIntegration({Vue, attachProps: true})]
+    });
+}
+
 export default function createVue(opts = {}) {
     Vue.use(VueI18n);
     Vue.use(Vuetify, {
@@ -39,7 +50,6 @@ export default function createVue(opts = {}) {
         y: 'top',
         timeout: 6000
     });
-
     Vue.config.productionTip = false;
 
     const {locale} = pageContext;

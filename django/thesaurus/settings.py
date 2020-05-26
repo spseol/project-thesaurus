@@ -137,9 +137,6 @@ USE_TZ = True
 
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 STATICFILES_DIRS = [
@@ -170,53 +167,6 @@ REST_FRAMEWORK = {
 }
 
 CAN_LOGIN_AS = lambda request, target_user: request.user.is_superuser and not target_user.is_superuser
-
-# Disable Django's logging setup
-LOGGING_CONFIG = None
-
-LOGLEVEL = config('LOGLEVEL', default='info').upper()
-
-dictConfig({
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'default': {
-            # exact format is not important, this is the minimum information
-            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
-        },
-        'django.server': DEFAULT_LOGGING['formatters']['django.server'],
-    },
-    'handlers': {
-        # console logs to stderr
-        'console': {
-            'class': 'logging.StreamHandler',
-            'formatter': 'default',
-        },
-        # Add Handler for Sentry for `warning` and above
-        # 'sentry': {
-        #     'level': 'WARNING',
-        #     'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-        # },
-        'django.server': DEFAULT_LOGGING['handlers']['django.server'],
-    },
-    'loggers': {
-        # default for all undefined Python modules
-        '': {
-            'level': 'WARNING',
-            'handlers': ['console'],
-        },
-        # Our application code
-        'apps': {
-            'level': LOGLEVEL,
-            'handlers': ['console'],
-            # Avoid double logging because of root logger
-            'propagate': False,
-        },
-        # Prevent noisy modules from logging to Sentry
-        # Default runserver request logging
-        'django.server': DEFAULT_LOGGING['loggers']['django.server'],
-    },
-})
 
 if DEBUG:
     # for django-debug-toolbar
@@ -307,3 +257,50 @@ API_URL_PATTERN = re.compile(r'^/api/.*')
 LOCALE_MIDDLEWARE_IGNORE_URLS = (
     API_URL_PATTERN,
 )
+
+# logging & sentry
+SENTRY_DSN = config('SENTRY_DSN', default='')
+if SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration(transaction_style='function_name')],
+
+        send_default_pii=True,
+    )
+
+LOGGING_CONFIG = None
+
+LOGLEVEL = config('LOGLEVEL', default='info').upper()
+
+dictConfig({
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'default': {
+            'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
+        },
+        'django.server': DEFAULT_LOGGING['formatters']['django.server'],
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'default',
+        },
+        'django.server': DEFAULT_LOGGING['handlers']['django.server'],
+    },
+    'loggers': {
+        '': {
+            'level': 'WARNING',
+            'handlers': ['console'],
+        },
+        'apps': {
+            'level': LOGLEVEL,
+            'handlers': ['console'],
+            'propagate': False,
+        },
+        'django.server': DEFAULT_LOGGING['loggers']['django.server'],
+    },
+})

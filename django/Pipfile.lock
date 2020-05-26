@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "39af4fe25a596edfe4321fcc47c5d210efb949b51a868ed1f1a73a407e486ab0"
+            "sha256": "39616cf1e8302950362d83355ff7bb07538cc89dee4015cd686465ac2582e96f"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -43,6 +43,13 @@
                 "sha256:9cb1df7e9bc60f75fb87f67940a8fb805aad544337a67a40b67c05cfe33711a2"
             ],
             "version": "==2.4.2"
+        },
+        "certifi": {
+            "hashes": [
+                "sha256:1d987a998c75633c40847cc966fcf5904906c920a7f17ef374f5aa4282abd304",
+                "sha256:51fcb31174be6e6664c5f69e3e1691a2d72a1a12e90f872cbdb1567eb47b6519"
+            ],
+            "version": "==2020.4.5.1"
         },
         "cffi": {
             "hashes": [
@@ -155,10 +162,10 @@
         },
         "django-lifecycle": {
             "hashes": [
-                "sha256:a94b964f883b7f83c3deda025193f52cad859e5bfe02f1b23f26a76c57ca2b88"
+                "sha256:dbab592976d5f74f644e749ab3465d296b6e32d1fd4543df7dfba937330e3014"
             ],
             "index": "pypi",
-            "version": "==0.7.5"
+            "version": "==0.7.6"
         },
         "django-loginas": {
             "hashes": [
@@ -474,6 +481,14 @@
             ],
             "version": "==2020.1"
         },
+        "sentry-sdk": {
+            "hashes": [
+                "sha256:0e5e947d0f7a969314aa23669a94a9712be5a688ff069ff7b9fc36c66adc160c",
+                "sha256:799a8bf76b012e3030a881be00e97bc0b922ce35dde699c6537122b751d80e2c"
+            ],
+            "index": "pypi",
+            "version": "==0.14.4"
+        },
         "six": {
             "hashes": [
                 "sha256:30639c035cdb23534cd4aa2dd52c3bf48f06e5f4a941509c8bafd8ce11080259",
@@ -535,6 +550,13 @@
                 "sha256:f8d2bd89d25bc39dabe7d23df520442fa1d8969b82544370e03d88b5a591c392"
             ],
             "version": "==3.7.4.2"
+        },
+        "urllib3": {
+            "hashes": [
+                "sha256:3018294ebefce6572a474f0604c2021e33b3fd8006ecd11d62107a5d2a963527",
+                "sha256:88206b0eb87e6d677d424843ac5209e3fb9d0190d0ee169599165ec25e9d9115"
+            ],
+            "version": "==1.25.9"
         },
         "uvicorn": {
             "hashes": [

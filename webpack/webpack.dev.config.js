@@ -1,4 +1,4 @@
-const config = require('./webpack.config.js');
+const config = require('./webpack.base.config.js');
 const webpack = require('webpack');
 // config.devtool = 'eval'  // fast rebuild times
 config.devtool = 'cheap-module-source-map'; // also fast
@@ -26,7 +26,12 @@ config.plugins.push(
     // prints more readable module names in the browser console on HMR updates
     new webpack.NoEmitOnErrorsPlugin(),
     // do not emit compiled assets that include errors
+    new webpack.DefinePlugin({
+        '__SENTRY_DSN__': '""',
+    }),
 );
+
+
 // use sourcemaps for sass-loader and css-loader
 config.module.rules.forEach(rule => {
     rule.use &&

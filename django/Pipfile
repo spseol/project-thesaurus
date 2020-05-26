@@ -32,6 +32,7 @@ django-bleach = "*"
 django-python3-ldap = "*"
 django-lifecycle = "*"
 django-mail-queue = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 
