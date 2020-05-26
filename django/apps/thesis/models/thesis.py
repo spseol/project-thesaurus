@@ -121,8 +121,8 @@ class Thesis(BaseTimestampedModel):
         """Returns count of reservations for this thesis in states"""
         from .reservation import Reservation
 
-        return self.reservation_thesis.exclude(
-            state__in=Reservation.State.FINISHED,
+        return self.reservation_thesis.filter(
+            state__in=Reservation.State.OPEN_RESERVATION_STATES,
         ).count()
 
     STATE_HELP_TEXTS = {
