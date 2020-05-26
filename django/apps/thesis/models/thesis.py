@@ -137,7 +137,7 @@ class Thesis(BaseTimestampedModel):
 
     @hook(AFTER_UPDATE, when='state', has_changed=True)
     def on_state_change(self):
-        from apps.emails.mailers.thesis import ThesisMailer
+        from apps.emails.mailers import ThesisMailer
         ThesisMailer.on_state_change(thesis=self)
 
 
