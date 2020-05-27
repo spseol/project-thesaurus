@@ -63,6 +63,16 @@ export const GRADE_COLOR_SCALE_4 = {
     1: colors.red.lighten2,
     0: colors.grey.lighten2
 };
+export const THEME_COLORS = {
+    primary: colors.orange.base,
+    secondary: colors.brown.base,
+    accent: colors.deepOrange.base,
+    error: colors.pink.base,
+    warning: colors.orange.darken4,
+    info: colors.blue.base,
+    success: colors.green.base
+};
+
 export {
     pageContext,
     readFileAsync,

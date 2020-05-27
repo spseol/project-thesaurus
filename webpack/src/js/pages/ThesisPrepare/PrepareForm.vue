@@ -82,6 +82,7 @@
 </template>
 
 <script type="text/tsx">
+    import _ from 'lodash';
     import qs from 'qs';
     import Vue from 'vue';
     import Axios from '../../axios';
@@ -89,30 +90,21 @@
 
     export default Vue.extend({
         name: 'ThesisPrepareForm',
-        data: () => ({
-            valid: false,
-            loading: false,
-            messages: {},
+        data() {
+            return {
+                valid: false,
+                loading: false,
+                messages: {},
 
-            search: '',
-            select: null,
-            teacherOptions: [],
-            categoryOptions: [],
-            studentOptions: [],
-            checkbox: false,
-            thesis: {
-                title: '',
-                registration_number: '',
-                authors: [],
-                published_at: new Date().toISOString().substr(0, 7).replace('-', '/'),
-                category: null,
-                supervisor_id: null,
-                admission: null
-            }
-        }),
+                search: '',
+                studentOptions: [],
+                checkbox: false,
+                thesis: this.emptyThesis()
+            };
+        },
         watch: {
             async search(val) {
-                val !== this.select && (await this.queryStudentOptions(val));
+                await this.queryStudentOptions(val);
             }
         },
 
@@ -123,6 +115,17 @@
                 this.studentOptions = (await Axios.get(`/api/v1/student-options?${qs.stringify({search})}`)).data;
 
                 this.loading = false;
+            },
+            emptyThesis() {
+                return {
+                    title: '',
+                    registration_number: '',
+                    authors: [],
+                    published_at: new Date().toISOString().substr(0, 7).replace('-', '/'),
+                    category: null,
+                    supervisor_id: null,
+                    admission: null
+                };
             },
             async submit() {
                 this.$refs.form.validate();
@@ -147,15 +150,36 @@
 
                 if (resp.data.id) {
                     eventBus.flash({text: this.$t('thesis.justPrepared')});
+                    Object.assign(this.$data, this.$options.data.apply(this));
                     this.$router.push({name: 'thesis-list'});
+                    this.$asyncComputed.teacherOptions.update();
                 } else {
                     this.messages = resp.data;
+                    _.forEach(
+                        this.messages,
+                        (msg) => {
+                            eventBus.flash({
+                                color: 'orange',
+                                text: msg
+                            });
+                        }
+                    );
                 }
             }
         },
-        async created() {
-            this.categoryOptions = (await Axios.get('/api/v1/category-options')).data;
-            this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
+        asyncComputed: {
+            categoryOptions: {
+                async get() {
+                    return (await Axios.get('/api/v1/category-options')).data;
+                },
+                default: []
+            },
+            teacherOptions: {
+                async get() {
+                    return (await Axios.get('/api/v1/teacher-options')).data;
+                },
+                default: []
+            }
         }
     });
 </script>

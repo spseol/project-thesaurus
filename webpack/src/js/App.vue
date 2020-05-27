@@ -146,7 +146,7 @@
         },
         created() {
             eventBus.$on('flash', (flash) => {
-                this.$toast(flash.text, flash);
+                this.$toast(flash.text, {...flash, color: flash.type || flash.color});
             });
         }
     });
