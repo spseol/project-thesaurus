@@ -1,3 +1,6 @@
+from typing import Optional
+
+from django.core.files import File
 from django.utils.translation import gettext_lazy as _
 
 from .base import BaseMailer
@@ -52,11 +55,12 @@ class ThesisMailer(BaseMailer):
         return cls._on_review_added(
             thesis=thesis,
             reviewer=getattr(thesis, reviewer_key),
-            url=absolute_url('api:v1:attachment-detail', attachment.pk)
+            url=absolute_url('api:v1:attachment-detail', attachment.pk),
+            email_attachment=attachment.file,
         )
 
     @classmethod
-    def _on_review_added(cls, thesis: Thesis, reviewer: User, url: str):
+    def _on_review_added(cls, thesis: Thesis, reviewer: User, url: str, email_attachment: Optional[File] = None):
         with cls._new_message() as email:
             email.to_address = cls._build_to_address(thesis.authors.all())
 
@@ -70,3 +74,5 @@ class ThesisMailer(BaseMailer):
                 url=url,
                 reviewer=reviewer.full_name,
             )
+            if email_attachment:
+                email.add_attachment(email_attachment)

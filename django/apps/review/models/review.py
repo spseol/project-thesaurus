@@ -88,6 +88,6 @@ class Review(BaseTimestampedModel):
         Thesis.objects.check_state_after_review_submit(thesis=self.thesis)
 
     @hook(AFTER_CREATE)
-    def notify_authors(self):
+    def on_internal_review_added(self):
         from apps.emails.mailers.thesis import ThesisMailer
         ThesisMailer.on_internal_review_added(review=self)

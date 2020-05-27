@@ -28,7 +28,7 @@
                             </v-card-title>
 
                             <v-card-text class="mt-5">
-                                {{ $t('reservation.cancelQuestion') }} {{ res.thesis_label }}
+                                {{ $t('reservation.cancelQuestion') }} {{ res.thesis_label }}?
                             </v-card-text>
 
                             <v-divider></v-divider>

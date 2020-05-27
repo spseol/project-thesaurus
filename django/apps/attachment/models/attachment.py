@@ -9,7 +9,7 @@ from filetype import Type as FileType, get_type
 from filetype.types.archive import Pdf, Zip, Rar, Tar, Gz
 from filetype.types.image import Png
 
-from apps.attachment.models.managers import AttachmentManager
+from apps.attachment.models.managers import AttachmentManager, default_storage
 from apps.utils.models import BaseTimestampedModel, BaseTypeModel
 
 
@@ -69,6 +69,12 @@ class Attachment(BaseTimestampedModel):
         pk = str(self.id)
         thesis_pk = str(self.thesis.pk)
         return f'attachment/{thesis_pk[:2]}/{thesis_pk}/{self.type_attachment.identifier}-{pk[:4]}.{file_type.extension}'
+
+    @property
+    def file(self):
+        if not self.file_path:
+            raise RuntimeError('Accessing attachment file without saving it.')
+        return default_storage.open(self.file_path)
 
     @property
     def public_file_name(self):
