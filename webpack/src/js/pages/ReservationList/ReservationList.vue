@@ -13,11 +13,28 @@
             }"
         >
 
-            <template v-slot:item.state="{ item }" class="text-center">
+            <template v-slot:item.state="props">
                 <div class="text-center">
-                    <v-chip outlined :color="stateToColor(item.state)">{{ stateToLabel(item.state) }}</v-chip>
+                    <v-edit-dialog
+                        large
+                        @save="changeState(props.item, stateEdit)"
+                        @open="stateEdit = props.item.state"
+                        :save-text="$t('Save')"
+                        :cancel-text="$t('Cancel edit')"
+                    >
+                        <v-chip outlined :color="stateToColor(props.item.state)">
+                            {{ stateToLabel(props.item.state) }}
+                            <v-icon class="ml-2">mdi-lead-pencil</v-icon>
+                        </v-chip>
+                        <template v-slot:input>
+                            <v-select
+                                :items="stateOptions" v-model="stateEdit" flat
+                            ></v-select>
+                        </template>
+                    </v-edit-dialog>
                 </div>
             </template>
+
 
             <template v-slot:item.created="{ item }">
                 {{ (new Date(item.created)).toLocaleString() }}
@@ -27,16 +44,25 @@
                 <div class="text-center">
                     <v-btn
                         v-if="item.state === 'created'" @click="changeState(item, 'ready')" :disabled="loading"
-                        small color="success" v-text="$t('Prepared for pickup')" outlined
-                    ></v-btn>
+                        small color="success" outlined
+                    >
+                        <v-icon class="pr-2">mdi-check-bold</v-icon>
+                        {{ $t('Prepared for pickup') }}
+                    </v-btn>
                     <v-btn
                         v-if="item.state === 'ready'" @click="changeState(item, 'running')" :disabled="loading"
-                        small color="info" v-text="$t('Picked up')" outlined
-                    ></v-btn>
+                        small color="info" outlined
+                    >
+                        <v-icon class="pr-2">mdi-account-arrow-right-outline</v-icon>
+                        {{ $t('Picked up') }}
+                    </v-btn>
                     <v-btn
                         v-if="item.state === 'running'" @click="changeState(item, 'finished')" :disabled="loading"
-                        small color="primary" v-text="$t('Returned')" outlined
-                    ></v-btn>
+                        small color="primary" outlined
+                    >
+                        <v-icon class="pr-2">mdi-account-arrow-left-outline</v-icon>
+                        {{ $t('Returned') }}
+                    </v-btn>
                 </div>
             </template>
         </v-data-table>
@@ -52,7 +78,7 @@
                 ></v-text-field>
                 <v-divider vertical class="mx-2"></v-divider>
                 <v-select
-                    v-model="stateFilter" :items="stateOptions" :label="$t('State')"
+                    v-model="stateFilter" :items="stateOptionsFilter" :label="$t('State')"
                     solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline">
                 </v-select>
             </v-toolbar>
@@ -75,6 +101,7 @@
                 search: '',
                 stateFilter: 'open',
                 options: {},
+                stateEdit: null,
             };
         },
         computed: {
@@ -100,10 +127,16 @@
             },
         },
         asyncComputed: {
-            async stateOptions() {
+            stateOptions: {
+                async get() {
+                    return (await Axios.get('/api/v1/reservation-state-options')).data;
+                },
+                default: [],
+            },
+            async stateOptionsFilter() {
                 return [
                     {text: this.$t('Open'), value: 'open'},
-                    ...(await Axios.get('/api/v1/reservation-state-options')).data,
+                    ...this.stateOptions,
                 ];
             },
         },
