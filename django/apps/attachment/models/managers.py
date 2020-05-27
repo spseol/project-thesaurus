@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, TYPE_CHECKING
 
 import filetype
 from django.core.exceptions import ValidationError
@@ -6,25 +6,23 @@ from django.core.files.storage import default_storage, Storage
 from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
 from django.db.models import Manager
+from django.template.defaultfilters import filesizeformat
 from django.utils.translation import ugettext as _
 
 default_storage: Storage = default_storage
+
+if TYPE_CHECKING:
+    from apps.thesis.models import Thesis
+    from apps.attachment.models import TypeAttachment
 
 
 class AttachmentManager(Manager):
     def create_from_upload(
             self,
-            uploaded,
-            thesis,
-            type_attachment,
+            uploaded: UploadedFile,
+            thesis: 'Thesis',
+            type_attachment: 'TypeAttachment',
     ):
-        """
-        :type uploaded UploadedFile
-        :type thesis apps.thesis.models.thesis.Thesis
-        :type type_attachment apps.attachment.models.attachment.TypeAttachment
-
-        Typing in comment to avoid circular import.
-        """
         file_type: Optional[filetype.Type] = filetype.guess(uploaded.file)
 
         if not file_type:
@@ -37,6 +35,15 @@ class AttachmentManager(Manager):
                 _('Content type {content} is not allowed for type attachment {attachment}.').format(
                     content=uploaded.content_type,
                     attachment=type_attachment.get_identifier_display(),
+                )
+            )
+
+        if type_attachment.max_size is not None and uploaded.size > type_attachment.max_size:
+            raise ValidationError(
+                _('Maximal size for {attachment} is {max_size}, {real_size} given.').format(
+                    attachment=type_attachment.get_identifier_display(),
+                    max_size=filesizeformat(type_attachment.max_size),
+                    real_size=filesizeformat(uploaded.size),
                 )
             )
 
