@@ -1,12 +1,20 @@
-version: '2.2'
+version: '3.3'
 services:
   web:
+    image: thejoeejoee/thesaurus-django:${IMAGE_VERSION:-dev}
     command: runserver_prod
     env_file:
       - django/.env.prod
+    environment:
+      - SENTRY_DSN=https://50e63901d1554a5399f371f2989e21c2@o138650.ingest.sentry.io/5253875
 
   webpack:
+    image: thejoeejoee/thesaurus-webpack:${IMAGE_VERSION:-dev}
     command: build
     environment:
       - NODE_ENV=production
       - PUBLIC_PATH=/static/
+      - SENTRY_DSN=https://50e63901d1554a5399f371f2989e21c2@o138650.ingest.sentry.io/5253875
+
+  webserver:
+    image: thejoeejoee/thesaurus-nginx:${IMAGE_VERSION:-dev}

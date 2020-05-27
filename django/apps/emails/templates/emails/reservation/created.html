@@ -1,0 +1,13 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block body %}
+    {% blocktrans %}
+        Hello,
+
+        reservation for thesis {{ thesis }} has been created - after preparation we will notify you.
+        Until that you can also cancel your reservation on portal.
+
+        Have a nice day!
+    {% endblocktrans %}
+{% endblock %}

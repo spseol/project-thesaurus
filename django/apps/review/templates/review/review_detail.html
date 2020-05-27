@@ -3,7 +3,7 @@
 {% load zip get_choices_display get_verbose_field_name from utils %}
 {% load static from static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ request.LANGUAGE_CODE }}">
 <head>
     <meta charset="UTF-8">
     <title>{% trans "Review" %} {{ review.thesis.title }}</title>
@@ -53,7 +53,7 @@
         }
 
         .questions {
-            height: 50mm;
+            height: 45mm;
         }
 
         .questions, .comment {

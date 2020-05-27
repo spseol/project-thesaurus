@@ -8,8 +8,7 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {eventBus} from '../../utils';
-    import ReviewForm from './ReviewForm';
+    import ReviewForm from './ReviewForm.vue';
 
     async function loadData({thesisId, reviewId}) {
         let review = {}, thesis = {};
@@ -40,7 +39,6 @@
                 });
             } catch (e) {
                 next({name: '404'});
-                eventBus.pageNotFound();
             }
 
         },

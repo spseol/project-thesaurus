@@ -20,7 +20,7 @@ export declare class Attachment extends Object {
 export declare class Reservation extends Object {
     id: string;
     thesis: string;
-    for_user: User;
+    user: User;
     thesis_label: string;
     thesis_registration_number: string;
     created: string;
@@ -38,6 +38,9 @@ export declare class Thesis extends Object {
     authors: Array<User>;
     attachments: Array<Attachment>;
     reviews: Array<object>;
+
+    state: string;
+    state_label: string;
 
     available_for_reservation: boolean;
     reservable: boolean;

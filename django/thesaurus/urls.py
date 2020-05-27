@@ -14,13 +14,12 @@ from apps.frontend.views import AppView
 handler500 = 'apps.utils.views.server_error'
 
 urlpatterns = [
-    path('admin/', include('loginas.urls')),
-    path('admin/', admin.site.urls, name='admin'),
-
     path('api/', include('apps.api.urls')),
 ]
 
 urlpatterns += i18n_patterns(
+    path('admin/', include('loginas.urls')),
+    path('admin/', admin.site.urls, name='admin'),
     path('login', views.LoginView.as_view(redirect_authenticated_user=True), name='login'),
     path('logout', user_logout, name='logout'),
     re_path('.*', AppView.as_view(), name='home'),

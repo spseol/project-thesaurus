@@ -1,21 +1,24 @@
-version: '2.2'
+version: '3.3'
 services:
   web:
+    build: ./django
     command: runserver
+    volumes:
+      - ./django/:/usr/src/app/
     env_file:
       - django/.env.dev
 
-  db:
-    ports:
-      - 15432:5432
-
   webserver:
+    build: ./nginx
     command: [nginx-debug, '-g', 'daemon off;']
 
   webpack:
+    build: ./webpack
     command: dev
     ports:
       - 3000:3000
+    volumes:
+      - ./webpack/:/usr/src/app
     environment:
       - NODE_ENV=development
       - PUBLIC_PATH=http://${SITE_URL:-localhost}:3000/static/

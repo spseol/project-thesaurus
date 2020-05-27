@@ -17,6 +17,11 @@ class User(AbstractUser):
         null=True, blank=True, max_length=16,
     )
 
+    school_class = CharField(
+        verbose_name=_('School class'),
+        blank=True, null=True, max_length=8,
+    )
+
     objects = UserManager()
     school_users = UserQueryset.as_manager()
 
@@ -33,9 +38,13 @@ class User(AbstractUser):
         return self.groups.filter(name='manager').exists()
 
     def get_full_name(self):
-        return f'{self.degree_before or ""}' \
-               f'{self.first_name} {self.last_name}' \
-               f'{("," + self.degree_after) if self.degree_after else ""}'.strip() or self.username
+        return (
+                       (
+                           f'{self.degree_before or ""}'
+                           f'{self.first_name} {self.last_name}'
+                           f'{(", " + self.degree_after) if self.degree_after else ""}'
+                       ) + (f' ({self.school_class})' if self.school_class else '')
+               ).strip() or self.username
 
     full_name = property(get_full_name)
 

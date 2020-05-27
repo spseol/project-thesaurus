@@ -8,7 +8,7 @@
 
 <script type="text/tsx">
     import Vue from 'vue';
-    import SubmitForm from './SubmitForm';
+    import SubmitForm from './SubmitForm.vue';
 
     export default Vue.extend({
         components: {SubmitForm}

@@ -26,6 +26,7 @@
 </template>
 <script type="text/tsx">
     import * as _ from 'lodash';
+    import qs from 'qs';
     import Vue from 'vue';
     import Axios from '../axios';
     import {pageContext} from '../utils';
@@ -46,16 +47,15 @@
                     return this.$i18n.locale;
                 },
                 set(locale) {
-                    this.$root.$i18n.locale = locale;
+                    pageContext.locale = this.$root.$i18n.locale = locale;
                 }
             }
         },
         methods: {
             async setLang(language) {
                 if (language == this.locale) return;
-                let resp = await Axios.post('/api/i18n/setlang/', {
-                    language
-                });
+                let resp = await Axios.post('/api/i18n/setlang/', qs.stringify({language}));
+
                 this.locale = language;
                 Axios.defaults.headers['Accept-Language'] = language;
                 this.$router.push({

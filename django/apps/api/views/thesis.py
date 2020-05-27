@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Q, QuerySet, OuterRef, Exists, F
@@ -11,11 +13,19 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts.models import User
-from apps.api.permissions import CanSubmitThesisPermission, CanSubmitExternalThesisReviewPermission
+from apps.api.permissions import (
+    CanSubmitThesisPermission,
+    CanSubmitExternalThesisReviewPermission,
+    CanViewThesisFullInternalReview
+)
 from apps.attachment.models import Attachment, TypeAttachment
+from apps.review.serializers import ReviewFullInternalSerializer, ReviewPublicSerializer
 from apps.thesis.models import Thesis, Category, Reservation
-from apps.thesis.serializers import ThesisFullPublicSerializer, ThesisFullInternalSerializer, ThesisBaseSerializer
-from apps.thesis.serializers.thesis import ThesisSubmitSerializer
+from apps.thesis.serializers import (
+    ThesisFullPublicSerializer, ThesisFullInternalSerializer,
+    ThesisBaseSerializer, ThesisSubmitSerializer
+)
+from apps.utils.views import ModelChoicesOptionsView
 
 
 def _state_change_action(name, state: Thesis.State):
@@ -65,14 +75,11 @@ class ThesisViewSet(ModelViewSet):
             _reservable=F('reservable') and Exists(
                 queryset=Reservation.open_reservations.filter(
                     thesis_id=OuterRef('pk'),
-                    for_user=user,
+                    user=user,
                 ),
                 negated=True,
             )
         )
-
-        # in case of request for one object include also thesis waiting for submit by one author
-        include_waiting_for_submit = self.action in ('retrieve', 'submit')
 
         if user.has_perm('thesis.change_thesis'):  # can see all of them
             return qs
@@ -80,7 +87,7 @@ class ThesisViewSet(ModelViewSet):
         # no perms to see all thesis, so filter only published ones
         return qs.filter(
             Q(state=Thesis.State.PUBLISHED) |
-            (Q(authors=user, state=Thesis.State.READY_FOR_SUBMIT) if include_waiting_for_submit else Q()) |
+            Q(authors=user) |
             Q(opponent=user, state=Thesis.State.READY_FOR_REVIEW) |
             Q(supervisor=user, state=Thesis.State.READY_FOR_REVIEW)
         )
@@ -92,19 +99,34 @@ class ThesisViewSet(ModelViewSet):
             supervisor=serializer.validated_data.get('supervisor'),
             authors=get_list_or_404(
                 get_user_model(),
+                # TODO: refaactor to custom action /prepare?
                 pk__in=serializer.initial_data.get('authors').split(',')
             ),
             published_at=parse_date((serializer.initial_data.get('published_at') + '/01').replace('/', '-'))
         )
 
-        Attachment.objects.create_from_upload(
-            uploaded=self.request.FILES.get('admission'),
-            thesis=thesis,
-            type_attachment=TypeAttachment.objects.get_by_identifier(TypeAttachment.Identifier.THESIS_ASSIGMENT),
-        )
+        admission = self.request.FILES.get('admission')
+        if admission:
+            Attachment.objects.create_from_upload(
+                uploaded=admission,
+                thesis=thesis,
+                type_attachment=TypeAttachment.objects.get_by_identifier(TypeAttachment.Identifier.THESIS_ASSIGMENT),
+            )
 
         thesis.state = Thesis.State.READY_FOR_SUBMIT
         thesis.save()
+
+    @transaction.atomic
+    def perform_update(self, serializer: ThesisFullInternalSerializer):
+        serializer.save(
+            category=get_object_or_404(Category, pk=serializer.initial_data.get('category')),
+            authors=get_list_or_404(
+                get_user_model(),
+                # TODO: refactor to custom action /edit?
+                pk__in=serializer.initial_data.get('authors')
+            ),
+            published_at=parse_date((serializer.initial_data.get('published_at') + '/01').replace('/', '-'))
+        )
 
     @action(methods=['patch'], detail=True, permission_classes=[CanSubmitThesisPermission])
     @transaction.atomic
@@ -158,9 +180,21 @@ class ThesisViewSet(ModelViewSet):
             type_attachment=TypeAttachment.objects.get_by_identifier(review_type_attachment),
         )
 
-        thesis.check_reviews_state()
-
         return Response(data=dict(id=attachment.id))
+
+    @action(methods=['get'], detail=True)
+    def reviews(self, request, *args, **kwargs):
+        thesis = self.get_object()
+
+        serializer_class = ReviewPublicSerializer
+        if CanViewThesisFullInternalReview().has_object_permission(self.request, self, thesis):
+            serializer_class = ReviewFullInternalSerializer
+
+        return Response(
+            serializer_class(
+                instance=thesis.review_thesis, many=True, context=self.get_serializer_context()
+            ).data
+        )
 
     def get_serializer_class(self):
         class DynamicThesisSerializer(ThesisFullInternalSerializer):
@@ -173,3 +207,13 @@ class ThesisViewSet(ModelViewSet):
                 )))
 
         return DynamicThesisSerializer
+
+
+class ThesisStateOptionsViewSet(ModelChoicesOptionsView):
+    choices = Thesis.State
+
+    @staticmethod
+    def choice_extra(choice: Tuple[str, str]):
+        return dict(
+            help_text=Thesis.STATE_HELP_TEXTS.get(choice[0]),
+        )

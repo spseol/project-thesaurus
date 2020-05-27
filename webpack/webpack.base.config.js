@@ -20,7 +20,7 @@ module.exports = {
     },
     entry: {
         main: path.join(__dirname, './src/js/index.ts'),
-        login: path.join(__dirname, './src/js/pages/Login/login.js'),
+        login: path.join(__dirname, './src/js/pages/Login/login.ts'),
     },
     output: {
         // for example ../build/head.[hash].js
@@ -114,7 +114,7 @@ module.exports = {
             path.resolve(__dirname, './src/'),
             'node_modules/',
         ],
-        extensions: ['.js', '.ts', '.vue'],
+        extensions: ['.js', '.ts'],
         unsafeCache: true,
         alias: {
             vue: 'vue/dist/vue.esm.js',

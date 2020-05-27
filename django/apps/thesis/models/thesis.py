@@ -7,6 +7,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import TextChoices
 from django.utils.translation import gettext_lazy as _
+from django_lifecycle import hook, AFTER_UPDATE
 
 from apps.thesis.models.managers.thesis import ThesisApiManager, ThesisManager
 from apps.utils.models import BaseTimestampedModel
@@ -92,12 +93,6 @@ class Thesis(BaseTimestampedModel):
         default=True,
     )
 
-    # TODO: here or on User?
-    school_class = models.CharField(
-        verbose_name=_('School class'),
-        default='', blank=True, null=True, max_length=8,
-    )
-
     objects = ThesisManager()
     api_objects = ThesisApiManager()
 
@@ -126,31 +121,24 @@ class Thesis(BaseTimestampedModel):
         """Returns count of reservations for this thesis in states"""
         from .reservation import Reservation
 
-        return self.reservation_thesis.exclude(
-            state__in=Reservation.State.FINISHED,
+        return self.reservation_thesis.filter(
+            state__in=Reservation.State.OPEN_RESERVATION_STATES,
         ).count()
 
-    def check_reviews_state(self):
-        from apps.attachment.models import TypeAttachment
-        if (
-                self.review_thesis.filter(
-                    user=self.supervisor
-                ).exists()  # has internal review
-                or
-                self.attachment_thesis.filter(
-                    type_attachment__identifier=TypeAttachment.Identifier.SUPERVISOR_REVIEW
-                ).exists()  # or has external
-        ) and (
-                self.review_thesis.filter(
-                    user=self.opponent
-                ).exists()
-                or
-                self.attachment_thesis.filter(
-                    type_attachment__identifier=TypeAttachment.Identifier.OPPONENT_REVIEW
-                ).exists()
-        ):
-            self.state = self.State.REVIEWED
-            self.save(update_fields=['state'])
+    STATE_HELP_TEXTS = {
+        State.CREATED: _("Thesis is created with basic information and it's waiting for state change."),
+        State.READY_FOR_SUBMIT: _("Thesis is currently waiting for submit from one of authors."),
+        State.SUBMITTED: _("Thesis has been submitted and it needs to be pushed to reviews."),
+        State.READY_FOR_REVIEW: _("Thesis is waiting for reviews from supervisor and opponent - also possible to add "
+                                  "external review."),
+        State.REVIEWED: _("Thesis has both reviews and it's waiting for publication."),
+        State.PUBLISHED: _("Thesis is public and it's possible to borrow it."),
+    }
+
+    @hook(AFTER_UPDATE, when='state', has_changed=True)
+    def on_state_change(self):
+        from apps.emails.mailers import ThesisMailer
+        ThesisMailer.on_state_change(thesis=self)
 
 
 class ThesisAuthor(BaseTimestampedModel):

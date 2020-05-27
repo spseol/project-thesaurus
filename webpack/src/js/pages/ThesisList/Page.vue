@@ -8,7 +8,7 @@
 
 <script type="text/tsx">
     import Vue from 'vue';
-    import ThesisList from './ThesisList';
+    import ThesisList from './ThesisList.vue';
 
     export default Vue.extend({
         components: {ThesisList}

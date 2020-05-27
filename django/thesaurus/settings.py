@@ -7,24 +7,22 @@ import os
 import re
 from logging.config import dictConfig
 
-from decouple import config
+from decouple import AutoConfig
+from django.core.validators import MinValueValidator
 from django.utils.log import DEFAULT_LOGGING
 from django.utils.translation import gettext_lazy as _
 
-# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+config = AutoConfig(search_path='/run/secrets/')  # .env file is injected by docker secrets
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = config("SECRET_KEY", default='...')
+SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 
 VERSION = config('THESAURUS_VERSION', default='unknown')
 
-# 'ALLOWED_HOSTS' should be a single string of hosts with a space between each.
-# For example: 'ALLOWED_HOSTS=localhost 127.0.0.1 [::1]'
-ALLOWED_HOSTS = config("ALLOWED_HOSTS", default='').split(" ")
-
-# Application definition
+ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(" ")
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -34,10 +32,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'constance',
+    'constance.backends.database',
 
     'apps.accounts',
     'apps.api',
     'apps.attachment',
+    'apps.emails',
     'apps.frontend',
     'apps.thesis',
     'apps.review',
@@ -47,9 +48,11 @@ INSTALLED_APPS = [
     'webpack_loader',
     'debug_toolbar',
     'rest_framework',
+    'mailqueue',
     'django_extensions',
     'django_better_admin_arrayfield',
     'django_bleach',
+    'django_python3_ldap',
 ]
 
 MIDDLEWARE = [
@@ -64,23 +67,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-ROOT_URLCONF = 'thesaurus.urls'
-
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-
-LOGIN_REDIRECT_URL = LOGOUT_REDIRECT_URL = '/'
-
-LOGIN_URL = '/login'
-
-APPEND_SLASH = False
-
 AUTH_USER_MODEL = 'accounts.User'
-
-API_URL_PATTERN = re.compile(r'^/api/.*')
-
-LOCALE_MIDDLEWARE_IGNORE_URLS = (
-    API_URL_PATTERN,
-)
 
 TEMPLATES = [
     {
@@ -125,17 +112,22 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
+AUTHENTICATION_BACKENDS = [
+    'django_python3_ldap.auth.LDAPBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
 LANGUAGES = (
-    ('cs', _('Čeština')),
+    ('cs', _('Czech')),
     ('en', _('English')),
 )
 
 LANGUAGE_CODE = 'en'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = config('TZ')
 
 USE_I18N = True
 
@@ -145,18 +137,7 @@ USE_TZ = True
 
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'locale')]
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.0/howto/static-files/
-
-STATIC_URL = '/static/'
-
-STATIC_ROOT = '/usr/src/static'
-
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
-
-MEDIA_ROOT = '/usr/src/media'
-
-MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
@@ -187,54 +168,140 @@ REST_FRAMEWORK = {
 
 CAN_LOGIN_AS = lambda request, target_user: request.user.is_superuser and not target_user.is_superuser
 
-# Disable Django's logging setup
+if DEBUG:
+    # for django-debug-toolbar
+    # remote_addr does not matter in debug mode in image
+    INTERNAL_IPS = type(str('ContainsEverything'), (), {'__contains__': lambda *a: True})()
+
+###### LDAP
+# https://github.com/etianen/django-python3-ldap
+
+LDAP_AUTH_URL = f"ldap://{config('DOCKER_HOST_IP', cast=str)}:{config('LDAP_PORT', default=389)}"
+LDAP_AUTH_USE_TLS = False
+LDAP_AUTH_CONNECTION_USERNAME = config('LDAP_USERNAME', cast=str)
+LDAP_AUTH_CONNECTION_PASSWORD = config('LDAP_PASSWORD', cast=str)
+LDAP_AUTH_CONNECT_TIMEOUT = None
+LDAP_AUTH_RECEIVE_TIMEOUT = None
+
+LDAP_AUTH_SEARCH_BASE = config('LDAP_SEARCH_BASE', cast=str)
+LDAP_AUTH_ACTIVE_DIRECTORY_DOMAIN = config('LDAP_ACTIVE_DIRECTORY_DOMAIN', cast=str)
+LDAP_AUTH_OBJECT_CLASS = "organizationalPerson"
+
+LDAP_AUTH_USER_FIELDS = dict(
+    username="sAMAccountName",
+    first_name="givenName",
+    last_name="sn",
+    email="userPrincipalName",
+)
+
+LDAP_AUTH_USER_LOOKUP_FIELDS = ("username",)
+
+LDAP_AUTH_CLEAN_USER_DATA = "django_python3_ldap.utils.clean_user_data"
+LDAP_AUTH_SYNC_USER_RELATIONS = "apps.accounts.ldap.sync_user_relations"
+LDAP_AUTH_FORMAT_SEARCH_FILTERS = "django_python3_ldap.utils.format_search_filters"
+LDAP_AUTH_FORMAT_USERNAME = "django_python3_ldap.utils.format_username_active_directory_principal"
+
+# custom app config
+CONSTANCE_BACKEND = 'constance.backends.database.DatabaseBackend'
+CONSTANCE_CONFIG = {
+    'MAX_OPEN_RESERVATIONS_COUNT': (
+        6,
+        _('Maximal count of opened reservations linked to one user (inclusive).'),
+        'non_negative_small_integer',
+    ),
+}
+CONSTANCE_ADDITIONAL_FIELDS = {
+    'non_negative_small_integer': ['django.forms.fields.IntegerField', {
+        'validators': [
+            MinValueValidator(limit_value=0)
+        ]
+    }],
+}
+
+# emailing
+EMAIL_BACKEND = config('EMAIL_BACKEND')
+EMAIL_HOST = config('EMAIL_HOST')
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+MAILQUEUE_QUEUE_UP: bool = config('EMAIL_USE_QUEUE', default=not DEBUG, cast=bool)
+MAILQUEUE_STORAGE = True
+
+DEFAULT_FROM_EMAIL: str = config('MAIL_FROM_ADDRESS', default='noreply@thesaurus')
+MAIL_SUBJECT_TITLE: str = config('MAIL_SUBJECT_TITLE', default='Thesaurus')
+EMAIL_LANGUAGE = 'cs'
+
+# urls definitions
+STATIC_URL = '/static/'
+
+STATIC_ROOT = '/usr/src/static'
+
+# public URL for building absolute urls
+PUBLIC_HOST: str = config('PUBLIC_HOST', cast=str)
+
+MEDIA_ROOT = '/usr/src/media'
+
+MEDIA_URL = '/media/'
+
+ROOT_URLCONF = 'thesaurus.urls'
+
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+LOGIN_REDIRECT_URL = LOGOUT_REDIRECT_URL = '/'
+
+LOGIN_URL = '/login'
+
+APPEND_SLASH = False
+
+API_URL_PATTERN = re.compile(r'^/api/.*')
+
+LOCALE_MIDDLEWARE_IGNORE_URLS = (
+    API_URL_PATTERN,
+)
+
+# logging & sentry
+SENTRY_DSN = config('SENTRY_DSN', default='')
+if SENTRY_DSN:
+    import sentry_sdk
+    from sentry_sdk.integrations.django import DjangoIntegration
+
+    sentry_sdk.init(
+        dsn=SENTRY_DSN,
+        integrations=[DjangoIntegration(transaction_style='function_name')],
+
+        send_default_pii=True,
+    )
+
 LOGGING_CONFIG = None
 
-LOGLEVEL = os.environ.get('LOGLEVEL', 'info').upper()
+LOGLEVEL = config('LOGLEVEL', default='info').upper()
 
 dictConfig({
     'version': 1,
     'disable_existing_loggers': False,
     'formatters': {
         'default': {
-            # exact format is not important, this is the minimum information
             'format': '%(asctime)s %(name)-12s %(levelname)-8s %(message)s',
         },
         'django.server': DEFAULT_LOGGING['formatters']['django.server'],
     },
     'handlers': {
-        # console logs to stderr
         'console': {
             'class': 'logging.StreamHandler',
             'formatter': 'default',
         },
-        # Add Handler for Sentry for `warning` and above
-        # 'sentry': {
-        #     'level': 'WARNING',
-        #     'class': 'raven.contrib.django.raven_compat.handlers.SentryHandler',
-        # },
         'django.server': DEFAULT_LOGGING['handlers']['django.server'],
     },
     'loggers': {
-        # default for all undefined Python modules
         '': {
             'level': 'WARNING',
             'handlers': ['console'],
         },
-        # Our application code
-        'app': {
+        'apps': {
             'level': LOGLEVEL,
             'handlers': ['console'],
-            # Avoid double logging because of root logger
             'propagate': False,
         },
-        # Prevent noisy modules from logging to Sentry
-        # Default runserver request logging
         'django.server': DEFAULT_LOGGING['loggers']['django.server'],
     },
 })
-
-if DEBUG:
-    # for django-debug-toolbar
-    # remote_addr does not matter in debug mode in image
-    INTERNAL_IPS = type(str('ContainsEverything'), (), {'__contains__': lambda *a: True})()

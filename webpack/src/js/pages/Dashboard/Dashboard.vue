@@ -2,23 +2,40 @@
     <v-card>
         <v-card-title>{{ $t('Dashboard') }}</v-card-title>
         <v-card-text>
-            <v-alert
-                v-for="thesis in theses_ready_for_submit" :key="thesis.id"
-                prominent type="warning"
-            >
-                <v-row align="center">
-                    <v-col class="grow">
-                        <h2 class="mb-1">{{ $t('Thesis waiting for submit') }}</h2>
-                        {{ thesis.title }} <br>
-                        {{ thesis.authors.map(a => a.full_name).join(', ') }}
-                    </v-col>
-                    <v-col class="shrink">
-                        <v-btn large :to="$i18nRoute({name: 'thesis-submit', params: {id: thesis.id}})">
-                            {{ $t('Submit thesis') }}
-                        </v-btn>
-                    </v-col>
-                </v-row>
-            </v-alert>
+            <template v-for="thesis in author_theses">
+
+                <v-alert
+                    v-if="thesis.state === 'ready_for_submit'"
+                    prominent type="warning"
+                >
+                    <v-row align="center">
+                        <v-col class="grow">
+                            <h2 class="mb-1">{{ $t('Thesis waiting for submit') }}</h2>
+                            {{ thesis.title }} <br>
+                            {{ thesis.authors.map(a => a.full_name).join(', ') }}
+                        </v-col>
+                        <v-col class="shrink">
+                            <v-btn large :to="$i18nRoute({name: 'thesis-submit', params: {id: thesis.id}})">
+                                {{ $t('Submit thesis') }}
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </v-alert>
+
+                <v-alert v-else type="info" outlined prominent color="gray">
+                    <v-row align="center">
+                        <v-col class="grow">
+                            <h3 class="mb-1">{{ thesis.title }}</h3>
+                            {{ thesis.authors.map(a => a.full_name).join(', ') }}
+                        </v-col>
+                        <v-col class="shrink">
+                            <v-btn large text>
+                                {{ thesis.state_label }}
+                            </v-btn>
+                        </v-col>
+                    </v-row>
+                </v-alert>
+            </template>
 
             <v-alert
                 v-for="thesis in theses_ready_for_review" :key="thesis.id"
@@ -55,7 +72,23 @@
                 </v-row>
             </v-alert>
 
-            <v-alert v-if="!(theses_ready_for_review.length + theses_ready_for_submit.length + reservations_ready_for_prepare.length)" type="info" outlined>
+            <v-alert type="info" outlined prominent v-if="theses_just_submitted.length">
+                <v-row align="center">
+                    <v-col class="grow">
+                        <h2 class="mb-1">
+                            {{ $t('Just submitted theses waiting for check') }}
+                            ({{ theses_just_submitted.length }})
+                        </h2>
+                    </v-col>
+                    <v-col class="shrink">
+                        <v-btn large :to="$i18nRoute({name: 'thesis-list'})">
+                            {{ $t('Go to theses') }}
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-alert>
+
+            <v-alert v-if="showNoData" type="info" outlined>
                 {{ $t('dashboard.nothingNote') }}
             </v-alert>
         </v-card-text>
@@ -70,9 +103,10 @@
         name: 'Dashboard',
         data() {
             return {
-                theses_ready_for_submit: [],
                 theses_ready_for_review: [],
-                reservations_ready_for_prepare: []
+                reservations_ready_for_prepare: [],
+                theses_just_submitted: [],
+                author_theses: []
             };
         },
         async created() {
@@ -87,6 +121,14 @@
                     this.reservations_ready_for_prepare,
                     _.property('thesis_registration_number')
                 ).sort();
+            },
+            showNoData() {
+                return !(
+                    this.theses_ready_for_review.length ||
+                    this.reservations_ready_for_prepare.length ||
+                    this.theses_just_submitted.length ||
+                    this.author_theses.length
+                );
             }
         }
     };

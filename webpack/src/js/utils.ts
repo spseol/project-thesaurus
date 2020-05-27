@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import colors from 'vuetify/lib/util/colors';
+import {User} from './types';
 
-class Context {
-    username: string;
+class PageContext {
+    user: User;
     locale: string;
     djangoAdminUrl: string;
     languages: Array<string>;
@@ -33,7 +34,7 @@ function readFileAsync(file) {
     });
 }
 
-const pageContext = new Context();
+const pageContext = new PageContext();
 
 class Flash extends Object {
     text: string;
@@ -50,17 +51,17 @@ class EventBus extends Vue {
 const eventBus = new EventBus();
 
 export const GRADE_COLOR_SCALE_3 = {
-    3: colors.green.lighten1,
-    2: colors.blue.lighten2,
-    1: colors.red.lighten1,
-    0: colors.grey.lighten1
+    3: colors.green.lighten2,
+    2: colors.blue.lighten3,
+    1: colors.red.lighten2,
+    0: colors.grey.lighten2
 };
 export const GRADE_COLOR_SCALE_4 = {
-    4: colors.green.lighten1,
-    3: colors.blue.lighten2,
-    2: colors.orange.base,
-    1: colors.red.lighten1,
-    0: colors.grey.lighten1
+    4: colors.green.lighten2,
+    3: colors.blue.lighten3,
+    2: colors.orange.lighten1,
+    1: colors.red.lighten2,
+    0: colors.grey.lighten2
 };
 export {
     pageContext,

@@ -82,7 +82,11 @@
                 // TODO: next url?
                 const response = await Axios.post(
                     '/api/v1/login',
-                    this.credentials, {
+                    {
+                        ...this.credentials,
+                        next: (new URLSearchParams(window.location.search)).get('next')
+                    },
+                    {
                         validateStatus: () => true
                     }
                 );

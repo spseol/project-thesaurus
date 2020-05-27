@@ -1,7 +1,7 @@
 <template>
     <v-card>
         <v-card-title>{{ $t('Submit thesis') }}</v-card-title>
-        <v-form @submit.prevent="submit" v-model="valid">
+        <v-form @submit.prevent="submit" ref="form" v-model="valid">
             <v-card-text>
                 <v-row>
                     <v-col cols="12" lg="6">
@@ -177,6 +177,10 @@
         },
         async created() {
             this.thesis = (await Axios.get(`/api/v1/thesis/${this.id}`)).data;
+            this.$watch('thesis', (old, new_) => {
+                if (!this.valid)
+                    this.valid = true;
+            }, {deep: true});
         }
     });
 </script>

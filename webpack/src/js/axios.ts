@@ -1,5 +1,5 @@
 import OrigAxios, {AxiosInstance, AxiosRequestConfig} from 'axios';
-import {eventBus} from './utils';
+import {eventBus, pageContext} from './utils';
 
 const config: AxiosRequestConfig = {
     xsrfCookieName: 'csrftoken',
@@ -19,6 +19,16 @@ Axios.interceptors.response.use(null, (error) => {
     }
     return Promise.reject(error);
 });
+
+Axios.interceptors.request.use(
+    (config) => {
+        config.headers['Accept-Language'] = pageContext.locale;
+        return config;
+    },
+    (error) => {
+        return Promise.reject(error);
+    }
+);
 
 export default Axios;
 

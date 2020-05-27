@@ -2,9 +2,8 @@ FROM node:10-slim
 
 WORKDIR /usr/src/app
 
-COPY package.json ./
-RUN npm install
-RUN rm package.json
+COPY package.json package-lock.json ./
+RUN npm ci && rm package.json package-lock.json
 
 COPY . .
 

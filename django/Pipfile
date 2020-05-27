@@ -29,8 +29,15 @@ uvicorn = "*"
 django-better-admin-arrayfield = "*"
 bleach = "*"
 django-bleach = "*"
+django-python3-ldap = "*"
+django-lifecycle = "*"
+django-mail-queue = "*"
+sentry-sdk = "*"
 
 [dev-packages]
 
 [requires]
-python_version = "3.7"
+python_version = "3.8"
+
+[packages.django-constance]
+extras = [ "database",]
