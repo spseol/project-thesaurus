@@ -90,7 +90,7 @@
     import _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {eventBus} from '../../utils';
+    import {asyncOptions, eventBus} from '../../utils';
 
     export default Vue.extend({
         name: 'ReservationList',
@@ -127,12 +127,7 @@
             },
         },
         asyncComputed: {
-            stateOptions: {
-                async get() {
-                    return (await Axios.get('/api/v1/reservation-state-options')).data;
-                },
-                default: [],
-            },
+            stateOptions: asyncOptions('/api/v1/reservation-state-options'),
             async stateOptionsFilter() {
                 return [
                     {text: this.$t('Open'), value: 'open'},

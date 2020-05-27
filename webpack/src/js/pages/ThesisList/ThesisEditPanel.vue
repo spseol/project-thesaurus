@@ -149,7 +149,7 @@
     import _ from 'lodash';
     import qs from 'qs';
     import Axios from '../../axios';
-    import {eventBus} from '../../utils';
+    import {asyncOptions, eventBus} from '../../utils';
 
     export default {
         name: 'ThesisEditPanel',
@@ -215,6 +215,9 @@
                 return this.thesisStateOptions.find(({value}) => value === this.data.state).help_text;
             }
         },
+        asyncComputed: {
+            thesisStateOptions: asyncOptions(`/api/v1/thesis-state-options`)
+        },
         async created() {
             const t = this.thesis;
             this.data = {
@@ -224,9 +227,6 @@
                 supervisor: {...(t.supervisor || {id: null})}
             };
             this.authors = _.map(t.authors, 'id');
-
-            // TODO: solve it lazy, lazy Joe
-            this.thesisStateOptions = (await Axios.get(`/api/v1/thesis-state-options`)).data;
         }
     };
 </script>

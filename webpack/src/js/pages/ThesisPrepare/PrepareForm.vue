@@ -84,11 +84,10 @@
 <script type="text/tsx">
     import _ from 'lodash';
     import qs from 'qs';
-    import Vue from 'vue';
     import Axios from '../../axios';
-    import {eventBus, readFileAsync} from '../../utils';
+    import {asyncOptions, eventBus, readFileAsync} from '../../utils';
 
-    export default Vue.extend({
+    export default {
         name: 'ThesisPrepareForm',
         data() {
             return {
@@ -168,18 +167,8 @@
             }
         },
         asyncComputed: {
-            categoryOptions: {
-                async get() {
-                    return (await Axios.get('/api/v1/category-options')).data;
-                },
-                default: []
-            },
-            teacherOptions: {
-                async get() {
-                    return (await Axios.get('/api/v1/teacher-options')).data;
-                },
-                default: []
-            }
+            categoryOptions: asyncOptions('/api/v1/category-options'),
+            teacherOptions: asyncOptions('/api/v1/teacher-options')
         }
-    });
+    };
 </script>

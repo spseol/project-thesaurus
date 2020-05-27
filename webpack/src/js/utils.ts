@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import colors from 'vuetify/lib/util/colors';
+import Axios from './axios';
 import {User} from './types';
 
 class PageContext {
@@ -33,6 +34,17 @@ function readFileAsync(file) {
         reader.readAsArrayBuffer(file);
     });
 }
+
+
+export async function asyncOptions(url) {
+    return {
+        async get() {
+            return (await Axios.get(url)).data;
+        },
+        default: []
+    };
+}
+
 
 const pageContext = new PageContext();
 
