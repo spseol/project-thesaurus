@@ -27,6 +27,6 @@ jobs:
         SENTRY_ORG: josef-kolar
         SENTRY_PROJECT: thesaurus
       with:
-        tagName: ${{ github.ref }}
+        tagName: ${{ github.sha }}
         environment: production
         releaseNamePrefix: thesaurus-v
