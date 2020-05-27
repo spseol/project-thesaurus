@@ -70,7 +70,7 @@
                                 <!-- TODO: remove this weird workaround -->
                                 <v-select
                                     :items="thesisStateOptions" v-model="data.state"
-                                    :hint="((typeof thesisStateOptions === typeof []) ? thesisStateOptions : []).find(({value}) => value === data.state).help_text"
+                                    :hint="stateHint"
                                     persistent-hint flat solo outlined dense
                                     :error-messages="messages.state"
                                 ></v-select>
@@ -124,6 +124,13 @@
                             </v-card-text>
                         </v-card>
 
+                        <v-alert
+                            v-for="msg in non_field_error_messages" :key="msg"
+                            type="warning" text outlined class="mt-3"
+                        >
+                            {{ msg }}
+                        </v-alert>
+
                     </v-col>
                 </v-row>
             </v-card-text>
@@ -159,7 +166,8 @@
                 studentOptions: [],
                 thesisStateOptions: [],
                 authors: [],
-                messages: {}
+                messages: {},
+                non_field_error_messages: []
             };
         },
         watch: {
@@ -196,9 +204,15 @@
                     this.$emit('reload');
                 } else {
                     this.messages = resp;
+                    this.non_field_error_messages = resp.non_field_errors;
                 }
 
                 this.loading = false;
+            }
+        },
+        computed: {
+            stateHint() {
+                return this.thesisStateOptions.find(({value}) => value === this.data.state).help_text;
             }
         },
         async created() {

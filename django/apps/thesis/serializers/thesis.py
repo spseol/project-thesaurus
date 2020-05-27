@@ -1,3 +1,5 @@
+from django.utils.translation import ugettext as _
+from rest_framework.exceptions import ValidationError
 from rest_framework.fields import DateField, BooleanField, CharField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
@@ -42,6 +44,13 @@ class ThesisBaseSerializer(ModelSerializer):
             'opponent',
             'opponent_id',
         )
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs=attrs)
+        if attrs.get('state') == Thesis.State.PUBLISHED and not attrs.get('registration_number'):
+            raise ValidationError(_('Publishing thesis without filled registration number is not allowed.'))
+
+        return attrs
 
 
 class ThesisSubmitSerializer(ThesisBaseSerializer):
