@@ -47,8 +47,6 @@ class AttachmentManager(Manager):
                 )
             )
 
-        # TODO: max size validation
-
         attachment = self.model(
             thesis=thesis,
             type_attachment=type_attachment,

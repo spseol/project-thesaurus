@@ -212,7 +212,7 @@
         },
         computed: {
             stateHint() {
-                return this.thesisStateOptions.find(({value}) => value === this.data.state).help_text;
+                return _.find(this.thesisStateOptions, {value: this.data.state})?.help_text;
             }
         },
         asyncComputed: {

@@ -219,7 +219,6 @@
             },
             async submit() {
                 this.loading = true;
-                // TODO: editation?
                 const resp = (await Axios.post('/api/v1/review',
                     {
                         ...this.review,

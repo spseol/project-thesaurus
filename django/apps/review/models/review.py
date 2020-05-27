@@ -65,7 +65,6 @@ class Review(BaseTimestampedModel):
         choices=GradesChoices.choices,
     )
 
-    # TODO: state?
     class Meta:
         verbose_name = _('Review')
         verbose_name_plural = _('Reviews')

@@ -36,7 +36,7 @@ function readFileAsync(file) {
 }
 
 
-export async function asyncOptions(url) {
+export function asyncOptions(url) {
     return {
         async get() {
             return (await Axios.get(url)).data;

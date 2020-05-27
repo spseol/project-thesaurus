@@ -16,9 +16,10 @@ from apps.accounts.models import User
 from apps.api.permissions import (
     CanSubmitThesisPermission,
     CanSubmitExternalThesisReviewPermission,
-    CanViewThesisFullInternalReview
+    CanViewThesisFullInternalReview, CanViewAttachment
 )
 from apps.attachment.models import Attachment, TypeAttachment
+from apps.attachment.serializers import AttachmentSerializer
 from apps.review.serializers import ReviewFullInternalSerializer, ReviewPublicSerializer
 from apps.thesis.models import Thesis, Category, Reservation
 from apps.thesis.serializers import (
@@ -193,6 +194,21 @@ class ThesisViewSet(ModelViewSet):
         return Response(
             serializer_class(
                 instance=thesis.review_thesis, many=True, context=self.get_serializer_context()
+            ).data
+        )
+
+    @action(methods=['get'], detail=True)
+    def attachments(self, request, *args, **kwargs):
+        thesis = self.get_object()
+
+        return Response(
+            AttachmentSerializer(
+                instance=CanViewAttachment.restrict_queryset(
+                    user=request.user,
+                    queryset=thesis.attachment_thesis
+                ),
+                many=True,
+                context=self.get_serializer_context()
             ).data
         )
 

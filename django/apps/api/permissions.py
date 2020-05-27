@@ -1,6 +1,9 @@
+from django.db.models import QuerySet, Q
 from rest_framework.permissions import DjangoModelPermissions, BasePermission
+from rest_framework.request import Request
 
 from apps.accounts.models import User
+from apps.attachment.models import Attachment
 from apps.thesis.models import Thesis, Reservation
 
 
@@ -45,3 +48,21 @@ class CanViewThesisFullInternalReview(BasePermission):
         user = request.user  # type: User
 
         return user.has_perm('review.add_review') or user in thesis.authors.all()
+
+
+class CanViewAttachment(BasePermission):
+    def has_object_permission(self, request: Request, view, attachment: Attachment):
+        user = request.user  # type: User
+
+        return (
+                user.has_perm('attachment.view_attachment') or
+                attachment.type_attachment.is_public or
+                user in attachment.thesis.authors.all()
+        )
+
+    @classmethod
+    def restrict_queryset(cls, user: User, queryset: QuerySet):
+        return queryset.filter(
+            Q(type_attachment__is_public=True) |
+            Q(thesis__authors=user)
+        )
