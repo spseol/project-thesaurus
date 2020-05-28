@@ -1,6 +1,7 @@
 from operator import itemgetter
 
 from django.db import models
+from django.template.defaultfilters import filesizeformat
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_better_admin_arrayfield.models.fields import ArrayField
@@ -58,6 +59,10 @@ class Attachment(BaseTimestampedModel):
         choices=_content_type_choices(),
     )
 
+    size = models.IntegerField(
+        verbose_name=_('Size of attachment'),
+    )
+
     objects = AttachmentManager()
 
     class Meta:
@@ -81,6 +86,13 @@ class Attachment(BaseTimestampedModel):
         file_type = get_type(mime=self.content_type)
         return f'{self.thesis.registration_number or slugify(self.thesis.title)}-' \
                f'{slugify(self.type_attachment.identifier)}.{file_type.extension}'
+
+    def __str__(self):
+        return f'{self.type_attachment.get_identifier_display()} ({self.thesis})'
+
+    @property
+    def size_label(self):
+        return filesizeformat(self.size)
 
     @hook(AFTER_CREATE)
     def check_thesis_state(self):

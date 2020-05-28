@@ -85,7 +85,7 @@
     import _ from 'lodash';
     import qs from 'qs';
     import Axios from '../../axios';
-    import {asyncOptions, eventBus, readFileAsync} from '../../utils';
+    import {asyncComputed, eventBus, readFileAsync} from '../../utils';
 
     export default {
         name: 'ThesisPrepareForm',
@@ -167,8 +167,8 @@
             }
         },
         asyncComputed: {
-            categoryOptions: asyncOptions('/api/v1/category-options'),
-            teacherOptions: asyncOptions('/api/v1/teacher-options')
+            categoryOptions: asyncComputed('/api/v1/category-options'),
+            teacherOptions: asyncComputed('/api/v1/teacher-options')
         }
     };
 </script>

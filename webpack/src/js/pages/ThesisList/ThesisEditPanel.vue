@@ -83,17 +83,21 @@
                                 <v-row v-for="att in thesis.attachments" :key="att.id"
                                     class="pa-3 justify-space-between">
                                     <span>
-                                        {{ att.type_attachment.name }}
+                                        {{ att.type_attachment.name }} <span class="caption">({{ att.size_label }})</span>
                                     </span>
                                     <span class="text-right">
                                         <v-btn text outlined small color="info" :href="att.url" target="_blank">
                                             <v-icon small class="mr-1">${{ att.type_attachment.identifier }}</v-icon>
                                             {{ $t('View') }}
                                         </v-btn>
-                                        <v-btn outlined color="error" small>
-                                            <v-icon small class="mr-1">mdi-trash-can-outline</v-icon>
-                                            {{ $t('Delete') }}
-                                        </v-btn>
+                                        <v-dialog>
+                                            <template v-slot:activator="{ on }">
+                                                <v-btn outlined color="error" small v-on="on">
+                                                    <v-icon small>mdi-trash-can-outline</v-icon>
+                                                </v-btn>
+                                            </template>
+
+                                        </v-dialog>
                                     </span>
                                 </v-row>
                             </v-card-text>
@@ -113,8 +117,7 @@
                                             {{ $t('View') }}
                                         </v-btn>
                                         <v-btn outlined color="error" small>
-                                            <v-icon small class="mr-1">mdi-trash-can-outline</v-icon>
-                                            {{ $t('Delete') }}
+                                            <v-icon small>mdi-trash-can-outline</v-icon>
                                         </v-btn>
                                     </span>
                                 </v-row>
@@ -149,7 +152,7 @@
     import _ from 'lodash';
     import qs from 'qs';
     import Axios from '../../axios';
-    import {asyncOptions, eventBus} from '../../utils';
+    import {asyncComputed, eventBus} from '../../utils';
 
     export default {
         name: 'ThesisEditPanel',
@@ -193,7 +196,7 @@
                         supervisor_id: this.data.supervisor?.id,
                         opponent_id: this.data.opponent?.id,
                         authors: this.authors,
-                        category: this.data.category?.id
+                        category_id: this.data.category?.id
                     }
                 )).data;
                 if (resp.id) {
@@ -216,7 +219,7 @@
             }
         },
         asyncComputed: {
-            thesisStateOptions: asyncOptions(`/api/v1/thesis-state-options`)
+            thesisStateOptions: asyncComputed(`/api/v1/thesis-state-options`)
         },
         async created() {
             const t = this.thesis;

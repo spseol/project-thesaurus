@@ -29,7 +29,7 @@
                     </tr>
                     <tr v-has-perm:thesis.change_thesis>
                         <td class="font-weight-bold text-left text-md-right col-1">{{ $t('SN') }}</td>
-                        <td>{{ thesis.registration_number }}</td>
+                        <td>{{ thesis.registration_number || '---' }}</td>
                     </tr>
                     <tr v-if="thesis.abstract">
                         <td class="font-weight-bold text-left text-md-right col-1">{{ $t('Abstract') }}</td>

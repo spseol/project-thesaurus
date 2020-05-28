@@ -22,10 +22,10 @@
                         :save-text="$t('Save')"
                         :cancel-text="$t('Cancel edit')"
                     >
-                        <v-chip outlined :color="stateToColor(props.item.state)">
-                            {{ stateToLabel(props.item.state) }}
-                            <v-icon class="ml-2">mdi-lead-pencil</v-icon>
-                        </v-chip>
+                        <!--                        <v-chip outlined :color="stateToColor(props.item.state)">-->
+                        {{ stateToLabel(props.item.state) }}
+                        <v-icon class="mb-1" small>mdi-lead-pencil</v-icon>
+                        <!--                        </v-chip>-->
                         <template v-slot:input>
                             <v-select
                                 :items="stateOptions" v-model="stateEdit" flat
@@ -90,7 +90,7 @@
     import _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {asyncOptions, eventBus} from '../../utils';
+    import {asyncComputed, eventBus} from '../../utils';
 
     export default Vue.extend({
         name: 'ReservationList',
@@ -127,7 +127,7 @@
             },
         },
         asyncComputed: {
-            stateOptions: asyncOptions('/api/v1/reservation-state-options'),
+            stateOptions: asyncComputed('/api/v1/reservation-state-options'),
             async stateOptionsFilter() {
                 return [
                     {text: this.$t('Open'), value: 'open'},

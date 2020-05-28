@@ -36,15 +36,16 @@ function readFileAsync(file) {
 }
 
 
-export function asyncOptions(url) {
+export function asyncComputed(url, options = null) {
     return {
         async get() {
             return (await Axios.get(url)).data;
         },
-        default: []
+        ...(options || {default: []})
     };
 }
 
+export const asyncOptions = (url) => asyncComputed(url, null);
 
 const pageContext = new PageContext();
 

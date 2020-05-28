@@ -8,7 +8,7 @@ from apps.accounts.models import User
 from apps.accounts.serializers import UserSerializer, UserInternalSerializer
 from apps.attachment.serializers import AttachmentSerializer
 from apps.review.serializers import ReviewFullInternalSerializer
-from apps.thesis.models import Thesis
+from apps.thesis.models import Thesis, Category
 from apps.thesis.serializers import CategorySerializer
 
 
@@ -65,6 +65,10 @@ class ThesisSubmitSerializer(ThesisBaseSerializer):
 
 class ThesisFullPublicSerializer(ThesisBaseSerializer):
     category = CategorySerializer(read_only=True)
+    category_id = PrimaryKeyRelatedField(
+        write_only=True, source='category', allow_null=True, required=False,
+        queryset=Category.objects.all(),
+    )
     published_at = DateField(format="%Y/%m", required=False, read_only=True)
     reservable = BooleanField(read_only=True, source='_reservable')  # set by queryset from viewset
 
@@ -74,6 +78,7 @@ class ThesisFullPublicSerializer(ThesisBaseSerializer):
             'registration_number',
             'published_at',
             'category',
+            'category_id',
 
             'available_for_reservation',
             'reservable',

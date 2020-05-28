@@ -51,6 +51,7 @@ class AttachmentManager(Manager):
             thesis=thesis,
             type_attachment=type_attachment,
             content_type=file_type.mime,
+            size=uploaded.size,
         )
 
         file_path = attachment.build_file_path(file_type=file_type)

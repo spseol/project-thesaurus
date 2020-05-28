@@ -119,15 +119,17 @@ class ThesisViewSet(ModelViewSet):
 
     @transaction.atomic
     def perform_update(self, serializer: ThesisFullInternalSerializer):
-        serializer.save(
-            category=get_object_or_404(Category, pk=serializer.initial_data.get('category')),
-            authors=get_list_or_404(
+        data = dict()
+        if author_pks := serializer.initial_data.get('authors'):
+            data['authors'] = get_list_or_404(
                 get_user_model(),
-                # TODO: refactor to custom action /edit?
-                pk__in=serializer.initial_data.get('authors')
-            ),
-            published_at=parse_date((serializer.initial_data.get('published_at') + '/01').replace('/', '-'))
-        )
+                pk__in=author_pks
+            )
+        if published_at := serializer.initial_data.get('published_at'):
+            data['published_at'] = parse_date((published_at + '/01').replace('/', '-'))
+
+        # TODO: refactor to custom action /edit?
+        serializer.save(**data)
 
     @action(methods=['patch'], detail=True, permission_classes=[CanSubmitThesisPermission])
     @transaction.atomic

@@ -4,10 +4,10 @@
         <v-card-text>
             <v-alert v-for="res in reservations" v-bind="stateToAttrs(res.state)" :key="res.id">
                 {{ res.thesis_label }}
+
                 <div class="mt-3">
                     <strong class="float-left">
                         {{ res.state_label }}
-
                     </strong>
 
                     <v-dialog
@@ -62,8 +62,8 @@
                 return {
                     created: {type: 'info', outlined: true},
                     ready: {type: 'warning', prominent: true},
-                    running: {type: 'success', outlined: true}
-                }[state] || 'info';
+                    running: {type: 'success', outlined: true, icon: 'mdi-clock'}
+                }[state] || {type: 'info'};
             },
             async cancelReservation(reservation) {
                 await Axios.post(`/api/v1/reservation/${reservation.id}/cancel`);
@@ -76,11 +76,14 @@
             }
         },
         asyncComputed: {
-            async reservations() {
-                return _.sortBy(
-                    (await Axios.get('/api/v1/reservation')).data,
-                    s => ['ready', 'running', 'created'].indexOf(s.state)
-                );
+            reservations: {
+                async get() {
+                    return _.sortBy(
+                        (await Axios.get('/api/v1/reservation')).data,
+                        s => ['ready', 'running', 'created'].indexOf(s.state)
+                    );
+                },
+                default: []
             }
         }
     };
