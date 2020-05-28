@@ -32,6 +32,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.postgres',
     'constance',
     'constance.backends.database',
 
@@ -156,7 +157,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
-        'rest_framework.filters.SearchFilter',
+        'apps.api.utils.filters.UnAccentSearchFilter',
         'apps.api.utils.filters.RelatedOrderingFilter',
     ),
     'DEFAULT_PERMISSION_CLASSES': (

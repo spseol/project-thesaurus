@@ -1,6 +1,11 @@
+import re
+from functools import partial
+
+import unidecode
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObjectRel, OneToOneRel
 from rest_framework import filters
+from rest_framework.filters import SearchFilter
 
 
 class RelatedOrderingFilter(filters.OrderingFilter):
@@ -39,3 +44,17 @@ class RelatedOrderingFilter(filters.OrderingFilter):
     def remove_invalid_fields(self, queryset, fields, ordering, view):
         return [term for term in fields
                 if self.is_valid_field(queryset.model, term.lstrip('-'))]
+
+
+class UnAccentSearchFilter(SearchFilter):
+    STRIP_FROM_SEARCH_FIELDS = re.compile(r'__unaccent')
+
+    def get_search_terms(self, request):
+        terms = super().get_search_terms(request=request)
+
+        return tuple(map(unidecode.unidecode, terms))
+
+    def must_call_distinct(self, queryset, search_fields):
+        search_fields = map(partial(self.STRIP_FROM_SEARCH_FIELDS.sub, ''), search_fields)
+
+        return super().must_call_distinct(queryset, search_fields)
