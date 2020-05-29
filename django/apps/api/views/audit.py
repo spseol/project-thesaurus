@@ -34,7 +34,6 @@ class AuditLogViewSet(ViewSet):
         return Response(
             data=dict(
                 results=AuditLogSerializer(instance=AuditLog.objects.for_instance(instance=instance), many=True).data,
-
                 __model__=model._meta.verbose_name,
                 __class__=model.__name__,
             )
