@@ -1,8 +1,9 @@
-from typing import Type
+from typing import Type, Iterable
 
 from django.apps import apps
 from django.contrib.auth import get_user_model
-from django.db.models import Model
+from django.db.models import Model, ManyToOneRel, ManyToManyRel, ManyToManyField
+from django.db.models.base import ModelBase
 from django.utils.translation import ugettext as _
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
@@ -65,5 +66,44 @@ class AuditLogViewSet(ViewSet):
                     instance=AuditLog.objects.by_user(user=user).select_related('user'),
                     many=True,
                 ).data,
+            )
+        )
+
+    @action(
+        detail=False,
+    )
+    def mappings(self, request, *args, **kwargs):
+        models: Iterable[ModelBase] = apps.get_models()
+
+        return Response(
+            data=dict(
+                foreign_key_to_model=dict(
+                    (field, model._meta.label_lower)
+                    for model in models
+                    for field in AuditLog.objects.get_referencing_columns(model._meta)
+                ),
+                table_columns_to_labels=dict(
+                    (
+                        model._meta.db_table,
+                        dict(
+                            (field.column, field.verbose_name)
+                            for field in model._meta.get_fields()
+                            if not isinstance(field, (ManyToOneRel, ManyToManyRel, ManyToManyField))
+                        )
+                    )
+                    for model in models
+                ),
+                table_columns_to_choices=dict(
+                    (
+                        model._meta.db_table,
+                        dict(
+                            (field.column, dict(field.choices))
+                            for field in model._meta.get_fields()
+                            if not isinstance(field, (ManyToOneRel, ManyToManyRel, ManyToManyField)) and field.choices
+                        )
+                    )
+                    for model in models
+                ),
+
             )
         )

@@ -6,6 +6,7 @@ const BundleTracker = require('webpack4-bundle-tracker');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
 const VuetifyLoaderPlugin = require('vuetify-loader/lib/plugin');
+const MomentLocalesPlugin = require('moment-locales-webpack-plugin');
 
 
 module.exports = {
@@ -132,5 +133,8 @@ module.exports = {
         }),
         new VueLoaderPlugin(),
         new VuetifyLoaderPlugin({progressiveImages: true}),
+        new MomentLocalesPlugin({
+            localesToKeep: ['en', 'cs'],
+        }),
     ],
 };

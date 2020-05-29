@@ -195,5 +195,12 @@
   "Import theses": "Importovat práce",
   "Status": "Stav",
   "Final import": "Finálně importovat",
-  "Cannot import file with errors": "Nelze importovat soubor s chybami"
+  "Cannot import file with errors": "Nelze importovat soubor s chybami",
+  "History for instance": "Historie pro instanci",
+  "Attribute": "",
+  "Before event": "",
+  "After event": "",
+  "Example": "",
+  "Prepare single": "",
+  "Bulk import": ""
 }

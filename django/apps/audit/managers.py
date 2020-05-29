@@ -18,18 +18,7 @@ class AuditLogManager(Manager):
     def for_instance(self, instance: Model):
         meta: Options = instance._meta
 
-        fk_fields_to_instance = meta.get_fields()
-
-        # turbo magic, examples for instance = User()
-        fields = {
-            # user_id
-            f'{instance._meta.model_name}_id',
-            # supervisor_id, author_id, ...
-            *(rel.remote_field.column for rel in fk_fields_to_instance if isinstance(rel, ManyToOneRel)),
-            # native m2m field, eg Group.users.user_id
-            *(m2m_field.m2m_column_name() for m2m_field in fk_fields_to_instance if
-              isinstance(m2m_field, ManyToManyField)),
-        }
+        fields = self.get_referencing_columns(meta=meta)
 
         related_pk = str(instance.pk)
         return self.filter(
@@ -45,3 +34,18 @@ class AuditLogManager(Manager):
                 row_data__id=instance.pk,
             )
         )
+
+    @staticmethod
+    def get_referencing_columns(meta: Options):
+        fk_fields_to_instance = meta.get_fields()
+
+        # turbo magic, examples for instance = User()
+        return {
+            # user_id
+            f'{meta.model_name}_id',
+            # supervisor_id, author_id, ...
+            *(rel.remote_field.column for rel in fk_fields_to_instance if isinstance(rel, ManyToOneRel)),
+            # native m2m field, eg Group.users.user_id
+            *(m2m_field.m2m_column_name() for m2m_field in fk_fields_to_instance if
+              isinstance(m2m_field, ManyToManyField)),
+        }

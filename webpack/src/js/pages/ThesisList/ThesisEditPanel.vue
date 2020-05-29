@@ -142,10 +142,9 @@
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
-                <AuditForInstance
-                    v-has-perm:audit.view_audit
+                <audit-for-instance
                     model-name="thesis.Thesis" :model-pk="data.id"
-                ></AuditForInstance>
+                ></audit-for-instance>
                 <v-spacer></v-spacer>
                 <v-btn text type="button" large class="ma-2" @click="$emit('close')">{{ $t('Cancel edit') }}</v-btn>
                 <v-btn color="success" type="submit" large class="ma-2">{{ $t('Save data') }}</v-btn>
