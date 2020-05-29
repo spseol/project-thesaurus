@@ -18,14 +18,14 @@
             </v-card-title>
             <v-card-text>
                 <v-progress-linear indeterminate v-if="$asyncComputed.data.updating || $asyncComputed.mappings.updating"></v-progress-linear>
-                <v-expansion-panels popout focusable v-if="!$asyncComputed.data.updating">
+                <v-expansion-panels popout focusable v-if="$asyncComputed.data.success && $asyncComputed.mappings.success">
                     <v-expansion-panel
-                        v-for="row in data.results"
+                        v-for="row in [...data.results, ...loaded]"
                         :key="row.id"
                     >
                         <v-expansion-panel-header>
                             <v-row no-gutters>
-                                <v-col cols="4">
+                                <v-col cols="5">
                                     <v-icon>mdi-clock</v-icon>
                                     {{ dateToRelative(row.timestamp) }}
                                     <span class="caption grey--text">({{ (new Date(row.timestamp)).toLocaleString($i18n.locale) }})</span>
@@ -95,6 +95,10 @@
                         </v-expansion-panel-content>
                     </v-expansion-panel>
                 </v-expansion-panels>
+
+                <v-row justify="center" v-if="next" class="mt-3">
+                    <v-btn large color="blue" dark @click="loadNext">{{ $t('Load older logs') }}</v-btn>
+                </v-row>
             </v-card-text>
         </v-card>
     </v-dialog>
@@ -127,16 +131,20 @@
         data() {
             return {
                 dialog: false,
-                canViewAudit: false
+                canViewAudit: false,
+                loaded: [],
+                next: null
             };
         },
         asyncComputed: {
             data: {
                 async get() {
-                    if (!await hasPerm('audit.view_auditlog')) return [];
-                    return Axios.get(`/api/v1/audit-log/for-instance/${this.modelName}/${this.modelPk}`).then(r => r.data);
+                    if (!await hasPerm('audit.view_auditlog')) return {};
+                    const data = await Axios.get(`/api/v1/audit-log/for-instance/${this.modelName}/${this.modelPk}`).then(r => r.data);
+                    this.next = data.next;
+                    return data;
                 },
-                default: [],
+                default: {},
                 lazy: true,
                 watch: ['$i18n.locale']
             },
@@ -179,6 +187,11 @@
             },
             dateToRelative(date) {
                 return moment(date, null, this.$i18n.locale).fromNow();
+            },
+            async loadNext() {
+                const data = (await Axios.get(this.next)).data;
+                this.loaded.push(...data.results);
+                this.next = data.next;
             }
         },
         async created() {
