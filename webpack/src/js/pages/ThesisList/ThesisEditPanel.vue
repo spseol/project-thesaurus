@@ -67,7 +67,6 @@
                         <v-card elevation="0" outlined>
                             <v-card-subtitle class="font-weight-bold">{{ $t('State') }}</v-card-subtitle>
                             <v-card-text>
-                                <!-- TODO: remove this weird workaround -->
                                 <v-select
                                     :items="thesisStateOptions" v-model="data.state"
                                     :hint="stateHint"

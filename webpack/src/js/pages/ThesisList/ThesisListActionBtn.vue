@@ -78,7 +78,6 @@
                         color="primary" overlap :value="!hover && availableExternalReviewersOptions.length"
                         :content="availableExternalReviewersOptions.length"
                     >
-                        <!-- TODO: detect external/internal s/o -->
                         <v-btn
                             v-if="!hover || !availableExternalReviewersOptions.length"
                             small depressed disabled block

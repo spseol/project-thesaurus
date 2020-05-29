@@ -146,6 +146,8 @@ class Thesis(BaseTimestampedModel):
         from apps.emails.mailers import ThesisMailer
         ThesisMailer.on_state_change(thesis=self)
 
+    _skipped_for_hooks = {'available_for_reservation', 'open_reservations_count'}
+
 
 class ThesisAuthor(BaseTimestampedModel):
     author = models.ForeignKey(
