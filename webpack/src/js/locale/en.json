@@ -148,7 +148,9 @@
     "directBorrow": "",
     "justCancelled": "Reservation has been cancelled.",
     "justCreated": "Reservation has been just created.",
-    "stateChanged": "Reservation state has been changed."
+    "stateChanged": "Reservation state has been changed.",
+    "noActiveReservations": "",
+    "goAndMakeAReservation": ""
   },
   "review": {
     "commentPlaceholder": "In my opinion ...",
@@ -179,6 +181,25 @@
       "hintPoster": "I attached poster if I have",
       "hintSubmitApprove": "I approve thesis submit",
       "hintThesisFinal": "Submitting thesis is in final version"
-    }
-  }
+    },
+    "invalidPublishedAtFormat": "",
+    "noAttachments": "",
+    "justSaved": "",
+    "import": {
+      "fileFormatDescription": "",
+      "containingErrors": ""
+    },
+    "publishedAtNotInFormat": ""
+  },
+  "Save": "",
+  "Save change": "",
+  "Bulk theses import": "",
+  "File format": "",
+  "CSV file": "",
+  "Columns": "",
+  "File to import": "",
+  "Import theses": "",
+  "Status": "",
+  "Final import": "",
+  "Cannot import file with errors": ""
 }

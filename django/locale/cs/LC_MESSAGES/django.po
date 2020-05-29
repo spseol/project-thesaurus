@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-25 02:05+0200\n"
-"PO-Revision-Date: 2020-05-26 17:55+0300\n"
+"POT-Creation-Date: 2020-05-29 00:48+0200\n"
+"PO-Revision-Date: 2020-05-29 01:55+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -47,11 +47,11 @@ msgstr "Titul za"
 msgid "School class"
 msgstr "Třída"
 
-#: apps/accounts/models/user.py:56
+#: apps/accounts/models/user.py:52
 msgid "User"
 msgstr "Uživatel"
 
-#: apps/accounts/models/user.py:57
+#: apps/accounts/models/user.py:53
 msgid "Users"
 msgstr "Uživatelé"
 
@@ -67,97 +67,194 @@ msgstr ""
 "Nelze vytvořit novou rezervaci, maximální počet aktivních výpůjček/rezervací "
 "je {}."
 
-#: apps/attachment/models/attachment.py:39
+#: apps/api/views/thesis_import.py:42
+msgid "Student"
+msgstr "Student"
+
+#: apps/api/views/thesis_import.py:43
+msgid ""
+"In a format of her/his login (abc12345), split by comma if multiple authors"
+msgstr ""
+"Ve formátu školního loginu (abc12345), oddělené čárkou v případě více autorů"
+
+#: apps/api/views/thesis_import.py:48 apps/thesis/models/category.py:21
+msgid "Category"
+msgstr "Kategorie"
+
+#: apps/api/views/thesis_import.py:49
+msgid "Two letter abbr of category ({})"
+msgstr "Dvoupísmenná zkratka kategorie/zaměření ({})"
+
+#: apps/api/views/thesis_import.py:54 apps/thesis/models/category.py:11
+#: apps/thesis/models/thesis.py:77
+msgid "Title"
+msgstr "Název"
+
+#: apps/api/views/thesis_import.py:55
+msgid "Thesis long title"
+msgstr "Plný název práce"
+
+#: apps/api/views/thesis_import.py:60 apps/thesis/models/thesis.py:44
+msgid "Supervisor"
+msgstr "Vedoucí"
+
+#: apps/api/views/thesis_import.py:61 apps/api/views/thesis_import.py:67
+msgid "Login for internal, full name for external"
+msgstr "Školní login pro interní osoby, plné jméno pro externí"
+
+#: apps/api/views/thesis_import.py:66 apps/thesis/models/thesis.py:51
+msgid "Opponent"
+msgstr "Oponent"
+
+#: apps/api/views/thesis_import.py:72
+msgid "Deadline"
+msgstr "Termín odevzdání"
+
+#: apps/api/views/thesis_import.py:73
+msgid "Submit deadline, DD.MM.YYYY"
+msgstr "Termín pro odevzdání, DD.MM.RRRR"
+
+#: apps/api/views/thesis_import.py:111
+msgid "Missing some of needed arguments."
+msgstr "Chybějí některé z argumentů pro import."
+
+#: apps/api/views/thesis_import.py:164
+msgid "Theses have been imported."
+msgstr "Práce byly importovány."
+
+#: apps/api/views/thesis_import.py:167
+msgid "Cannot import theses containing errors."
+msgstr "Nelze importovat práce obsahující chyby."
+
+#: apps/api/views/thesis_import.py:193
+msgid "Unknown author/s."
+msgstr "Neznámý autor/ři."
+
+#: apps/api/views/thesis_import.py:195
+msgid "Some of authors not found ({})."
+msgstr "Někteří z autorů nebyli nalezeni ({})."
+
+#: apps/api/views/thesis_import.py:206
+msgid "Unknown category code {}."
+msgstr "Neznámý kód kategorie {}."
+
+#: apps/api/views/thesis_import.py:213
+msgid "Empty title."
+msgstr "Prázdný název práce."
+
+#: apps/api/views/thesis_import.py:237
+msgid "Unknown user {}"
+msgstr "Neznámý uživatel {}"
+
+#: apps/attachment/models/attachment.py:40
 msgid "Target thesis"
 msgstr "Práce"
 
-#: apps/attachment/models/attachment.py:47
+#: apps/attachment/models/attachment.py:48
 msgid "Type of attachment"
 msgstr "Typ přílohy"
 
-#: apps/attachment/models/attachment.py:51
+#: apps/attachment/models/attachment.py:52
 msgid "File with thesis"
 msgstr "Soubor s prací"
 
-#: apps/attachment/models/attachment.py:64
+#: apps/attachment/models/attachment.py:63
+msgid "Size of attachment"
+msgstr "Velikost přílohy"
+
+#: apps/attachment/models/attachment.py:69
 msgid "Attachment"
 msgstr "Příloha"
 
-#: apps/attachment/models/attachment.py:65
+#: apps/attachment/models/attachment.py:70
 msgid "Attachments"
 msgstr "Přílohy"
 
-#: apps/attachment/models/attachment.py:97
+#: apps/attachment/models/attachment.py:115
 msgid "Thesis text"
 msgstr "Text práce"
 
-#: apps/attachment/models/attachment.py:98
+#: apps/attachment/models/attachment.py:116
 msgid "Thesis assigment"
 msgstr "Text zadání"
 
-#: apps/attachment/models/attachment.py:99
+#: apps/attachment/models/attachment.py:117
 msgid "Supervisor review"
 msgstr "Posudek vedoucího"
 
-#: apps/attachment/models/attachment.py:100
+#: apps/attachment/models/attachment.py:118
 msgid "Opponent review"
 msgstr "Posudek oponenta"
 
-#: apps/attachment/models/attachment.py:101
+#: apps/attachment/models/attachment.py:119
 msgid "Thesis poster"
 msgstr "Plakát práce"
 
-#: apps/attachment/models/attachment.py:102
+#: apps/attachment/models/attachment.py:120
 msgid "Thesis attachment"
 msgstr "Příloha práce"
 
-#: apps/attachment/models/attachment.py:112 apps/utils/models/base.py:37
+#: apps/attachment/models/attachment.py:130 apps/utils/models/base.py:37
 msgid "Identifier"
 msgstr "Identifikátor"
 
-#: apps/attachment/models/attachment.py:124
+#: apps/attachment/models/attachment.py:142
 msgid "List of allowed mime/content types"
 msgstr "Seznam povolených typů souborů"
 
-#: apps/attachment/models/attachment.py:125
+#: apps/attachment/models/attachment.py:143
 msgid "Available options: {}"
 msgstr "Dostupné možnosti: {}"
 
-#: apps/attachment/models/attachment.py:132
+#: apps/attachment/models/attachment.py:150
 msgid "Is public"
 msgstr "Dostupná veřejně"
 
-#: apps/attachment/models/attachment.py:137
+#: apps/attachment/models/attachment.py:155
 msgid "Max size in bytes"
 msgstr "Maximální velikost [B]"
 
-#: apps/attachment/models/attachment.py:143
+#: apps/attachment/models/attachment.py:161
 msgid "Type attachment"
 msgstr "Typ přílohy"
 
-#: apps/attachment/models/attachment.py:144
+#: apps/attachment/models/attachment.py:162
 msgid "Types attachments"
 msgstr "Typy příloh"
 
-#: apps/attachment/models/managers.py:31
+#: apps/attachment/models/managers.py:29
 #, python-brace-format
 msgid "Unknown file type for attachment {attachment}."
 msgstr "Neznámý typ souboru pro {attachment}."
 
-#: apps/attachment/models/managers.py:37
+#: apps/attachment/models/managers.py:35
 #, python-brace-format
 msgid "Content type {content} is not allowed for type attachment {attachment}."
 msgstr "Typ souboru {content} není povolený pro {attachment}."
 
-#: apps/emails/mailers/base.py:52
+#: apps/attachment/models/managers.py:43
+#, python-brace-format
+msgid "Maximal size for {attachment} is {max_size}, {real_size} given."
+msgstr ""
+"Maximální velikost pro {attachment} je {max_size}, vloženo {real_size}."
+
+#: apps/emails/mailers/base.py:53
 msgid "{} | {}"
 msgstr "{} | {}"
 
-#: apps/emails/mailers/thesis.py:19
+#: apps/emails/mailers/reservation.py:14
+msgid "Reservation for thesis {} changed state to {}"
+msgstr "Rezervaci na práci {} byl změněn stav na {}."
+
+#: apps/emails/mailers/reservation.py:33
+msgid "Reservation for thesis {} has been created"
+msgstr "Rezervace pro práci {} byla vytvořena."
+
+#: apps/emails/mailers/thesis.py:22
 msgid "Thesis {} changed state to {}"
 msgstr "Práci {} byl změněn stav na {}."
 
-#: apps/emails/mailers/thesis.py:64
+#: apps/emails/mailers/thesis.py:68
 msgid "Thesis {} has new review from {}"
 msgstr "Práce {} má nový posudek od {}"
 
@@ -168,6 +265,49 @@ msgstr "Prosím, neodpovídej na tento email."
 #: apps/emails/templates/emails/base.html:4
 msgid "Sent automatically at"
 msgstr "Automaticky odesláno v"
+
+#: apps/emails/templates/emails/reservation/created.html:5
+#, python-format
+msgid ""
+"\n"
+"        Hello,\n"
+"\n"
+"        reservation for thesis %(thesis)s has been created - after "
+"preparation we will notify you.\n"
+"        Until that you can also cancel your reservation on portal.\n"
+"\n"
+"        Have a nice day!\n"
+"    "
+msgstr ""
+"\n"
+"Ahoj,\n"
+"\n"
+"rezervace na práci %(thesis)s byla vytvořena - po potvrzení Tě budeme "
+"informovat.\n"
+"Před potvrzením lze rezervaci na portále zrušit.\n"
+"\n"
+"Měj pěkný den!"
+
+#: apps/emails/templates/emails/reservation/state_change.html:5
+#, python-format
+msgid ""
+"\n"
+"        Hello,\n"
+"\n"
+"        reservation for thesis %(thesis)s changed state from "
+"%(initial_state)s to %(current_state)s.\n"
+"\n"
+"        Have a nice day!\n"
+"    "
+msgstr ""
+"\n"
+"        Ahoj,\n"
+"\n"
+"        rezervaci na práci %(thesis)s byl změněn stav z %(initial_state)s na "
+"%(current_state)s.\n"
+"\n"
+"        Měj pěkný den!\n"
+"    "
 
 #: apps/emails/templates/emails/thesis/review_added.html:5
 #, python-format
@@ -269,36 +409,40 @@ msgstr "Známky"
 msgid "Proposed grade"
 msgstr "Navrhovaná známka"
 
-#: apps/review/models/review.py:70
+#: apps/review/models/review.py:69
 #: apps/review/templates/review/review_detail.html:9
 msgid "Review"
 msgstr "Posudek"
 
-#: apps/review/models/review.py:71
+#: apps/review/models/review.py:70
 msgid "Reviews"
 msgstr "Posudky"
 
-#: apps/review/models/review.py:77
+#: apps/review/models/review.py:74
+msgid "Review on {} from {}"
+msgstr "Posudek na {} od {}"
+
+#: apps/review/models/review.py:79
 msgid "Students independence during processing"
 msgstr "Samostatnost studenta při zpracování"
 
-#: apps/review/models/review.py:78
+#: apps/review/models/review.py:80
 msgid "Theoretical part of the work, comprehensibility of the text"
 msgstr "Teoretická část práce, srozumitelnost textu"
 
-#: apps/review/models/review.py:79
+#: apps/review/models/review.py:81
 msgid "Methods and procedures used"
 msgstr "Použité metody a postupy"
 
-#: apps/review/models/review.py:80
+#: apps/review/models/review.py:82
 msgid "Formal editing, work with sources, citations in the text"
 msgstr "Formální úprava, práce s literaturou, citace v textu"
 
-#: apps/review/models/review.py:81
+#: apps/review/models/review.py:83
 msgid "Graphic design of the thesis"
 msgstr "Grafická úprava práce"
 
-#: apps/review/models/review.py:82
+#: apps/review/models/review.py:84
 msgid ""
 "Interpretation of conclusions, their originality and their own contribution "
 "to the work"
@@ -381,63 +525,55 @@ msgstr "Automaticky vygenerováno systémem THESAURUS v"
 msgid "Available online on"
 msgstr "Dostupné online na"
 
-#: apps/thesis/models/category.py:11 apps/thesis/models/thesis.py:77
-msgid "Title"
-msgstr "Název"
-
 #: apps/thesis/models/category.py:16 apps/utils/models/base.py:50
 msgid "Order"
 msgstr "Pořadí"
-
-#: apps/thesis/models/category.py:21
-msgid "Category"
-msgstr "Kategorie"
 
 #: apps/thesis/models/category.py:22
 msgid "Categories"
 msgstr "Kategorie"
 
-#: apps/thesis/models/reservation.py:14
+#: apps/thesis/models/reservation.py:15
 msgid "Waiting for prepare"
 msgstr "Čeká na schválení"
 
-#: apps/thesis/models/reservation.py:15
+#: apps/thesis/models/reservation.py:16
 msgid "Ready for pickup"
 msgstr "Připraveno k vyzvednutí"
 
-#: apps/thesis/models/reservation.py:16
+#: apps/thesis/models/reservation.py:17
 msgid "Running"
 msgstr "Běžící"
 
-#: apps/thesis/models/reservation.py:17
+#: apps/thesis/models/reservation.py:18
 msgid "Finished"
 msgstr "Dokončeno"
 
-#: apps/thesis/models/reservation.py:18
+#: apps/thesis/models/reservation.py:19
 msgid "Canceled"
 msgstr "Zrušená"
 
-#: apps/thesis/models/reservation.py:25
+#: apps/thesis/models/reservation.py:26
 msgid "Thesis for borrow"
 msgstr "Práce k zapůjčení"
 
-#: apps/thesis/models/reservation.py:32
+#: apps/thesis/models/reservation.py:33
 msgid "For user"
 msgstr "Pro uživatele"
 
-#: apps/thesis/models/reservation.py:37 apps/thesis/models/thesis.py:70
+#: apps/thesis/models/reservation.py:38 apps/thesis/models/thesis.py:70
 msgid "State"
 msgstr "Stav"
 
-#: apps/thesis/models/reservation.py:47
+#: apps/thesis/models/reservation.py:48
 msgid "Reservation"
 msgstr "Rezervace"
 
-#: apps/thesis/models/reservation.py:48
+#: apps/thesis/models/reservation.py:49
 msgid "Reservations"
 msgstr "Rezervace"
 
-#: apps/thesis/models/reservation.py:52
+#: apps/thesis/models/reservation.py:63
 msgid "Reservation {} for {}"
 msgstr "Rezervace {} pro {}"
 
@@ -473,14 +609,6 @@ msgstr "Odpovídající kategorie práce."
 msgid "Authors"
 msgstr "Autoři"
 
-#: apps/thesis/models/thesis.py:44
-msgid "Supervisor"
-msgstr "Vedoucí"
-
-#: apps/thesis/models/thesis.py:51
-msgid "Opponent"
-msgstr "Oponent"
-
 #: apps/thesis/models/thesis.py:57
 msgid "Registration number"
 msgstr "Evidenční číslo"
@@ -498,32 +626,36 @@ msgid "Publication date"
 msgstr "Publikováno"
 
 #: apps/thesis/models/thesis.py:92
+msgid "Submit deadline"
+msgstr "Termín pro odevzdání"
+
+#: apps/thesis/models/thesis.py:97
 msgid "Reservable"
 msgstr "Lze vypůjčit"
 
-#: apps/thesis/models/thesis.py:101
+#: apps/thesis/models/thesis.py:107
 msgid "Thesis"
 msgstr "Práce"
 
-#: apps/thesis/models/thesis.py:102
+#: apps/thesis/models/thesis.py:108
 msgid "Theses"
 msgstr "Práce"
 
-#: apps/thesis/models/thesis.py:129
+#: apps/thesis/models/thesis.py:135
 msgid ""
 "Thesis is created with basic information and it's waiting for state change."
 msgstr ""
 "Práce je vytvořena se základními informacemi a je dostupná pouze správci."
 
-#: apps/thesis/models/thesis.py:130
+#: apps/thesis/models/thesis.py:136
 msgid "Thesis is currently waiting for submit from one of authors."
 msgstr "Práce čeká na odevzdání od jednoho z autorů."
 
-#: apps/thesis/models/thesis.py:131
+#: apps/thesis/models/thesis.py:137
 msgid "Thesis has been submitted and it needs to be pushed to reviews."
 msgstr "Práce byla odevzdána a čeká na postoupení k posudkům."
 
-#: apps/thesis/models/thesis.py:132
+#: apps/thesis/models/thesis.py:138
 msgid ""
 "Thesis is waiting for reviews from supervisor and opponent - also possible "
 "to add external review."
@@ -531,21 +663,25 @@ msgstr ""
 "Práce čeká na zadání posudků od vedoucího a oponenta, je možné přidat "
 "externí posudky."
 
-#: apps/thesis/models/thesis.py:134
+#: apps/thesis/models/thesis.py:140
 msgid "Thesis has both reviews and it's waiting for publication."
 msgstr "Práce má oba posudky a je možné ji publikovat."
 
-#: apps/thesis/models/thesis.py:135
+#: apps/thesis/models/thesis.py:141
 msgid "Thesis is public and it's possible to borrow it."
 msgstr "Práce je zveřejněna a lze si ji vypůjčit, pokud je to povoleno."
 
-#: apps/thesis/models/thesis.py:158
+#: apps/thesis/models/thesis.py:166
 msgid "Thesis author relation"
 msgstr "Vazba autora k práci"
 
-#: apps/thesis/models/thesis.py:159
+#: apps/thesis/models/thesis.py:167
 msgid "Thesis author relations"
 msgstr "Vazby autorů k pracem"
+
+#: apps/thesis/serializers/thesis.py:51
+msgid "Publishing thesis without filled registration number is not allowed."
+msgstr "Publikování práce bez vyplněného evidenčního čísla není povoleno."
 
 #: apps/utils/models/base.py:21
 msgid "created"
@@ -567,15 +703,15 @@ msgstr "Chyba serveru"
 msgid "Thesaurus logo"
 msgstr "Thesaurus logo"
 
-#: thesaurus/settings.py:124
+#: thesaurus/settings.py:125
 msgid "Czech"
 msgstr "Česky"
 
-#: thesaurus/settings.py:125
+#: thesaurus/settings.py:126
 msgid "English"
 msgstr "English"
 
-#: thesaurus/settings.py:259
+#: thesaurus/settings.py:210
 msgid "Maximal count of opened reservations linked to one user (inclusive)."
 msgstr "Maximální počet otevřených rezervací na uživatele (včetně)."
 

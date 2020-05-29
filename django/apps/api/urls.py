@@ -12,6 +12,7 @@ from .views.login import LoginView
 from .views.reservation import ReservationViewSet, ReservationStateOptionsViewSet
 from .views.review import ReviewViewSet
 from .views.thesis import ThesisViewSet, ThesisStateOptionsViewSet
+from .views.thesis_import import ThesisImportViewSet
 from .views.user import UserFilterOptionsViewSet, StudentOptionsViewSet, TeacherOptionsViewSet, UserPermView
 from ..review.views import ReviewPdfView
 
@@ -19,6 +20,7 @@ last_modified_date = timezone.now()
 
 router = DefaultRouter(trailing_slash=False)
 router.register(r'thesis', ThesisViewSet, basename='thesis')
+router.register(r'thesis-import', ThesisImportViewSet, basename='thesis-import')
 router.register(r'reservation', ReservationViewSet)
 router.register(r'attachment', AttachmentViewSet)
 router.register(r'review', ReviewViewSet)

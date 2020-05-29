@@ -100,6 +100,10 @@
                                         </v-dialog>
                                     </span>
                                 </v-row>
+
+                                <v-alert color="info" text v-if="!thesis.attachments.length">
+                                    {{ $t('thesis.noAttachments') }}
+                                </v-alert>
                             </v-card-text>
                         </v-card>
 

@@ -70,7 +70,7 @@
   "Published": "Publikováno",
   "Published at": "Publikováno",
   "Ready": "Připravené",
-  "Recent": "",
+  "Recent": "Poslední",
   "Recent theses": "Poslední publikované práce",
   "Registration number": "Evidenční číslo",
   "Reservations": "Rezervace",
@@ -142,7 +142,9 @@
     "directBorrow": "Poté, co práce bude připravena k vyzvednutí, vás budeme informovat e-mailem.",
     "justCancelled": "Rezerace byla zrušena.",
     "justCreated": "Rezervace byla úspěšně zaevidována.",
-    "stateChanged": "Stav rezervace úspěšně změněn."
+    "stateChanged": "Stav rezervace úspěšně změněn.",
+    "noActiveReservations": "Žádné aktivní rezervace",
+    "goAndMakeAReservation": "Rejstřík prací a možnost rezervace"
   },
   "review": {
     "commentPlaceholder": "Práce je ...",
@@ -173,6 +175,25 @@
       "hintPoster": "Přiložil jsem plakát, pokud mám.",
       "hintSubmitApprove": "Souhlasím s odevzdáním práce.",
       "hintThesisFinal": "Odevzdávám konečnou verzi práce."
-    }
-  }
+    },
+    "invalidPublishedAtFormat": "Nevalidní formát data, očekává se RRRR/MM",
+    "noAttachments": "Žádné přílohy",
+    "justSaved": "Uloženo",
+    "import": {
+      "fileFormatDescription": "Soubor ve formátu CSV, oddělovačem je středník, šest sloupců",
+      "containingErrors": "Soubor obsahuje chyby, nelze importovat rovnou. Opravte prosím chyby a iniciujte import znovu."
+    },
+    "publishedAtNotInFormat": "Nevalidní formát data, očekává se RRRR/MM"
+  },
+  "Save": "Uložit",
+  "Save change": "Uložit změny",
+  "Bulk theses import": "Hromadný import prací",
+  "File format": "Formát souboru",
+  "CSV file": "Soubor CSV",
+  "Columns": "Sloupce",
+  "File to import": "Soubor k importu",
+  "Import theses": "Importovat práce",
+  "Status": "Stav",
+  "Final import": "Finálně importovat",
+  "Cannot import file with errors": "Nelze importovat soubor s chybami"
 }

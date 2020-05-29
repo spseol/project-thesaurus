@@ -9,7 +9,7 @@ from django.db.models import TextChoices
 from django.utils.translation import gettext_lazy as _
 from django_lifecycle import hook, AFTER_UPDATE
 
-from apps.thesis.models.managers.thesis import ThesisApiManager, ThesisManager
+from apps.thesis.models.managers.thesis import ThesisApiManager, ThesisManager, ThesisImportManager
 from apps.utils.models import BaseTimestampedModel
 
 
@@ -75,7 +75,7 @@ class Thesis(BaseTimestampedModel):
 
     title = models.CharField(
         verbose_name=_('Title'),
-        max_length=128, default='',
+        max_length=256,
     )
 
     abstract = models.TextField(
@@ -88,6 +88,11 @@ class Thesis(BaseTimestampedModel):
         null=True,
     )
 
+    submit_deadline = models.DateField(
+        verbose_name=_('Submit deadline'),
+        null=True, blank=True,
+    )
+
     reservable = models.BooleanField(
         verbose_name=_('Reservable'),
         default=True,
@@ -95,6 +100,7 @@ class Thesis(BaseTimestampedModel):
 
     objects = ThesisManager()
     api_objects = ThesisApiManager()
+    import_objects = ThesisImportManager()
 
     class Meta:
         ordering = ['registration_number']
@@ -145,15 +151,18 @@ class ThesisAuthor(BaseTimestampedModel):
     author = models.ForeignKey(
         to=get_user_model(),
         related_name='thesis_author_author',
-        on_delete=models.PROTECT
+        on_delete=models.PROTECT,
     )
     thesis = models.ForeignKey(
         to='thesis.Thesis',
         related_name='thesis_author_thesis',
-        on_delete=models.PROTECT
+        on_delete=models.CASCADE,
     )
 
     class Meta:
         ordering = ['author', 'created']
         verbose_name = _('Thesis author relation')
         verbose_name_plural = _('Thesis author relations')
+
+    def __str__(self):
+        return f'{self.thesis.title} <=> {self.author}'

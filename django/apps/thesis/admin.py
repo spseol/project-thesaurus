@@ -18,6 +18,7 @@ class ThesisAdmin(ModelAdmin):
         'published_at',
         'state',
         'reservable',
+        'created',
     )
     search_fields = (
         'title',

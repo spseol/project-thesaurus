@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Q, QuerySet, OuterRef, Exists, F
 from django.shortcuts import get_list_or_404
-from django.utils.dateparse import parse_date
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
@@ -26,6 +25,7 @@ from apps.thesis.serializers import (
     ThesisFullPublicSerializer, ThesisFullInternalSerializer,
     ThesisBaseSerializer, ThesisSubmitSerializer
 )
+from apps.utils.utils import parse_date
 from apps.utils.views import ModelChoicesOptionsView
 
 

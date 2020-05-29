@@ -1,3 +1,3 @@
-from .user import UserQueryset
+from .user import UserQueryset, UserManager
 
-__all__ = ['UserQueryset']
+__all__ = ['UserQueryset', 'UserManager']
