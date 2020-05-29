@@ -83,3 +83,7 @@ class RemoveAuditOperation(AddAuditOperation):
 
     def describe(self):
         return 'Remove audit triggers on model {}'.format(self._model_name)
+
+
+EnableAuditOperation = AddAuditOperation
+DisableAuditOperation = RemoveAuditOperation

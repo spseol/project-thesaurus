@@ -1,3 +1,5 @@
+from functools import cached_property
+
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import HStoreField
 from django.db import models
@@ -10,10 +12,10 @@ from .managers import AuditLogManager
 class AuditLog(models.Model):
     # I = insert, D = delete, U = update, T = truncate
     class ActionChoices(TextChoices):
-        INSERT = 'I', _('Insert')
-        DELETE = 'D', _('Delete')
-        UPDATE = 'U', _('Update')
-        TRUNCATE = 'T', _('Truncate')
+        INSERT = 'I', _('Inserted')
+        DELETE = 'D', _('Deleted')
+        UPDATE = 'U', _('Updated')
+        TRUNCATE = 'T', _('Truncated')
 
     event_id = models.IntegerField(primary_key=True, editable=False)
     schema_name = models.CharField(_("Schema name"), max_length=64)
@@ -41,3 +43,7 @@ class AuditLog(models.Model):
         verbose_name = _("Audit")
         verbose_name_plural = _("Audit")
         ordering = ['event_id', ]
+
+    @cached_property
+    def model_name(self):
+        return self.table_name.replace('_', '.')

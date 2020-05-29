@@ -1,10 +1,8 @@
-from typing import Type
-
 from django.apps import apps
-from django.db.models import Model
-from rest_framework.fields import SerializerMethodField, IntegerField, DateTimeField
+from rest_framework.fields import SerializerMethodField, IntegerField, DateTimeField, CharField
 from rest_framework.serializers import ModelSerializer
 
+from apps.accounts.serializers import UserSerializer
 from apps.audit.models import AuditLog
 from apps.utils.utils import keydefaultdict
 
@@ -45,28 +43,28 @@ UNIVERSAL_SERIALIZERS = keydefaultdict(
 class AuditLogSerializer(ModelSerializer):
     id = IntegerField(source='event_id')
     timestamp = DateTimeField(source='action_tstamp_clk')
-    instance = SerializerMethodField()
+    action_label = CharField(source='get_action_display')
+    user = UserSerializer()
 
-    @staticmethod
-    def get_instance(obj: AuditLog):
-        model_name = obj.table_name.replace('_', '.')
-        model_pk = obj.row_data.get('id')
-        model: Type[Model] = apps.get_model(model_name)
-        instance = model._base_manager.get(pk=model_pk)
+    __model__ = CharField(source='table_name')
+    __model_str__ = SerializerMethodField()
 
-        return dict(
-            **UNIVERSAL_SERIALIZERS[model_name](
-                instance=instance
-            ).data,
-            __str__=str(instance),
-        )
+    table_name_to_verbose_name = keydefaultdict(lambda k: apps.get_model(k)._meta.verbose_name)
 
     class Meta:
         model = AuditLog
         fields = (
             'id',
+            'action',
+            'action_label',
             'user',
             'timestamp',
-            'instance',
+            'row_data',
             'changed_fields',
+            '__model__',
+            '__model_str__',
         )
+
+    @classmethod
+    def get___model_str__(cls, obj: AuditLog):
+        return cls.table_name_to_verbose_name[obj.model_name]
