@@ -1,22 +1,21 @@
 <template>
     <div>
-        <v-row>
-            <v-col cols="10">
-                <portal to="navbar-center" v-if="$route.name === 'thesis-prepare'">
-                    <v-btn-toggle background-color="orange">
-                        <v-btn text @click="tab = 'single'">{{ $t('Prepare single') }}</v-btn>
-                        <v-btn text @click="tab = 'multiple'">{{ $t('Bulk import') }}</v-btn>
-                    </v-btn-toggle>
-                </portal>
 
-                <transition name="scroll-x-transition" mode="out-in">
-                    <keep-alive>
-                        <PrepareForm v-if="tab === 'single'"></PrepareForm>
-                        <ImportForm v-if="tab === 'multiple'"></ImportForm>
-                    </keep-alive>
-                </transition>
-            </v-col>
-        </v-row>
+        <portal to="navbar-center" v-if="$route.name === 'thesis-prepare'">
+            <v-btn-toggle background-color="orange" v-model="tab">
+                <v-btn text value="single">{{ $t('Prepare single') }}</v-btn>
+                <v-btn text value="multiple">{{ $t('Bulk import') }}</v-btn>
+            </v-btn-toggle>
+        </portal>
+
+        <v-col :cols="{single: 6, multiple: 12}[tab]">
+            <transition name="scroll-x-transition" mode="out-in">
+                <keep-alive>
+                    <PrepareForm v-if="tab === 'single'"></PrepareForm>
+                    <ImportForm v-if="tab === 'multiple'"></ImportForm>
+                </keep-alive>
+            </transition>
+        </v-col>
     </div>
 </template>
 
