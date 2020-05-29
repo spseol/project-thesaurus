@@ -42,7 +42,7 @@ class AuditLog(models.Model):
         managed = False  # created by sql migration
         verbose_name = _("Audit")
         verbose_name_plural = _("Audit")
-        ordering = ['event_id', ]
+        ordering = ['-action_tstamp_clk', ]
 
     @cached_property
     def model_name(self):

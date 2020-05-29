@@ -23,7 +23,7 @@
                             :label="$t('Approved publication and borrowing')"
                             :hint="$t('thesis.reservableHint')"
                             v-model="thesis.reservable"
-                            persistent-hint :true-value="false" :false-value="true" class="mb-5"
+                            persistent-hint :true-value="true" :false-value="false" class="mb-5"
                         ></v-checkbox>
                     </v-col>
                     <v-col cols="12" lg="6">

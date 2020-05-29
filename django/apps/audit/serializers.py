@@ -47,7 +47,7 @@ class AuditLogSerializer(ModelSerializer):
     user = UserSerializer()
 
     __model__ = CharField(source='table_name')
-    __model_str__ = SerializerMethodField()
+    __str__ = SerializerMethodField()
 
     table_name_to_verbose_name = keydefaultdict(lambda k: apps.get_model(k)._meta.verbose_name)
 
@@ -62,9 +62,9 @@ class AuditLogSerializer(ModelSerializer):
             'row_data',
             'changed_fields',
             '__model__',
-            '__model_str__',
+            '__str__',
         )
 
     @classmethod
-    def get___model_str__(cls, obj: AuditLog):
+    def get___str__(cls, obj: AuditLog):
         return cls.table_name_to_verbose_name[obj.model_name]

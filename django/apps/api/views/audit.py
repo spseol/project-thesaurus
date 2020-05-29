@@ -29,8 +29,13 @@ class AuditLogViewSet(ViewSet):
 
         try:
             instance = model._base_manager.get_queryset().get(pk=model_pk)
+            __str__ = str(instance)
         except model.DoesNotExist:
             instance = model(pk=model_pk)
+            try:
+                __str__ = str(instance)
+            except Exception:
+                __str__ = ''
 
         return Response(
             data=dict(
@@ -40,6 +45,7 @@ class AuditLogViewSet(ViewSet):
                 ).data,
                 __model__=model._meta.verbose_name,
                 __class__=model.__name__,
+                __str__=__str__,
             )
         )
 
