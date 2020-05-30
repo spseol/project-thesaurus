@@ -115,11 +115,34 @@ class ThesisImportViewSet(GenericViewSet):
             )
 
         statuses = []
-        content = to_import.file.read().decode('utf-8')
-        data = csv.reader(StringIO(content), dialect='excel', )
+        content = to_import.file.read()
+        try:
+            content = content.decode('utf-8')
+        except UnicodeDecodeError:
+            try:
+                content = content.decode('cp1250')
+            except UnicodeDecodeError as e:
+                return Response(data=dict(
+                    error=True,
+                    message=_('Unable to parse file to import: {}.').format(e),
+                    success=False,
+                ), status=HTTP_400_BAD_REQUEST)
+
+        data_file = StringIO(content)
+
+        try:
+            dialect = csv.Sniffer().sniff(data_file.read(1024))
+            data_file.seek(0)
+        except csv.Error as e:
+            return Response(data=dict(
+                error=True,
+                message=_('Unable to detect CSV format: {}.').format(e),
+                success=False,
+            ), status=HTTP_400_BAD_REQUEST)
 
         sid = transaction.savepoint()
 
+        data = csv.reader(data_file, dialect=dialect)
         for line in data:
             thesis = Thesis(published_at=published_at)
             line_status = []
@@ -170,7 +193,7 @@ class ThesisImportViewSet(GenericViewSet):
             statuses=statuses,
             error=has_error,
             message=message,
-            success=not has_error,
+            success=True,
         ), status=HTTP_400_BAD_REQUEST if has_error else HTTP_201_CREATED)
 
     @action(detail=False)

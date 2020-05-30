@@ -146,8 +146,12 @@
                 this.loading = true;
 
                 const resp = await this.send();
-                this.importDialog = true;
-                this.data = resp.data;
+                if (!resp.data.success) {
+                    eventBus.flash({color: 'warning', text: resp.data.message});
+                } else {
+                    this.importDialog = true;
+                    this.data = resp.data;
+                }
 
                 this.loading = false;
             },

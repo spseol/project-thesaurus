@@ -59,6 +59,7 @@
                     required
                 ></v-text-field>
 
+                <!-- TODO: get allowed from API -->
                 <v-file-input
                     accept="application/pdf"
                     :label="$t('Thesis admission')"
