@@ -17,33 +17,36 @@
                 <span class="font-weight-bold mx-2">{{ data.__str__  || $t('Unknown') }}</span>
             </v-card-title>
             <v-card-text>
-                <v-progress-linear indeterminate v-if="$asyncComputed.data.updating || $asyncComputed.mappings.updating"></v-progress-linear>
-                <v-expansion-panels popout focusable v-if="$asyncComputed.data.success && $asyncComputed.mappings.success">
+                <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
+                <v-expansion-panels multiple popout focusable v-if="!loading">
                     <v-expansion-panel
-                        v-for="row in [...data.results, ...loaded]"
-                        :key="row.id"
+                        v-for="r in [...data.results, ...loaded]"
+                        :key="r.id"
                     >
                         <v-expansion-panel-header>
-                            <v-row no-gutters>
+                            <v-row no-gutters justify="space-between">
                                 <v-col cols="5">
                                     <v-icon>mdi-clock</v-icon>
-                                    {{ dateToRelative(row.timestamp) }}
-                                    <span class="caption grey--text">({{ (new Date(row.timestamp)).toLocaleString($i18n.locale) }})</span>
+                                    {{ dateToRelative(r.timestamp) }}
+                                    <span class="caption grey--text">({{ (new Date(r.timestamp)).toLocaleString($i18n.locale) }})</span>
                                 </v-col>
-                                <v-col cols="2">
-                                    <v-icon>{{ actionToIcon(row.action) }}</v-icon>
-                                    {{ row.__str__ }}
+                                <v-col cols="3" :title="r.action_label">
+                                    <v-icon>{{ actionToIcon(r.action) }}</v-icon>
+                                    {{ r.__str__ }}
+
+                                    <span class="caption grey--text">
+                                        {{ actionSubtitle(r) }}
+                                    </span>
                                 </v-col>
                                 <v-col cols="4">
                                     <v-icon>mdi-account-box</v-icon>
-                                    {{ row.user ? row.user.full_name : '-' }}
+                                    {{ r.user ? r.user.full_name : '-' }}
                                 </v-col>
-
                             </v-row>
                         </v-expansion-panel-header>
 
                         <v-expansion-panel-content>
-                            <v-simple-table v-if="row.row_data" dense>
+                            <v-simple-table v-if="r.row_data" dense>
                                 <thead>
                                 <tr>
                                     <th class="text-right">{{ $t('Attribute') }}</th>
@@ -53,39 +56,48 @@
                                 </thead>
                                 <tbody>
                                 <tr
-                                    v-for="(v, column_name) of row.row_data" :key="column_name"
-                                    :class="{'orange accent-1': (row.changed_fields || {})[column_name]}"
+                                    v-for="(column_old_value, column_name) of r.row_data" :key="column_name"
+                                    :class="{'orange accent-1': column_name in (r.changed_fields || {})}"
                                 >
                                     <td class="py-1 col-1 text-right">
-                                        <code>{{ tableColumnToLabel(row.__table__, column_name) }}</code>
+                                        <code>{{ tableColumnToLabel(r.__table__, column_name) }}</code>
                                     </td>
-                                    <td class="py-1 col-3" v-for="v_ in [v || '', (row.changed_fields ? row.changed_fields[column_name] : '') || '']">
 
-                                        <template v-if="['t', 'f'].includes(v_)">
-                                            <v-icon small :color="booleanToConf(v_).color">
-                                                {{ booleanToConf(v_).icon }}
+                                    <td class="py-1 col-3" v-for="value in [column_old_value || '', (r.changed_fields || {})[column_name] || '']">
+
+                                        <!-- boolean, show checkboxes -->
+                                        <template v-if="['t', 'f'].includes(value)">
+                                            <v-icon small :color="booleanToConf(value).color">
+                                                {{ booleanToConf(value).icon }}
                                             </v-icon>
                                         </template>
 
-                                        <template v-else-if="v_.length > 50">
-
+                                        <!-- text, show truncated and in tooltip -->
+                                        <template v-else-if="value.length > 50">
                                             <v-tooltip top max-width="70vw">
                                                 <template v-slot:activator="{ on }">
                                                     <span v-on="on">
-                                                        {{ truncateValue(v_) }}
+                                                        {{ truncateValue(value) }}
                                                     </span>
                                                 </template>
-                                                {{ v_ }}
+                                                {{ value }}
                                             </v-tooltip>
                                         </template>
 
+                                        <!-- otherwise try to format by state.choices -->
                                         <template v-else>
-                                            {{ filterValue(row.__table__, column_name, v_) }}
+                                            {{ filterValue(r.__table__, column_name, value) }}
+
+                                            <!-- show recursively if -->
+                                            <!-- actually has some value -->
+                                            <!-- not reference to self -->
+                                            <!-- known mapping column to model -->
+                                            <!-- no ignored -->
                                             <audit-for-instance
-                                                v-if="v_ && v_ !== modelPk && mappings.foreign_key_to_model[column_name] && !pksToIgnore.includes(v_)"
+                                                v-if="value && value !== modelPk && mappings.foreign_key_to_model[column_name] && !pksToIgnore.includes(value)"
                                                 :model-name="mappings.foreign_key_to_model[column_name]"
-                                                :model-pk="v_" small
-                                                :pks-to-ignore="[...pksToIgnore, modelPk]"
+                                                :model-pk="value" small
+                                                :pks-to-ignore="pksToIgnore.concat(modelPk)"
                                             ></audit-for-instance>
                                         </template>
                                     </td>
@@ -144,7 +156,7 @@
                     this.next = data.next;
                     return data;
                 },
-                default: {},
+                default: {results: []},
                 lazy: true,
                 watch: ['$i18n.locale']
             },
@@ -160,6 +172,16 @@
                     lazy: true
                 }
             )
+        },
+        computed: {
+            loading() {
+                return this.$asyncComputed.data.updating || this.$asyncComputed.mappings.updating;
+            }
+        },
+        watch: {
+            dialog(new_) {
+                new_ && this.$asyncComputed.data.update();
+            }
         },
         methods: {
             actionToIcon(action) {
@@ -180,13 +202,23 @@
                 return _.truncate(v, {length: 45});
             },
             tableColumnToLabel(table, column) {
-                return (this.mappings.table_columns_to_labels[table] || {})[column].toLowerCase();
+                return (this.mappings.table_columns_to_labels[table] || {})[column]?.toLowerCase();
             },
             filterValue(table, column, value) {
                 return ((this.mappings.table_columns_to_choices[table] || {})[column] || {})[value] || value || '---';
             },
             dateToRelative(date) {
                 return moment(date, null, this.$i18n.locale).fromNow();
+            },
+            actionSubtitle(row) {
+                return _.truncate(
+                    _.keys(
+                        row.changed_fields || {}
+                    ).map(
+                        k => this.tableColumnToLabel(row.__table__, k)
+                    ).join(','),
+                    {length: 30}
+                );
             },
             async loadNext() {
                 const data = (await Axios.get(this.next)).data;
