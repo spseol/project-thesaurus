@@ -9,6 +9,7 @@ from logging.config import dictConfig
 
 from decouple import AutoConfig
 from django.core.validators import MinValueValidator
+from django.db import DEFAULT_DB_ALIAS
 from django.utils.log import DEFAULT_LOGGING
 from django.utils.translation import gettext_lazy as _
 
@@ -96,13 +97,14 @@ WSGI_APPLICATION = 'thesaurus.wsgi.application'
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
+    DEFAULT_DB_ALIAS: {
         "ENGINE": config("SQL_ENGINE", default="django.db.backends.sqlite3"),
         "NAME": config("SQL_DATABASE", default=os.path.join(BASE_DIR, "db.sqlite3")),
         "USER": config("SQL_USER", default="user"),
         "PASSWORD": config("SQL_PASSWORD", default="password"),
         "HOST": config("SQL_HOST", default="localhost"),
         "PORT": config("SQL_PORT", default="5432"),
+        "ATOMIC_REQUESTS": True,
         'OPTIONS': {
             'options': '-c search_path=public,audit'
         },
