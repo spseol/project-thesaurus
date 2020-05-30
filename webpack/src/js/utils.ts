@@ -2,6 +2,7 @@ import Vue from 'vue';
 import colors from 'vuetify/lib/util/colors';
 import Axios from './axios';
 import {User} from './types';
+import {hasPerm} from './user';
 
 class PageContext {
     user: User;
@@ -37,11 +38,15 @@ function readFileAsync(file) {
 
 
 export function asyncComputed(url, options = null) {
+    const _options = {default: [], watch: ['$i18n.locale'], lazy: false, ...(options || {})};
     return {
         async get() {
+            if (_options.perm && !(await hasPerm(_options.perm))) return [];
+
             return (await Axios.get(url)).data;
         },
-        ...(options || {default: []})
+        default: _options.default,
+        lazy: _options.lazy
     };
 }
 

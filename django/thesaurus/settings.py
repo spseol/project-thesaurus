@@ -36,6 +36,8 @@ INSTALLED_APPS = [
     'constance',
     'constance.backends.database',
 
+    'apps.audit',
+
     'apps.accounts',
     'apps.api',
     'apps.attachment',
@@ -64,6 +66,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'apps.audit.middleware.AuditMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -100,6 +103,9 @@ DATABASES = {
         "PASSWORD": config("SQL_PASSWORD", default="password"),
         "HOST": config("SQL_HOST", default="localhost"),
         "PORT": config("SQL_PORT", default="5432"),
+        'OPTIONS': {
+            'options': '-c search_path=public,audit'
+        },
     }
 }
 

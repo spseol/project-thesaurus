@@ -39,13 +39,8 @@
                         </v-col>
                     </v-row>
 
-
                     <h3 class="headline">{{ $t('Example') }}</h3>
-                    <v-card dark class="mt-3">
-                        <pre class="pa-2">hro38531,jor39322;Vt;Analýza konkurenceschopnosti podniku ;john;Mgr. Vladimír Tatarko;30.06.2020</pre>
-                        <pre class="pa-2">obs39515;Dt;Aktuální situace na bosensko-chorvatských hranicích;Jiøí Peterka;bartonek;08.07.2020</pre>
-                    </v-card>
-
+                    <code class="ma-1 pa-2 black white--text" v-for="ex in examples">{{ ex }}</code>
                     <v-progress-linear indeterminate v-if="$asyncComputed.columns.updating"></v-progress-linear>
                 </v-alert>
                 <v-text-field
@@ -138,7 +133,11 @@
                 data: {},
                 importDialog: false,
                 valid: false,
-                published_at: new Date().toISOString().substr(0, 7).replace('-', '/')
+                published_at: new Date().toISOString().substr(0, 7).replace('-', '/'),
+                examples: [
+                    'obs39515;TL;Aktuální situace na bosensko-chorvatských hranicích;Jiří Peterka;bartonek;08.07.2020',
+                    'hro38531,jor39322;Vt;Analýza konkurenceschopnosti podniku;john;Mgr. Vladimír Tatarkaš;30.06.2020'
+                ]
             };
         },
         methods: {

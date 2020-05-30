@@ -183,6 +183,9 @@
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
+                <audit-for-instance
+                    model-name="thesis.Thesis" :model-pk="data.id"
+                ></audit-for-instance>
                 <v-spacer></v-spacer>
                 <v-btn text type="button" large class="ma-2" @click="$emit('close')">{{ $t('Cancel edit') }}</v-btn>
                 <v-btn color="success" type="submit" large class="ma-2">{{ $t('Save data') }}</v-btn>
@@ -196,10 +199,12 @@
     import _ from 'lodash';
     import qs from 'qs';
     import Axios from '../../axios';
+    import AuditForInstance from '../../components/AuditForInstance.vue';
     import {asyncComputed, eventBus} from '../../utils';
 
     export default {
         name: 'ThesisEditPanel',
+        components: {AuditForInstance},
         props: {
             thesis: {type: Object},
             categoryOptions: {type: Array},

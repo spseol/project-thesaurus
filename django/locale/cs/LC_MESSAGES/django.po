@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-29 00:48+0200\n"
-"PO-Revision-Date: 2020-05-29 01:55+0300\n"
+"POT-Creation-Date: 2020-05-30 02:03+0200\n"
+"PO-Revision-Date: 2020-05-30 03:05+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -54,6 +54,10 @@ msgstr "Uživatel"
 #: apps/accounts/models/user.py:53
 msgid "Users"
 msgstr "Uživatelé"
+
+#: apps/api/views/audit.py:30
+msgid "Unknown model to audit."
+msgstr "Neznámý model k auditu."
 
 #: apps/api/views/reservation.py:51
 msgid "There is already existing reservation for this thesis by user."
@@ -238,6 +242,74 @@ msgid "Maximal size for {attachment} is {max_size}, {real_size} given."
 msgstr ""
 "Maximální velikost pro {attachment} je {max_size}, vloženo {real_size}."
 
+#: apps/audit/models.py:15
+msgid "Inserted"
+msgstr "Vloženo"
+
+#: apps/audit/models.py:16
+msgid "Deleted"
+msgstr "Smazáno"
+
+#: apps/audit/models.py:17
+msgid "Updated"
+msgstr "Upraveno"
+
+#: apps/audit/models.py:18
+msgid "Truncated"
+msgstr "Vyprázdněno"
+
+#: apps/audit/models.py:21
+msgid "Schema name"
+msgstr "Jméno schématu"
+
+#: apps/audit/models.py:22
+msgid "Table name"
+msgstr "Jméno tabulky"
+
+#: apps/audit/models.py:23
+msgid "Username"
+msgstr ""
+
+#: apps/audit/models.py:25
+msgid "Transaction start timestamp"
+msgstr "Začátek transakce"
+
+#: apps/audit/models.py:26
+msgid "Statement start timestamp"
+msgstr "Začátek příkazu"
+
+#: apps/audit/models.py:27
+msgid "Wall clock time"
+msgstr "Systémový čas"
+
+#: apps/audit/models.py:28
+msgid "Transaction ID"
+msgstr "ID transakce"
+
+#: apps/audit/models.py:29
+msgid "Client query"
+msgstr "Dotaz klienta"
+
+#: apps/audit/models.py:30
+msgid "Action"
+msgstr "Akce"
+
+#: apps/audit/models.py:31
+msgid "Row data"
+msgstr "Data řádku"
+
+#: apps/audit/models.py:32
+msgid "Changed fields"
+msgstr "Změněné hodnoty"
+
+#: apps/audit/models.py:33
+msgid "Statement only"
+msgstr "Pouze příkaz"
+
+#: apps/audit/models.py:43 apps/audit/models.py:44
+msgid "Audit"
+msgstr "Audit"
+
 #: apps/emails/mailers/base.py:53
 msgid "{} | {}"
 msgstr "{} | {}"
@@ -248,7 +320,7 @@ msgstr "Rezervaci na práci {} byl změněn stav na {}."
 
 #: apps/emails/mailers/reservation.py:33
 msgid "Reservation for thesis {} has been created"
-msgstr "Rezervace pro práci {} byla vytvořena."
+msgstr "Rezervace pro práci {} byla vytvořena"
 
 #: apps/emails/mailers/thesis.py:22
 msgid "Thesis {} changed state to {}"
@@ -286,7 +358,8 @@ msgstr ""
 "informovat.\n"
 "Před potvrzením lze rezervaci na portále zrušit.\n"
 "\n"
-"Měj pěkný den!"
+"Měj pěkný den!\n"
+"   "
 
 #: apps/emails/templates/emails/reservation/state_change.html:5
 #, python-format
@@ -703,15 +776,15 @@ msgstr "Chyba serveru"
 msgid "Thesaurus logo"
 msgstr "Thesaurus logo"
 
-#: thesaurus/settings.py:125
+#: thesaurus/settings.py:131
 msgid "Czech"
 msgstr "Česky"
 
-#: thesaurus/settings.py:126
+#: thesaurus/settings.py:132
 msgid "English"
 msgstr "English"
 
-#: thesaurus/settings.py:210
+#: thesaurus/settings.py:216
 msgid "Maximal count of opened reservations linked to one user (inclusive)."
 msgstr "Maximální počet otevřených rezervací na uživatele (včetně)."
 

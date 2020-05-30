@@ -28,13 +28,13 @@
                     <v-badge :content="thesis.open_reservations_count || 0" overlap v-if="thesis.open_reservations_count > 0">
                         <v-btn
                             v-text="$t('Borrowed')" :to="$i18nRoute({name: 'reservation-list'})"
-                            x-small depressed
+                            x-small depressed disabled
                         ></v-btn>
                     </v-badge>
 
                     <v-btn v-if="thesis.available_for_reservation"
                         v-text="$t('Available')"
-                        x-small depressed
+                        x-small depressed disabled
                     ></v-btn>
                 </span>
             </span>

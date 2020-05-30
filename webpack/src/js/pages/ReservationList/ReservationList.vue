@@ -37,7 +37,11 @@
 
 
             <template v-slot:item.created="{ item }">
-                {{ (new Date(item.created)).toLocaleString() }}
+                <audit-for-instance
+                    small :model-pk="item.id" model-name="thesis.reservation"
+                ></audit-for-instance>
+
+                {{ (new Date(item.created)).toLocaleString($i18n.locale) }}
             </template>
 
             <template v-slot:item.actions="{ item }">
@@ -91,9 +95,11 @@
     import Vue from 'vue';
     import Axios from '../../axios';
     import {asyncComputed, eventBus} from '../../utils';
+    import AuditForInstance from '../../components/AuditForInstance.vue';
 
     export default Vue.extend({
         name: 'ReservationList',
+        components: {AuditForInstance},
         data() {
             return {
                 loading: false,
