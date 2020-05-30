@@ -21,7 +21,7 @@
             </template>
 
             <template v-slot:item.edit="{ item }">
-                <v-dialog ref="editDialog" max-width="70vw" :fullscreen="$vuetify.breakpoint.smAndDown"
+                <v-dialog :fullscreen="$vuetify.breakpoint.smAndDown" max-width="80em"
                     v-model="item.editDialog">
                     <template v-slot:activator="{ on }">
                         <v-btn icon v-on="on" small>
@@ -122,17 +122,19 @@
                         {{ item.text || item }}
                     </template>
                 </v-combobox>
-                <v-divider v-if="$vuetify.breakpoint.lgAndUp" vertical class="mx-2"></v-divider>
-                <v-select v-if="$vuetify.breakpoint.lgAndUp"
+
+                <v-divider v-if="$vuetify.breakpoint.mdAndUp" vertical class="mx-1"></v-divider>
+                <v-select v-if="$vuetify.breakpoint.mdAndUp"
                     :items="categoryOptions" v-model="categoryFilter" clearable
                     solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline"
-                    :label="$t('Category')"
+                    :label="$t('Category')" style="max-width: 10em"
                 ></v-select>
-                <v-divider vertical class="mx-2" v-if="$vuetify.breakpoint.mdAndUp"></v-divider>
-                <v-select v-if="$vuetify.breakpoint.mdAndUp"
+
+                <v-divider vertical class="mx-1" v-if="$vuetify.breakpoint.smAndUp"></v-divider>
+                <v-select v-if="$vuetify.breakpoint.smAndUp"
                     :items="thesisYearOptions" v-model="thesisYearFilter" clearable
                     flat solo-inverted hide-details prepend-inner-icon="mdi-calendar"
-                    :label="$t('Publication year')"
+                    :label="$t('Publication year')" style="max-width: 10em"
                 ></v-select>
             </v-toolbar>
         </portal>

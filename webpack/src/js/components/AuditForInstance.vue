@@ -1,7 +1,7 @@
 <template>
     <v-dialog
         v-model="dialog" v-if="canViewAudit"
-        max-width="80vw" max-height="60vh" :fullscreen="$vuetify.breakpoint.smAndDown"
+        max-width="80em" :fullscreen="$vuetify.breakpoint.smAndDown"
     >
         <template v-slot:activator="{ on }">
             <v-btn fab dark elevation="2" color="orange" v-on="on" class="ma-2" :x-small="small" :small="!small">

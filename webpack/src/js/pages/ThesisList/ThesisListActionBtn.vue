@@ -92,7 +92,7 @@
             </template>
         </span>
 
-        <v-dialog v-model="sendToReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '50vw'">
+        <v-dialog v-model="sendToReviewDialog" max-width="60em" :fullscreen="$vuetify.breakpoint.smAndDown">
             <v-card :loading="dialogLoading">
                 <v-card-title
                     class="headline grey lighten-2"
@@ -148,7 +148,7 @@
               </v-card>
         </v-dialog>
 
-        <v-dialog v-model="submitExternalReviewDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '35vw'">
+        <v-dialog v-model="submitExternalReviewDialog" max-width="60em" :fullscreen="$vuetify.breakpoint.smAndDown">
             <v-card :loading="dialogLoading">
                 <v-form>
                     <v-card-title
@@ -186,7 +186,7 @@
             </v-card>
         </v-dialog>
 
-        <v-dialog v-model="createReservationDialog" :max-width="$vuetify.breakpoint.mdAndDown ? '95vw' : '35vw'">
+        <v-dialog v-model="createReservationDialog" max-width="60em">
             <v-card :loading="dialogLoading">
                 <v-form>
                     <v-card-title

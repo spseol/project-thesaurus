@@ -72,6 +72,8 @@ class ThesisFullPublicSerializer(ThesisBaseSerializer):
     published_at = DateField(format="%Y/%m", required=False, read_only=True)
     reservable = BooleanField(read_only=True, source='_reservable')  # set by queryset from viewset
 
+    submit_deadline = DateField(required=False)
+
     class Meta:
         model = Thesis
         fields = ThesisBaseSerializer.Meta.fields + (
@@ -83,6 +85,7 @@ class ThesisFullPublicSerializer(ThesisBaseSerializer):
             'available_for_reservation',
             'reservable',
             'open_reservations_count',
+            'submit_deadline',
         )
 
 

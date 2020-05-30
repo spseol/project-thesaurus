@@ -20,12 +20,41 @@
                                     :rules="[v => !v || /[A-Z]\d{3}/.test(v) || $t('thesis.invalidSNformat')]"
                                 ></v-text-field>
 
-                                <v-text-field
-                                    v-model="data.published_at"
-                                    :counter="7" :error-messages="messages.published_at"
-                                    :rules="[v => !!v, v => /\d{4}\/\d{2}/.test(v) || $t('thesis.invalidPublishedAtFormat')]"
-                                    :label="$t('Published')"
-                                ></v-text-field>
+                                <v-menu
+                                    :close-on-content-click="false"
+                                    transition="scale-transition"
+                                    offset-y max-width="290px"
+                                >
+                                    <template v-slot:activator="{ on }">
+                                        <v-text-field
+                                            v-model="data.published_at" v-on="on"
+                                            :label="$t('Published')" readonly
+                                            append-icon="mdi-calendar"
+                                        ></v-text-field>
+                                    </template>
+                                    <v-date-picker
+                                        v-model="data.published_at"
+                                        type="month" no-title scrollable
+                                    ></v-date-picker>
+                                </v-menu>
+
+                                <v-menu
+                                    :close-on-content-click="false"
+                                    transition="scale-transition"
+                                    offset-y max-width="290px"
+                                >
+                                    <template v-slot:activator="{ on }">
+                                        <v-text-field
+                                            v-model="data.submit_deadline" v-on="on"
+                                            :label="$t('Submit deadline')" readonly
+                                            append-icon="mdi-calendar"
+                                        ></v-text-field>
+                                    </template>
+                                    <v-date-picker
+                                        v-model="data.submit_deadline"
+                                        type="date" no-title scrollable
+                                    ></v-date-picker>
+                                </v-menu>
 
                                 <v-radio-group
                                     :label="$t('Category')" row :error-messages="messages.category"
