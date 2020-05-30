@@ -15,6 +15,9 @@ export declare class Attachment extends Object {
     url: string;
     size_label: string;
     type_attachment: TypeAttachment;
+
+    // internal
+    _loading: boolean;
 }
 
 

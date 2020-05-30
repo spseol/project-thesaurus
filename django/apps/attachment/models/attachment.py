@@ -1,6 +1,6 @@
 from operator import itemgetter
 
-from django.db import models
+from django.db import models, transaction
 from django.template.defaultfilters import filesizeformat
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
@@ -10,8 +10,9 @@ from filetype import Type as FileType, get_type
 from filetype.types.archive import Pdf, Zip, Rar, Tar, Gz
 from filetype.types.image import Png
 
-from apps.attachment.models.managers import AttachmentManager, default_storage
 from apps.utils.models import BaseTimestampedModel, BaseTypeModel
+from .managers import AttachmentManager, default_storage
+from .. import logger
 
 
 def _default_allowed_content_types():
@@ -69,6 +70,15 @@ class Attachment(BaseTimestampedModel):
         verbose_name = _('Attachment')
         verbose_name_plural = _('Attachments')
         ordering = ('thesis', 'type_attachment__order')
+
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        path = self.file_path
+        super().delete(*args, **kwargs)
+        if default_storage.exists(path):
+            default_storage.delete(path)
+        else:
+            logger.warning('Deleting attachment model %s with non existing file %s.', self.pk, path)
 
     def build_file_path(self, file_type: FileType):
         pk = str(self.id)

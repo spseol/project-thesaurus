@@ -1,6 +1,7 @@
 import logging
 
 from rest_framework import status
+from rest_framework.mixins import DestroyModelMixin
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 
@@ -9,7 +10,7 @@ from apps.attachment.models import Attachment
 from apps.attachment.models.managers import default_storage
 
 
-class AttachmentViewSet(GenericViewSet):
+class AttachmentViewSet(DestroyModelMixin, GenericViewSet):
     queryset = Attachment.objects.all()
     permission_classes = (CanViewAttachment,)
 

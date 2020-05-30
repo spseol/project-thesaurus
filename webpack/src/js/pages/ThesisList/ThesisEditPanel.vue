@@ -89,13 +89,31 @@
                                             <v-icon small class="mr-1">${{ att.type_attachment.identifier }}</v-icon>
                                             {{ $t('View') }}
                                         </v-btn>
-                                        <v-dialog>
-                                            <template v-slot:activator="{ on }">
+                                        <v-dialog v-model="att._deleteDialog" max-width="20vw">
+                                            <template v-slot:activator="{on}">
                                                 <v-btn outlined color="error" small v-on="on">
                                                     <v-icon small>mdi-trash-can-outline</v-icon>
                                                 </v-btn>
                                             </template>
-
+                                            <v-card>
+                                                <v-card-title>
+                                                    {{ $t('Delete attachment') }}
+                                                    {{ att.type_attachment.name }}
+                                                </v-card-title>
+                                                <v-card-text>
+                                                    {{ $t('thesis.deleteAttachmentQuestion') }}
+                                                    {{ thesis.title }}
+                                                </v-card-text>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="error" large
+                                                        @click="deleteAttachment(att)" :loading="att._loading"
+                                                    >
+                                                        {{ $t('Yes, delete') }}
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
                                         </v-dialog>
                                     </span>
                                 </v-row>
@@ -119,9 +137,32 @@
                                             <v-icon small class="mr-1">mdi-eye</v-icon>
                                             {{ $t('View') }}
                                         </v-btn>
-                                        <v-btn outlined color="error" small>
-                                            <v-icon small>mdi-trash-can-outline</v-icon>
-                                        </v-btn>
+                                        <v-dialog v-model="rew._deleteDialog" max-width="20vw">
+                                            <template v-slot:activator="{on}">
+                                                <v-btn outlined color="error" small v-on="on">
+                                                    <v-icon small>mdi-trash-can-outline</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <v-card :loading="rew._loading">
+                                                <v-card-title>
+                                                    {{ $t('Delete review from') }}
+                                                    {{ rew.user.full_name }}
+                                                </v-card-title>
+                                                <v-card-text>
+                                                    {{ $t('thesis.deleteReviewQuestion') }}
+                                                    {{ thesis.title }}
+                                                </v-card-text>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="error" large
+                                                        @click="deleteReview(rew)" :loading="rew._loading"
+                                                    >
+                                                        {{ $t('Yes, delete') }}
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
                                     </span>
                                 </v-row>
                                 <v-alert color="info" text v-if="!thesis.reviews.length">
@@ -214,6 +255,21 @@
                 }
 
                 this.loading = false;
+            },
+            async deleteReview(rew) {
+                rew._loading = true;
+                console.log(rew);
+                await Axios.delete(`/api/v1/review/${rew.id}`);
+                eventBus.flash({color: 'green', text: this.$t('review.justDeleted')});
+                this.$delete(this.thesis.reviews, this.thesis.reviews.indexOf(rew));
+                rew._loading = false;
+            },
+            async deleteAttachment(att) {
+                att._loading = true;
+                await Axios.delete(`/api/v1/attachment/${att.id}`);
+                eventBus.flash({color: 'green', text: this.$t('attachment.justDeleted')});
+                this.$delete(this.thesis.attachments, this.thesis.attachments.indexOf(att));
+                att._loading = false;
             }
         },
         computed: {
