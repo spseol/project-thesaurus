@@ -17,10 +17,12 @@
                             <br>
                             <v-icon small>mdi-account</v-icon>
                             {{ thesis.authors.map(a => a.full_name).join(', ') }}
-                            <br>
-                            <v-icon small>mdi-calendar</v-icon>
-                            {{ $t('Submit deadline') }} {{ relativeDeadline(thesis.submit_deadline) }}
-                            <span class="caption">({{ (new Date(thesis.submit_deadline)).toLocaleDateString($i18n.locale) }})</span>
+                            <template v-if="thesis.submit_deadline">
+                                <br>
+                                <v-icon small>mdi-calendar</v-icon>
+                                {{ $t('Submit deadline') }} {{ relativeDeadline(thesis.submit_deadline) }}
+                                <span class="caption">({{ (new Date(thesis.submit_deadline)).toLocaleDateString($i18n.locale) }})</span>
+                            </template>
                         </v-col>
                         <v-col class="shrink">
                             <v-btn large :to="$i18nRoute({name: 'thesis-submit', params: {id: thesis.id}})">

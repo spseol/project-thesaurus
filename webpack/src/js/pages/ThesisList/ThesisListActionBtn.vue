@@ -21,7 +21,7 @@
             </span>
 
             <!-- Can view reservations -> show state of #reservations, without possibility to create -->
-            <span v-has-group:teacher>
+
                 <span v-has-perm:thesis.change_reservation
                     v-if="thesis.reservable"
                 >
@@ -37,7 +37,6 @@
                         x-small depressed disabled
                     ></v-btn>
                 </span>
-            </span>
 
             <!-- published but not reservable -->
             <v-btn

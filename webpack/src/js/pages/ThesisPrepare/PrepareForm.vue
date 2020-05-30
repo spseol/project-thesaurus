@@ -51,13 +51,41 @@
                     ></v-radio>
                 </v-radio-group>
 
-                <v-text-field
-                    v-model="thesis.published_at"
-                    :counter="7"
-                    :rules="[v => !!v, v => /\d{4}\/\d{2}/.test(v) || $t('thesis.publishedAtNotInFormat')]"
-                    :label="$t('Published')"
-                    required
-                ></v-text-field>
+                <v-menu
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y max-width="290px"
+                >
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                            v-model="thesis.published_at" v-on="on"
+                            :label="$t('Published')" readonly
+                            append-icon="mdi-calendar"
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker
+                        v-model="thesis.published_at"
+                        type="month" no-title scrollable
+                    ></v-date-picker>
+                </v-menu>
+
+                <v-menu
+                    :close-on-content-click="false"
+                    transition="scale-transition"
+                    offset-y max-width="290px"
+                >
+                    <template v-slot:activator="{ on }">
+                        <v-text-field
+                            v-model="thesis.submit_deadline" v-on="on"
+                            :label="$t('Submit deadline')" readonly
+                            append-icon="mdi-calendar"
+                        ></v-text-field>
+                    </template>
+                    <v-date-picker
+                        v-model="thesis.submit_deadline"
+                        type="date" no-title scrollable
+                    ></v-date-picker>
+                </v-menu>
 
                 <!-- TODO: get allowed from API -->
                 <v-file-input
@@ -122,6 +150,7 @@
                     registration_number: '',
                     authors: [],
                     published_at: new Date().toISOString().substr(0, 7).replace('-', '/'),
+                    submit_deadline: '',
                     category: null,
                     supervisor_id: null,
                     admission: null
@@ -152,7 +181,6 @@
                     eventBus.flash({text: this.$t('thesis.justPrepared')});
                     Object.assign(this.$data, this.$options.data.apply(this));
                     this.$router.push({name: 'thesis-list'});
-                    this.$asyncComputed.teacherOptions.update();
                 } else {
                     this.messages = resp.data;
                     _.forEach(
