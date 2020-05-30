@@ -8,6 +8,13 @@ export const I18nRoutePlugin = {
     }
 };
 
+declare module 'vue/types/vue' {
+    interface Vue {
+        $i18nRoute: CallableFunction;
+    }
+}
+
+
 export const DjangoPermsPlugin = {
     PERM_REGEX: /[a-z][a-z_]+\.[a-z_]+/i,
     _implementation(resolver) {

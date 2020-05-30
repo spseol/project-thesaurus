@@ -1,6 +1,7 @@
 from operator import itemgetter
 
-from django.db import models
+from django.db import models, transaction
+from django.template.defaultfilters import filesizeformat
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_better_admin_arrayfield.models.fields import ArrayField
@@ -9,8 +10,9 @@ from filetype import Type as FileType, get_type
 from filetype.types.archive import Pdf, Zip, Rar, Tar, Gz
 from filetype.types.image import Png
 
-from apps.attachment.models.managers import AttachmentManager, default_storage
 from apps.utils.models import BaseTimestampedModel, BaseTypeModel
+from .managers import AttachmentManager, default_storage
+from .. import logger
 
 
 def _default_allowed_content_types():
@@ -58,12 +60,25 @@ class Attachment(BaseTimestampedModel):
         choices=_content_type_choices(),
     )
 
+    size = models.IntegerField(
+        verbose_name=_('Size of attachment'),
+    )
+
     objects = AttachmentManager()
 
     class Meta:
         verbose_name = _('Attachment')
         verbose_name_plural = _('Attachments')
         ordering = ('thesis', 'type_attachment__order')
+
+    @transaction.atomic
+    def delete(self, *args, **kwargs):
+        path = self.file_path
+        super().delete(*args, **kwargs)
+        if default_storage.exists(path):
+            default_storage.delete(path)
+        else:
+            logger.warning('Deleting attachment model %s with non existing file %s.', self.pk, path)
 
     def build_file_path(self, file_type: FileType):
         pk = str(self.id)
@@ -81,6 +96,13 @@ class Attachment(BaseTimestampedModel):
         file_type = get_type(mime=self.content_type)
         return f'{self.thesis.registration_number or slugify(self.thesis.title)}-' \
                f'{slugify(self.type_attachment.identifier)}.{file_type.extension}'
+
+    def __str__(self):
+        return f'{self.type_attachment.get_identifier_display()} ({self.thesis})'
+
+    @property
+    def size_label(self):
+        return filesizeformat(self.size)
 
     @hook(AFTER_CREATE)
     def check_thesis_state(self):

@@ -13,7 +13,11 @@ export declare class TypeAttachment extends Object {
 export declare class Attachment extends Object {
     id: string;
     url: string;
+    size_label: string;
     type_attachment: TypeAttachment;
+
+    // internal
+    _loading: boolean;
 }
 
 

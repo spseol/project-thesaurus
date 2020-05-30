@@ -26,7 +26,7 @@ class Review(BaseTimestampedModel):
 
     thesis = models.ForeignKey(
         to='thesis.Thesis',
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='review_thesis'
     )
     user = models.ForeignKey(
@@ -65,11 +65,13 @@ class Review(BaseTimestampedModel):
         choices=GradesChoices.choices,
     )
 
-    # TODO: state?
     class Meta:
         verbose_name = _('Review')
         verbose_name_plural = _('Reviews')
         ordering = ('thesis', 'user')
+
+    def __str__(self):
+        return _('Review on {} from {}').format(self.thesis, self.user)
 
     @property
     def gradings(self):

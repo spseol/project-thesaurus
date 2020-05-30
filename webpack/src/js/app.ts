@@ -9,7 +9,6 @@ import VueRouter from 'vue-router';
 import VuetifyToast from 'vuetify-toast-snackbar';
 import csVuetify from 'vuetify/es5/locale/cs';
 import enVuetify from 'vuetify/es5/locale/en';
-import colors from 'vuetify/es5/util/colors';
 import Vuetify, {VBtn, VIcon, VSnackbar} from 'vuetify/lib/index';
 
 import '../scss/index.scss';
@@ -19,7 +18,7 @@ import csLocal from './locale/cs.json';
 import enLocal from './locale/en.json';
 import {DjangoPermsPlugin, I18nRoutePlugin} from './plugins';
 import {createRouter} from './router';
-import {pageContext} from './utils';
+import {pageContext, THEME_COLORS} from './utils';
 
 declare var __SENTRY_DSN__: string;
 
@@ -54,6 +53,7 @@ export default function createVue(opts = {}) {
 
     const {locale} = pageContext;
 
+
     const vuetify = new Vuetify({
         lang: {
             locales: {cs: csVuetify, en: enVuetify},
@@ -61,15 +61,7 @@ export default function createVue(opts = {}) {
         },
         theme: {
             themes: {
-                light: {
-                    primary: colors.orange.base,
-                    secondary: colors.brown.base,
-                    accent: colors.deepOrange.base,
-                    error: colors.pink.base,
-                    warning: colors.orange.darken4,
-                    info: colors.blue.base,
-                    success: colors.green.base
-                }
+                light: THEME_COLORS
             }
         },
         icons: {

@@ -4,7 +4,6 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Q, QuerySet, OuterRef, Exists, F
 from django.shortcuts import get_list_or_404
-from django.utils.dateparse import parse_date
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import get_object_or_404
@@ -16,15 +15,17 @@ from apps.accounts.models import User
 from apps.api.permissions import (
     CanSubmitThesisPermission,
     CanSubmitExternalThesisReviewPermission,
-    CanViewThesisFullInternalReview
+    CanViewThesisFullInternalReview, CanViewAttachment
 )
 from apps.attachment.models import Attachment, TypeAttachment
+from apps.attachment.serializers import AttachmentSerializer
 from apps.review.serializers import ReviewFullInternalSerializer, ReviewPublicSerializer
 from apps.thesis.models import Thesis, Category, Reservation
 from apps.thesis.serializers import (
     ThesisFullPublicSerializer, ThesisFullInternalSerializer,
     ThesisBaseSerializer, ThesisSubmitSerializer
 )
+from apps.utils.utils import parse_date
 from apps.utils.views import ModelChoicesOptionsView
 
 
@@ -49,19 +50,19 @@ def _state_change_action(name, state: Thesis.State):
 class ThesisViewSet(ModelViewSet):
     queryset = Thesis.api_objects.get_queryset()
     search_fields = (
-        'title',
-        'abstract',
+        'title__unaccent',
+        'abstract__unaccent',
         'registration_number',
         'state',
         '=authors__username',
-        'authors__first_name',
-        'authors__last_name',
-        'supervisor__username',
-        'supervisor__first_name',
-        'supervisor__last_name',
-        'opponent__username',
-        'opponent__first_name',
-        'opponent__last_name',
+        'authors__first_name__unaccent',
+        'authors__last_name__unaccent',
+        '=supervisor__username',
+        'supervisor__first_name__unaccent',
+        'supervisor__last_name__unaccent',
+        '=opponent__username',
+        'opponent__first_name__unaccent',
+        'opponent__last_name__unaccent',
         '=category__id',
         'category__title',
         '=published_at_year',
@@ -118,15 +119,17 @@ class ThesisViewSet(ModelViewSet):
 
     @transaction.atomic
     def perform_update(self, serializer: ThesisFullInternalSerializer):
-        serializer.save(
-            category=get_object_or_404(Category, pk=serializer.initial_data.get('category')),
-            authors=get_list_or_404(
+        data = dict()
+        if author_pks := serializer.initial_data.get('authors'):
+            data['authors'] = get_list_or_404(
                 get_user_model(),
-                # TODO: refactor to custom action /edit?
-                pk__in=serializer.initial_data.get('authors')
-            ),
-            published_at=parse_date((serializer.initial_data.get('published_at') + '/01').replace('/', '-'))
-        )
+                pk__in=author_pks
+            )
+        if published_at := serializer.initial_data.get('published_at'):
+            data['published_at'] = parse_date((published_at + '/01').replace('/', '-'))
+
+        # TODO: refactor to custom action /edit?
+        serializer.save(**data)
 
     @action(methods=['patch'], detail=True, permission_classes=[CanSubmitThesisPermission])
     @transaction.atomic
@@ -193,6 +196,21 @@ class ThesisViewSet(ModelViewSet):
         return Response(
             serializer_class(
                 instance=thesis.review_thesis, many=True, context=self.get_serializer_context()
+            ).data
+        )
+
+    @action(methods=['get'], detail=True)
+    def attachments(self, request, *args, **kwargs):
+        thesis = self.get_object()
+
+        return Response(
+            AttachmentSerializer(
+                instance=CanViewAttachment.restrict_queryset(
+                    user=request.user,
+                    queryset=thesis.attachment_thesis
+                ),
+                many=True,
+                context=self.get_serializer_context()
             ).data
         )
 

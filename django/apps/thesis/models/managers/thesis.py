@@ -66,3 +66,7 @@ class ThesisApiManager(ThesisManager):
             ),
             published_at_year=Cast(ExtractYear('published_at'), CharField())
         )
+
+
+class ThesisImportManager(Manager):
+    pass

@@ -1,6 +1,6 @@
 {
   "name": "thesaurus-webpack",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Frontend part for project Thesaurus - theses evidence and reservation system.",
   "author": "Josef Kolar",
   "license": "MIT",
@@ -24,6 +24,7 @@
     "fibers": "^4.0.3",
     "file-loader": "^6.0.0",
     "lodash": "^4.17.15",
+    "moment": "^2.26.0",
     "node-sass": "^4.14.1",
     "portal-vue": "^2.1.7",
     "postcss-loader": "^3.0.0",
@@ -54,6 +55,7 @@
     "@types/qs": "^6.9.3",
     "image-webpack-loader": "^6.0.0",
     "mini-css-extract-plugin": "^0.9.0",
+    "moment-locales-webpack-plugin": "^1.2.0",
     "ts-loader": "^7.0.4",
     "typescript": "^3.9.3",
     "url-loader": "^4.1.0",

@@ -32,8 +32,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.postgres',
     'constance',
     'constance.backends.database',
+
+    'apps.audit',
 
     'apps.accounts',
     'apps.api',
@@ -63,6 +66,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'apps.audit.middleware.AuditMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
@@ -99,6 +103,9 @@ DATABASES = {
         "PASSWORD": config("SQL_PASSWORD", default="password"),
         "HOST": config("SQL_HOST", default="localhost"),
         "PORT": config("SQL_PORT", default="5432"),
+        'OPTIONS': {
+            'options': '-c search_path=public,audit'
+        },
     }
 }
 
@@ -156,7 +163,7 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema',
     'DEFAULT_FILTER_BACKENDS': (
         'django_filters.rest_framework.DjangoFilterBackend',
-        'rest_framework.filters.SearchFilter',
+        'apps.api.utils.filters.UnAccentSearchFilter',
         'apps.api.utils.filters.RelatedOrderingFilter',
     ),
     'DEFAULT_PERMISSION_CLASSES': (

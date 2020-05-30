@@ -22,10 +22,10 @@
                         :save-text="$t('Save')"
                         :cancel-text="$t('Cancel edit')"
                     >
-                        <v-chip outlined :color="stateToColor(props.item.state)">
-                            {{ stateToLabel(props.item.state) }}
-                            <v-icon class="ml-2">mdi-lead-pencil</v-icon>
-                        </v-chip>
+                        <!--                        <v-chip outlined :color="stateToColor(props.item.state)">-->
+                        {{ stateToLabel(props.item.state) }}
+                        <v-icon class="mb-1" small>mdi-lead-pencil</v-icon>
+                        <!--                        </v-chip>-->
                         <template v-slot:input>
                             <v-select
                                 :items="stateOptions" v-model="stateEdit" flat
@@ -37,7 +37,11 @@
 
 
             <template v-slot:item.created="{ item }">
-                {{ (new Date(item.created)).toLocaleString() }}
+                <audit-for-instance
+                    small :model-pk="item.id" model-name="thesis.reservation"
+                ></audit-for-instance>
+
+                {{ (new Date(item.created)).toLocaleString($i18n.locale) }}
             </template>
 
             <template v-slot:item.actions="{ item }">
@@ -90,10 +94,12 @@
     import _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {eventBus} from '../../utils';
+    import {asyncComputed, eventBus} from '../../utils';
+    import AuditForInstance from '../../components/AuditForInstance.vue';
 
     export default Vue.extend({
         name: 'ReservationList',
+        components: {AuditForInstance},
         data() {
             return {
                 loading: false,
@@ -127,12 +133,7 @@
             },
         },
         asyncComputed: {
-            stateOptions: {
-                async get() {
-                    return (await Axios.get('/api/v1/reservation-state-options')).data;
-                },
-                default: [],
-            },
+            stateOptions: asyncComputed('/api/v1/reservation-state-options'),
             async stateOptionsFilter() {
                 return [
                     {text: this.$t('Open'), value: 'open'},

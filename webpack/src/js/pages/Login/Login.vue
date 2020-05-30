@@ -79,7 +79,6 @@
         methods: {
             async login() {
                 this.loading = true;
-                // TODO: next url?
                 const response = await Axios.post(
                     '/api/v1/login',
                     {

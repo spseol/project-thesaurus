@@ -2,12 +2,14 @@
     <v-card>
         <v-card-title>{{ $t('My reservations') }}</v-card-title>
         <v-card-text>
+            <v-progress-linear indeterminate v-if="$asyncComputed.reservations.updating"></v-progress-linear>
+
             <v-alert v-for="res in reservations" v-bind="stateToAttrs(res.state)" :key="res.id">
                 {{ res.thesis_label }}
+
                 <div class="mt-3">
                     <strong class="float-left">
                         {{ res.state_label }}
-
                     </strong>
 
                     <v-dialog
@@ -43,6 +45,15 @@
                     </v-dialog>
                 </div>
             </v-alert>
+
+            <v-alert type="info" text v-if="!reservations.length">
+                {{ $t('reservation.noActiveReservations') }}
+                <v-row justify="end" class="mt-2">
+                    <v-btn :to="$i18nRoute({name: 'thesis-list'})" type="info" light text>
+                        {{ $t('reservation.goAndMakeAReservation') }}
+                    </v-btn>
+                </v-row>
+            </v-alert>
         </v-card-text>
     </v-card>
 </template>
@@ -62,8 +73,8 @@
                 return {
                     created: {type: 'info', outlined: true},
                     ready: {type: 'warning', prominent: true},
-                    running: {type: 'success', outlined: true}
-                }[state] || 'info';
+                    running: {type: 'success', outlined: true, icon: 'mdi-clock'}
+                }[state] || {type: 'info'};
             },
             async cancelReservation(reservation) {
                 await Axios.post(`/api/v1/reservation/${reservation.id}/cancel`);
@@ -76,11 +87,14 @@
             }
         },
         asyncComputed: {
-            async reservations() {
-                return _.sortBy(
-                    (await Axios.get('/api/v1/reservation')).data,
-                    s => ['ready', 'running', 'created'].indexOf(s.state)
-                );
+            reservations: {
+                async get() {
+                    return _.sortBy(
+                        (await Axios.get('/api/v1/reservation')).data,
+                        s => ['ready', 'running', 'created'].indexOf(s.state)
+                    );
+                },
+                default: []
             }
         }
     };

@@ -1,7 +1,8 @@
 {% extends "admin/base.html" %}
 {% load i18n %}
 {% block userlinks %}
-    <form action="{% url 'api:set_language' %}" method="post" style="display:inline">{% csrf_token %}
+    <form action="{% url 'api:set_language' %}" method="post" style="display:inline">
+        {% csrf_token %}
         <input name="next" type="hidden" value="{{ redirect_to }}">
         <label>
             <select name="language" onchange="this.form.submit()">

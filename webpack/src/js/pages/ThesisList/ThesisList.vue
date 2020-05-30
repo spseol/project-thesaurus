@@ -49,7 +49,9 @@
             </template>
 
             <template v-slot:item.authors="{ item }">
+                <span class="caption">
                 {{ item.authors.map(a => a.full_name).join(', ') }}
+                </span>
             </template>
 
             <template
@@ -61,10 +63,13 @@
                 <v-edit-dialog
                     v-if="isThesisEditAllowed(props.item)"
                     :return-value="userEditDialogModel"
+                    :save-text="$t('Save change')" :cancel-text="$t('Cancel edit')"
                     @save="persistThesisEdit(props.item.id, {[key + '_id']: userEditDialogModel.value})"
                     @open="userEditDialogModel = props.item[key] ? {text: props.item[key].full_name, value: props.item[key].id} : null"
+                    large
                 >
                     {{ (props.item[key] || {full_name: '---'}).full_name }}
+
                     <template v-slot:input>
                         <v-combobox
                             :items="teacherOptions"
@@ -218,25 +223,34 @@
                 const headers = [
                     {text: '', value: 'data-table-expand'},
 
-                    {text: this.$t('Title'), value: 'title', width: '30%'},
+                    {text: this.$t('Title'), value: 'title', width: '25%'},
 
                     this.hasThesisEditPerm && lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
                     {text: this.$t('Category'), value: 'category.title'},
 
                     mdAndUp && {text: this.$t('Year'), value: 'published_at'},
 
-                    {text: this.$t('Authors'), value: 'authors'},
+                    {
+                        text: this.$t('Authors'), value: 'authors',
+                        width: '15%'
+                    },
 
                     lgAndUp && {
                         text: this.$t('Supervisor'),
                         value: 'supervisor.full_name',
-                        mapped: 'supervisor__last_name'
+                        mapped: 'supervisor__last_name',
+                        width: '10%'
                     },
-                    lgAndUp && {text: this.$t('Opponent'), value: 'opponent.full_name', mapped: 'opponent__last_name'},
+                    lgAndUp && {
+                        text: this.$t('Opponent'),
+                        value: 'opponent.full_name',
+                        mapped: 'opponent__last_name',
+                        width: '10%'
+                    },
                     this.hasThesisEditPerm && {text: '', value: 'edit'}
                 ];
 
-                headers.push({text: '', value: 'state', width: '18em'});
+                headers.push({text: '', value: 'state', width: '10%'});
                 return _.compact(headers);
             },
             manualFilterItems() {

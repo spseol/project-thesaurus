@@ -1,6 +1,8 @@
 import Vue from 'vue';
 import colors from 'vuetify/lib/util/colors';
+import Axios from './axios';
 import {User} from './types';
+import {hasPerm} from './user';
 
 class PageContext {
     user: User;
@@ -34,6 +36,22 @@ function readFileAsync(file) {
     });
 }
 
+
+export function asyncComputed(url, options = null) {
+    const _options = {default: [], watch: ['$i18n.locale'], lazy: false, ...(options || {})};
+    return {
+        async get() {
+            if (_options.perm && !(await hasPerm(_options.perm))) return [];
+
+            return (await Axios.get(url)).data;
+        },
+        default: _options.default,
+        lazy: _options.lazy
+    };
+}
+
+export const asyncOptions = (url) => asyncComputed(url, null);
+
 const pageContext = new PageContext();
 
 class Flash extends Object {
@@ -63,6 +81,16 @@ export const GRADE_COLOR_SCALE_4 = {
     1: colors.red.lighten2,
     0: colors.grey.lighten2
 };
+export const THEME_COLORS = {
+    primary: colors.orange.base,
+    secondary: colors.brown.base,
+    accent: colors.deepOrange.base,
+    error: colors.pink.base,
+    warning: colors.orange.darken4,
+    info: colors.blue.base,
+    success: colors.green.base
+};
+
 export {
     pageContext,
     readFileAsync,

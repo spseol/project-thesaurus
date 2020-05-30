@@ -5,6 +5,7 @@ from django.views.i18n import JSONCatalog
 from rest_framework.routers import DefaultRouter
 
 from .views.attachment import AttachmentViewSet
+from .views.audit import AuditLogViewSet
 from .views.category import CategoryOptionsViewSet, ThesisYearViewSet
 from .views.dashboard import DashboardView
 from .views.exports import ThesesCompetitionViewSet
@@ -12,6 +13,7 @@ from .views.login import LoginView
 from .views.reservation import ReservationViewSet, ReservationStateOptionsViewSet
 from .views.review import ReviewViewSet
 from .views.thesis import ThesisViewSet, ThesisStateOptionsViewSet
+from .views.thesis_import import ThesisImportViewSet
 from .views.user import UserFilterOptionsViewSet, StudentOptionsViewSet, TeacherOptionsViewSet, UserPermView
 from ..review.views import ReviewPdfView
 
@@ -19,9 +21,11 @@ last_modified_date = timezone.now()
 
 router = DefaultRouter(trailing_slash=False)
 router.register(r'thesis', ThesisViewSet, basename='thesis')
+router.register(r'thesis-import', ThesisImportViewSet, basename='thesis-import')
 router.register(r'reservation', ReservationViewSet)
 router.register(r'attachment', AttachmentViewSet)
 router.register(r'review', ReviewViewSet)
+router.register(r'audit-log', AuditLogViewSet, basename='audit-log')
 router.register(r'theses-competition', ThesesCompetitionViewSet, basename='theses-competition')
 
 router.register(r'user-filter-options', UserFilterOptionsViewSet, basename='user')

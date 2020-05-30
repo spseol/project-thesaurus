@@ -63,7 +63,7 @@
 
             <v-spacer/>
             <span class="font-weight-medium">
-            {{ pageContext.user.full_name }}
+            {{ $vuetify.breakpoint.lgAndUp ? pageContext.user.full_name : pageContext.user.username }}
             </span>
             <v-btn icon href="/logout" x-large class="mr-2">
                 <v-icon large>mdi-logout</v-icon>
@@ -146,7 +146,7 @@
         },
         created() {
             eventBus.$on('flash', (flash) => {
-                this.$toast(flash.text, flash);
+                this.$toast(flash.text, {...flash, color: flash.type || flash.color});
             });
         }
     });

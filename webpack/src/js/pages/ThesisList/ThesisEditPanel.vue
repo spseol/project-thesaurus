@@ -67,10 +67,9 @@
                         <v-card elevation="0" outlined>
                             <v-card-subtitle class="font-weight-bold">{{ $t('State') }}</v-card-subtitle>
                             <v-card-text>
-                                <!-- TODO: remove this weird workaround -->
                                 <v-select
                                     :items="thesisStateOptions" v-model="data.state"
-                                    :hint="((typeof thesisStateOptions === typeof []) ? thesisStateOptions : []).find(({value}) => value === data.state).help_text"
+                                    :hint="stateHint"
                                     persistent-hint flat solo outlined dense
                                     :error-messages="messages.state"
                                 ></v-select>
@@ -83,19 +82,45 @@
                                 <v-row v-for="att in thesis.attachments" :key="att.id"
                                     class="pa-3 justify-space-between">
                                     <span>
-                                        {{ att.type_attachment.name }}
+                                        {{ att.type_attachment.name }} <span class="caption">({{ att.size_label }})</span>
                                     </span>
                                     <span class="text-right">
                                         <v-btn text outlined small color="info" :href="att.url" target="_blank">
                                             <v-icon small class="mr-1">${{ att.type_attachment.identifier }}</v-icon>
                                             {{ $t('View') }}
                                         </v-btn>
-                                        <v-btn outlined color="error" small>
-                                            <v-icon small class="mr-1">mdi-trash-can-outline</v-icon>
-                                            {{ $t('Delete') }}
-                                        </v-btn>
+                                        <v-dialog v-model="att._deleteDialog" max-width="20vw">
+                                            <template v-slot:activator="{on}">
+                                                <v-btn outlined color="error" small v-on="on">
+                                                    <v-icon small>mdi-trash-can-outline</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <v-card>
+                                                <v-card-title>
+                                                    {{ $t('Delete attachment') }}
+                                                    {{ att.type_attachment.name }}
+                                                </v-card-title>
+                                                <v-card-text>
+                                                    {{ $t('thesis.deleteAttachmentQuestion') }}
+                                                    {{ thesis.title }}
+                                                </v-card-text>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="error" large
+                                                        @click="deleteAttachment(att)" :loading="att._loading"
+                                                    >
+                                                        {{ $t('Yes, delete') }}
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
                                     </span>
                                 </v-row>
+
+                                <v-alert color="info" text v-if="!thesis.attachments.length">
+                                    {{ $t('thesis.noAttachments') }}
+                                </v-alert>
                             </v-card-text>
                         </v-card>
 
@@ -112,10 +137,32 @@
                                             <v-icon small class="mr-1">mdi-eye</v-icon>
                                             {{ $t('View') }}
                                         </v-btn>
-                                        <v-btn outlined color="error" small>
-                                            <v-icon small class="mr-1">mdi-trash-can-outline</v-icon>
-                                            {{ $t('Delete') }}
-                                        </v-btn>
+                                        <v-dialog v-model="rew._deleteDialog" max-width="20vw">
+                                            <template v-slot:activator="{on}">
+                                                <v-btn outlined color="error" small v-on="on">
+                                                    <v-icon small>mdi-trash-can-outline</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <v-card :loading="rew._loading">
+                                                <v-card-title>
+                                                    {{ $t('Delete review from') }}
+                                                    {{ rew.user.full_name }}
+                                                </v-card-title>
+                                                <v-card-text>
+                                                    {{ $t('thesis.deleteReviewQuestion') }}
+                                                    {{ thesis.title }}
+                                                </v-card-text>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="error" large
+                                                        @click="deleteReview(rew)" :loading="rew._loading"
+                                                    >
+                                                        {{ $t('Yes, delete') }}
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
                                     </span>
                                 </v-row>
                                 <v-alert color="info" text v-if="!thesis.reviews.length">
@@ -124,11 +171,21 @@
                             </v-card-text>
                         </v-card>
 
+                        <v-alert
+                            v-for="msg in non_field_error_messages" :key="msg"
+                            type="warning" text outlined class="mt-3"
+                        >
+                            {{ msg }}
+                        </v-alert>
+
                     </v-col>
                 </v-row>
             </v-card-text>
             <v-divider></v-divider>
             <v-card-actions>
+                <audit-for-instance
+                    model-name="thesis.Thesis" :model-pk="data.id"
+                ></audit-for-instance>
                 <v-spacer></v-spacer>
                 <v-btn text type="button" large class="ma-2" @click="$emit('close')">{{ $t('Cancel edit') }}</v-btn>
                 <v-btn color="success" type="submit" large class="ma-2">{{ $t('Save data') }}</v-btn>
@@ -142,10 +199,12 @@
     import _ from 'lodash';
     import qs from 'qs';
     import Axios from '../../axios';
-    import {eventBus} from '../../utils';
+    import AuditForInstance from '../../components/AuditForInstance.vue';
+    import {asyncComputed, eventBus} from '../../utils';
 
     export default {
         name: 'ThesisEditPanel',
+        components: {AuditForInstance},
         props: {
             thesis: {type: Object},
             categoryOptions: {type: Array},
@@ -159,7 +218,8 @@
                 studentOptions: [],
                 thesisStateOptions: [],
                 authors: [],
-                messages: {}
+                messages: {},
+                non_field_error_messages: []
             };
         },
         watch: {
@@ -185,7 +245,7 @@
                         supervisor_id: this.data.supervisor?.id,
                         opponent_id: this.data.opponent?.id,
                         authors: this.authors,
-                        category: this.data.category?.id
+                        category_id: this.data.category?.id
                     }
                 )).data;
                 if (resp.id) {
@@ -196,10 +256,34 @@
                     this.$emit('reload');
                 } else {
                     this.messages = resp;
+                    this.non_field_error_messages = resp.non_field_errors;
                 }
 
                 this.loading = false;
+            },
+            async deleteReview(rew) {
+                rew._loading = true;
+                console.log(rew);
+                await Axios.delete(`/api/v1/review/${rew.id}`);
+                eventBus.flash({color: 'green', text: this.$t('review.justDeleted')});
+                this.$delete(this.thesis.reviews, this.thesis.reviews.indexOf(rew));
+                rew._loading = false;
+            },
+            async deleteAttachment(att) {
+                att._loading = true;
+                await Axios.delete(`/api/v1/attachment/${att.id}`);
+                eventBus.flash({color: 'green', text: this.$t('attachment.justDeleted')});
+                this.$delete(this.thesis.attachments, this.thesis.attachments.indexOf(att));
+                att._loading = false;
             }
+        },
+        computed: {
+            stateHint() {
+                return _.find(this.thesisStateOptions, {value: this.data.state})?.help_text;
+            }
+        },
+        asyncComputed: {
+            thesisStateOptions: asyncComputed(`/api/v1/thesis-state-options`)
         },
         async created() {
             const t = this.thesis;
@@ -210,9 +294,6 @@
                 supervisor: {...(t.supervisor || {id: null})}
             };
             this.authors = _.map(t.authors, 'id');
-
-            // TODO: solve it lazy, lazy Joe
-            this.thesisStateOptions = (await Axios.get(`/api/v1/thesis-state-options`)).data;
         }
     };
 </script>

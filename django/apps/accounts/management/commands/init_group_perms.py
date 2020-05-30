@@ -48,6 +48,9 @@ class Command(BaseCommand):
 
             g: Group = Group.objects.get_or_create(name=g_name)[0]
             g.permissions.add(
-                Permission.objects.get(name=p_name)
+                Permission.objects.get(
+                    name=p_name,
+                    content_type__app_label__in=('thesis', 'review', 'attachment', 'accounts', 'auth')
+                )
             )
             print(line)
