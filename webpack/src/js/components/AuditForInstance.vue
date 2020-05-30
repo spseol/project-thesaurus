@@ -188,7 +188,7 @@
                 return {
                     'I': 'mdi-database-plus',
                     'U': 'mdi-database-edit',
-                    'D': 'mdi-database-minus',
+                    'D': 'mdi-delete',
                     'T': 'mdi-database-remove'
                 }[action];
             },
