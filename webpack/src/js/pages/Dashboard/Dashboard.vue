@@ -7,13 +7,20 @@
             <template v-for="thesis in data.author_theses">
                 <v-alert
                     v-if="thesis.state === 'ready_for_submit'"
-                    prominent type="warning"
+                    prominent type="warning" color="red accent-2"
                 >
                     <v-row align="center">
                         <v-col class="grow">
                             <h2 class="mb-1">{{ $t('Thesis waiting for submit') }}</h2>
-                            {{ thesis.title }} <br>
+                            <v-icon small>mdi-format-title</v-icon>
+                            {{ thesis.title }}
+                            <br>
+                            <v-icon small>mdi-account</v-icon>
                             {{ thesis.authors.map(a => a.full_name).join(', ') }}
+                            <br>
+                            <v-icon small>mdi-calendar</v-icon>
+                            {{ $t('Submit deadline') }} {{ relativeDeadline(thesis.submit_deadline) }}
+                            <span class="caption">({{ (new Date(thesis.submit_deadline)).toLocaleDateString($i18n.locale) }})</span>
                         </v-col>
                         <v-col class="shrink">
                             <v-btn large :to="$i18nRoute({name: 'thesis-submit', params: {id: thesis.id}})">
@@ -98,6 +105,7 @@
 
 <script type="text/tsx">
     import _ from 'lodash';
+    import moment from 'moment';
     import {asyncComputed} from '../../utils';
 
     export default {
@@ -129,6 +137,11 @@
                     this.data.reservations_ready_for_prepare,
                     _.property('thesis_registration_number')
                 ).sort();
+            }
+        },
+        methods: {
+            relativeDeadline(date) {
+                return moment(date, null, this.$i18n.locale).fromNow();
             }
         }
     };

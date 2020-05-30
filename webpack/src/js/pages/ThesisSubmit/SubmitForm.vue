@@ -9,14 +9,17 @@
                             disabled filled v-model="thesis.title"
                             :label="$t('Thesis title')"
                         ></v-text-field>
+                        <v-text-field
+                            disabled filled :value="(new Date(thesis.submit_deadline)).toLocaleDateString($i18n.locale)"
+                            :label="$t('Submit deadline')"
+                        ></v-text-field>
 
                         <v-textarea
                             outlined hide-details
-                            rows="15" class="mb-5"
+                            rows="15" class="mb-5" autofocus
                             :label="$t('Abstract')"
                             v-model="thesis.abstract"
                             :rules="[v => !!v]"
-                            autofocus
                         ></v-textarea>
 
                         <v-checkbox

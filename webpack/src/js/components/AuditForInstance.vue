@@ -10,20 +10,24 @@
         </template>
 
         <v-card>
-            <v-card-title>
-                <v-icon class="mr-2">mdi-timeline-clock-outline</v-icon>
-                <span class="mr-2">{{ $t('Audit') }}</span>|
-                <span class="font-weight-regular mx-2">{{ data.__model__ }}</span>|
-                <span class="font-weight-bold mx-2">{{ data.__str__  || $t('Unknown') }}</span>
+            <v-card-title v-if="!loading">
+                <v-skeleton-loader type="text" :loading="loading" width="100%">
+                    <v-icon>mdi-timeline-clock-outline</v-icon>
+                    <span class="mx-1">{{ $t('Audit') }}</span> |
+                    <span class="font-weight-regular mx-1">{{ data.__model__ }}</span> |
+                    <span class="font-weight-bold ml-1">{{ truncateValue(data.__str__) || $t('Unknown') }}</span>
+                </v-skeleton-loader>
+
             </v-card-title>
             <v-card-text>
+
                 <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
-                <v-expansion-panels multiple popout focusable v-if="!loading">
+                <v-expansion-panels multiple popout focusable v-if="!loading" :value="[0]">
                     <v-expansion-panel
                         v-for="r in [...data.results, ...loaded]"
                         :key="r.id"
                     >
-                        <v-expansion-panel-header>
+                        <v-expansion-panel-header ripple>
                             <v-row no-gutters justify="space-between">
                                 <v-col cols="5">
                                     <v-icon>mdi-clock</v-icon>
@@ -98,6 +102,7 @@
                                                 :model-name="mappings.foreign_key_to_model[column_name]"
                                                 :model-pk="value" small
                                                 :pks-to-ignore="pksToIgnore.concat(modelPk)"
+                                                :mappings-cache="mappings"
                                             ></audit-for-instance>
                                         </template>
                                     </td>
@@ -108,7 +113,7 @@
                     </v-expansion-panel>
                 </v-expansion-panels>
 
-                <v-row justify="center" v-if="next" class="mt-3">
+                <v-row justify="center" v-if="next && !loading" class="mt-3">
                     <v-btn large color="blue" dark @click="loadNext">{{ $t('Load older logs') }}</v-btn>
                 </v-row>
             </v-card-text>
@@ -121,7 +126,7 @@
     import moment from 'moment';
     import Axios from '../axios';
     import {hasPerm} from '../user';
-    import {asyncComputed} from '../utils';
+    import {getAuditMappings} from '../utils';
 
     export default {
         name: 'AuditForInstance',
@@ -138,6 +143,10 @@
             pksToIgnore: {
                 type: Array,
                 default: () => []
+            },
+            mappingsCache: {
+                type: Object,
+                default: null
             }
         },
         data() {
@@ -151,27 +160,28 @@
         asyncComputed: {
             data: {
                 async get() {
-                    if (!await hasPerm('audit.view_auditlog')) return {};
-                    const data = await Axios.get(`/api/v1/audit-log/for-instance/${this.modelName}/${this.modelPk}`).then(r => r.data);
+                    if (!await hasPerm('audit.view_auditlog')) return {results: []};
+                    if (!this.dialog) return {results: []};
+
+                    const data = (await Axios.get(`/api/v1/audit-log/for-instance/${this.modelName}/${this.modelPk}`)).data;
                     this.next = data.next;
                     return data;
                 },
-                default: {results: []},
-                lazy: true,
                 watch: ['$i18n.locale']
             },
-            mappings: asyncComputed(
-                '/api/v1/audit-log/mappings',
-                {
-                    default: {
-                        foreign_key_to_model: {},
-                        table_columns_to_labels: {},
-                        table_columns_to_choices: {}
-                    },
-                    perm: 'audit.view_auditlog',
-                    lazy: true
+            mappings: {
+                async get() {
+                    if (this.mappingsCache) return this.mappingsCache;
+                    if (!(await hasPerm('audit.view_auditlog')))
+                        return {
+                            foreign_key_to_model: {},
+                            table_columns_to_labels: {},
+                            table_columns_to_choices: {}
+                        };
+
+                    return getAuditMappings();
                 }
-            )
+            }
         },
         computed: {
             loading() {
@@ -199,7 +209,7 @@
                 }[b];
             },
             truncateValue(v) {
-                return _.truncate(v, {length: 45});
+                return _.truncate(v, {length: 80});
             },
             tableColumnToLabel(table, column) {
                 return (this.mappings.table_columns_to_labels[table] || {})[column]?.toLowerCase();

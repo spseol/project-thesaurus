@@ -37,11 +37,7 @@
 
 
             <template v-slot:item.created="{ item }">
-                <audit-for-instance
-                    small :model-pk="item.id" model-name="thesis.reservation"
-                ></audit-for-instance>
-
-                {{ (new Date(item.created)).toLocaleString($i18n.locale) }}
+                {{ (new Date(item.created)).toLocaleDateString($i18n.locale) }}
             </template>
 
             <template v-slot:item.actions="{ item }">
@@ -68,6 +64,12 @@
                         {{ $t('Returned') }}
                     </v-btn>
                 </div>
+
+            </template>
+            <template v-slot:item.audit="{ item }">
+                <audit-for-instance
+                    small :model-pk="item.id" model-name="thesis.reservation"
+                ></audit-for-instance>
             </template>
         </v-data-table>
 
@@ -96,6 +98,7 @@
     import Axios from '../../axios';
     import {asyncComputed, eventBus} from '../../utils';
     import AuditForInstance from '../../components/AuditForInstance.vue';
+    import {hasPerm} from '../../user';
 
     export default Vue.extend({
         name: 'ReservationList',
@@ -104,6 +107,7 @@
             return {
                 loading: false,
                 items: [],
+                headers: [],
                 search: '',
                 stateFilter: 'open',
                 options: {},
@@ -118,18 +122,6 @@
                         this.stateFilter === 'open' && ['created', 'ready', 'running'].indexOf(i.state) >= 0)
                         || i.state === this.stateFilter,
                 );
-            },
-            headers() {
-                const customStateSort = ['created', 'ready', 'running', 'finished'];
-                return [
-                    {text: this.$t('For user'), value: 'user.full_name'},
-                    {text: this.$t('Thesis SN'), value: 'thesis_registration_number'},
-                    {text: this.$t('Thesis'), value: 'thesis_label'},
-                    {text: this.$t('Created'), value: 'created'},
-                    {text: this.$t('State'), value: 'state', sort: (t) => customStateSort.indexOf(t)},
-                    {text: this.$t('Actions'), value: 'actions', sortable: false},
-                    // {name: this.$t('State'), value: 'state'},
-                ];
             },
         },
         asyncComputed: {
@@ -175,6 +167,21 @@
         async created() {
             await this.load();
             this.$watch('options', async () => this.load());
+
+            const customStateSort = ['created', 'ready', 'running', 'finished'];
+            this.headers = [
+                {text: this.$t('For user'), value: 'user.full_name'},
+                {text: this.$t('Thesis SN'), value: 'thesis_registration_number'},
+                {text: this.$t('Thesis'), value: 'thesis_label'},
+                {text: this.$t('Created'), value: 'created'},
+                {text: this.$t('State'), value: 'state', sort: (t) => customStateSort.indexOf(t)},
+                {text: this.$t('Actions'), value: 'actions', sortable: false},
+            ];
+            if (await hasPerm('audit.view_auditlog'))
+                this.headers.push(
+                    {text: this.$t('Audit'), value: 'audit', sortable: false},
+                );
+
         },
     });
 </script>

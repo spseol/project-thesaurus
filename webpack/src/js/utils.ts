@@ -22,7 +22,7 @@ class PageContext {
 }
 
 
-function readFileAsync(file) {
+export function readFileAsync(file) {
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
 
@@ -34,6 +34,16 @@ function readFileAsync(file) {
 
         reader.readAsArrayBuffer(file);
     });
+}
+
+export function memoize(method) {
+    let cache = {};
+
+    return async function(...args) {
+        let key = JSON.stringify(args);
+        cache[key] = cache[key] || method.apply(this, args);
+        return cache[key];
+    };
 }
 
 
@@ -51,6 +61,10 @@ export function asyncComputed(url, options = null) {
 }
 
 export const asyncOptions = (url) => asyncComputed(url, null);
+
+export const getAuditMappings = memoize(async () => {
+    return (await Axios.get('/api/v1/audit-log/mappings')).data;
+});
 
 const pageContext = new PageContext();
 
@@ -93,7 +107,6 @@ export const THEME_COLORS = {
 
 export {
     pageContext,
-    readFileAsync,
     eventBus
 };
 

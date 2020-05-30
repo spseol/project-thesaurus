@@ -292,7 +292,6 @@
             },
             async deleteReview(rew) {
                 rew._loading = true;
-                console.log(rew);
                 await Axios.delete(`/api/v1/review/${rew.id}`);
                 eventBus.flash({color: 'green', text: this.$t('review.justDeleted')});
                 this.$delete(this.thesis.reviews, this.thesis.reviews.indexOf(rew));

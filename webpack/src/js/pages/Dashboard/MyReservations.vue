@@ -72,7 +72,7 @@
             stateToAttrs(state) {
                 return {
                     created: {type: 'info', outlined: true},
-                    ready: {type: 'warning', prominent: true},
+                    ready: {type: 'success', prominent: true, text: true},
                     running: {type: 'success', outlined: true, icon: 'mdi-clock'}
                 }[state] || {type: 'info'};
             },

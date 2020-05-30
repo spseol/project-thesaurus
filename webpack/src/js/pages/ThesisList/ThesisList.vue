@@ -16,7 +16,8 @@
         >
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" class="white lighten-5">
-                    <ThesisDetailPanel :thesis="item"/>
+                    <thesis-detail-panel :thesis="item">
+                    </thesis-detail-panel>
                 </td>
             </template>
 
@@ -86,6 +87,12 @@
                     @click="addUserFilterFromDataTable(props.item[key].username)"
                 ></a>
             </template>
+
+            <template v-slot:item.audit="{ item }">
+                <audit-for-instance
+                    model-name="thesis.thesis" :model-pk="item.id" small
+                ></audit-for-instance>
+            </template>
         </v-data-table>
 
         <!-- didnt find any better way to stop portal in case of another page view with disabled keep-alive -->
@@ -145,6 +152,7 @@
     import * as _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
+    import AuditForInstance from '../../components/AuditForInstance.vue';
     import {hasPerm} from '../../user';
     import {eventBus} from '../../utils';
     import ThesisService from './thesis-service';
@@ -153,6 +161,7 @@
 
     export default Vue.extend({
         components: {
+            AuditForInstance,
             ThesisEditPanel,
             ThesisListActionBtn,
             ThesisDetailPanel: () => import('./ThesisDetailPanel.vue')
@@ -174,7 +183,8 @@
                 thesisYearFilter: null,
 
                 userEditDialogModel: {},
-                hasThesisEditPerm: false
+                hasThesisEditPerm: false,
+                hasAuditViewPerm: false
             };
         },
         methods: {
@@ -253,6 +263,7 @@
                 ];
 
                 headers.push({text: '', value: 'state', width: '10%'});
+                this.hasAuditViewPerm && headers.push({text: '', value: 'audit'});
                 return _.compact(headers);
             },
             manualFilterItems() {
@@ -285,6 +296,7 @@
             ]), _.property('data'));
 
             this.hasThesisEditPerm = await hasPerm('thesis.change_thesis');
+            this.hasAuditViewPerm = await hasPerm('audit.view_auditlog');
 
             if (await hasPerm('accounts.view_user'))
                 this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;

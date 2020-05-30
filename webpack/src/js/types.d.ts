@@ -45,6 +45,8 @@ export declare class Thesis extends Object {
 
     state: string;
     state_label: string;
+    submit_deadline: string;
+    published_at: string;
 
     available_for_reservation: boolean;
     reservable: boolean;

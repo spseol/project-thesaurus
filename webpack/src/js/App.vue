@@ -150,7 +150,6 @@
             eventBus.$on('flash', (flash) => {
                 this.$toast(flash.text, {...flash, color: flash.type || flash.color});
             });
-            console.log(this.$vuetify.breakpoint.name);
         }
     });
 </script>
