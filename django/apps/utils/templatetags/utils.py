@@ -5,6 +5,7 @@ from django import template
 from django.conf import settings
 from django.db.models import Choices, Model
 from django.http import HttpRequest
+from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import translation
 from django.utils.html import json_script
@@ -47,3 +48,12 @@ def page_context(context, element_id, _re_language=re.compile(r'[_-]'), *args, *
         languages=[(k, translation.gettext(v)) for k, v in settings.LANGUAGES],
         version=settings.VERSION,
     ), element_id)
+
+
+@register.simple_tag
+def static_absolute_local_file(path):
+    # file: for local context
+    # static root to bind in absolute in FS
+    # standard static path resolution
+    # strip static prefix (used by browsers)
+    return f'file:{settings.STATIC_ROOT}/{static(path=path)[len(settings.STATIC_URL):]}'
