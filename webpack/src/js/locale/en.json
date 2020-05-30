@@ -182,7 +182,8 @@
     "justSubmitted": "Review has been submitted.",
     "questionsPlaceholder": "Would you mind to explain ...",
     "submitHint": "By submitting, I confirm the accuracy and finality of this review.",
-    "submittedAt": "Submitted at"
+    "submittedAt": "Submitted at",
+    "justDeleted": ""
   },
   "supervisor": "supervisor",
   "thesis": {
@@ -209,6 +210,15 @@
       "hintPoster": "I attached poster if I have",
       "hintSubmitApprove": "I approve thesis submit",
       "hintThesisFinal": "Submitting thesis is in final version"
-    }
+    },
+    "deleteAttachmentQuestion": "",
+    "deleteReviewQuestion": ""
+  },
+  "Submit deadline": "",
+  "Delete attachment": "",
+  "Yes, delete": "",
+  "Delete review from": "",
+  "attachment": {
+    "justDeleted": ""
   }
 }

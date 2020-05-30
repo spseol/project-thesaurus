@@ -10,17 +10,17 @@
         </template>
 
         <v-card>
-            <v-card-title v-if="!loading">
+            <v-card-title>
                 <v-skeleton-loader type="text" :loading="loading" width="100%">
-                    <v-icon>mdi-timeline-clock-outline</v-icon>
-                    <span class="mx-1">{{ $t('Audit') }}</span> |
-                    <span class="font-weight-regular mx-1">{{ data.__model__ }}</span> |
-                    <span class="font-weight-bold ml-1">{{ truncateValue(data.__str__) || $t('Unknown') }}</span>
+                    <template v-if="data">
+                        <v-icon>mdi-timeline-clock-outline</v-icon>
+                        <span class="mx-1">{{ $t('Audit') }}</span> |
+                        <span class="font-weight-regular mx-1">{{ data.__model__ }}</span> |
+                        <span class="font-weight-bold ml-1">{{ truncateValue(data.__str__) || $t('Unknown') }}</span>
+                    </template>
                 </v-skeleton-loader>
-
             </v-card-title>
             <v-card-text>
-
                 <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
                 <v-expansion-panels multiple popout focusable v-if="!loading" :value="[0]">
                     <v-expansion-panel

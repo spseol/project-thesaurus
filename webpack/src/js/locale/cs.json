@@ -175,7 +175,8 @@
     "justSubmitted": "Posudek byl vložen.",
     "questionsPlaceholder": "Vysvětlete prosím ...",
     "submitHint": "Odesláním potvrzuji správnost a konečnost tohoto posudku.",
-    "submittedAt": "Posudek potvrzen dne"
+    "submittedAt": "Posudek potvrzen dne",
+    "justDeleted": ""
   },
   "supervisor": "vedoucí",
   "thesis": {
@@ -202,6 +203,15 @@
       "hintPoster": "Přiložil jsem plakát, pokud mám.",
       "hintSubmitApprove": "Souhlasím s odevzdáním práce.",
       "hintThesisFinal": "Odevzdávám konečnou verzi práce."
-    }
+    },
+    "deleteAttachmentQuestion": "",
+    "deleteReviewQuestion": ""
+  },
+  "Submit deadline": "",
+  "Delete attachment": "",
+  "Yes, delete": "",
+  "Delete review from": "",
+  "attachment": {
+    "justDeleted": ""
   }
 }

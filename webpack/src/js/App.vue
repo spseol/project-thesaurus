@@ -1,18 +1,13 @@
 <template>
     <v-app>
-        <v-navigation-drawer
-            app dark clipped
-            v-model="drawer"
-        >
+        <v-navigation-drawer app dark clipped v-model="drawer">
             <div class="v-navigation-drawer__content d-flex flex-column justify-space-between">
                 <v-list nav>
                     <v-list-item-group color="primary">
                         <v-list-item
-                            v-for="item in menuItems"
-                            :key="item.text"
-                            :to="$i18nRoute(item.to)"
+                            v-for="item in menuItems" :key="item.text"
+                            :to="$i18nRoute(item.to)" exact
                             v-has-perm:[item.perm]
-                            exact
                         >
                             <v-list-item-action>
                                 <v-icon>{{ item.icon }}</v-icon>
@@ -40,9 +35,7 @@
                         </v-list-item-content>
                     </v-list-item>
                 </div>
-
             </div>
-
         </v-navigation-drawer>
 
         <v-app-bar app color="primary accent-3" clipped-left>
@@ -80,9 +73,7 @@
             </v-container>
         </v-content>
 
-        <v-footer
-            app
-        >
+        <v-footer app>
             <v-spacer></v-spacer>
             <span class="px-4">
                 <a href="https://github.com/spseol/project-thesaurus">
