@@ -56,9 +56,10 @@ export default {
                             value => commit(PERMS_MUTATIONS.SET_PERM, {perm, value})
                         )
                     )
-                )
+                ).then(r => {
+                    commit(PERMS_MUTATIONS.INITIALIZED);
+                })
             );
-            commit(PERMS_MUTATIONS.INITIALIZED);
             return state.loadRequest;
         }
     }
