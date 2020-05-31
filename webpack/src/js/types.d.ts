@@ -22,6 +22,15 @@ export declare class Attachment extends Object {
 }
 
 
+export declare class Review extends Object {
+    id: string;
+
+    // internal
+    _loading: boolean;
+    _deleteDialog: boolean;
+}
+
+
 export declare class Reservation extends Object {
     id: string;
     thesis: string;
@@ -42,7 +51,7 @@ export declare class Thesis extends Object {
     opponent: User;
     authors: Array<User>;
     attachments: Array<Attachment>;
-    reviews: Array<object>;
+    reviews: Array<Review>;
 
     state: string;
     state_label: string;

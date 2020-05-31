@@ -81,7 +81,7 @@
                                 ></v-autocomplete>
 
                                 <v-autocomplete
-                                    v-model="authors"
+                                    v-model="data.authors"
                                     :loading="loading"
                                     :items="studentOptions"
                                     :search-input.sync="search"
@@ -232,10 +232,8 @@
                         <v-alert
                             v-for="msg in non_field_error_messages" :key="msg"
                             type="warning" text outlined class="mt-3"
-                        >
-                            {{ msg }}
+                        >{{ msg }}
                         </v-alert>
-
                     </v-col>
                 </v-row>
             </v-card-text>
@@ -259,15 +257,15 @@
     import {mapState} from 'vuex';
     import Axios from '../../axios';
     import AuditForInstance from '../../components/AuditForInstance.vue';
-    import {eventBus, readFileAsync} from '../../utils';
+    import {thesisStore} from '../../store/store';
+    import {THESIS_ACTIONS} from '../../store/thesis';
+    import {eventBus} from '../../utils';
 
     export default {
         name: 'ThesisEditPanel',
         components: {AuditForInstance},
         props: {
-            thesis: {type: Object},
-            categoryOptions: {type: Array},
-            teacherOptions: {type: Array}
+            thesis: {type: Object}
         },
         data() {
             return {
@@ -275,11 +273,10 @@
                 loading: false,
                 search: '',
                 studentOptions: [],
-                authors: [],
                 messages: {},
                 non_field_error_messages: [],
                 newAttachment: {
-                    type_attachment_id: null,
+                    type_attachment: null,
                     file: null,
                     _loading: false
                 }
@@ -291,6 +288,12 @@
             }
         },
         methods: {
+            ...thesisStore.mapActions([
+                THESIS_ACTIONS.SAVE_THESIS,
+                THESIS_ACTIONS.DELETE_REVIEW,
+                THESIS_ACTIONS.DELETE_ATTACHMENT,
+                THESIS_ACTIONS.UPLOAD_ATTACHMENT
+            ]),
             async queryStudentOptions(search) {
                 this.loading = true;
 
@@ -301,16 +304,8 @@
             async submit() {
                 this.loading = true;
 
-                const resp = (await Axios.patch(
-                    `/api/v1/thesis/${this.thesis.id}`,
-                    {
-                        ...this.data,
-                        supervisor_id: this.data.supervisor?.id,
-                        opponent_id: this.data.opponent?.id,
-                        authors: this.authors,
-                        category_id: this.data.category?.id
-                    }
-                )).data;
+                const resp = await this[THESIS_ACTIONS.SAVE_THESIS](this.data);
+
                 if (resp.id) {
                     eventBus.flash({
                         color: 'success',
@@ -324,35 +319,33 @@
 
                 this.loading = false;
             },
-            async deleteReview(rew) {
-                rew._loading = true;
-                await Axios.delete(`/api/v1/review/${rew.id}`);
+            async deleteReview(review) {
+                review._loading = true;
+                await this[THESIS_ACTIONS.DELETE_REVIEW]({review_id: review.id, thesis_id: this.thesis.id});
                 eventBus.flash({color: 'green', text: this.$t('review.justDeleted')});
-                this.$delete(this.thesis.reviews, this.thesis.reviews.indexOf(rew));
-                rew._loading = false;
+                review._deleteDialog = false;
+                review._loading = false;
             },
-            async deleteAttachment(att) {
-                att._loading = true;
-                await Axios.delete(`/api/v1/attachment/${att.id}`);
+            async deleteAttachment(attachment) {
+                attachment._loading = true;
+                await this[THESIS_ACTIONS.DELETE_ATTACHMENT]({attachment_id: attachment.id, thesis_id: this.thesis.id});
                 eventBus.flash({color: 'green', text: this.$t('attachment.justDeleted')});
-                this.$delete(this.thesis.attachments, this.thesis.attachments.indexOf(att));
-                att._loading = false;
+                attachment._deleteDialog = false;
+                attachment._loading = false;
             },
             async uploadNewAttachment() {
                 this.newAttachment._loading = true;
-                const form = new FormData();
-                await readFileAsync(this.newAttachment.file);
-                form.append('file', this.newAttachment.file);
-                form.append('thesis_id', this.data.id);
-                form.append('type_attachment_id', this.newAttachment.type_attachment.id);
-                const data = (await Axios.post(
-                    `/api/v1/attachment`,
-                    form,
-                    {headers: {'Content-Type': 'multipart/form-data'}}
-                )).data;
+                const data = await this[THESIS_ACTIONS.UPLOAD_ATTACHMENT]({
+                    thesis_id: this.thesis.id,
+                    attachment: this.newAttachment
+                });
+
                 if (data.id) {
-                    this.$emit('reload');
                     eventBus.flash({text: this.$t('attachment.justAdded'), color: 'success'});
+                    this.newAttachment = {
+                        type_attachment: null,
+                        file: null
+                    };
                 } else {
                     this.non_field_error_messages = data;
                 }
@@ -371,9 +364,9 @@
                 ...t,
                 // load v/o if present
                 opponent: {...(t.opponent || {id: null})},
-                supervisor: {...(t.supervisor || {id: null})}
+                supervisor: {...(t.supervisor || {id: null})},
+                authors: _.map(t.authors, 'id')
             };
-            this.authors = _.map(t.authors, 'id');
         }
     };
 </script>
