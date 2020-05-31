@@ -4,7 +4,7 @@ from django.views.decorators.http import last_modified
 from django.views.i18n import JSONCatalog
 from rest_framework.routers import DefaultRouter
 
-from .views.attachment import AttachmentViewSet
+from .views.attachment import AttachmentViewSet, TypeAttachmentViewSet
 from .views.audit import AuditLogViewSet
 from .views.category import CategoryOptionsViewSet, ThesisYearViewSet
 from .views.dashboard import DashboardView
@@ -32,6 +32,7 @@ router.register(r'user-filter-options', UserFilterOptionsViewSet, basename='user
 router.register(r'student-options', StudentOptionsViewSet, basename='student')
 router.register(r'teacher-options', TeacherOptionsViewSet, basename='teacher')
 router.register(r'category-options', CategoryOptionsViewSet, basename='category')
+router.register(r'type-attachment', TypeAttachmentViewSet, basename='type-attachment')
 router.register(r'thesis-year-options', ThesisYearViewSet, basename='thesis-year')
 router.register(r'reservation-state-options', ReservationStateOptionsViewSet, basename='reservation-state')
 router.register(r'thesis-state-options', ThesisStateOptionsViewSet, basename='thesis-state')

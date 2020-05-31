@@ -106,6 +106,53 @@
                         </v-card>
 
                         <v-card elevation="0" class="mt-3" outlined>
+                            <v-card-subtitle class="font-weight-bold">{{ $t('Reviews') }}</v-card-subtitle>
+                            <v-card-text>
+                                <v-row v-for="rew in thesis.reviews" :key="rew.id"
+                                    class="pa-3 justify-space-between">
+                                    <span>
+                                        {{ rew.user.full_name }}
+                                    </span>
+                                    <span class="text-right">
+                                        <v-btn text outlined small color="info" :href="rew.url" target="_blank">
+                                            <v-icon small class="mr-1">mdi-eye</v-icon>
+                                            {{ $t('View') }}
+                                        </v-btn>
+                                        <v-dialog v-model="rew._deleteDialog" max-width="20vw">
+                                            <template v-slot:activator="{on}">
+                                                <v-btn outlined color="error" small v-on="on">
+                                                    <v-icon small>mdi-trash-can-outline</v-icon>
+                                                </v-btn>
+                                            </template>
+                                            <v-card :loading="rew._loading">
+                                                <v-card-title>
+                                                    {{ $t('Delete review from') }}
+                                                    {{ rew.user.full_name }}
+                                                </v-card-title>
+                                                <v-card-text>
+                                                    {{ $t('thesis.deleteReviewQuestion') }}
+                                                    {{ thesis.title }}
+                                                </v-card-text>
+                                                <v-card-actions>
+                                                    <v-spacer></v-spacer>
+                                                    <v-btn
+                                                        color="error" large
+                                                        @click="deleteReview(rew)" :loading="rew._loading"
+                                                    >
+                                                        {{ $t('Yes, delete') }}
+                                                    </v-btn>
+                                                </v-card-actions>
+                                            </v-card>
+                                        </v-dialog>
+                                    </span>
+                                </v-row>
+                                <v-alert color="info" text v-if="!thesis.reviews.length">
+                                    {{ $t('thesis.noReviews') }}
+                                </v-alert>
+                            </v-card-text>
+                        </v-card>
+
+                        <v-card elevation="0" class="mt-3" outlined>
                             <v-card-subtitle class="font-weight-bold">{{ $t('Attachments') }}</v-card-subtitle>
                             <v-card-text>
                                 <v-row v-for="att in thesis.attachments" :key="att.id"
@@ -153,50 +200,32 @@
                             </v-card-text>
                         </v-card>
 
-                        <v-card elevation="0" class="mt-3" outlined>
-                            <v-card-subtitle class="font-weight-bold">{{ $t('Reviews') }}</v-card-subtitle>
+                        <v-card elevation="0" class="mt-3" outlined v-has-perm:attachment.add_attachment>
+                            <v-card-subtitle class="font-weight-bold">{{ $t('New attachment') }}</v-card-subtitle>
                             <v-card-text>
-                                <v-row v-for="rew in thesis.reviews" :key="rew.id"
-                                    class="pa-3 justify-space-between">
-                                    <span>
-                                        {{ rew.user.full_name }}
-                                    </span>
-                                    <span class="text-right">
-                                        <v-btn text outlined small color="info" :href="rew.url" target="_blank">
-                                            <v-icon small class="mr-1">mdi-eye</v-icon>
-                                            {{ $t('View') }}
-                                        </v-btn>
-                                        <v-dialog v-model="rew._deleteDialog" max-width="20vw">
-                                            <template v-slot:activator="{on}">
-                                                <v-btn outlined color="error" small v-on="on">
-                                                    <v-icon small>mdi-trash-can-outline</v-icon>
-                                                </v-btn>
-                                            </template>
-                                            <v-card :loading="rew._loading">
-                                                <v-card-title>
-                                                    {{ $t('Delete review from') }}
-                                                    {{ rew.user.full_name }}
-                                                </v-card-title>
-                                                <v-card-text>
-                                                    {{ $t('thesis.deleteReviewQuestion') }}
-                                                    {{ thesis.title }}
-                                                </v-card-text>
-                                                <v-card-actions>
-                                                    <v-spacer></v-spacer>
-                                                    <v-btn
-                                                        color="error" large
-                                                        @click="deleteReview(rew)" :loading="rew._loading"
-                                                    >
-                                                        {{ $t('Yes, delete') }}
-                                                    </v-btn>
-                                                </v-card-actions>
-                                            </v-card>
-                                        </v-dialog>
-                                    </span>
+                                <v-row class="px-3 align-end">
+                                    <div class="flex-grow-1">
+                                        <v-select
+                                            :label="$t('Type attachment')" hide-details prepend-icon="mdi-book-search-outline"
+                                            :items="typeAttachmentOptions" item-text="name" item-value="id"
+                                            v-model="newAttachment.type_attachment" return-object clearable
+                                        ></v-select>
+                                        <v-file-input
+                                            :label="$t('New file')" hide-details
+                                            v-model="newAttachment.file" v-if="newAttachment.type_attachment"
+                                            :accept="newAttachment.type_attachment.allowed_content_types.join(',')"
+                                            :prepend-icon="`$${newAttachment.type_attachment.identifier}`"
+                                        ></v-file-input>
+                                    </div>
+                                    <v-btn
+                                        :disabled="!newAttachment.type_attachment || !newAttachment.file"
+                                        color="success" small class="ml-3"
+                                        @click="uploadNewAttachment"
+                                        :loading="newAttachment._loading"
+                                    >
+                                        <v-icon>mdi-upload</v-icon>
+                                    </v-btn>
                                 </v-row>
-                                <v-alert color="info" text v-if="!thesis.reviews.length">
-                                    {{ $t('thesis.noReviews') }}
-                                </v-alert>
                             </v-card-text>
                         </v-card>
 
@@ -229,7 +258,7 @@
     import qs from 'qs';
     import Axios from '../../axios';
     import AuditForInstance from '../../components/AuditForInstance.vue';
-    import {asyncComputed, eventBus} from '../../utils';
+    import {asyncOptions, eventBus, readFileAsync} from '../../utils';
 
     export default {
         name: 'ThesisEditPanel',
@@ -245,10 +274,14 @@
                 loading: false,
                 search: '',
                 studentOptions: [],
-                thesisStateOptions: [],
                 authors: [],
                 messages: {},
-                non_field_error_messages: []
+                non_field_error_messages: [],
+                newAttachment: {
+                    type_attachment_id: null,
+                    file: null,
+                    _loading: false
+                }
             };
         },
         watch: {
@@ -303,6 +336,26 @@
                 eventBus.flash({color: 'green', text: this.$t('attachment.justDeleted')});
                 this.$delete(this.thesis.attachments, this.thesis.attachments.indexOf(att));
                 att._loading = false;
+            },
+            async uploadNewAttachment() {
+                this.newAttachment._loading = true;
+                const form = new FormData();
+                await readFileAsync(this.newAttachment.file);
+                form.append('file', this.newAttachment.file);
+                form.append('thesis_id', this.data.id);
+                form.append('type_attachment_id', this.newAttachment.type_attachment.id);
+                const data = (await Axios.post(
+                    `/api/v1/attachment`,
+                    form,
+                    {headers: {'Content-Type': 'multipart/form-data'}}
+                )).data;
+                if (data.id) {
+                    this.$emit('reload');
+                    eventBus.flash({text: this.$t('attachment.justAdded'), color: 'success'});
+                } else {
+                    this.non_field_error_messages = data;
+                }
+                this.newAttachment._loading = false;
             }
         },
         computed: {
@@ -311,7 +364,8 @@
             }
         },
         asyncComputed: {
-            thesisStateOptions: asyncComputed(`/api/v1/thesis-state-options`)
+            thesisStateOptions: asyncOptions(`/api/v1/thesis-state-options`),
+            typeAttachmentOptions: asyncOptions(`/api/v1/type-attachment`)
         },
         async created() {
             const t = this.thesis;
