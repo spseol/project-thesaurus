@@ -111,6 +111,11 @@ DATABASES = {
     }
 }
 
+AUDIT_REWRITE_PKS_TO_LABELS_FOR_MODELS = (
+    'attachment.TypeAttachment',
+    'thesis.Category',
+)
+
 # Password validation
 # https://docs.djangoproject.com/en/3.0/ref/settings/#auth-password-validators
 

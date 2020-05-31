@@ -104,6 +104,10 @@
                                                 :pks-to-ignore="pksToIgnore.concat(modelPk)"
                                                 :mappings-cache="mappings"
                                             ></audit-for-instance>
+
+                                            <v-icon small v-if="pksToIgnore.includes(value) || value === modelPk">
+                                                mdi-rotate-left
+                                            </v-icon>
                                         </template>
                                     </td>
                                 </tr>
@@ -163,7 +167,7 @@
                     if (!await hasPerm('audit.view_auditlog')) return {results: []};
                     if (!this.dialog) return {results: []};
 
-                    const data = (await Axios.get(`/api/v1/audit-log/for-instance/${this.modelName}/${this.modelPk}`)).data;
+                    const data = (await Axios.get(`/api/v1/audit/for-instance/${this.modelName}/${this.modelPk}`)).data;
                     this.next = data.next;
                     return data;
                 },
@@ -176,7 +180,8 @@
                         return {
                             foreign_key_to_model: {},
                             table_columns_to_labels: {},
-                            table_columns_to_choices: {}
+                            table_columns_to_choices: {},
+                            primary_keys_to_labels: {}
                         };
 
                     return getAuditMappings();
@@ -215,7 +220,11 @@
                 return (this.mappings.table_columns_to_labels[table] || {})[column]?.toLowerCase();
             },
             filterValue(table, column, value) {
-                return ((this.mappings.table_columns_to_choices[table] || {})[column] || {})[value] || value || '---';
+                return (
+                    (this.mappings.table_columns_to_choices[table] || {})[column] || {})[value]
+                    || this.mappings.primary_keys_to_labels[value]
+                    || value
+                    || '---';
             },
             dateToRelative(date) {
                 return moment(date, null, this.$i18n.locale).fromNow();

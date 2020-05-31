@@ -63,7 +63,7 @@ export function asyncComputed(url, options = null) {
 export const asyncOptions = (url) => asyncComputed(url, {default: []});
 
 export const getAuditMappings = memoize(async () => {
-    return (await Axios.get('/api/v1/audit-log/mappings')).data;
+    return (await Axios.get('/api/v1/audit/mappings')).data;
 });
 
 const pageContext = new PageContext();
