@@ -1,8 +1,9 @@
 import VueRouter from 'vue-router';
-import {hasPerm} from './user';
+import {Store} from 'vuex';
+import {PERMS, PERMS_ACTIONS} from './store/perms';
 import {eventBus} from './utils';
 
-export function createRouter($t) {
+export function createRouter($t, store: Store<any>) {
     const router = new VueRouter({
         routes: [
             {
@@ -19,7 +20,7 @@ export function createRouter($t) {
                         path: 'thesis/prepare',
                         component: () => import('./pages/ThesisPrepare/Page.vue'),
                         name: 'thesis-prepare',
-                        meta: {perm: 'thesis.add_thesis'}
+                        meta: {perm: PERMS.ADD_THESIS}
                     },
                     {
                         path: 'thesis/submit/:id',
@@ -30,13 +31,13 @@ export function createRouter($t) {
                         path: 'reservations/list',
                         component: () => import('./pages/ReservationList/Page.vue'),
                         name: 'reservation-list',
-                        meta: {perm: 'thesis.change_reservation'}
+                        meta: {perm: PERMS.CHANGE_RESERVATION}
                     },
                     {
                         path: 'exports',
                         component: () => import('./pages/Exports/Page.vue'),
                         name: 'exports',
-                        meta: {perm: 'accounts.view_user'}
+                        meta: {perm: PERMS.VIEW_USER}
                     },
                     {
                         path: 'settings',
@@ -58,22 +59,22 @@ export function createRouter($t) {
         mode: 'history'
     });
 
-    router.beforeEach((to, from, next) => {
+    router.beforeEach(async (to, from, next) => {
+        await store.dispatch(`perms/${PERMS_ACTIONS.LOAD_PERMS}`);
+
         if (!(to.meta?.perm)) {
             next();
             return;
         }
-        hasPerm(to.meta.perm).then(allow => {
-            if (allow) {
-                next();
-            } else {
-                eventBus.flash({color: 'warning', text: $t('Permission denied')});
-                next({name: '403'});
-            }
-        }).catch(() => {
-            eventBus.flash({color: 'warning', text: $t('Unknown problem')});
+
+        const allowed = store.state.perms.perms[to.meta.perm];
+
+        if (allowed) {
+            next();
+        } else {
+            eventBus.flash({color: 'warning', text: $t('Permission denied')});
             next({name: '403'});
-        });
+        }
     });
     return router;
 }

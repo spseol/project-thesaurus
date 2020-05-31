@@ -17,6 +17,8 @@ import csLocal from './locale/cs.json';
 import enLocal from './locale/en.json';
 import {DjangoPermsPlugin, I18nRoutePlugin} from './plugins';
 import {createRouter} from './router';
+import {OPTIONS_ACTIONS} from './store/options';
+import {PERMS_ACTIONS} from './store/perms';
 import store from './store/store';
 import {pageContext, THEME_COLORS} from './utils';
 
@@ -85,7 +87,10 @@ export default function createVue(opts = {}) {
     });
 
     Axios.defaults.headers['Accept-Language'] = locale;
-    const router = createRouter((k) => i18n.t(k));
+    const router = createRouter((k) => i18n.t(k), store);
+
+    store.dispatch(`perms/${PERMS_ACTIONS.LOAD_PERMS}`);
+    store.dispatch(`options/${OPTIONS_ACTIONS.LOAD_OPTIONS}`);
 
     return new Vue({
         router,

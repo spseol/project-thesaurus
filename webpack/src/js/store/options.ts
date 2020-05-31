@@ -13,7 +13,9 @@ const state = {
     userFilter: [],
     category: [],
     thesisYear: [],
-    teacher: []
+    teacher: [],
+
+    loadRequest: null
 };
 type State = typeof state;
 
@@ -27,23 +29,22 @@ export default {
         }
     },
     actions: {
-        async [OPTIONS_ACTIONS.LOAD_OPTIONS](store) {
-
-            await Promise.all([
+        async [OPTIONS_ACTIONS.LOAD_OPTIONS]({commit}) {
+            return await Promise.all([
                 Axios.get('/api/v1/user-filter-options').then(
-                    r => store.commit(OPTIONS_MUTATIONS.SET, s => s.userFilter = r.data)
+                    r => commit(OPTIONS_MUTATIONS.SET, s => s.userFilter = r.data)
                 ),
                 Axios.get('/api/v1/category-options').then(
-                    r => store.commit(OPTIONS_MUTATIONS.SET, s => s.category = r.data)
+                    r => commit(OPTIONS_MUTATIONS.SET, s => s.category = r.data)
                 ),
                 Axios.get('/api/v1/thesis-year-options').then(
-                    r => store.commit(OPTIONS_MUTATIONS.SET, s => s.thesisYear = r.data)
+                    r => commit(OPTIONS_MUTATIONS.SET, s => s.thesisYear = r.data)
                 )
             ]);
         },
-        async [OPTIONS_ACTIONS.LOAD_TEACHER](store) {
-            await Axios.get('/api/v1/teacher-options').then(
-                r => store.commit(OPTIONS_MUTATIONS.SET, s => s.teacher = r.data)
+        async [OPTIONS_ACTIONS.LOAD_TEACHER]({commit}) {
+            return await Axios.get('/api/v1/teacher-options').then(
+                r => commit(OPTIONS_MUTATIONS.SET, s => s.teacher = r.data)
             );
         }
     }

@@ -32,7 +32,7 @@
                     <ThesisEditPanel
                         :thesis="item"
                         :category-options="optionsStore.category"
-                        :teacher-options="teacherOptions"
+                        :teacher-options="optionsStore.teacher"
                         @reload="load" @close="item.editDialog = false"
                     ></ThesisEditPanel>
                 </v-dialog>
@@ -73,7 +73,7 @@
 
                     <template v-slot:input>
                         <v-combobox
-                            :items="teacherOptions"
+                            :items="optionsStore.teacher"
                             v-model="userEditDialogModel"
                             return-object autofocus
                             :label="$t(key)"
@@ -176,8 +176,6 @@
                 loading: true,
                 options: {},
 
-                categoryOptions: [],
-                teacherOptions: [],
                 filterItems: [],
                 categoryFilter: null,
                 thesisYearFilter: null,
