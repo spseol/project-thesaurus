@@ -2,11 +2,11 @@ import * as _ from 'lodash';
 import * as qs from 'qs';
 import Axios from '../axios';
 
-export enum MUTATIONS {
+export enum THESIS_MUTATIONS {
     SET_THESIS_LIST_RESPONSE = 'Set thesis list response'
 }
 
-export enum ACTIONS {
+export enum THESIS_ACTIONS {
     LOAD_THESES = '📡Load theses'
 }
 
@@ -20,13 +20,13 @@ export default {
     namespaced: true,
     state: state as State,
     mutations: {
-        [MUTATIONS.SET_THESIS_LIST_RESPONSE](state: State, response) {
+        [THESIS_MUTATIONS.SET_THESIS_LIST_RESPONSE](state: State, response) {
             state.theses.results = response.results;
             state.theses.count = response.count;
         }
     },
     actions: {
-        async [ACTIONS.LOAD_THESES](store, {options, filters, headers}) {
+        async [THESIS_ACTIONS.LOAD_THESES](store, {options, filters, headers}) {
             const {page, sortBy, sortDesc} = options;
             let header;
             const remap = (value) => ((header = _.find(headers, {value})) && header.mapped) ? header.mapped : value.replace('.', '__');
@@ -42,7 +42,7 @@ export default {
             const response = (await Axios.get(`/api/v1/thesis?${query}`)).data;
 
 
-            store.commit(MUTATIONS.SET_THESIS_LIST_RESPONSE, response);
+            store.commit(THESIS_MUTATIONS.SET_THESIS_LIST_RESPONSE, response);
 
         }
     }

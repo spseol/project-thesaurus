@@ -31,7 +31,7 @@
                     </template>
                     <ThesisEditPanel
                         :thesis="item"
-                        :category-options="categoryOptions"
+                        :category-options="optionsStore.category"
                         :teacher-options="teacherOptions"
                         @reload="load" @close="item.editDialog = false"
                     ></ThesisEditPanel>
@@ -99,7 +99,7 @@
         <portal to="navbar-center" v-if="$route.name === 'thesis-list'">
             <v-toolbar dense color="transparent" elevation="0">
                 <v-combobox
-                    v-model="filterItems" multiple :items="userOptions"
+                    v-model="filterItems" multiple :items="optionsStore.userFilter"
                     flat solo-inverted solo prepend-inner-icon="mdi-magnify"
                     hide-details clearable chips
                     :label="$t('Search')"
@@ -132,14 +132,14 @@
 
                 <v-divider v-if="$vuetify.breakpoint.mdAndUp" vertical class="mx-1"></v-divider>
                 <v-select v-if="$vuetify.breakpoint.mdAndUp"
-                    :items="categoryOptions" v-model="categoryFilter" clearable
+                    :items="optionsStore.category" v-model="categoryFilter" clearable
                     solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline"
                     :label="$t('Category')" style="max-width: 10em"
                 ></v-select>
 
                 <v-divider vertical class="mx-1" v-if="$vuetify.breakpoint.smAndUp"></v-divider>
                 <v-select v-if="$vuetify.breakpoint.smAndUp"
-                    :items="thesisYearOptions" v-model="thesisYearFilter" clearable
+                    :items="optionsStore.thesisYear" v-model="thesisYearFilter" clearable
                     flat solo-inverted hide-details prepend-inner-icon="mdi-calendar"
                     :label="$t('Publication year')" style="max-width: 10em"
                 ></v-select>
@@ -151,11 +151,14 @@
 <script type="text/tsx">
     import * as _ from 'lodash';
     import Vue from 'vue';
+    import {mapState} from 'vuex';
     import Axios from '../../axios';
     import AuditForInstance from '../../components/AuditForInstance.vue';
-    import {thesisStore} from '../../store/store';
-    import {ACTIONS} from '../../store/thesis';
-    import {hasPerm} from '../../user';
+    import {OPTIONS_ACTIONS} from '../../store/options';
+    import {PERMS, PERMS_ACTIONS} from '../../store/perms';
+
+    import {optionsStore, permsStore, thesisStore} from '../../store/store';
+    import {THESIS_ACTIONS} from '../../store/thesis';
     import {eventBus} from '../../utils';
     import ThesisEditPanel from './ThesisEditPanel.vue';
     import ThesisListActionBtn from './ThesisListActionBtn.vue';
@@ -173,24 +176,22 @@
                 loading: true,
                 options: {},
 
-                userOptions: [],
                 categoryOptions: [],
                 teacherOptions: [],
-                thesisYearOptions: [],
                 filterItems: [],
                 categoryFilter: null,
                 thesisYearFilter: null,
 
-                userEditDialogModel: {},
-                hasThesisEditPerm: false,
-                hasAuditViewPerm: false
+                userEditDialogModel: {}
             };
         },
         methods: {
-            ...thesisStore.mapActions([ACTIONS.LOAD_THESES]),
+            ...thesisStore.mapActions([THESIS_ACTIONS.LOAD_THESES]),
+            ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS, OPTIONS_ACTIONS.LOAD_TEACHER]),
+            ...permsStore.mapActions([PERMS_ACTIONS.LOAD_PERMS]),
             addUserFilterFromDataTable(username) {
                 this.filterItems.push(
-                    _.find(this.userOptions, {username})
+                    _.find(this.optionsStore.userFilter, {username})
                 );
             },
             removeFromFilter(item) {
@@ -206,7 +207,7 @@
             },
             isThesisEditAllowed({state}) {
                 // TODO: list all states
-                return this.hasThesisEditPerm && state != 'published';
+                return this.perms[PERMS.CHANGE_THESIS] && state != 'published';
             },
 
             async persistThesisEdit(thesisId, data) {
@@ -218,7 +219,7 @@
             async load() {
                 this.loading = true;
 
-                await this[ACTIONS.LOAD_THESES]({
+                await this[THESIS_ACTIONS.LOAD_THESES]({
                     options: this.options,
                     filters: _.filter(_.concat(this.filterItems, this.categoryFilter, this.thesisYearFilter)),
                     headers: this.headers
@@ -229,6 +230,8 @@
         },
         computed: {
             ...thesisStore.mapState(['theses']),
+            ...permsStore.mapState(['perms']),
+            ...mapState({optionsStore: 'options'}),
             headers() {
                 const lgAndUp = this.$vuetify.breakpoint.lgAndUp;
                 const mdAndUp = this.$vuetify.breakpoint.mdAndUp;
@@ -237,7 +240,7 @@
 
                     {text: this.$t('Title'), value: 'title', width: '25%'},
 
-                    this.hasThesisEditPerm && lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
+                    this.perms[PERMS.CHANGE_THESIS] && lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
                     {text: this.$t('Category'), value: 'category.title'},
 
                     mdAndUp && {text: this.$t('Year'), value: 'published_at'},
@@ -259,11 +262,11 @@
                         mapped: 'opponent__last_name',
                         width: '10%'
                     },
-                    this.hasThesisEditPerm && {text: '', value: 'edit'}
+                    this.perms[PERMS.CHANGE_THESIS] && {text: '', value: 'edit'}
                 ];
 
                 headers.push({text: '', value: 'state', width: '10%'});
-                this.hasAuditViewPerm && headers.push({text: '', value: 'audit'});
+                this.perms[PERMS.VIEW_AUDIT] && headers.push({text: '', value: 'audit'});
                 return _.compact(headers);
             },
             manualFilterItems() {
@@ -285,21 +288,11 @@
                 }
             );
 
-            [
-                this.userOptions,
-                this.categoryOptions,
-                this.thesisYearOptions
-            ] = _.map(await Promise.all([
-                Axios.get('/api/v1/user-filter-options'),
-                Axios.get('/api/v1/category-options'),
-                Axios.get('/api/v1/thesis-year-options')
-            ]), _.property('data'));
+            await this[OPTIONS_ACTIONS.LOAD_OPTIONS]();
+            await this[PERMS_ACTIONS.LOAD_PERMS]();
 
-            this.hasThesisEditPerm = await hasPerm('thesis.change_thesis');
-            this.hasAuditViewPerm = await hasPerm('audit.view_auditlog');
-
-            if (await hasPerm('accounts.view_user'))
-                this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
+            if (this.perms[PERMS.VIEW_USER])
+                await this[OPTIONS_ACTIONS.LOAD_TEACHER]();
         }
     });
 </script>
