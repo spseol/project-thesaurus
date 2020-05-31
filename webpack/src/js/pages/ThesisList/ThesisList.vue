@@ -2,9 +2,9 @@
     <div>
         <v-data-table
             :headers="headers"
-            :items="items"
+            :items="theses.results"
             :options.sync="options"
-            :server-items-length="totalCount"
+            :server-items-length="theses.count"
             :loading="loading"
             sort-by="published_at"
             sort-desc
@@ -153,11 +153,13 @@
     import Vue from 'vue';
     import Axios from '../../axios';
     import AuditForInstance from '../../components/AuditForInstance.vue';
+    import {thesisStore} from '../../store/store';
+    import {ACTIONS} from '../../store/thesis';
     import {hasPerm} from '../../user';
     import {eventBus} from '../../utils';
-    import ThesisService from './thesis-service';
     import ThesisEditPanel from './ThesisEditPanel.vue';
     import ThesisListActionBtn from './ThesisListActionBtn.vue';
+
 
     export default Vue.extend({
         components: {
@@ -168,11 +170,8 @@
         },
         data() {
             return {
-                items: [],
-                totalCount: 0,
                 loading: true,
                 options: {},
-                thesisService: new ThesisService(),
 
                 userOptions: [],
                 categoryOptions: [],
@@ -188,6 +187,7 @@
             };
         },
         methods: {
+            ...thesisStore.mapActions([ACTIONS.LOAD_THESES]),
             addUserFilterFromDataTable(username) {
                 this.filterItems.push(
                     _.find(this.userOptions, {username})
@@ -218,17 +218,17 @@
             async load() {
                 this.loading = true;
 
-                const resp = await this.thesisService.loadData(
-                    this.options,
-                    _.filter(_.concat(this.filterItems, this.categoryFilter, this.thesisYearFilter)),
-                    this.headers
-                );
-                this.items = resp.data.results;
-                this.totalCount = resp.data.count;
+                await this[ACTIONS.LOAD_THESES]({
+                    options: this.options,
+                    filters: _.filter(_.concat(this.filterItems, this.categoryFilter, this.thesisYearFilter)),
+                    headers: this.headers
+                });
+
                 this.loading = false;
             }
         },
         computed: {
+            ...thesisStore.mapState(['theses']),
             headers() {
                 const lgAndUp = this.$vuetify.breakpoint.lgAndUp;
                 const mdAndUp = this.$vuetify.breakpoint.mdAndUp;
