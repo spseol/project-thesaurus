@@ -61,21 +61,21 @@
                                     v-model="data.category.id" :rules="[v => !!v]"
                                 >
                                     <v-radio
-                                        v-for="{text, value} in categoryOptions"
+                                        v-for="{text, value} in optionsStore.category"
                                         :label="text" :value="value" :key="value"
                                     ></v-radio>
                                 </v-radio-group>
 
                                 <v-autocomplete
                                     v-model="data.supervisor.id"
-                                    :items="teacherOptions" hide-no-data
+                                    :items="optionsStore.teacher" hide-no-data
                                     :label="$t('Supervisor')"
                                     :rules="[v => !!v]" :error-messages="messages.supervisor_id"
                                 ></v-autocomplete>
 
                                 <v-autocomplete
                                     v-model="data.opponent.id"
-                                    :items="teacherOptions" hide-no-data
+                                    :items="optionsStore.teacher" hide-no-data
                                     :label="$t('Opponent')"
                                     :rules="[v => !!v]" :error-messages="messages.opponent_id"
                                 ></v-autocomplete>
@@ -97,7 +97,7 @@
                             <v-card-subtitle class="font-weight-bold">{{ $t('State') }}</v-card-subtitle>
                             <v-card-text>
                                 <v-select
-                                    :items="thesisStateOptions" v-model="data.state"
+                                    :items="optionsStore.thesisState" v-model="data.state"
                                     :hint="stateHint"
                                     persistent-hint flat solo outlined dense
                                     :error-messages="messages.state"
@@ -207,7 +207,7 @@
                                     <div class="flex-grow-1">
                                         <v-select
                                             :label="$t('Type attachment')" hide-details prepend-icon="mdi-book-search-outline"
-                                            :items="typeAttachmentOptions" item-text="name" item-value="id"
+                                            :items="optionsStore.typeAttachment" item-text="name" item-value="id"
                                             v-model="newAttachment.type_attachment" return-object clearable
                                         ></v-select>
                                         <v-file-input
@@ -256,9 +256,10 @@
 
     import _ from 'lodash';
     import qs from 'qs';
+    import {mapState} from 'vuex';
     import Axios from '../../axios';
     import AuditForInstance from '../../components/AuditForInstance.vue';
-    import {asyncOptions, eventBus, readFileAsync} from '../../utils';
+    import {eventBus, readFileAsync} from '../../utils';
 
     export default {
         name: 'ThesisEditPanel',
@@ -359,13 +360,10 @@
             }
         },
         computed: {
+            ...mapState({optionsStore: 'options'}),
             stateHint() {
-                return _.find(this.thesisStateOptions, {value: this.data.state})?.help_text;
+                return _.find(this.optionsStore.thesisState, {value: this.data.state})?.help_text;
             }
-        },
-        asyncComputed: {
-            thesisStateOptions: asyncOptions(`/api/v1/thesis-state-options`),
-            typeAttachmentOptions: asyncOptions(`/api/v1/type-attachment`)
         },
         async created() {
             const t = this.thesis;

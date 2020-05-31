@@ -18,6 +18,7 @@ export declare class Attachment extends Object {
 
     // internal
     _loading: boolean;
+    _deleteDialog: boolean;
 }
 
 

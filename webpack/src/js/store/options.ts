@@ -10,10 +10,12 @@ export enum OPTIONS_ACTIONS {
 }
 
 const state = {
-    userFilter: [],
     category: [],
-    thesisYear: [],
     teacher: [],
+    userFilter: [],
+    thesisYear: [],
+    thesisState: [],
+    typeAttachment: [],
 
     loadRequest: null
 };
@@ -39,6 +41,12 @@ export default {
                 ),
                 Axios.get('/api/v1/thesis-year-options').then(
                     r => commit(OPTIONS_MUTATIONS.SET, s => s.thesisYear = r.data)
+                ),
+                Axios.get('/api/v1/thesis-state-options').then(
+                    r => commit(OPTIONS_MUTATIONS.SET, s => s.thesisState = r.data)
+                ),
+                Axios.get('/api/v1/type-attachment').then(
+                    r => commit(OPTIONS_MUTATIONS.SET, s => s.typeAttachment = r.data)
                 )
             ]);
         },
