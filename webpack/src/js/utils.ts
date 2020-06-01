@@ -79,11 +79,15 @@ class EventBus extends Vue {
     }
 
     public success(text: string) {
-        this.$emit('flash', {text, color: 'green', icon: 'mdi-check-bold'});
+        this.$emit('flash', {text, color: 'success', icon: 'mdi-check-bold'});
     }
 
     public warning(text: string) {
         this.$emit('flash', {text, color: 'warning', icon: 'mdi-exclamation-thick'});
+    }
+
+    public info(text: string) {
+        this.$emit('flash', {text, color: 'info', icon: 'mdi-exclamation-thick'});
     }
 }
 

@@ -8,8 +8,9 @@ from apps.thesis.models import Reservation, Thesis
 
 
 class ReservationSerializer(ModelSerializer):
-    thesis = PrimaryKeyRelatedField(
+    thesis_id = PrimaryKeyRelatedField(
         queryset=Thesis.objects.published(),
+        source='thesis',
         style=dict(base_template='input.html'),
     )
 
@@ -31,6 +32,7 @@ class ReservationSerializer(ModelSerializer):
         fields = (
             'id',
             'thesis',
+            'thesis_id',
             'user',
             'user_id',
             'thesis_label',
@@ -41,5 +43,6 @@ class ReservationSerializer(ModelSerializer):
         )
 
         read_only_fields = (
+            'thesis',
             'created',
         )

@@ -249,7 +249,8 @@
 <script type="text/tsx">
     import _ from 'lodash';
     import Axios from '../../axios';
-    import {thesisStore} from '../../store/store';
+    import {RESERVATION_ACTIONS} from '../../store/reservation';
+    import {reservationStore, thesisStore} from '../../store/store';
     import {THESIS_ACTIONS} from '../../store/thesis';
     import {notificationBus} from '../../utils';
 
@@ -285,6 +286,9 @@
                 THESIS_ACTIONS.SUBMIT_EXTERNAL_REVIEW,
                 THESIS_ACTIONS.PUBLISH_THESIS
             ]),
+            ...reservationStore.mapActions([
+                RESERVATION_ACTIONS.CREATE_RESERVATION
+            ]),
             getAttachment(type) {
                 return _.find(this.thesis.attachments, {type_attachment: {identifier: type}});
             },
@@ -318,9 +322,8 @@
             async createReservation() {
                 this.dialogLoading = true;
 
-                const {data} = await Axios.post(`/api/v1/reservation`, {
-                    thesis: this.thesis.id
-                });
+                const data = await this[RESERVATION_ACTIONS.CREATE_RESERVATION]({thesis_id: this.thesis.id});
+
                 if (data.id) {
                     notificationBus.success(this.$t('reservation.justCreated'));
                     this.createReservationDialog = false;
@@ -329,8 +332,6 @@
                 }
 
                 this.dialogLoading = false;
-
-                this.$emit('reload');
             },
             async publish() {
                 const response = await this[THESIS_ACTIONS.PUBLISH_THESIS](this.thesis.id);

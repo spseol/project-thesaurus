@@ -20,7 +20,6 @@ class ReservationViewSet(ModelViewSet):
         'thesis__authors',
     )
     serializer_class = ReservationSerializer
-    pagination_class = None  # TODO: needed pagination?
     search_fields = (
         'user__first_name',
         'user__last_name',
@@ -52,19 +51,19 @@ class ReservationViewSet(ModelViewSet):
 
         if Reservation.open_reservations.filter(
                 user=user,
-        ).count() + 1 > config.MAX_OPEN_RESERVATIONS_COUNT:
-            raise ValidationError(
-                _('Cannot create new reservation, maximum count of opened reservations/borrows is {}.').format(
-                    config.MAX_OPEN_RESERVATIONS_COUNT)
-            )
+        ).count() >= config.MAX_OPEN_RESERVATIONS_COUNT:
+            raise ValidationError(_(
+                'Cannot create new reservation, maximum count of opened reservations/borrows is {}.'
+            ).format(config.MAX_OPEN_RESERVATIONS_COUNT))
 
         serializer.save()
 
-    @action(detail=True, methods=['post'], permission_classes=[CanCancelReservation])
+    @action(detail=True, methods=['patch'], permission_classes=[CanCancelReservation])
     def cancel(self, request, *args, **kwargs):
         reservation = self.get_object()  # type: Reservation
         serializer = ReservationSerializer(
-            instance=reservation, data=dict(state=Reservation.State.CANCELED),
+            instance=reservation,
+            data=dict(state=Reservation.State.CANCELED),
             partial=True
         )
         serializer.is_valid(raise_exception=True)

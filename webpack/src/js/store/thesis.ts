@@ -17,6 +17,7 @@ export enum THESIS_ACTIONS {
     LOAD_THESES = '📡Load theses',
     SAVE_THESIS = 'Save thesis',
     EDIT_THESIS = 'Edit thesis',
+    RELOAD_THESIS = 'Reload thesis',
     DELETE_REVIEW = 'Delete thesis review',
     DELETE_ATTACHMENT = 'Delete thesis attachment',
     UPLOAD_ATTACHMENT = 'Upload thesis attachment',
@@ -25,7 +26,7 @@ export enum THESIS_ACTIONS {
 }
 
 const state = {
-    theses: {results: [], count: 0}
+    theses: {results: [] as Array<Thesis>, count: 0}
 };
 type State = typeof state;
 
@@ -85,7 +86,6 @@ export default {
             const response = (await Axios.get(`/api/v1/thesis?${query}`)).data;
 
             store.commit(THESIS_MUTATIONS.SET_THESIS_LIST_RESPONSE, response);
-
         },
 
         async [THESIS_ACTIONS.SAVE_THESIS]({commit, dispatch}, data) {
@@ -108,6 +108,15 @@ export default {
             ).then(r => {
                 commit(THESIS_MUTATIONS.STORE_THESIS, r.data);
                 // TODO detect reload or mutation
+                return r.data;
+            });
+        },
+
+        async [THESIS_ACTIONS.RELOAD_THESIS]({commit}, thesis_id) {
+            return Axios.get(
+                `/api/v1/thesis/${thesis_id}`
+            ).then(r => {
+                commit(THESIS_MUTATIONS.STORE_THESIS, r.data);
                 return r.data;
             });
         },

@@ -307,11 +307,7 @@
                 const resp = await this[THESIS_ACTIONS.SAVE_THESIS](this.data);
 
                 if (resp.id) {
-                    notificationBus.success(text
-                :
-                    this.$t('thesis.justSaved');
-                )
-                    ;
+                    notificationBus.success(this.$t('thesis.justSaved'));
                     this.$emit('reload');
                 } else {
                     this.messages = resp;
