@@ -155,14 +155,18 @@
                         <v-card elevation="0" class="mt-3" outlined>
                             <v-card-subtitle class="font-weight-bold">{{ $t('Attachments') }}</v-card-subtitle>
                             <v-card-text>
-                                <v-row v-for="att in thesis.attachments" :key="att.id"
-                                    class="pa-3 justify-space-between">
-                                    <span>
-                                        {{ att.type_attachment.name }} <span class="caption">({{ att.size_label }})</span>
+                                <v-row
+                                    v-for="att in thesis.attachments" :key="att.id"
+                                    class="pa-3 justify-space-between"
+                                >
+                                    <span class="d-flex align-center">
+                                        <v-icon class="mr-1">${{ att.type_attachment.identifier }}</v-icon>
+                                        {{ att.type_attachment.name }}
+                                        <span class="caption ml-1">({{ att.size_label }})</span>
                                     </span>
                                     <span class="text-right">
                                         <v-btn text outlined small color="info" :href="att.url" target="_blank">
-                                            <v-icon small class="mr-1">${{ att.type_attachment.identifier }}</v-icon>
+                                            <v-icon small class="mr-1">mdi-eye</v-icon>
                                             {{ $t('View') }}
                                         </v-btn>
                                         <v-dialog v-model="att._deleteDialog" max-width="30em">
@@ -203,8 +207,8 @@
                         <v-card elevation="0" class="mt-3" outlined v-has-perm:attachment.add_attachment>
                             <v-card-subtitle class="font-weight-bold">{{ $t('New attachment') }}</v-card-subtitle>
                             <v-card-text>
-                                <v-row class="px-3 align-end">
-                                    <div class="flex-grow-1">
+                                <v-row class="align-end" no-gutters>
+                                    <v-col cols="10">
                                         <v-select
                                             :label="$t('Type attachment')" hide-details prepend-icon="mdi-book-search-outline"
                                             :items="optionsStore.typeAttachment" item-text="name" item-value="id"
@@ -216,15 +220,17 @@
                                             :accept="newAttachment.type_attachment.allowed_content_types.join(',')"
                                             :prepend-icon="`$${newAttachment.type_attachment.identifier}`"
                                         ></v-file-input>
-                                    </div>
-                                    <v-btn
-                                        :disabled="!newAttachment.type_attachment || !newAttachment.file"
-                                        color="success" small class="ml-3"
-                                        @click="uploadNewAttachment"
-                                        :loading="newAttachment._loading"
-                                    >
-                                        <v-icon>mdi-upload</v-icon>
-                                    </v-btn>
+                                    </v-col>
+                                    <v-col cols="2" class="text-right">
+                                        <v-btn
+                                            :disabled="!newAttachment.type_attachment || !newAttachment.file"
+                                            color="success" small class="ml-3"
+                                            @click="uploadNewAttachment"
+                                            :loading="newAttachment._loading"
+                                        >
+                                            <v-icon>mdi-upload</v-icon>
+                                        </v-btn>
+                                    </v-col>
                                 </v-row>
                             </v-card-text>
                         </v-card>
@@ -257,7 +263,8 @@
     import {mapState} from 'vuex';
     import Axios from '../../axios';
     import AuditForInstance from '../../components/AuditForInstance.vue';
-    import {thesisStore} from '../../store/store';
+    import {ATTACHMENT_ACTIONS} from '../../store/attachment';
+    import {attachmentStore, thesisStore} from '../../store/store';
     import {THESIS_ACTIONS} from '../../store/thesis';
     import {notificationBus} from '../../utils';
 
@@ -290,9 +297,11 @@
         methods: {
             ...thesisStore.mapActions([
                 THESIS_ACTIONS.SAVE_THESIS,
-                THESIS_ACTIONS.DELETE_REVIEW,
-                THESIS_ACTIONS.DELETE_ATTACHMENT,
-                THESIS_ACTIONS.UPLOAD_ATTACHMENT
+                THESIS_ACTIONS.DELETE_REVIEW
+            ]),
+            ...attachmentStore.mapActions([
+                ATTACHMENT_ACTIONS.DELETE_ATTACHMENT,
+                ATTACHMENT_ACTIONS.UPLOAD_ATTACHMENT
             ]),
             async queryStudentOptions(search) {
                 this.loading = true;
@@ -325,14 +334,17 @@
             },
             async deleteAttachment(attachment) {
                 attachment._loading = true;
-                await this[THESIS_ACTIONS.DELETE_ATTACHMENT]({attachment_id: attachment.id, thesis_id: this.thesis.id});
+                await this[ATTACHMENT_ACTIONS.DELETE_ATTACHMENT]({
+                    attachment_id: attachment.id,
+                    thesis_id: this.thesis.id
+                });
                 notificationBus.success(this.$t('attachment.justDeleted'));
                 attachment._deleteDialog = false;
                 attachment._loading = false;
             },
             async uploadNewAttachment() {
                 this.newAttachment._loading = true;
-                const data = await this[THESIS_ACTIONS.UPLOAD_ATTACHMENT]({
+                const data = await this[ATTACHMENT_ACTIONS.UPLOAD_ATTACHMENT]({
                     thesis_id: this.thesis.id,
                     attachment: this.newAttachment
                 });

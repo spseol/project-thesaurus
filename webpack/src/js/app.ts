@@ -36,7 +36,6 @@ Vue.use(PortalVue);
 Vue.use(I18nRoutePlugin);
 Vue.use(DjangoPermsPlugin);
 Vue.use(VuetifyToast, {
-    queueable: true,
     x: 'right',
     y: 'top',
     timeout: 6000

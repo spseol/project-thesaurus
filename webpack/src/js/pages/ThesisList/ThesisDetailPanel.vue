@@ -49,8 +49,7 @@
                         <td>
                             <v-btn small outlined color="primary" :href="attachment.url" target="_blank">
                                 {{ attachment.type_attachment.name }}
-
-                                <!--                                <v-icon class="ml-2">mdi-share-outline</v-icon>-->
+                                <!-- <v-icon class="ml-2">mdi-share-outline</v-icon>-->
                             </v-btn>
                         </td>
                     </tr>

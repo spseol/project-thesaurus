@@ -31,8 +31,6 @@
                     </template>
                     <ThesisEditPanel
                         :thesis="item"
-                        :category-options="optionsStore.category"
-                        :teacher-options="optionsStore.teacher"
                         @reload="load" @close="item.editDialog = false"
                     ></ThesisEditPanel>
                 </v-dialog>

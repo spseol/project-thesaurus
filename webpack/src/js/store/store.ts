@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Vuex, {createNamespacedHelpers} from 'vuex';
+import attachment from './attachment';
 import options from './options';
 import perms from './perms';
 import reservation from './reservation';
@@ -13,7 +14,8 @@ const createStore = () => {
             thesis,
             options,
             perms,
-            reservation
+            reservation,
+            attachment
         }
         // @ts-ignore
         // strict: process.env.NODE_ENV !== 'production'
@@ -21,9 +23,10 @@ const createStore = () => {
 };
 
 
-export const thesisStore = createNamespacedHelpers('thesis');
+export const attachmentStore = createNamespacedHelpers('attachment');
 export const optionsStore = createNamespacedHelpers('options');
 export const permsStore = createNamespacedHelpers('perms');
 export const reservationStore = createNamespacedHelpers('reservation');
+export const thesisStore = createNamespacedHelpers('thesis');
 
 export default createStore;
