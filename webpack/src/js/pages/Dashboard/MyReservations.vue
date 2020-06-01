@@ -26,11 +26,11 @@
 
                         <v-card>
                             <v-card-title class="headline warning lighten-5" primary-title>
-                                {{ $t('Cancel reservation?') }}
+                                {{ $t('reservation.cancel.dialogTitle') }}
                             </v-card-title>
 
                             <v-card-text class="mt-5">
-                                {{ $t('reservation.cancelQuestion') }} {{ res.thesis_label }}?
+                                {{ $t('reservation.cancel.question') }} {{ res.thesis_label }}?
                             </v-card-text>
 
                             <v-divider></v-divider>
@@ -38,7 +38,7 @@
                             <v-card-actions>
                                 <v-spacer></v-spacer>
                                 <v-btn color="warning" text @click="cancelReservation(res)">
-                                    {{ $t('Cancel reservation') }}
+                                    {{ $t('reservation.cancel.confirmationButton') }}
                                 </v-btn>
                             </v-card-actions>
                         </v-card>

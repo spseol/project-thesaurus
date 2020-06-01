@@ -219,6 +219,10 @@
   "Yes, delete": "",
   "Delete review from": "",
   "attachment": {
-    "justDeleted": ""
-  }
+    "justDeleted": "",
+    "justAdded": ""
+  },
+  "New attachment": "",
+  "Type attachment": "",
+  "New file": ""
 }

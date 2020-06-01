@@ -19,8 +19,8 @@ import {DjangoPermsPlugin, I18nRoutePlugin} from './plugins';
 import {createRouter} from './router';
 import {OPTIONS_ACTIONS} from './store/options';
 import {PERMS_ACTIONS} from './store/perms';
-import store from './store/store';
-import {pageContext, THEME_COLORS} from './utils';
+import createStore from './store/store';
+import {notificationBus, pageContext, THEME_COLORS} from './utils';
 
 Vue.use(VueI18n);
 Vue.use(Vuetify, {
@@ -52,7 +52,7 @@ if (__SENTRY_DSN__) {
     });
 }
 
-export default function createVue(opts = {}) {
+export default function createVue(opts: any = {}) {
     Vue.config.productionTip = false;
 
     const {locale} = pageContext;
@@ -87,12 +87,27 @@ export default function createVue(opts = {}) {
     });
 
     Axios.defaults.headers['Accept-Language'] = locale;
-    const router = createRouter((k) => i18n.t(k), store);
 
-    store.dispatch(`perms/${PERMS_ACTIONS.LOAD_PERMS}`);
-    store.dispatch(`options/${OPTIONS_ACTIONS.LOAD_OPTIONS}`);
+    let store;
+    if ('store' in opts)
+        store = opts.store;
+    else
+        store = createStore();
 
-    return new Vue({
+    let router;
+    if ('router' in opts)
+        router = opts.router;
+    else
+        router = createRouter((k) => i18n.t(k), store);
+
+
+    if (store) {
+        store.dispatch(`perms/${PERMS_ACTIONS.LOAD_PERMS}`);
+        store.dispatch(`options/${OPTIONS_ACTIONS.LOAD_OPTIONS}`);
+    }
+
+
+    const app = new Vue({
         router,
         vuetify,
         store,
@@ -100,4 +115,14 @@ export default function createVue(opts = {}) {
         render: h => h(App),
         ...opts
     });
+
+    notificationBus.$on('flash', (flash) => {
+        app.$toast(flash.text, {...flash, color: flash.color});
+    });
+
+    pageContext.messages.forEach((m) => {
+        notificationBus[m.type](m.text);
+    });
+
+    return app;
 }

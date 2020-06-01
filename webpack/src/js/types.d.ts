@@ -1,3 +1,9 @@
+declare module 'axios' {
+    export interface AxiosRequestConfig {
+        allow403?: boolean;
+    }
+}
+
 // TODO: https://pypi.org/project/django-typomatic/
 export declare class User extends Object {
     id: number;

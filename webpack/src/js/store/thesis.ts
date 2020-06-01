@@ -23,6 +23,7 @@ export enum THESIS_ACTIONS {
     UPLOAD_ATTACHMENT = 'Upload thesis attachment',
     SUBMIT_EXTERNAL_REVIEW = 'Submit external review',
     PUBLISH_THESIS = 'Publish thesis',
+    SEND_TO_REVIEW = 'Send to review',
 }
 
 const state = {
@@ -157,15 +158,16 @@ export default {
                 form,
                 {headers: {'Content-Type': 'multipart/form-data'}}
             ).then(r => {
-                // TODO: check 200
-                commit(THESIS_MUTATIONS.ADD_THESIS_ATTACHMENT, {
-                    thesis_id,
-                    attachment: r.data
-                });
+                if (r.status == 204)
+                    commit(THESIS_MUTATIONS.ADD_THESIS_ATTACHMENT, {
+                        thesis_id,
+                        attachment: r.data
+                    });
 
                 return r.data;
             });
         },
+
         async [THESIS_ACTIONS.SUBMIT_EXTERNAL_REVIEW]({commit, state: State}, {thesis_id, review}) {
             let data = new FormData();
 
@@ -179,6 +181,17 @@ export default {
                 {headers: {'Content-Type': 'multipart/form-data'}}
             ).then(r => {
                 commit(THESIS_MUTATIONS.STORE_THESIS, r.data);
+
+                return r.data;
+            });
+        },
+
+        async [THESIS_ACTIONS.SEND_TO_REVIEW]({commit, state: State}, {thesis_id}) {
+            return Axios.patch(
+                `/api/v1/thesis/${thesis_id}/send_to_review`
+            ).then(r => {
+                if (r.status == 200)
+                    commit(THESIS_MUTATIONS.STORE_THESIS, r.data);
 
                 return r.data;
             });

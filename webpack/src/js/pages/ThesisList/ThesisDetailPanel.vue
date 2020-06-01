@@ -96,7 +96,7 @@
 
                     <v-row no-gutters justify="space-around">
                         <v-img
-                            :src="poster.url" v-on="on"
+                            :src="poster.url"
                             max-width="70vw" max-height="90vh"
                         ></v-img>
                     </v-row>

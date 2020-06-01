@@ -10,6 +10,7 @@ from logging.config import dictConfig
 from decouple import AutoConfig
 from django.core.validators import MinValueValidator
 from django.db import DEFAULT_DB_ALIAS
+from django.urls import reverse_lazy
 from django.utils.log import DEFAULT_LOGGING
 from django.utils.translation import gettext_lazy as _
 
@@ -176,6 +177,9 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'apps.api.permissions.RestrictedViewModelPermissions',
     ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'apps.api.authentication.SessionAuthentication',
+    ),
     'EXCEPTION_HANDLER': 'apps.api.utils.exceptions.exception_handler',
     'PAGE_SIZE': 20,
 }
@@ -261,9 +265,11 @@ ROOT_URLCONF = 'thesaurus.urls'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
-LOGIN_REDIRECT_URL = LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = reverse_lazy('app')
 
-LOGIN_URL = '/login'
+LOGOUT_REDIRECT_URL = LOGINAS_LOGOUT_REDIRECT_URL = reverse_lazy('login')
+
+LOGIN_URL = reverse_lazy('login')
 
 APPEND_SLASH = False
 

@@ -4,13 +4,20 @@ import Axios from './axios';
 import {User} from './types';
 import {hasPerm} from './user';
 
+class FlashMessage {
+    type: string;
+    text: string;
+}
+
 class PageContext {
     user: User;
     locale: string;
     djangoAdminUrl: string;
+    logoutUrl: string;
     languages: Array<string>;
     groups: Array<string>;
     version: string;
+    messages: Array<FlashMessage>;
 
     constructor() {
         return new Proxy(this, {
@@ -78,6 +85,14 @@ class EventBus extends Vue {
         this.$emit('flash', flash);
     }
 
+    public debug(text: string) {
+        this.$emit('flash', {text, icon: 'mdi-android-debug-bridge'});
+    }
+
+    public info(text: string) {
+        this.$emit('flash', {text, color: 'info', icon: 'mdi-exclamation-thick'});
+    }
+
     public success(text: string) {
         this.$emit('flash', {text, color: 'success', icon: 'mdi-check-bold'});
     }
@@ -86,9 +101,10 @@ class EventBus extends Vue {
         this.$emit('flash', {text, color: 'warning', icon: 'mdi-exclamation-thick'});
     }
 
-    public info(text: string) {
-        this.$emit('flash', {text, color: 'info', icon: 'mdi-exclamation-thick'});
+    public error(text: string) {
+        this.$emit('flash', {text, color: 'danger', icon: 'mdi-exclamation-thick'});
     }
+
 }
 
 const notificationBus = new EventBus();

@@ -118,7 +118,7 @@
                                             <v-icon small class="mr-1">mdi-eye</v-icon>
                                             {{ $t('View') }}
                                         </v-btn>
-                                        <v-dialog v-model="rew._deleteDialog" max-width="20vw">
+                                        <v-dialog v-model="rew._deleteDialog" max-width="30em">
                                             <template v-slot:activator="{on}">
                                                 <v-btn outlined color="error" small v-on="on">
                                                     <v-icon small>mdi-trash-can-outline</v-icon>
@@ -131,7 +131,7 @@
                                                 </v-card-title>
                                                 <v-card-text>
                                                     {{ $t('thesis.deleteReviewQuestion') }}
-                                                    {{ thesis.title }}
+                                                    <strong>{{ thesis.title }}</strong>?
                                                 </v-card-text>
                                                 <v-card-actions>
                                                     <v-spacer></v-spacer>
@@ -165,7 +165,7 @@
                                             <v-icon small class="mr-1">${{ att.type_attachment.identifier }}</v-icon>
                                             {{ $t('View') }}
                                         </v-btn>
-                                        <v-dialog v-model="att._deleteDialog" max-width="20vw">
+                                        <v-dialog v-model="att._deleteDialog" max-width="30em">
                                             <template v-slot:activator="{on}">
                                                 <v-btn outlined color="error" small v-on="on">
                                                     <v-icon small>mdi-trash-can-outline</v-icon>
@@ -178,7 +178,7 @@
                                                 </v-card-title>
                                                 <v-card-text>
                                                     {{ $t('thesis.deleteAttachmentQuestion') }}
-                                                    {{ thesis.title }}
+                                                    <strong>{{ thesis.title }}</strong>?
                                                 </v-card-text>
                                                 <v-card-actions>
                                                     <v-spacer></v-spacer>
@@ -343,6 +343,7 @@
                         type_attachment: null,
                         file: null
                     };
+                    this.non_field_error_messages = [];
                 } else {
                     this.non_field_error_messages = data;
                 }

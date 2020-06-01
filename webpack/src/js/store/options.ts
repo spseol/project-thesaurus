@@ -7,8 +7,7 @@ export enum OPTIONS_MUTATIONS {
 }
 
 export enum OPTIONS_ACTIONS {
-    LOAD_OPTIONS = 'Load options',
-    LOAD_TEACHER = 'Load teacher',
+    LOAD_OPTIONS = 'Load options'
 }
 
 const state = {
@@ -59,8 +58,11 @@ export default {
                     Axios.get('/api/v1/thesis-state-options').then(
                         r => commit(OPTIONS_MUTATIONS.SET, s => s.thesisState = r.data)
                     ),
-                    Axios.get('/api/v1/type-attachment').then(
+                    Axios.get('/api/v1/type-attachment', {allow403: true}).then(
                         r => commit(OPTIONS_MUTATIONS.SET, s => s.typeAttachment = r.data)
+                    ),
+                    Axios.get('/api/v1/teacher-options', {allow403: true}).then(
+                        r => commit(OPTIONS_MUTATIONS.SET, s => s.teacher = r.data)
                     )
                 ]).then(r => {
                     commit(OPTIONS_MUTATIONS.INITIALIZED);
@@ -68,10 +70,5 @@ export default {
             );
             return state.loadRequest;
         },
-        async [OPTIONS_ACTIONS.LOAD_TEACHER]({commit}) {
-            return await Axios.get('/api/v1/teacher-options').then(
-                r => commit(OPTIONS_MUTATIONS.SET, s => s.teacher = r.data)
-            );
-        }
     }
 };

@@ -60,7 +60,7 @@
             <span class="font-weight-medium">
             {{ $vuetify.breakpoint.lgAndUp ? pageContext.user.full_name : pageContext.user.username }}
             </span>
-            <v-btn icon href="/logout" x-large class="mr-2">
+            <v-btn icon :href="pageContext.logoutUrl" x-large class="mr-2">
                 <v-icon large>mdi-logout</v-icon>
             </v-btn>
         </v-app-bar>
@@ -88,7 +88,7 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import LanguageMenu from './components/LanguageMenu.vue';
-    import {notificationBus, pageContext} from './utils';
+    import {pageContext} from './utils';
 
     export default Vue.extend({
         components: {LanguageMenu},
@@ -137,10 +137,5 @@
                     this.drawer = false;
             }
         },
-        created() {
-            notificationBus.$on('flash', (flash) => {
-                this.$toast(flash.text, {...flash, color: flash.color});
-            });
-        }
     });
 </script>

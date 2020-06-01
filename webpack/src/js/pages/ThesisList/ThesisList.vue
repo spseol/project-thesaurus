@@ -187,7 +187,7 @@
                 THESIS_ACTIONS.LOAD_THESES,
                 THESIS_ACTIONS.EDIT_THESIS
             ]),
-            ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS, OPTIONS_ACTIONS.LOAD_TEACHER]),
+            ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS]),
             ...permsStore.mapActions([PERMS_ACTIONS.LOAD_PERMS]),
             addUserFilterFromDataTable(username) {
                 this.filterItems.push(
@@ -294,9 +294,6 @@
 
             await this[OPTIONS_ACTIONS.LOAD_OPTIONS]();
             await this[PERMS_ACTIONS.LOAD_PERMS]();
-
-            if (this.perms[PERMS.VIEW_USER])
-                await this[OPTIONS_ACTIONS.LOAD_TEACHER]();
         }
     });
 </script>

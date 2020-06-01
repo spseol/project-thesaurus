@@ -25,7 +25,10 @@
                 <span v-has-perm:thesis.change_reservation
                     v-if="thesis.reservable"
                 >
-                    <v-badge :content="thesis.open_reservations_count || 0" overlap v-if="thesis.open_reservations_count > 0">
+                    <v-badge
+                        :content="thesis.open_reservations_count" v-if="thesis.open_reservations_count"
+                        overlap color="grey"
+                    >
                         <v-btn
                             v-text="$t('Borrowed')" :to="$i18nRoute({name: 'reservation-list'})"
                             x-small depressed disabled
@@ -248,7 +251,6 @@
 </template>
 <script type="text/tsx">
     import _ from 'lodash';
-    import Axios from '../../axios';
     import {RESERVATION_ACTIONS} from '../../store/reservation';
     import {reservationStore, thesisStore} from '../../store/store';
     import {THESIS_ACTIONS} from '../../store/thesis';
@@ -284,7 +286,8 @@
         methods: {
             ...thesisStore.mapActions([
                 THESIS_ACTIONS.SUBMIT_EXTERNAL_REVIEW,
-                THESIS_ACTIONS.PUBLISH_THESIS
+                THESIS_ACTIONS.PUBLISH_THESIS,
+                THESIS_ACTIONS.SEND_TO_REVIEW
             ]),
             ...reservationStore.mapActions([
                 RESERVATION_ACTIONS.CREATE_RESERVATION
@@ -312,12 +315,13 @@
             async sendToReview() {
                 this.dialogLoading = true;
 
-                await Axios.patch(`/api/v1/thesis/${this.thesis.id}/send_to_review`);
-                notificationBus.success(this.$t('thesis.justSentToReview'));
-                this.sendToReviewDialog = false;
-                this.dialogLoading = false;
+                const data = await this[THESIS_ACTIONS.SEND_TO_REVIEW]({thesis_id: this.thesis.id});
 
-                this.$emit('reload');
+                if (data.id) {
+                    notificationBus.success(this.$t('thesis.justSentToReview'));
+                    this.sendToReviewDialog = false;
+                    this.dialogLoading = false;
+                }
             },
             async createReservation() {
                 this.dialogLoading = true;
