@@ -88,7 +88,7 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import LanguageMenu from './components/LanguageMenu.vue';
-    import {eventBus, pageContext} from './utils';
+    import {notificationBus, pageContext} from './utils';
 
     export default Vue.extend({
         components: {LanguageMenu},
@@ -138,8 +138,8 @@
             }
         },
         created() {
-            eventBus.$on('flash', (flash) => {
-                this.$toast(flash.text, {...flash, color: flash.type || flash.color});
+            notificationBus.$on('flash', (flash) => {
+                this.$toast(flash.text, {...flash, color: flash.color});
             });
         }
     });

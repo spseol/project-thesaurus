@@ -96,7 +96,7 @@
     import _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {asyncComputed, eventBus} from '../../utils';
+    import {asyncComputed, notificationBus} from '../../utils';
     import AuditForInstance from '../../components/AuditForInstance.vue';
     import {hasPerm} from '../../user';
 
@@ -151,9 +151,9 @@
                     state,
                 });
                 if (data.id) {
-                    eventBus.flash({color: 'success', text: this.$t('reservation.stateChanged')});
+                    notificationBus.success(this.$t('reservation.stateChanged'));
                 } else {
-                    eventBus.flash({color: 'primary', text: data.toString()});
+                    notificationBus.warning(data.toString());
                 }
                 await this.load();
                 this.loading = false;

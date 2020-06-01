@@ -3,6 +3,7 @@ from functools import cached_property
 from operator import attrgetter
 
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import TextChoices
@@ -109,6 +110,12 @@ class Thesis(BaseTimestampedModel):
 
     def __str__(self):
         return f'{self.title} ({", ".join(tuple(map(attrgetter("full_name"), self.authors.all()))) or "---"})'.strip()
+
+    def clean(self):
+        super().clean()
+
+        if not self.registration_number and self.state == self.State.PUBLISHED:
+            raise ValidationError(_('Publishing thesis without filled registration number is not allowed.'))
 
     @cached_property
     def available_for_reservation(self) -> bool:

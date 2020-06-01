@@ -118,7 +118,7 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {asyncOptions, eventBus, readFileAsync} from '../../utils';
+    import {asyncOptions, notificationBus, readFileAsync} from '../../utils';
 
     export default Vue.extend({
         name: 'ImportForm',
@@ -146,7 +146,7 @@
 
                 const resp = await this.send();
                 if (!resp.data.success) {
-                    eventBus.flash({color: 'warning', text: resp.data.message});
+                    notificationBus.warning(resp.data.message);
                 } else {
                     this.importDialog = true;
                     this.data = resp.data;
@@ -156,7 +156,7 @@
             },
             async submitFinal() {
                 if (this.data.error) {
-                    eventBus.flash({type: 'warning', text: this.$t('Cannot import file with errors')});
+                    notificationBus.warning(this.$t('Cannot import file with errors'));
                     return;
                 }
 
@@ -164,11 +164,11 @@
                 const resp = await this.send(true);
 
                 if (resp.data.success) {
-                    eventBus.flash({color: 'green', text: resp.data.message});
+                    notificationBus.success(resp.data.message);
                     this.importDialog = false;
                     this.$router.push(this.$i18nRoute({to: 'thesis-list'}));
                 } else {
-                    eventBus.flash({color: 'warning', text: resp.data.message});
+                    notificationBus.warning(resp.data.message);
                 }
                 this.data = resp.data;
 

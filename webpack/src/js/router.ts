@@ -1,7 +1,7 @@
 import VueRouter from 'vue-router';
 import {Store} from 'vuex';
 import {PERMS, PERMS_ACTIONS} from './store/perms';
-import {eventBus} from './utils';
+import {notificationBus} from './utils';
 
 export function createRouter($t, store: Store<any>) {
     const router = new VueRouter({
@@ -72,7 +72,7 @@ export function createRouter($t, store: Store<any>) {
         if (allowed) {
             next();
         } else {
-            eventBus.flash({color: 'warning', text: $t('Permission denied')});
+            notificationBus.warning($t('Permission denied'));
             next({name: '403'});
         }
     });

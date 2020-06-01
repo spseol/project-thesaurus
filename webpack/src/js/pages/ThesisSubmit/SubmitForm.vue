@@ -103,7 +103,7 @@
     import _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {eventBus, readFileAsync} from '../../utils';
+    import {notificationBus, readFileAsync} from '../../utils';
 
     export default Vue.extend({
         name: 'SubmitForm',
@@ -163,10 +163,7 @@
                 });
 
                 if (resp.data.id) {
-                    eventBus.flash({
-                        text: this.$t('thesis.justSubmitted'),
-                        type: 'success'
-                    });
+                    notificationBus.success(this.$t('thesis.justSubmitted'));
                     this.$router.push({name: 'dashboard'});
                 } else {
                     this.errorMessages = resp.data;

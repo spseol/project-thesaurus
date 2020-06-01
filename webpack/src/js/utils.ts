@@ -71,16 +71,23 @@ const pageContext = new PageContext();
 class Flash extends Object {
     text: string;
     color?: string;
-    type?: string;
 }
 
 class EventBus extends Vue {
     public flash(flash: Flash) {
         this.$emit('flash', flash);
     }
+
+    public success(text: string) {
+        this.$emit('flash', {text, color: 'green', icon: 'mdi-check-bold'});
+    }
+
+    public warning(text: string) {
+        this.$emit('flash', {text, color: 'warning', icon: 'mdi-exclamation-thick'});
+    }
 }
 
-const eventBus = new EventBus();
+const notificationBus = new EventBus();
 
 export const GRADE_COLOR_SCALE_3 = {
     3: colors.green.lighten2,
@@ -107,7 +114,7 @@ export const THEME_COLORS = {
 
 export {
     pageContext,
-    eventBus
+    notificationBus
 };
 
 

@@ -1,5 +1,5 @@
 import OrigAxios, {AxiosInstance, AxiosRequestConfig} from 'axios';
-import {eventBus, pageContext} from './utils';
+import {notificationBus, pageContext} from './utils';
 
 const config: AxiosRequestConfig = {
     xsrfCookieName: 'csrftoken',
@@ -13,9 +13,9 @@ const Axios: AxiosInstance = OrigAxios.create(config);
 
 Axios.interceptors.response.use(null, (error) => {
     if (error?.response.status === 403) {
-        eventBus.flash({color: 'warning', text: error.response.data?.detail || 'Access denied.'});
+        // notificationBus.warning(error.response.data?.detail || 'Access denied.');
     } else if (error?.response.status >= 500) {
-        eventBus.flash({color: 'error', text: error.response.data?.error || 'Server error.'});
+        notificationBus.flash({color: 'error', text: error.response.data?.error || 'Server error.'});
     }
     return Promise.reject(error);
 });

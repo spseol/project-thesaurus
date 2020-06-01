@@ -61,7 +61,7 @@
 <script type="text/tsx">
     import _ from 'lodash';
     import Axios from '../../axios';
-    import {eventBus} from '../../utils';
+    import {notificationBus} from '../../utils';
 
     export default {
         name: 'MyReservations',
@@ -78,8 +78,8 @@
             },
             async cancelReservation(reservation) {
                 await Axios.post(`/api/v1/reservation/${reservation.id}/cancel`);
-                eventBus.flash({
-                    type: 'info',
+                notificationBus.flash({
+                    color: 'info',
                     text: this.$t('reservation.justCancelled')
                 });
                 this.cancelDialogs[reservation.id] = false;

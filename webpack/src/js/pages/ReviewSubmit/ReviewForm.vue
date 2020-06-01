@@ -134,7 +134,7 @@
     import {Bold, BulletList, History, Italic, Link, ListItem, TiptapVuetify} from 'tiptap-vuetify';
     import Axios from '../../axios';
     import {hasPerm} from '../../user';
-    import {eventBus, GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_4, pageContext} from '../../utils';
+    import {GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_4, notificationBus, pageContext} from '../../utils';
 
 
     export default {
@@ -228,7 +228,7 @@
                 this.loading = false;
 
                 if (resp.id) {
-                    eventBus.flash({text: this.$t('review.justSubmitted')});
+                    notificationBus.success(this.$t('review.justSubmitted'));
                     this.$router.push(this.$i18nRoute({name: 'dashboard'}));
                 } else {
                     this.messages = resp;

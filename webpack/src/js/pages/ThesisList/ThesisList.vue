@@ -152,14 +152,13 @@
     import * as _ from 'lodash';
     import Vue from 'vue';
     import {mapState} from 'vuex';
-    import Axios from '../../axios';
     import AuditForInstance from '../../components/AuditForInstance.vue';
     import {OPTIONS_ACTIONS} from '../../store/options';
     import {PERMS, PERMS_ACTIONS} from '../../store/perms';
 
     import {optionsStore, permsStore, thesisStore} from '../../store/store';
     import {THESIS_ACTIONS} from '../../store/thesis';
-    import {eventBus} from '../../utils';
+    import {notificationBus} from '../../utils';
     import ThesisEditPanel from './ThesisEditPanel.vue';
     import ThesisListActionBtn from './ThesisListActionBtn.vue';
 
@@ -184,7 +183,10 @@
             };
         },
         methods: {
-            ...thesisStore.mapActions([THESIS_ACTIONS.LOAD_THESES]),
+            ...thesisStore.mapActions([
+                THESIS_ACTIONS.LOAD_THESES,
+                THESIS_ACTIONS.EDIT_THESIS
+            ]),
             ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS, OPTIONS_ACTIONS.LOAD_TEACHER]),
             ...permsStore.mapActions([PERMS_ACTIONS.LOAD_PERMS]),
             addUserFilterFromDataTable(username) {
@@ -208,11 +210,14 @@
                 return this.perms[PERMS.CHANGE_THESIS] && state != 'published';
             },
 
-            async persistThesisEdit(thesisId, data) {
+            async persistThesisEdit(thesis_id, data) {
                 this.loading = true;
-                await Axios.patch(`/api/v1/thesis/${thesisId}`, data);
-                eventBus.flash({color: 'success', text: this.$t('Successfully saved!')});
-                await this.load();
+                await this[THESIS_ACTIONS.EDIT_THESIS]({
+                    ...data,
+                    id: thesis_id
+                });
+                notificationBus.success(this.$t('Successfully saved!'));
+                this.loading = false;
             },
             async load() {
                 this.loading = true;
@@ -245,6 +250,7 @@
 
                     {
                         text: this.$t('Authors'), value: 'authors',
+                        mapped: 'authors__username',
                         width: '15%'
                     },
 

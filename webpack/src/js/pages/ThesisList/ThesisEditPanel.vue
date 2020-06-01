@@ -259,7 +259,7 @@
     import AuditForInstance from '../../components/AuditForInstance.vue';
     import {thesisStore} from '../../store/store';
     import {THESIS_ACTIONS} from '../../store/thesis';
-    import {eventBus} from '../../utils';
+    import {notificationBus} from '../../utils';
 
     export default {
         name: 'ThesisEditPanel',
@@ -307,10 +307,11 @@
                 const resp = await this[THESIS_ACTIONS.SAVE_THESIS](this.data);
 
                 if (resp.id) {
-                    eventBus.flash({
-                        color: 'success',
-                        text: this.$t('thesis.justSaved')
-                    });
+                    notificationBus.success(text
+                :
+                    this.$t('thesis.justSaved');
+                )
+                    ;
                     this.$emit('reload');
                 } else {
                     this.messages = resp;
@@ -322,14 +323,14 @@
             async deleteReview(review) {
                 review._loading = true;
                 await this[THESIS_ACTIONS.DELETE_REVIEW]({review_id: review.id, thesis_id: this.thesis.id});
-                eventBus.flash({color: 'green', text: this.$t('review.justDeleted')});
+                notificationBus.success(this.$t('review.justDeleted'));
                 review._deleteDialog = false;
                 review._loading = false;
             },
             async deleteAttachment(attachment) {
                 attachment._loading = true;
                 await this[THESIS_ACTIONS.DELETE_ATTACHMENT]({attachment_id: attachment.id, thesis_id: this.thesis.id});
-                eventBus.flash({color: 'green', text: this.$t('attachment.justDeleted')});
+                notificationBus.success(this.$t('attachment.justDeleted'));
                 attachment._deleteDialog = false;
                 attachment._loading = false;
             },
@@ -341,7 +342,7 @@
                 });
 
                 if (data.id) {
-                    eventBus.flash({text: this.$t('attachment.justAdded'), color: 'success'});
+                    notificationBus.success(this.$t('attachment.justAdded'));
                     this.newAttachment = {
                         type_attachment: null,
                         file: null
