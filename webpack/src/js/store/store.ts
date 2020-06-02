@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import Vuex, {createNamespacedHelpers} from 'vuex';
 import attachment from './attachment';
+import audit from './audit';
 import options from './options';
 import perms from './perms';
 import reservation from './reservation';
@@ -12,6 +13,7 @@ Vue.use(Vuex);
 const createStore = () => {
     return new Vuex.Store({
         modules: {
+            audit,
             thesis,
             options,
             perms,
@@ -25,6 +27,7 @@ const createStore = () => {
 };
 
 
+export const auditStore = createNamespacedHelpers('audit');
 export const attachmentStore = createNamespacedHelpers('attachment');
 export const optionsStore = createNamespacedHelpers('options');
 export const permsStore = createNamespacedHelpers('perms');

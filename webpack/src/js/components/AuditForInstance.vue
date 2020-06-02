@@ -12,11 +12,11 @@
         <v-card>
             <v-card-title>
                 <v-skeleton-loader type="text" :loading="loading" width="100%">
-                    <template v-if="data">
+                    <template v-if="logs">
                         <v-icon>mdi-timeline-clock-outline</v-icon>
                         <span class="mx-1">{{ $t('Audit') }}</span> |
-                        <span class="font-weight-regular mx-1">{{ data.__model__ }}</span> |
-                        <span class="font-weight-bold ml-1">{{ truncateValue(data.__str__) || $t('Unknown') }}</span>
+                        <span class="font-weight-regular mx-1">{{ logs.__model__ }}</span> |
+                        <span class="font-weight-bold ml-1">{{ truncateValue(logs.__str__) || $t('Unknown') }}</span>
                     </template>
                 </v-skeleton-loader>
             </v-card-title>
@@ -24,7 +24,7 @@
                 <v-progress-linear indeterminate v-if="loading"></v-progress-linear>
                 <v-expansion-panels multiple popout focusable v-if="!loading" :value="[0]">
                     <v-expansion-panel
-                        v-for="r in [...data.results, ...loaded]"
+                        v-for="r in logs.results"
                         :key="r.id"
                     >
                         <v-expansion-panel-header ripple>
@@ -90,7 +90,7 @@
 
                                         <!-- otherwise try to format by state.choices -->
                                         <template v-else>
-                                            {{ filterValue(r.__table__, column_name, value) }}
+                                            {{ filterDisplayValue(r.__table__, column_name, value) }}
 
                                             <!-- show recursively if -->
                                             <!-- actually has some value -->
@@ -102,7 +102,6 @@
                                                 :model-name="mappings.foreign_key_to_model[column_name]"
                                                 :model-pk="value" small
                                                 :pks-to-ignore="pksToIgnore.concat(modelPk)"
-                                                :mappings-cache="mappings"
                                             ></audit-for-instance>
 
                                             <v-icon small v-if="pksToIgnore.includes(value) || value === modelPk">
@@ -128,9 +127,9 @@
 <script type="text/tsx">
     import _ from 'lodash';
     import moment from 'moment';
-    import Axios from '../axios';
+    import {AUDIT_ACTIONS} from '../store/audit';
+    import {auditStore} from '../store/store';
     import {hasPerm} from '../user';
-    import {getAuditMappings} from '../utils';
 
     export default {
         name: 'AuditForInstance',
@@ -147,10 +146,6 @@
             pksToIgnore: {
                 type: Array,
                 default: () => []
-            },
-            mappingsCache: {
-                type: Object,
-                default: null
             }
         },
         data() {
@@ -167,7 +162,11 @@
                     if (!await hasPerm('audit.view_auditlog')) return {results: []};
                     if (!this.dialog) return {results: []};
 
-                    const data = (await Axios.get(`/api/v1/audit/for-instance/${this.modelName}/${this.modelPk}`)).data;
+                    const data = await this[AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE]({
+                        model: this.modelName,
+                        pk: this.modelPk
+                    });
+
                     this.next = data.next;
                     return data;
                 },
@@ -175,7 +174,6 @@
             },
             mappings: {
                 async get() {
-                    if (this.mappingsCache) return this.mappingsCache;
                     if (!(await hasPerm('audit.view_auditlog')))
                         return {
                             foreign_key_to_model: {},
@@ -184,11 +182,26 @@
                             primary_keys_to_labels: {}
                         };
 
-                    return getAuditMappings();
+                    return await this[AUDIT_ACTIONS.LOAD_MAPPINGS]();
+                },
+                default: {
+                    foreign_key_to_model: {},
+                    table_columns_to_labels: {},
+                    table_columns_to_choices: {},
+                    primary_keys_to_labels: {}
                 }
             }
         },
         computed: {
+            ...auditStore.mapGetters([
+                'filterDisplayValue',
+                'tableColumnToLabel',
+                'actionSubtitle',
+                'auditLogsForModel'
+            ]),
+            logs() {
+                return this.auditLogsForModel(this.modelName, this.modelPk);
+            },
             loading() {
                 return this.$asyncComputed.data.updating || this.$asyncComputed.mappings.updating;
             }
@@ -199,6 +212,11 @@
             }
         },
         methods: {
+            ...auditStore.mapActions([
+                AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE,
+                AUDIT_ACTIONS.LOAD_MAPPINGS,
+                AUDIT_ACTIONS.LOAD_AUDIT_NEXT
+            ]),
             actionToIcon(action) {
                 return {
                     'I': 'mdi-database-plus',
@@ -216,37 +234,26 @@
             truncateValue(v) {
                 return _.truncate(v, {length: 80});
             },
-            tableColumnToLabel(table, column) {
-                return (this.mappings.table_columns_to_labels[table] || {})[column]?.toLowerCase();
-            },
-            filterValue(table, column, value) {
-                return (
-                    (this.mappings.table_columns_to_choices[table] || {})[column] || {})[value]
-                    || this.mappings.primary_keys_to_labels[value]
-                    || value
-                    || '---';
-            },
             dateToRelative(date) {
                 return moment(date, null, this.$i18n.locale).fromNow();
             },
-            actionSubtitle(row) {
-                return _.truncate(
-                    _.keys(
-                        row.changed_fields || {}
-                    ).map(
-                        k => this.tableColumnToLabel(row.__table__, k)
-                    ).join(','),
-                    {length: 30}
-                );
-            },
+
             async loadNext() {
-                const data = (await Axios.get(this.next)).data;
-                this.loaded.push(...data.results);
-                this.next = data.next;
+                const {
+                    next,
+                    results
+                } = await this[AUDIT_ACTIONS.LOAD_AUDIT_NEXT]({model: this.modelName, pk: this.modelPk});
+
+                this.loaded.push(...results);
+                this.next = next;
             }
         },
         async created() {
             this.canViewAudit = await hasPerm('audit.view_auditlog');
+
+            await this[AUDIT_ACTIONS.LOAD_MAPPINGS]();
+
+
         }
     };
 </script>
