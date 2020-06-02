@@ -8,7 +8,8 @@ import {formatDataTableOrdering, readFileAsync} from '../utils';
 export enum THESIS_MUTATIONS {
     SET_THESIS_LIST_RESPONSE = 'Set thesis list response',
     DELETE_THESIS_REVIEW = 'Delete thesis review',
-    STORE_THESIS = 'Save thesis',
+    STORE_THESIS = 'Store thesis',
+    UPDATE_THESIS = 'Update thesis',
 }
 
 export enum THESIS_ACTIONS {
@@ -42,6 +43,15 @@ export default {
                 state.theses.results,
                 _.findIndex(state.theses.results, {id: thesis.id}),
                 thesis
+            );
+        },
+        [THESIS_MUTATIONS.UPDATE_THESIS](state: State, data) {
+            const index = _.findIndex(state.theses.results, {id: data.id});
+
+            Vue.set(
+                state.theses.results,
+                index,
+                _.merge({}, state.theses.results[index], data)
             );
         },
         [THESIS_MUTATIONS.DELETE_THESIS_REVIEW](state, {review_id, thesis_id}) {

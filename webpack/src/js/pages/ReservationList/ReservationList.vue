@@ -94,14 +94,14 @@
     </div>
 </template>
 
-<script>
+<script type="text/tsx">
     import _ from 'lodash';
     import Vue from 'vue';
-    import {asyncComputed, notificationBus} from '../../utils';
     import AuditForInstance from '../../components/AuditForInstance.vue';
-    import {hasPerm} from '../../user';
-    import {reservationStore} from '../../store/store';
     import {RESERVATION_ACTIONS} from '../../store/reservation';
+    import {reservationStore} from '../../store/store';
+    import {hasPerm} from '../../user';
+    import {asyncComputed, notificationBus} from '../../utils';
 
     export default Vue.extend({
         name: 'ReservationList',

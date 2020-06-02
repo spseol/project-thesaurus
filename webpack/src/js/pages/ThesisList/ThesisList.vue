@@ -16,8 +16,9 @@
         >
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" class="white lighten-5">
-                    <thesis-detail-panel :thesis="item">
-                    </thesis-detail-panel>
+                    <ThesisDetailPanel
+                        :thesis="item"
+                    ></ThesisDetailPanel>
                 </td>
             </template>
 

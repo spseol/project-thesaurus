@@ -3,6 +3,7 @@ import Vue from 'vue';
 import Axios from '../axios';
 import {Thesis} from '../types';
 import {readFileAsync} from '../utils';
+import {THESIS_MUTATIONS} from './thesis';
 
 export enum ATTACHMENT_MUTATIONS {
     DELETE_THESIS_ATTACHMENT = 'Delete attachment',
@@ -12,6 +13,7 @@ export enum ATTACHMENT_MUTATIONS {
 export enum ATTACHMENT_ACTIONS {
     DELETE_ATTACHMENT = 'Delete attachment',
     UPLOAD_ATTACHMENT = 'Upload attachment',
+    LOAD_ATTACHMENTS = 'Load attachments'
 }
 
 const state = {};
@@ -64,6 +66,22 @@ export default {
                         rootState
                     });
 
+                return r.data;
+            });
+        },
+        async [ATTACHMENT_ACTIONS.LOAD_ATTACHMENTS]({commit, dispatch, rootState}, thesis_id) {
+            return Axios.get(
+                `/api/v1/thesis/${thesis_id}/attachments`
+            ).then(r => {
+                if (r.status == 200) {
+                    const oldThesis = _.find(rootState.thesis.theses.results, {id: thesis_id});
+                    const thesis = {
+                        ...oldThesis,
+                        attachments: r.data
+                    };
+
+                    commit('thesis/' + THESIS_MUTATIONS.UPDATE_THESIS, thesis, {root: true});
+                }
                 return r.data;
             });
         }

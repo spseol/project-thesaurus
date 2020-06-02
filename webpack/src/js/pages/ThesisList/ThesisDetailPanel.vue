@@ -107,7 +107,9 @@
 </template>
 <script type="text/tsx">
     import _ from 'lodash';
-    import Axios from '../../axios';
+    import {ATTACHMENT_ACTIONS} from '../../store/attachment';
+    import {REVIEW_ACTIONS} from '../../store/review';
+    import {attachmentStore, reviewStore} from '../../store/store';
     import {hasPerm} from '../../user';
     import {pageContext} from '../../utils';
 
@@ -130,6 +132,14 @@
                 return this.hasAddReviewPerm || !!_.find(this.thesis.authors, {id: pageContext.user.id});
             }
         },
+        methods: {
+            ...reviewStore.mapActions([
+                REVIEW_ACTIONS.LOAD_REVIEWS
+            ]),
+            ...attachmentStore.mapActions([
+                ATTACHMENT_ACTIONS.LOAD_ATTACHMENTS
+            ])
+        },
         asyncComputed: {
             hasAddReviewPerm: {
                 get() {
@@ -140,14 +150,16 @@
             reviews: {
                 get() {
                     if (this.thesis.reviews) return new Promise((r) => r(this.thesis.reviews));
-                    return Axios.get(`/api/v1/thesis/${this.thesis.id}/reviews`).then(r => r.data);
+
+                    return this[REVIEW_ACTIONS.LOAD_REVIEWS](this.thesis.id);
                 },
                 default: []
             },
             attachments: {
                 get() {
                     if (this.thesis.attachments) return new Promise((r) => r(this.thesis.attachments));
-                    return Axios.get(`/api/v1/thesis/${this.thesis.id}/attachments`).then(r => r.data);
+
+                    return this[ATTACHMENT_ACTIONS.LOAD_ATTACHMENTS](this.thesis.id);
                 },
                 default: []
             }
