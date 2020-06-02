@@ -114,7 +114,7 @@
     import _ from 'lodash';
     import qs from 'qs';
     import Axios from '../../axios';
-    import {asyncComputed, eventBus, readFileAsync} from '../../utils';
+    import {asyncComputed, notificationBus, readFileAsync} from '../../utils';
 
     export default {
         name: 'ThesisPrepareForm',
@@ -178,7 +178,7 @@
                 });
 
                 if (resp.data.id) {
-                    eventBus.flash({text: this.$t('thesis.justPrepared')});
+                    notificationBus.success(this.$t('thesis.justPrepared'));
                     Object.assign(this.$data, this.$options.data.apply(this));
                     this.$router.push({name: 'thesis-list'});
                 } else {
@@ -186,10 +186,7 @@
                     _.forEach(
                         this.messages,
                         (msg) => {
-                            eventBus.flash({
-                                color: 'orange',
-                                text: msg
-                            });
+                            notificationBus.warning(msg);
                         }
                     );
                 }

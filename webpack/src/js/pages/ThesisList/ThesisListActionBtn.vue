@@ -25,7 +25,10 @@
                 <span v-has-perm:thesis.change_reservation
                     v-if="thesis.reservable"
                 >
-                    <v-badge :content="thesis.open_reservations_count || 0" overlap v-if="thesis.open_reservations_count > 0">
+                    <v-badge
+                        :content="thesis.open_reservations_count" v-if="thesis.open_reservations_count"
+                        overlap color="grey"
+                    >
                         <v-btn
                             v-text="$t('Borrowed')" :to="$i18nRoute({name: 'reservation-list'})"
                             x-small depressed disabled
@@ -74,15 +77,16 @@
             <template v-if="thesis.state === 'ready_for_review'">
                 <v-hover v-slot:default="{ hover }" style="min-width: 15em">
                     <v-badge
-                        color="primary" overlap :value="!hover && availableExternalReviewersOptions.length"
-                        :content="availableExternalReviewersOptions.length"
+                        color="primary" overlap
+                        :value="!hover && availableExternalReviewers.length"
+                        :content="availableExternalReviewers.length"
                     >
                         <v-btn
-                            v-if="!hover || !availableExternalReviewersOptions.length"
+                            v-if="!hover || !availableExternalReviewers.length"
                             small depressed disabled block
                         >{{ $t('Waiting for review') }}</v-btn>
                         <v-btn
-                            v-if="hover && availableExternalReviewersOptions.length"
+                            v-if="hover && availableExternalReviewers.length"
                             @click="submitExternalReviewDialog = true"
                             small depressed outlined color="info" block
                         >{{ $t('Submit external review') }}</v-btn>
@@ -147,7 +151,7 @@
               </v-card>
         </v-dialog>
 
-        <v-dialog v-model="submitExternalReviewDialog" max-width="60em" :fullscreen="$vuetify.breakpoint.smAndDown">
+        <v-dialog v-model="submitExternalReviewDialog" max-width="40em" :fullscreen="$vuetify.breakpoint.smAndDown">
             <v-card :loading="dialogLoading">
                 <v-form>
                     <v-card-title
@@ -166,7 +170,7 @@
                             v-model="externalReview.reviewer"
                         >
                             <v-btn
-                                v-for="[key, user] in availableExternalReviewersOptions"
+                                v-for="[key, user] in availableExternalReviewers"
                                 :key="key" :value="key"
                             >
                                 <strong>{{ $t(key) }}</strong>: {{ user.full_name }}
@@ -175,11 +179,11 @@
                     </v-card-text>
                     <v-divider></v-divider>
                     <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                        :disabled="!(externalReview.reviewer && externalReview.review)"
-                        color="success" class="ma-3" x-large @click="submitExternalReview"
-                    >{{ $t('Submit external review') }}</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                            :disabled="!(externalReview.reviewer && externalReview.review)"
+                            color="success" class="ma-3" x-large @click="submitExternalReview"
+                        >{{ $t('Submit external review') }}</v-btn>
                     </v-card-actions>
                 </v-form>
             </v-card>
@@ -247,8 +251,10 @@
 </template>
 <script type="text/tsx">
     import _ from 'lodash';
-    import Axios from '../../axios';
-    import {eventBus, readFileAsync} from '../../utils';
+    import {RESERVATION_ACTIONS} from '../../store/reservation';
+    import {reservationStore, thesisStore} from '../../store/store';
+    import {THESIS_ACTIONS} from '../../store/thesis';
+    import {notificationBus} from '../../utils';
 
     export default {
         name: 'ThesisListActionBtn',
@@ -272,93 +278,72 @@
             };
         },
         computed: {
-            availableExternalReviewersOptions() {
-                return _.map(_.filter(
-                    ['supervisor', 'opponent'],
-                    (key) => (
-                        // show option to upload if:
-                        !_.find( // does not already have uploaded review
-                            this.thesis.attachments,
-                            {
-                                type_attachment: {identifier: `${key}_review`}
-                            }
-                        ) && // and
-                        this.thesis[key]?.id && // has set user
-                        !this.thesis[key]?.is_active && // is not active (is external
-                        !_.find( // but without internal review
-                            this.thesis.reviews,
-                            {
-                                user: {id: this.thesis[key].id}
-                            }
-                        )
-                    )
-                    // format to [key, User]
-                ), (k) => [k, this.thesis[k]]);
+            ...thesisStore.mapGetters(['availableExternalReviewersOptions']),
+            availableExternalReviewers() {
+                return this.availableExternalReviewersOptions(this.thesis);
             }
         },
         methods: {
+            ...thesisStore.mapActions([
+                THESIS_ACTIONS.SUBMIT_EXTERNAL_REVIEW,
+                THESIS_ACTIONS.PUBLISH_THESIS,
+                THESIS_ACTIONS.SEND_TO_REVIEW
+            ]),
+            ...reservationStore.mapActions([
+                RESERVATION_ACTIONS.CREATE_RESERVATION
+            ]),
             getAttachment(type) {
                 return _.find(this.thesis.attachments, {type_attachment: {identifier: type}});
             },
             async submitExternalReview() {
                 this.dialogLoading = true;
 
-                let formData = new FormData();
-
-                await readFileAsync(this.externalReview.review);
-                formData.append('review', this.externalReview.review);
-                formData.append('reviewer', this.externalReview.reviewer);
-
-                const resp = await Axios.post(`/api/v1/thesis/${this.thesis.id}/submit_external_review`, formData, {
-                    headers: {'Content-Type': 'multipart/form-data'}
+                const data = await this[THESIS_ACTIONS.SUBMIT_EXTERNAL_REVIEW]({
+                    thesis_id: this.thesis.id,
+                    review: this.externalReview
                 });
 
-                if (resp.data.id) {
-                    eventBus.flash({
-                        text: this.$t('review.external.justSubmitted')
-                    });
+                if (data.id) {
+                    notificationBus.success(this.$t('review.external.justSubmitted'));
                     this.submitExternalReviewDialog = false;
                 } else {
-                    eventBus.flash({
-                        text: this.$t('review.external.submitFailed')
-                    });
+                    notificationBus.warning(this.$t('review.external.submitFailed'));
                 }
 
-                this.$emit('reload');
                 this.dialogLoading = false;
             },
             async sendToReview() {
                 this.dialogLoading = true;
 
-                await Axios.patch(`/api/v1/thesis/${this.thesis.id}/send_to_review`);
-                eventBus.flash({color: 'success', text: this.$t('thesis.justSentToReview')});
-                this.sendToReviewDialog = false;
-                this.dialogLoading = false;
+                const data = await this[THESIS_ACTIONS.SEND_TO_REVIEW]({thesis_id: this.thesis.id});
 
-                this.$emit('reload');
+                if (data.id) {
+                    notificationBus.success(this.$t('thesis.justSentToReview'));
+                    this.sendToReviewDialog = false;
+                    this.dialogLoading = false;
+                }
             },
             async createReservation() {
                 this.dialogLoading = true;
 
-                const {data} = await Axios.post(`/api/v1/reservation`, {
-                    thesis: this.thesis.id
-                });
+                const data = await this[RESERVATION_ACTIONS.CREATE_RESERVATION]({thesis_id: this.thesis.id});
+
                 if (data.id) {
-                    eventBus.flash({color: 'success', text: this.$t('reservation.justCreated')});
+                    notificationBus.success(this.$t('reservation.justCreated'));
                     this.createReservationDialog = false;
                 } else {
-                    eventBus.flash({color: 'primary', text: data.toString()});
+                    notificationBus.warning(data.toString());
                 }
 
                 this.dialogLoading = false;
-
-                this.$emit('reload');
             },
             async publish() {
-                await Axios.patch(`/api/v1/thesis/${this.thesis.id}/publish`);
-                eventBus.flash({color: 'success', text: this.$t('thesis.justPublished')});
-
-                this.$emit('reload');
+                const response = await this[THESIS_ACTIONS.PUBLISH_THESIS](this.thesis.id);
+                if (response.data.id) {
+                    notificationBus.success(this.$t('thesis.justPublished'));
+                } else {
+                    notificationBus.warning(response.data.non_field_errors.join('\n'));
+                }
             }
         }
     };

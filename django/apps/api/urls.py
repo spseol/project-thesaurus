@@ -5,7 +5,7 @@ from django.views.i18n import JSONCatalog
 from rest_framework.routers import DefaultRouter
 
 from .views.attachment import AttachmentViewSet, TypeAttachmentViewSet
-from .views.audit import AuditLogViewSet
+from .views.audit import AuditViewSet
 from .views.category import CategoryOptionsViewSet, ThesisYearViewSet
 from .views.dashboard import DashboardView
 from .views.exports import ThesesCompetitionViewSet
@@ -25,7 +25,7 @@ router.register(r'thesis-import', ThesisImportViewSet, basename='thesis-import')
 router.register(r'reservation', ReservationViewSet)
 router.register(r'attachment', AttachmentViewSet)
 router.register(r'review', ReviewViewSet)
-router.register(r'audit-log', AuditLogViewSet, basename='audit-log')
+router.register(r'audit', AuditViewSet, basename='audit')
 router.register(r'theses-competition', ThesesCompetitionViewSet, basename='theses-competition')
 
 router.register(r'user-filter-options', UserFilterOptionsViewSet, basename='user')

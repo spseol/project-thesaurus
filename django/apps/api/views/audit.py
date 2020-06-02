@@ -1,6 +1,7 @@
 from typing import Type, Iterable
 
 from django.apps import apps
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Model, ManyToOneRel, ManyToManyRel, ManyToManyField
 from django.db.models.base import ModelBase
@@ -15,7 +16,7 @@ from apps.audit.models import AuditLog
 from apps.audit.serializers import AuditLogSerializer
 
 
-class AuditLogViewSet(GenericViewSet):
+class AuditViewSet(GenericViewSet):
     queryset = AuditLog.objects.all()  # to correct perms check
     serializer_class = AuditLogSerializer
 
@@ -118,6 +119,21 @@ class AuditLogViewSet(GenericViewSet):
                     )
                     for model in models
                 ),
+
+                # pk mapping to label, only for "safe" models
+                # "uuid" -> label
+                # "uuid" -> label
+                primary_keys_to_labels=dict(
+                    (
+                        str(obj.pk),
+                        str(obj),
+                    )
+                    for model in map(
+                        apps.get_model,
+                        settings.AUDIT_REWRITE_PKS_TO_LABELS_FOR_MODELS
+                    )
+                    for obj in model._base_manager.get_queryset()
+                )
 
             )
         )

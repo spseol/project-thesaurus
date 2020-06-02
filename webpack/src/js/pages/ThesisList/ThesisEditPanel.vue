@@ -61,27 +61,27 @@
                                     v-model="data.category.id" :rules="[v => !!v]"
                                 >
                                     <v-radio
-                                        v-for="{text, value} in categoryOptions"
+                                        v-for="{text, value} in optionsStore.category"
                                         :label="text" :value="value" :key="value"
                                     ></v-radio>
                                 </v-radio-group>
 
                                 <v-autocomplete
                                     v-model="data.supervisor.id"
-                                    :items="teacherOptions" hide-no-data
+                                    :items="optionsStore.teacher" hide-no-data
                                     :label="$t('Supervisor')"
                                     :rules="[v => !!v]" :error-messages="messages.supervisor_id"
                                 ></v-autocomplete>
 
                                 <v-autocomplete
                                     v-model="data.opponent.id"
-                                    :items="teacherOptions" hide-no-data
+                                    :items="optionsStore.teacher" hide-no-data
                                     :label="$t('Opponent')"
                                     :rules="[v => !!v]" :error-messages="messages.opponent_id"
                                 ></v-autocomplete>
 
                                 <v-autocomplete
-                                    v-model="authors"
+                                    v-model="data.authors"
                                     :loading="loading"
                                     :items="studentOptions"
                                     :search-input.sync="search"
@@ -97,7 +97,7 @@
                             <v-card-subtitle class="font-weight-bold">{{ $t('State') }}</v-card-subtitle>
                             <v-card-text>
                                 <v-select
-                                    :items="thesisStateOptions" v-model="data.state"
+                                    :items="optionsStore.thesisState" v-model="data.state"
                                     :hint="stateHint"
                                     persistent-hint flat solo outlined dense
                                     :error-messages="messages.state"
@@ -118,7 +118,7 @@
                                             <v-icon small class="mr-1">mdi-eye</v-icon>
                                             {{ $t('View') }}
                                         </v-btn>
-                                        <v-dialog v-model="rew._deleteDialog" max-width="20vw">
+                                        <v-dialog v-model="rew._deleteDialog" max-width="30em">
                                             <template v-slot:activator="{on}">
                                                 <v-btn outlined color="error" small v-on="on">
                                                     <v-icon small>mdi-trash-can-outline</v-icon>
@@ -131,7 +131,7 @@
                                                 </v-card-title>
                                                 <v-card-text>
                                                     {{ $t('thesis.deleteReviewQuestion') }}
-                                                    {{ thesis.title }}
+                                                    <strong>{{ thesis.title }}</strong>?
                                                 </v-card-text>
                                                 <v-card-actions>
                                                     <v-spacer></v-spacer>
@@ -155,17 +155,21 @@
                         <v-card elevation="0" class="mt-3" outlined>
                             <v-card-subtitle class="font-weight-bold">{{ $t('Attachments') }}</v-card-subtitle>
                             <v-card-text>
-                                <v-row v-for="att in thesis.attachments" :key="att.id"
-                                    class="pa-3 justify-space-between">
-                                    <span>
-                                        {{ att.type_attachment.name }} <span class="caption">({{ att.size_label }})</span>
+                                <v-row
+                                    v-for="att in thesis.attachments" :key="att.id"
+                                    class="pa-3 justify-space-between"
+                                >
+                                    <span class="d-flex align-center">
+                                        <v-icon class="mr-1">${{ att.type_attachment.identifier }}</v-icon>
+                                        {{ att.type_attachment.name }}
+                                        <span class="caption ml-1">({{ att.size_label }})</span>
                                     </span>
                                     <span class="text-right">
                                         <v-btn text outlined small color="info" :href="att.url" target="_blank">
-                                            <v-icon small class="mr-1">${{ att.type_attachment.identifier }}</v-icon>
+                                            <v-icon small class="mr-1">mdi-eye</v-icon>
                                             {{ $t('View') }}
                                         </v-btn>
-                                        <v-dialog v-model="att._deleteDialog" max-width="20vw">
+                                        <v-dialog v-model="att._deleteDialog" max-width="30em">
                                             <template v-slot:activator="{on}">
                                                 <v-btn outlined color="error" small v-on="on">
                                                     <v-icon small>mdi-trash-can-outline</v-icon>
@@ -178,7 +182,7 @@
                                                 </v-card-title>
                                                 <v-card-text>
                                                     {{ $t('thesis.deleteAttachmentQuestion') }}
-                                                    {{ thesis.title }}
+                                                    <strong>{{ thesis.title }}</strong>?
                                                 </v-card-text>
                                                 <v-card-actions>
                                                     <v-spacer></v-spacer>
@@ -203,11 +207,11 @@
                         <v-card elevation="0" class="mt-3" outlined v-has-perm:attachment.add_attachment>
                             <v-card-subtitle class="font-weight-bold">{{ $t('New attachment') }}</v-card-subtitle>
                             <v-card-text>
-                                <v-row class="px-3 align-end">
-                                    <div class="flex-grow-1">
+                                <v-row class="align-end" no-gutters>
+                                    <v-col cols="10">
                                         <v-select
                                             :label="$t('Type attachment')" hide-details prepend-icon="mdi-book-search-outline"
-                                            :items="typeAttachmentOptions" item-text="name" item-value="id"
+                                            :items="optionsStore.typeAttachment" item-text="name" item-value="id"
                                             v-model="newAttachment.type_attachment" return-object clearable
                                         ></v-select>
                                         <v-file-input
@@ -216,15 +220,17 @@
                                             :accept="newAttachment.type_attachment.allowed_content_types.join(',')"
                                             :prepend-icon="`$${newAttachment.type_attachment.identifier}`"
                                         ></v-file-input>
-                                    </div>
-                                    <v-btn
-                                        :disabled="!newAttachment.type_attachment || !newAttachment.file"
-                                        color="success" small class="ml-3"
-                                        @click="uploadNewAttachment"
-                                        :loading="newAttachment._loading"
-                                    >
-                                        <v-icon>mdi-upload</v-icon>
-                                    </v-btn>
+                                    </v-col>
+                                    <v-col cols="2" class="text-right">
+                                        <v-btn
+                                            :disabled="!newAttachment.type_attachment || !newAttachment.file"
+                                            color="success" small class="ml-3"
+                                            @click="uploadNewAttachment"
+                                            :loading="newAttachment._loading"
+                                        >
+                                            <v-icon>mdi-upload</v-icon>
+                                        </v-btn>
+                                    </v-col>
                                 </v-row>
                             </v-card-text>
                         </v-card>
@@ -232,10 +238,8 @@
                         <v-alert
                             v-for="msg in non_field_error_messages" :key="msg"
                             type="warning" text outlined class="mt-3"
-                        >
-                            {{ msg }}
+                        >{{ msg }}
                         </v-alert>
-
                     </v-col>
                 </v-row>
             </v-card-text>
@@ -256,17 +260,20 @@
 
     import _ from 'lodash';
     import qs from 'qs';
+    import Vue from 'vue';
+    import {mapState} from 'vuex';
     import Axios from '../../axios';
     import AuditForInstance from '../../components/AuditForInstance.vue';
-    import {asyncOptions, eventBus, readFileAsync} from '../../utils';
+    import {ATTACHMENT_ACTIONS} from '../../store/attachment';
+    import {attachmentStore, thesisStore} from '../../store/store';
+    import {THESIS_ACTIONS} from '../../store/thesis';
+    import {notificationBus} from '../../utils';
 
-    export default {
+    export default Vue.extend({
         name: 'ThesisEditPanel',
         components: {AuditForInstance},
         props: {
-            thesis: {type: Object},
-            categoryOptions: {type: Array},
-            teacherOptions: {type: Array}
+            thesis: {type: Object}
         },
         data() {
             return {
@@ -274,11 +281,10 @@
                 loading: false,
                 search: '',
                 studentOptions: [],
-                authors: [],
                 messages: {},
                 non_field_error_messages: [],
                 newAttachment: {
-                    type_attachment_id: null,
+                    type_attachment: null,
                     file: null,
                     _loading: false
                 }
@@ -290,6 +296,14 @@
             }
         },
         methods: {
+            ...thesisStore.mapActions([
+                THESIS_ACTIONS.SAVE_THESIS,
+                THESIS_ACTIONS.DELETE_REVIEW
+            ]),
+            ...attachmentStore.mapActions([
+                ATTACHMENT_ACTIONS.DELETE_ATTACHMENT,
+                ATTACHMENT_ACTIONS.UPLOAD_ATTACHMENT
+            ]),
             async queryStudentOptions(search) {
                 this.loading = true;
 
@@ -300,21 +314,10 @@
             async submit() {
                 this.loading = true;
 
-                const resp = (await Axios.patch(
-                    `/api/v1/thesis/${this.thesis.id}`,
-                    {
-                        ...this.data,
-                        supervisor_id: this.data.supervisor?.id,
-                        opponent_id: this.data.opponent?.id,
-                        authors: this.authors,
-                        category_id: this.data.category?.id
-                    }
-                )).data;
+                const resp = await this[THESIS_ACTIONS.SAVE_THESIS](this.data);
+
                 if (resp.id) {
-                    eventBus.flash({
-                        color: 'success',
-                        text: this.$t('thesis.justSaved')
-                    });
+                    notificationBus.success(this.$t('thesis.justSaved'));
                     this.$emit('reload');
                 } else {
                     this.messages = resp;
@@ -323,35 +326,37 @@
 
                 this.loading = false;
             },
-            async deleteReview(rew) {
-                rew._loading = true;
-                await Axios.delete(`/api/v1/review/${rew.id}`);
-                eventBus.flash({color: 'green', text: this.$t('review.justDeleted')});
-                this.$delete(this.thesis.reviews, this.thesis.reviews.indexOf(rew));
-                rew._loading = false;
+            async deleteReview(review) {
+                review._loading = true;
+                await this[THESIS_ACTIONS.DELETE_REVIEW]({review_id: review.id, thesis_id: this.thesis.id});
+                notificationBus.success(this.$t('review.justDeleted'));
+                review._deleteDialog = false;
+                review._loading = false;
             },
-            async deleteAttachment(att) {
-                att._loading = true;
-                await Axios.delete(`/api/v1/attachment/${att.id}`);
-                eventBus.flash({color: 'green', text: this.$t('attachment.justDeleted')});
-                this.$delete(this.thesis.attachments, this.thesis.attachments.indexOf(att));
-                att._loading = false;
+            async deleteAttachment(attachment) {
+                attachment._loading = true;
+                await this[ATTACHMENT_ACTIONS.DELETE_ATTACHMENT]({
+                    attachment_id: attachment.id,
+                    thesis_id: this.thesis.id
+                });
+                notificationBus.success(this.$t('attachment.justDeleted'));
+                attachment._deleteDialog = false;
+                attachment._loading = false;
             },
             async uploadNewAttachment() {
                 this.newAttachment._loading = true;
-                const form = new FormData();
-                await readFileAsync(this.newAttachment.file);
-                form.append('file', this.newAttachment.file);
-                form.append('thesis_id', this.data.id);
-                form.append('type_attachment_id', this.newAttachment.type_attachment.id);
-                const data = (await Axios.post(
-                    `/api/v1/attachment`,
-                    form,
-                    {headers: {'Content-Type': 'multipart/form-data'}}
-                )).data;
+                const data = await this[ATTACHMENT_ACTIONS.UPLOAD_ATTACHMENT]({
+                    thesis_id: this.thesis.id,
+                    attachment: this.newAttachment
+                });
+
                 if (data.id) {
-                    this.$emit('reload');
-                    eventBus.flash({text: this.$t('attachment.justAdded'), color: 'success'});
+                    notificationBus.success(this.$t('attachment.justAdded'));
+                    this.newAttachment = {
+                        type_attachment: null,
+                        file: null
+                    };
+                    this.non_field_error_messages = [];
                 } else {
                     this.non_field_error_messages = data;
                 }
@@ -359,23 +364,22 @@
             }
         },
         computed: {
+            ...mapState({optionsStore: 'options'}),
             stateHint() {
-                return _.find(this.thesisStateOptions, {value: this.data.state})?.help_text;
+                return _.find(this.optionsStore.thesisState, {value: this.data.state})?.help_text;
             }
         },
-        asyncComputed: {
-            thesisStateOptions: asyncOptions(`/api/v1/thesis-state-options`),
-            typeAttachmentOptions: asyncOptions(`/api/v1/type-attachment`)
-        },
         async created() {
-            const t = this.thesis;
-            this.data = {
-                ...t,
-                // load v/o if present
-                opponent: {...(t.opponent || {id: null})},
-                supervisor: {...(t.supervisor || {id: null})}
-            };
-            this.authors = _.map(t.authors, 'id');
+            this.$watch('thesis', () => {
+                const t = this.thesis;
+                this.data = {
+                    ...t,
+                    // load v/o if present
+                    opponent: {...(t.opponent || {id: null})},
+                    supervisor: {...(t.supervisor || {id: null})},
+                    authors: _.map(t.authors, 'id')
+                };
+            }, {immediate: true});
         }
-    };
+    });
 </script>

@@ -204,14 +204,18 @@
       "hintSubmitApprove": "Souhlasím s odevzdáním práce.",
       "hintThesisFinal": "Odevzdávám konečnou verzi práce."
     },
-    "deleteAttachmentQuestion": "",
-    "deleteReviewQuestion": ""
+    "deleteAttachmentQuestion": "Opravdu chcete smazat přílohu k práci",
+    "deleteReviewQuestion": "Opravdu chcete smazat posudek k práci"
   },
-  "Submit deadline": "",
-  "Delete attachment": "",
-  "Yes, delete": "",
-  "Delete review from": "",
+  "Submit deadline": "Termín pro odevzdání",
+  "Delete attachment": "Smazat přílohu",
+  "Yes, delete": "Ano, opravdu smazat",
+  "Delete review from": "Opravdu chcete smazat posudek od",
   "attachment": {
-    "justDeleted": ""
-  }
+    "justDeleted": "Příloha byla smazána.",
+    "justAdded": "Příloha byla přidána."
+  },
+  "New attachment": "Nová příloha",
+  "Type attachment": "Typ přílohy",
+  "New file": "Soubor"
 }

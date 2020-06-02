@@ -2,9 +2,9 @@
     <div>
         <v-data-table
             :headers="headers"
-            :items="items"
+            :items="theses.results"
             :options.sync="options"
-            :server-items-length="totalCount"
+            :server-items-length="theses.count"
             :loading="loading"
             sort-by="published_at"
             sort-desc
@@ -16,8 +16,9 @@
         >
             <template v-slot:expanded-item="{ headers, item }">
                 <td :colspan="headers.length" class="white lighten-5">
-                    <thesis-detail-panel :thesis="item">
-                    </thesis-detail-panel>
+                    <ThesisDetailPanel
+                        :thesis="item"
+                    ></ThesisDetailPanel>
                 </td>
             </template>
 
@@ -31,9 +32,7 @@
                     </template>
                     <ThesisEditPanel
                         :thesis="item"
-                        :category-options="categoryOptions"
-                        :teacher-options="teacherOptions"
-                        @reload="load" @close="item.editDialog = false"
+                        @close="item.editDialog = false"
                     ></ThesisEditPanel>
                 </v-dialog>
             </template>
@@ -73,7 +72,7 @@
 
                     <template v-slot:input>
                         <v-combobox
-                            :items="teacherOptions"
+                            :items="optionsStore.teacher"
                             v-model="userEditDialogModel"
                             return-object autofocus
                             :label="$t(key)"
@@ -99,7 +98,7 @@
         <portal to="navbar-center" v-if="$route.name === 'thesis-list'">
             <v-toolbar dense color="transparent" elevation="0">
                 <v-combobox
-                    v-model="filterItems" multiple :items="userOptions"
+                    v-model="filterItems" multiple :items="optionsStore.userFilter"
                     flat solo-inverted solo prepend-inner-icon="mdi-magnify"
                     hide-details clearable chips
                     :label="$t('Search')"
@@ -132,14 +131,14 @@
 
                 <v-divider v-if="$vuetify.breakpoint.mdAndUp" vertical class="mx-1"></v-divider>
                 <v-select v-if="$vuetify.breakpoint.mdAndUp"
-                    :items="categoryOptions" v-model="categoryFilter" clearable
+                    :items="optionsStore.category" v-model="categoryFilter" clearable
                     solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline"
                     :label="$t('Category')" style="max-width: 10em"
                 ></v-select>
 
                 <v-divider vertical class="mx-1" v-if="$vuetify.breakpoint.smAndUp"></v-divider>
                 <v-select v-if="$vuetify.breakpoint.smAndUp"
-                    :items="thesisYearOptions" v-model="thesisYearFilter" clearable
+                    :items="optionsStore.thesisYear" v-model="thesisYearFilter" clearable
                     flat solo-inverted hide-details prepend-inner-icon="mdi-calendar"
                     :label="$t('Publication year')" style="max-width: 10em"
                 ></v-select>
@@ -151,13 +150,17 @@
 <script type="text/tsx">
     import * as _ from 'lodash';
     import Vue from 'vue';
-    import Axios from '../../axios';
+    import {mapState} from 'vuex';
     import AuditForInstance from '../../components/AuditForInstance.vue';
-    import {hasPerm} from '../../user';
-    import {eventBus} from '../../utils';
-    import ThesisService from './thesis-service';
+    import {OPTIONS_ACTIONS} from '../../store/options';
+    import {PERMS, PERMS_ACTIONS} from '../../store/perms';
+
+    import {optionsStore, permsStore, thesisStore} from '../../store/store';
+    import {THESIS_ACTIONS} from '../../store/thesis';
+    import {notificationBus} from '../../utils';
     import ThesisEditPanel from './ThesisEditPanel.vue';
     import ThesisListActionBtn from './ThesisListActionBtn.vue';
+
 
     export default Vue.extend({
         components: {
@@ -168,29 +171,26 @@
         },
         data() {
             return {
-                items: [],
-                totalCount: 0,
                 loading: true,
                 options: {},
-                thesisService: new ThesisService(),
 
-                userOptions: [],
-                categoryOptions: [],
-                teacherOptions: [],
-                thesisYearOptions: [],
                 filterItems: [],
                 categoryFilter: null,
                 thesisYearFilter: null,
 
-                userEditDialogModel: {},
-                hasThesisEditPerm: false,
-                hasAuditViewPerm: false
+                userEditDialogModel: {}
             };
         },
         methods: {
+            ...thesisStore.mapActions([
+                THESIS_ACTIONS.LOAD_THESES,
+                THESIS_ACTIONS.EDIT_THESIS
+            ]),
+            ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS]),
+            ...permsStore.mapActions([PERMS_ACTIONS.LOAD_PERMS]),
             addUserFilterFromDataTable(username) {
                 this.filterItems.push(
-                    _.find(this.userOptions, {username})
+                    _.find(this.optionsStore.userFilter, {username})
                 );
             },
             removeFromFilter(item) {
@@ -206,29 +206,34 @@
             },
             isThesisEditAllowed({state}) {
                 // TODO: list all states
-                return this.hasThesisEditPerm && state != 'published';
+                return this.perms[PERMS.CHANGE_THESIS] && state != 'published';
             },
 
-            async persistThesisEdit(thesisId, data) {
+            async persistThesisEdit(thesis_id, data) {
                 this.loading = true;
-                await Axios.patch(`/api/v1/thesis/${thesisId}`, data);
-                eventBus.flash({color: 'success', text: this.$t('Successfully saved!')});
-                await this.load();
+                await this[THESIS_ACTIONS.EDIT_THESIS]({
+                    ...data,
+                    id: thesis_id
+                });
+                notificationBus.success(this.$t('Successfully saved!'));
+                this.loading = false;
             },
             async load() {
                 this.loading = true;
 
-                const resp = await this.thesisService.loadData(
-                    this.options,
-                    _.filter(_.concat(this.filterItems, this.categoryFilter, this.thesisYearFilter)),
-                    this.headers
-                );
-                this.items = resp.data.results;
-                this.totalCount = resp.data.count;
+                await this[THESIS_ACTIONS.LOAD_THESES]({
+                    options: this.options,
+                    filters: _.filter(_.concat(this.filterItems, this.categoryFilter, this.thesisYearFilter)),
+                    headers: this.headers
+                });
+
                 this.loading = false;
             }
         },
         computed: {
+            ...thesisStore.mapState(['theses']),
+            ...permsStore.mapState(['perms']),
+            ...mapState({optionsStore: 'options'}),
             headers() {
                 const lgAndUp = this.$vuetify.breakpoint.lgAndUp;
                 const mdAndUp = this.$vuetify.breakpoint.mdAndUp;
@@ -237,13 +242,14 @@
 
                     {text: this.$t('Title'), value: 'title', width: '25%'},
 
-                    this.hasThesisEditPerm && lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
+                    this.perms[PERMS.CHANGE_THESIS] && lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
                     {text: this.$t('Category'), value: 'category.title'},
 
                     mdAndUp && {text: this.$t('Year'), value: 'published_at'},
 
                     {
                         text: this.$t('Authors'), value: 'authors',
+                        mapped: 'authors__username',
                         width: '15%'
                     },
 
@@ -259,11 +265,11 @@
                         mapped: 'opponent__last_name',
                         width: '10%'
                     },
-                    this.hasThesisEditPerm && {text: '', value: 'edit'}
+                    this.perms[PERMS.CHANGE_THESIS] && {text: '', value: 'edit', sortable: false}
                 ];
 
-                headers.push({text: '', value: 'state', width: '10%'});
-                this.hasAuditViewPerm && headers.push({text: '', value: 'audit'});
+                headers.push({text: '', value: 'state', width: '10%', sortable: false});
+                this.perms[PERMS.VIEW_AUDIT] && headers.push({text: '', value: 'audit', sortable: false});
                 return _.compact(headers);
             },
             manualFilterItems() {
@@ -285,21 +291,8 @@
                 }
             );
 
-            [
-                this.userOptions,
-                this.categoryOptions,
-                this.thesisYearOptions
-            ] = _.map(await Promise.all([
-                Axios.get('/api/v1/user-filter-options'),
-                Axios.get('/api/v1/category-options'),
-                Axios.get('/api/v1/thesis-year-options')
-            ]), _.property('data'));
-
-            this.hasThesisEditPerm = await hasPerm('thesis.change_thesis');
-            this.hasAuditViewPerm = await hasPerm('audit.view_auditlog');
-
-            if (await hasPerm('accounts.view_user'))
-                this.teacherOptions = (await Axios.get('/api/v1/teacher-options')).data;
+            await this[OPTIONS_ACTIONS.LOAD_OPTIONS]();
+            await this[PERMS_ACTIONS.LOAD_PERMS]();
         }
     });
 </script>

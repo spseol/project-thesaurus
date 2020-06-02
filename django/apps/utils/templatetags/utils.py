@@ -3,6 +3,7 @@ from audioop import reverse
 
 from django import template
 from django.conf import settings
+from django.contrib.messages import get_messages
 from django.db.models import Choices, Model
 from django.http import HttpRequest
 from django.templatetags.static import static
@@ -45,8 +46,11 @@ def page_context(context, element_id, _re_language=re.compile(r'[_-]'), *args, *
         user=UserSerializer(instance=user).data,
         groups=tuple(user.groups.values_list('name', flat=True)),
         djangoAdminUrl=reverse('admin:index') if user.is_staff else '',
+        logoutUrl=reverse('logout'),
         languages=[(k, translation.gettext(v)) for k, v in settings.LANGUAGES],
         version=settings.VERSION,
+
+        messages=[dict(text=str(m), type=m.level_tag) for m in get_messages(request)]
     ), element_id)
 
 
