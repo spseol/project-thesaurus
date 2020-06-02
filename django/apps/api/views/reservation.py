@@ -21,7 +21,7 @@ class ReservationFilter(FilterSet):
         if value == Reservation.State.OPEN.value:
             return queryset.filter(state__in=Reservation.OPEN_RESERVATION_STATES)
 
-        elif value in Reservation.State.values:
+        if value in Reservation.State.values:
             return queryset.filter(state=value)
 
         raise ValidationError(_('Invalid state filter.'), code='invalid_state')

@@ -85,7 +85,7 @@ export default {
             });
         },
         async [AUDIT_ACTIONS.LOAD_MAPPINGS]({commit, state}) {
-            if (state.mappings) return await state.mappings;
+            if (state.mappings) return state.mappings;
 
             commit(
                 AUDIT_MUTATIONS.STORE_MAPPINGS,
@@ -96,7 +96,7 @@ export default {
                     return r.data;
                 })
             );
-            return await state.mappings;
+            return state.mappings;
         }
     },
     getters: {
