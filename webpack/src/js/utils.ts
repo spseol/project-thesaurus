@@ -1,16 +1,24 @@
+import * as _ from 'lodash';
 import Vue from 'vue';
 import colors from 'vuetify/lib/util/colors';
 import Axios from './axios';
 import {User} from './types';
 import {hasPerm} from './user';
 
+class FlashMessage {
+    type: string;
+    text: string;
+}
+
 class PageContext {
     user: User;
     locale: string;
     djangoAdminUrl: string;
+    logoutUrl: string;
     languages: Array<string>;
     groups: Array<string>;
     version: string;
+    messages: Array<FlashMessage>;
 
     constructor() {
         return new Proxy(this, {
@@ -21,8 +29,20 @@ class PageContext {
     }
 }
 
+export function formatDataTableOrdering({sortBy, sortDesc}, headers) {
+    let header;
+    const remap = (value) => (
+        (header = _.find(headers, {value})) && header.mapped)
+        ? header.mapped
+        : value.replace('.', '__');
 
-function readFileAsync(file) {
+    return _.map(
+        _.zip(sortBy, sortDesc),
+        ([col, desc]) => `${desc ? '-' : ''}${remap(col).split('.')[0]}`
+    ).join(',');
+}
+
+export function readFileAsync(file) {
     return new Promise((resolve, reject) => {
         let reader = new FileReader();
 
@@ -34,6 +54,16 @@ function readFileAsync(file) {
 
         reader.readAsArrayBuffer(file);
     });
+}
+
+export function memoize(method) {
+    let cache = {};
+
+    return async function(...args) {
+        let key = JSON.stringify(args);
+        cache[key] = cache[key] || method.apply(this, args);
+        return cache[key];
+    };
 }
 
 
@@ -50,23 +80,43 @@ export function asyncComputed(url, options = null) {
     };
 }
 
-export const asyncOptions = (url) => asyncComputed(url, null);
+export const asyncOptions = (url) => asyncComputed(url, {default: []});
 
 const pageContext = new PageContext();
 
 class Flash extends Object {
     text: string;
     color?: string;
-    type?: string;
 }
 
 class EventBus extends Vue {
     public flash(flash: Flash) {
         this.$emit('flash', flash);
     }
+
+    public debug(text: string) {
+        this.$emit('flash', {text, icon: 'mdi-android-debug-bridge'});
+    }
+
+    public info(text: string) {
+        this.$emit('flash', {text, color: 'info', icon: 'mdi-exclamation-thick'});
+    }
+
+    public success(text: string) {
+        this.$emit('flash', {text, color: 'success', icon: 'mdi-check-bold'});
+    }
+
+    public warning(text: string) {
+        this.$emit('flash', {text, color: 'warning', icon: 'mdi-exclamation-thick'});
+    }
+
+    public error(text: string) {
+        this.$emit('flash', {text, color: 'danger', icon: 'mdi-exclamation-thick'});
+    }
+
 }
 
-const eventBus = new EventBus();
+const notificationBus = new EventBus();
 
 export const GRADE_COLOR_SCALE_3 = {
     3: colors.green.lighten2,
@@ -93,8 +143,7 @@ export const THEME_COLORS = {
 
 export {
     pageContext,
-    readFileAsync,
-    eventBus
+    notificationBus
 };
 
 

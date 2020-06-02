@@ -1,3 +1,9 @@
+declare module 'axios' {
+    export interface AxiosRequestConfig {
+        allow403?: boolean;
+    }
+}
+
 // TODO: https://pypi.org/project/django-typomatic/
 export declare class User extends Object {
     id: number;
@@ -18,6 +24,16 @@ export declare class Attachment extends Object {
 
     // internal
     _loading: boolean;
+    _deleteDialog: boolean;
+}
+
+
+export declare class Review extends Object {
+    id: string;
+
+    // internal
+    _loading: boolean;
+    _deleteDialog: boolean;
 }
 
 
@@ -41,10 +57,12 @@ export declare class Thesis extends Object {
     opponent: User;
     authors: Array<User>;
     attachments: Array<Attachment>;
-    reviews: Array<object>;
+    reviews: Array<Review>;
 
     state: string;
     state_label: string;
+    submit_deadline: string;
+    published_at: string;
 
     available_for_reservation: boolean;
     reservable: boolean;

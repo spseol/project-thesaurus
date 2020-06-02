@@ -9,14 +9,17 @@
                             disabled filled v-model="thesis.title"
                             :label="$t('Thesis title')"
                         ></v-text-field>
+                        <v-text-field
+                            disabled filled :value="(new Date(thesis.submit_deadline)).toLocaleDateString($i18n.locale)"
+                            :label="$t('Submit deadline')"
+                        ></v-text-field>
 
                         <v-textarea
                             outlined hide-details
-                            rows="15" class="mb-5"
+                            rows="15" class="mb-5" autofocus
                             :label="$t('Abstract')"
                             v-model="thesis.abstract"
                             :rules="[v => !!v]"
-                            autofocus
                         ></v-textarea>
 
                         <v-checkbox
@@ -100,7 +103,7 @@
     import _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {eventBus, readFileAsync} from '../../utils';
+    import {notificationBus, readFileAsync} from '../../utils';
 
     export default Vue.extend({
         name: 'SubmitForm',
@@ -160,10 +163,7 @@
                 });
 
                 if (resp.data.id) {
-                    eventBus.flash({
-                        text: this.$t('thesis.justSubmitted'),
-                        type: 'success'
-                    });
+                    notificationBus.success(this.$t('thesis.justSubmitted'));
                     this.$router.push({name: 'dashboard'});
                 } else {
                     this.errorMessages = resp.data;

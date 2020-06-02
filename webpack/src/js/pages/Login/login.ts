@@ -3,5 +3,6 @@ import Login from './Login.vue';
 
 createVue({
     router: undefined,
-    render: h => h(Login),
+    store: undefined,
+    render: h => h(Login)
 }).$mount('#app');

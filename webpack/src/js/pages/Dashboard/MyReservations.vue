@@ -2,9 +2,9 @@
     <v-card>
         <v-card-title>{{ $t('My reservations') }}</v-card-title>
         <v-card-text>
-            <v-progress-linear indeterminate v-if="$asyncComputed.reservations.updating"></v-progress-linear>
+            <v-progress-linear indeterminate v-if="false"></v-progress-linear>
 
-            <v-alert v-for="res in reservations" v-bind="stateToAttrs(res.state)" :key="res.id">
+            <v-alert v-for="res in orderedByImportance" v-bind="stateToAttrs(res.state)" :key="res.id">
                 {{ res.thesis_label }}
 
                 <div class="mt-3">
@@ -26,11 +26,11 @@
 
                         <v-card>
                             <v-card-title class="headline warning lighten-5" primary-title>
-                                {{ $t('Cancel reservation?') }}
+                                {{ $t('reservation.cancel.dialogTitle') }}
                             </v-card-title>
 
                             <v-card-text class="mt-5">
-                                {{ $t('reservation.cancelQuestion') }} {{ res.thesis_label }}?
+                                {{ $t('reservation.cancel.question') }} {{ res.thesis_label }}?
                             </v-card-text>
 
                             <v-divider></v-divider>
@@ -38,7 +38,7 @@
                             <v-card-actions>
                                 <v-spacer></v-spacer>
                                 <v-btn color="warning" text @click="cancelReservation(res)">
-                                    {{ $t('Cancel reservation') }}
+                                    {{ $t('reservation.cancel.confirmationButton') }}
                                 </v-btn>
                             </v-card-actions>
                         </v-card>
@@ -46,7 +46,7 @@
                 </div>
             </v-alert>
 
-            <v-alert type="info" text v-if="!reservations.length">
+            <v-alert type="info" text v-if="!orderedByImportance.length">
                 {{ $t('reservation.noActiveReservations') }}
                 <v-row justify="end" class="mt-2">
                     <v-btn :to="$i18nRoute({name: 'thesis-list'})" type="info" light text>
@@ -59,43 +59,45 @@
 </template>
 
 <script type="text/tsx">
-    import _ from 'lodash';
-    import Axios from '../../axios';
-    import {eventBus} from '../../utils';
+    import {RESERVATION_ACTIONS} from '../../store/reservation';
+    import {reservationStore} from '../../store/store';
+    import {notificationBus} from '../../utils';
 
     export default {
         name: 'MyReservations',
         data() {
             return {cancelDialogs: {}};
         },
+        computed: {
+            ...reservationStore.mapGetters(['orderedByImportance'])
+        },
         methods: {
+            ...reservationStore.mapActions([
+                RESERVATION_ACTIONS.LOAD_RESERVATIONS,
+                RESERVATION_ACTIONS.CANCEL_RESERVATION
+            ]),
             stateToAttrs(state) {
                 return {
                     created: {type: 'info', outlined: true},
-                    ready: {type: 'warning', prominent: true},
+                    ready: {type: 'success', prominent: true, text: true},
                     running: {type: 'success', outlined: true, icon: 'mdi-clock'}
                 }[state] || {type: 'info'};
             },
             async cancelReservation(reservation) {
-                await Axios.post(`/api/v1/reservation/${reservation.id}/cancel`);
-                eventBus.flash({
-                    type: 'info',
-                    text: this.$t('reservation.justCancelled')
+                const data = await this[RESERVATION_ACTIONS.CANCEL_RESERVATION]({
+                    reservation_id: reservation.id
                 });
-                this.cancelDialogs[reservation.id] = false;
-                this.$asyncComputed.reservations.update();
+
+                if (data.id) {
+                    notificationBus.info(this.$t('reservation.justCancelled'));
+                    this.cancelDialogs[reservation.id] = false;
+                } else {
+                    notificationBus.warning(data.toString());
+                }
             }
         },
-        asyncComputed: {
-            reservations: {
-                async get() {
-                    return _.sortBy(
-                        (await Axios.get('/api/v1/reservation')).data,
-                        s => ['ready', 'running', 'created'].indexOf(s.state)
-                    );
-                },
-                default: []
-            }
+        created() {
+            this[RESERVATION_ACTIONS.LOAD_RESERVATIONS]();
         }
     };
 </script>

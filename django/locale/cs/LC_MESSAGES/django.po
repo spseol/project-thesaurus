@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-30 02:03+0200\n"
-"PO-Revision-Date: 2020-05-30 03:05+0300\n"
+"POT-Creation-Date: 2020-05-30 23:29+0200\n"
+"PO-Revision-Date: 2020-05-31 00:34+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -122,107 +122,115 @@ msgstr "Termín pro odevzdání, DD.MM.RRRR"
 msgid "Missing some of needed arguments."
 msgstr "Chybějí některé z argumentů pro import."
 
-#: apps/api/views/thesis_import.py:164
+#: apps/api/views/thesis_import.py:127
+msgid "Unable to parse file to import: {}."
+msgstr "Problém s načtením souboru: {}."
+
+#: apps/api/views/thesis_import.py:139
+msgid "Unable to detect CSV format: {}."
+msgstr "Problém při detekci formátu CSV: {}."
+
+#: apps/api/views/thesis_import.py:187
 msgid "Theses have been imported."
 msgstr "Práce byly importovány."
 
-#: apps/api/views/thesis_import.py:167
+#: apps/api/views/thesis_import.py:190
 msgid "Cannot import theses containing errors."
 msgstr "Nelze importovat práce obsahující chyby."
 
-#: apps/api/views/thesis_import.py:193
+#: apps/api/views/thesis_import.py:216
 msgid "Unknown author/s."
 msgstr "Neznámý autor/ři."
 
-#: apps/api/views/thesis_import.py:195
+#: apps/api/views/thesis_import.py:218
 msgid "Some of authors not found ({})."
 msgstr "Někteří z autorů nebyli nalezeni ({})."
 
-#: apps/api/views/thesis_import.py:206
+#: apps/api/views/thesis_import.py:229
 msgid "Unknown category code {}."
 msgstr "Neznámý kód kategorie {}."
 
-#: apps/api/views/thesis_import.py:213
+#: apps/api/views/thesis_import.py:236
 msgid "Empty title."
 msgstr "Prázdný název práce."
 
-#: apps/api/views/thesis_import.py:237
+#: apps/api/views/thesis_import.py:260
 msgid "Unknown user {}"
 msgstr "Neznámý uživatel {}"
 
-#: apps/attachment/models/attachment.py:40
+#: apps/attachment/models/attachment.py:41
 msgid "Target thesis"
 msgstr "Práce"
 
-#: apps/attachment/models/attachment.py:48
+#: apps/attachment/models/attachment.py:49
 msgid "Type of attachment"
 msgstr "Typ přílohy"
 
-#: apps/attachment/models/attachment.py:52
+#: apps/attachment/models/attachment.py:53
 msgid "File with thesis"
 msgstr "Soubor s prací"
 
-#: apps/attachment/models/attachment.py:63
+#: apps/attachment/models/attachment.py:64
 msgid "Size of attachment"
 msgstr "Velikost přílohy"
 
-#: apps/attachment/models/attachment.py:69
+#: apps/attachment/models/attachment.py:70
 msgid "Attachment"
 msgstr "Příloha"
 
-#: apps/attachment/models/attachment.py:70
+#: apps/attachment/models/attachment.py:71
 msgid "Attachments"
 msgstr "Přílohy"
 
-#: apps/attachment/models/attachment.py:115
+#: apps/attachment/models/attachment.py:125
 msgid "Thesis text"
 msgstr "Text práce"
 
-#: apps/attachment/models/attachment.py:116
+#: apps/attachment/models/attachment.py:126
 msgid "Thesis assigment"
 msgstr "Text zadání"
 
-#: apps/attachment/models/attachment.py:117
+#: apps/attachment/models/attachment.py:127
 msgid "Supervisor review"
 msgstr "Posudek vedoucího"
 
-#: apps/attachment/models/attachment.py:118
+#: apps/attachment/models/attachment.py:128
 msgid "Opponent review"
 msgstr "Posudek oponenta"
 
-#: apps/attachment/models/attachment.py:119
+#: apps/attachment/models/attachment.py:129
 msgid "Thesis poster"
 msgstr "Plakát práce"
 
-#: apps/attachment/models/attachment.py:120
+#: apps/attachment/models/attachment.py:130
 msgid "Thesis attachment"
 msgstr "Příloha práce"
 
-#: apps/attachment/models/attachment.py:130 apps/utils/models/base.py:37
+#: apps/attachment/models/attachment.py:140 apps/utils/models/base.py:37
 msgid "Identifier"
 msgstr "Identifikátor"
 
-#: apps/attachment/models/attachment.py:142
+#: apps/attachment/models/attachment.py:152
 msgid "List of allowed mime/content types"
 msgstr "Seznam povolených typů souborů"
 
-#: apps/attachment/models/attachment.py:143
+#: apps/attachment/models/attachment.py:153
 msgid "Available options: {}"
 msgstr "Dostupné možnosti: {}"
 
-#: apps/attachment/models/attachment.py:150
+#: apps/attachment/models/attachment.py:160
 msgid "Is public"
 msgstr "Dostupná veřejně"
 
-#: apps/attachment/models/attachment.py:155
+#: apps/attachment/models/attachment.py:165
 msgid "Max size in bytes"
 msgstr "Maximální velikost [B]"
 
-#: apps/attachment/models/attachment.py:161
+#: apps/attachment/models/attachment.py:171
 msgid "Type attachment"
 msgstr "Typ přílohy"
 
-#: apps/attachment/models/attachment.py:162
+#: apps/attachment/models/attachment.py:172
 msgid "Types attachments"
 msgstr "Typy příloh"
 
@@ -268,7 +276,7 @@ msgstr "Jméno tabulky"
 
 #: apps/audit/models.py:23
 msgid "Username"
-msgstr ""
+msgstr "Uživatelské jméno"
 
 #: apps/audit/models.py:25
 msgid "Transaction start timestamp"
@@ -483,7 +491,7 @@ msgid "Proposed grade"
 msgstr "Navrhovaná známka"
 
 #: apps/review/models/review.py:69
-#: apps/review/templates/review/review_detail.html:9
+#: apps/review/templates/review/review_detail.html:8
 msgid "Review"
 msgstr "Posudek"
 
@@ -529,59 +537,59 @@ msgstr ""
 "Posudek byl od tohoto uživatele již přijat anebo tento uživatel není "
 "oprávněn k vložení posudku k této práci."
 
-#: apps/review/templates/review/review_detail.html:108
+#: apps/review/templates/review/review_detail.html:107
 msgid "Absolvent thesis review"
 msgstr "Posudek absolventské práce"
 
-#: apps/review/templates/review/review_detail.html:113
+#: apps/review/templates/review/review_detail.html:112
 msgid "First and last name"
 msgstr "Jméno a příjmení"
 
-#: apps/review/templates/review/review_detail.html:121
+#: apps/review/templates/review/review_detail.html:120
 msgid "Thesis title"
 msgstr "Název práce"
 
-#: apps/review/templates/review/review_detail.html:125
+#: apps/review/templates/review/review_detail.html:124
 msgid "Review by"
 msgstr "Posudek vypracoval"
 
-#: apps/review/templates/review/review_detail.html:129
+#: apps/review/templates/review/review_detail.html:128
 msgid "Supervisor / opponent"
 msgstr "Vedoucí / oponent práce"
 
-#: apps/review/templates/review/review_detail.html:133
+#: apps/review/templates/review/review_detail.html:132
 msgid "Criteriums of thesis grading"
 msgstr "Kritéria hodnocení práce"
 
-#: apps/review/templates/review/review_detail.html:135
+#: apps/review/templates/review/review_detail.html:134
 msgid "Grade"
 msgstr "Stupeň hodnocení"
 
-#: apps/review/templates/review/review_detail.html:141
+#: apps/review/templates/review/review_detail.html:140
 msgid "Difficulty of selected topic"
 msgstr "Náročnost zvoleného tématu"
 
-#: apps/review/templates/review/review_detail.html:156
+#: apps/review/templates/review/review_detail.html:155
 msgid "Comment"
 msgstr "Odůvodnění hodnocení práce"
 
-#: apps/review/templates/review/review_detail.html:164
+#: apps/review/templates/review/review_detail.html:163
 msgid "Questions"
 msgstr "Otázky k obhajobě"
 
-#: apps/review/templates/review/review_detail.html:174
+#: apps/review/templates/review/review_detail.html:173
 msgid "In"
 msgstr "V"
 
-#: apps/review/templates/review/review_detail.html:176
+#: apps/review/templates/review/review_detail.html:175
 msgid "at day"
 msgstr "dne"
 
-#: apps/review/templates/review/review_detail.html:181
+#: apps/review/templates/review/review_detail.html:180
 msgid "Signature"
 msgstr "Podpis"
 
-#: apps/review/templates/review/review_detail.html:189
+#: apps/review/templates/review/review_detail.html:188
 msgid ""
 "If the evaluation of the leader and the opponent differs by more than two "
 "degrees (excellent - unsatisfactory), it will be prepared third independent "
@@ -590,11 +598,11 @@ msgstr ""
 "Pokud se hodnocení vedoucího a oponenta liší o více jak dva stupně (výborná "
 "- nevyhovující), bude vypracován třetí nezávislý posudek."
 
-#: apps/review/templates/review/review_detail.html:192
+#: apps/review/templates/review/review_detail.html:191
 msgid "Generated automatically by THESAURUS at"
 msgstr "Automaticky vygenerováno systémem THESAURUS v"
 
-#: apps/review/templates/review/review_detail.html:193
+#: apps/review/templates/review/review_detail.html:192
 msgid "Available online on"
 msgstr "Dostupné online na"
 
@@ -776,15 +784,15 @@ msgstr "Chyba serveru"
 msgid "Thesaurus logo"
 msgstr "Thesaurus logo"
 
-#: thesaurus/settings.py:131
+#: thesaurus/settings.py:133
 msgid "Czech"
 msgstr "Česky"
 
-#: thesaurus/settings.py:132
+#: thesaurus/settings.py:134
 msgid "English"
 msgstr "English"
 
-#: thesaurus/settings.py:216
+#: thesaurus/settings.py:218
 msgid "Maximal count of opened reservations linked to one user (inclusive)."
 msgstr "Maximální počet otevřených rezervací na uživatele (včetně)."
 

@@ -1,5 +1,7 @@
 from constance import config
+from django.db.models import QuerySet
 from django.utils.translation import gettext as _
+from django_filters.rest_framework import FilterSet, CharFilter
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -12,6 +14,23 @@ from apps.thesis.serializers import ReservationSerializer
 from apps.utils.views import ModelChoicesOptionsView
 
 
+class ReservationFilter(FilterSet):
+    state = CharFilter(method='filter_by_state')
+
+    def filter_by_state(self, queryset: QuerySet, field_name, value):
+        if value == Reservation.State.OPEN.value:
+            return queryset.filter(state__in=Reservation.OPEN_RESERVATION_STATES)
+
+        if value in Reservation.State.values:
+            return queryset.filter(state=value)
+
+        raise ValidationError(_('Invalid state filter.'), code='invalid_state')
+
+    class Meta:
+        model = Reservation
+        fields = ('state',)
+
+
 class ReservationViewSet(ModelViewSet):
     queryset = Reservation.objects.select_related(
         'thesis',
@@ -20,13 +39,13 @@ class ReservationViewSet(ModelViewSet):
         'thesis__authors',
     )
     serializer_class = ReservationSerializer
-    pagination_class = None  # TODO: needed pagination?
     search_fields = (
         'user__first_name',
         'user__last_name',
         'thesis__title',
         'thesis__registration_number',
     )
+    filterset_class = ReservationFilter
 
     def get_queryset(self):
         qs = super().get_queryset()
@@ -52,19 +71,19 @@ class ReservationViewSet(ModelViewSet):
 
         if Reservation.open_reservations.filter(
                 user=user,
-        ).count() + 1 > config.MAX_OPEN_RESERVATIONS_COUNT:
-            raise ValidationError(
-                _('Cannot create new reservation, maximum count of opened reservations/borrows is {}.').format(
-                    config.MAX_OPEN_RESERVATIONS_COUNT)
-            )
+        ).count() >= config.MAX_OPEN_RESERVATIONS_COUNT:
+            raise ValidationError(_(
+                'Cannot create new reservation, maximum count of opened reservations/borrows is {}.'
+            ).format(config.MAX_OPEN_RESERVATIONS_COUNT))
 
         serializer.save()
 
-    @action(detail=True, methods=['post'], permission_classes=[CanCancelReservation])
+    @action(detail=True, methods=['patch'], permission_classes=[CanCancelReservation])
     def cancel(self, request, *args, **kwargs):
         reservation = self.get_object()  # type: Reservation
         serializer = ReservationSerializer(
-            instance=reservation, data=dict(state=Reservation.State.CANCELED),
+            instance=reservation,
+            data=dict(state=Reservation.State.CANCELED),
             partial=True
         )
         serializer.is_valid(raise_exception=True)

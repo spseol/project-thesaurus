@@ -1,18 +1,13 @@
 <template>
     <v-app>
-        <v-navigation-drawer
-            app dark clipped
-            v-model="drawer"
-        >
+        <v-navigation-drawer app dark clipped v-model="drawer">
             <div class="v-navigation-drawer__content d-flex flex-column justify-space-between">
                 <v-list nav>
                     <v-list-item-group color="primary">
                         <v-list-item
-                            v-for="item in menuItems"
-                            :key="item.text"
-                            :to="$i18nRoute(item.to)"
+                            v-for="item in menuItems" :key="item.text"
+                            :to="$i18nRoute(item.to)" exact
                             v-has-perm:[item.perm]
-                            exact
                         >
                             <v-list-item-action>
                                 <v-icon>{{ item.icon }}</v-icon>
@@ -40,32 +35,32 @@
                         </v-list-item-content>
                     </v-list-item>
                 </div>
-
             </div>
-
         </v-navigation-drawer>
 
         <v-app-bar app color="primary accent-3" clipped-left>
             <v-app-bar-nav-icon @click.stop="drawer = !drawer"/>
-            <v-btn :to="$i18nRoute({name: 'dashboard'})" :text="true" class="primary--text hidden-sm-and-down">
+            <v-btn :to="$i18nRoute({name: 'dashboard'})" :text="true" class="primary--text hidden-sm-and-down px-0 px-xl-2">
                 <v-toolbar-title
                     class="ml-0 pl-1 d-md-flex hidden-sm-and-down black--text"
                 >
-                    <img height="35" src="../img/thesaurus.svg" class="pr-0 pr-md-2" alt="Project Thesaurus">
+                    <img height="35" src="../img/thesaurus.svg" class="pr-0 pr-xl-2" alt="Project Thesaurus">
 
-                    <span class="font-weight-bold mt-1 hidden-md-and-down">THESAURUS</span>
+                    <span class="font-weight-bold mt-1 hidden-lg-and-down">THESAURUS</span>
                 </v-toolbar-title>
             </v-btn>
 
-            <v-col cols="auto">
-                <portal-target name="navbar-center" slim/>
-            </v-col>
+            <v-row no-gutters>
+                <v-col cols="auto">
+                    <portal-target name="navbar-center" slim/>
+                </v-col>
+            </v-row>
 
             <v-spacer/>
             <span class="font-weight-medium">
             {{ $vuetify.breakpoint.lgAndUp ? pageContext.user.full_name : pageContext.user.username }}
             </span>
-            <v-btn icon href="/logout" x-large class="mr-2">
+            <v-btn icon :href="pageContext.logoutUrl" x-large class="mr-2">
                 <v-icon large>mdi-logout</v-icon>
             </v-btn>
         </v-app-bar>
@@ -78,9 +73,7 @@
             </v-container>
         </v-content>
 
-        <v-footer
-            app
-        >
+        <v-footer app>
             <v-spacer></v-spacer>
             <span class="px-4">
                 <a href="https://github.com/spseol/project-thesaurus">
@@ -95,14 +88,14 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import LanguageMenu from './components/LanguageMenu.vue';
-    import {eventBus, pageContext} from './utils';
+    import {pageContext} from './utils';
 
     export default Vue.extend({
         components: {LanguageMenu},
         data() {
             return {
                 pageContext,
-                drawer: this.$vuetify.breakpoint.mdAndUp && this.$route.name != '404',
+                drawer: this.$vuetify.breakpoint.xl && this.$route.name != '404'
             };
         },
         computed: {
@@ -144,10 +137,5 @@
                     this.drawer = false;
             }
         },
-        created() {
-            eventBus.$on('flash', (flash) => {
-                this.$toast(flash.text, {...flash, color: flash.type || flash.color});
-            });
-        }
     });
 </script>

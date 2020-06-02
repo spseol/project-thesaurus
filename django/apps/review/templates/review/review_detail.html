@@ -1,6 +1,5 @@
-{% load utils %}
 {% load i18n %}
-{% load zip get_choices_display get_verbose_field_name from utils %}
+{% load static_absolute_local_file zip get_choices_display get_verbose_field_name absolute_url from utils %}
 {% load static from static %}
 <!DOCTYPE html>
 <html lang="{{ request.LANGUAGE_CODE }}">
@@ -104,7 +103,7 @@
 </head>
 <body>
 <header>
-    <img src="file:{% static "review/header.svg" %}" align="center">
+    <img src="{% static_absolute_local_file "review/header.svg" %}" align="center">
     <h1>{% trans "Absolvent thesis review" %}</h1>
 </header>
 <table>

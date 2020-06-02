@@ -3,11 +3,12 @@
         <v-data-table
             :loading="loading"
             :headers="headers"
-            :items="filteredItems"
+            :items="reservations.results"
             :search="search"
             :options.sync="options"
             :items-per-page="20"
             sort-by="created"
+            :server-items-length="reservations.count"
             :footer-props="{
                 'disable-items-per-page': true,
             }"
@@ -22,13 +23,13 @@
                         :save-text="$t('Save')"
                         :cancel-text="$t('Cancel edit')"
                     >
-                        <!--                        <v-chip outlined :color="stateToColor(props.item.state)">-->
-                        {{ stateToLabel(props.item.state) }}
-                        <v-icon class="mb-1" small>mdi-lead-pencil</v-icon>
-                        <!--                        </v-chip>-->
+                        <span class="caption d-flex align-center">
+                            {{ stateToLabel(props.item.state) }}
+                            <v-icon class="ml-1" small>mdi-lead-pencil</v-icon>
+                        </span>
                         <template v-slot:input>
                             <v-select
-                                :items="stateOptions" v-model="stateEdit" flat
+                                :items="availableStatesToEdit" v-model="stateEdit" flat
                             ></v-select>
                         </template>
                     </v-edit-dialog>
@@ -37,11 +38,7 @@
 
 
             <template v-slot:item.created="{ item }">
-                <audit-for-instance
-                    small :model-pk="item.id" model-name="thesis.reservation"
-                ></audit-for-instance>
-
-                {{ (new Date(item.created)).toLocaleString($i18n.locale) }}
+                {{ (new Date(item.created)).toLocaleDateString($i18n.locale) }}
             </template>
 
             <template v-slot:item.actions="{ item }">
@@ -68,6 +65,12 @@
                         {{ $t('Returned') }}
                     </v-btn>
                 </div>
+
+            </template>
+            <template v-slot:item.audit="{ item }">
+                <audit-for-instance
+                    small :model-pk="item.id" model-name="thesis.reservation"
+                ></audit-for-instance>
             </template>
         </v-data-table>
 
@@ -82,20 +85,23 @@
                 ></v-text-field>
                 <v-divider vertical class="mx-2"></v-divider>
                 <v-select
-                    v-model="stateFilter" :items="stateOptionsFilter" :label="$t('State')"
-                    solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline">
+                    v-model="stateFilter" :items="stateOptions" :label="$t('State')"
+                    solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline" style="max-width: 18em"
+                >
                 </v-select>
             </v-toolbar>
         </portal>
     </div>
 </template>
 
-<script>
+<script type="text/tsx">
     import _ from 'lodash';
     import Vue from 'vue';
-    import Axios from '../../axios';
-    import {asyncComputed, eventBus} from '../../utils';
     import AuditForInstance from '../../components/AuditForInstance.vue';
+    import {RESERVATION_ACTIONS} from '../../store/reservation';
+    import {reservationStore} from '../../store/store';
+    import {hasPerm} from '../../user';
+    import {asyncComputed, notificationBus} from '../../utils';
 
     export default Vue.extend({
         name: 'ReservationList',
@@ -104,6 +110,7 @@
             return {
                 loading: false,
                 items: [],
+                headers: [],
                 search: '',
                 stateFilter: 'open',
                 options: {},
@@ -111,70 +118,80 @@
             };
         },
         computed: {
-            filteredItems() {
-                return _.filter(
-                    this.items,
-                    i => (
-                        this.stateFilter === 'open' && ['created', 'ready', 'running'].indexOf(i.state) >= 0)
-                        || i.state === this.stateFilter,
-                );
-            },
-            headers() {
-                const customStateSort = ['created', 'ready', 'running', 'finished'];
-                return [
-                    {text: this.$t('For user'), value: 'user.full_name'},
-                    {text: this.$t('Thesis SN'), value: 'thesis_registration_number'},
-                    {text: this.$t('Thesis'), value: 'thesis_label'},
-                    {text: this.$t('Created'), value: 'created'},
-                    {text: this.$t('State'), value: 'state', sort: (t) => customStateSort.indexOf(t)},
-                    {text: this.$t('Actions'), value: 'actions', sortable: false},
-                    // {name: this.$t('State'), value: 'state'},
-                ];
+            ...reservationStore.mapState(['reservations']),
+            availableStatesToEdit() {
+                return _.slice(this.stateOptions, 1);
             },
         },
         asyncComputed: {
             stateOptions: asyncComputed('/api/v1/reservation-state-options'),
-            async stateOptionsFilter() {
-                return [
-                    {text: this.$t('Open'), value: 'open'},
-                    ...this.stateOptions,
-                ];
-            },
         },
         methods: {
-            stateToColor(state) {
-                return {
-                    created: 'success',
-                    ready: 'info',
-                    running: 'primary',
-                }[state] || '';
-            },
+            ...reservationStore.mapActions([
+                RESERVATION_ACTIONS.EDIT_RESERVATION,
+                RESERVATION_ACTIONS.LOAD_RESERVATIONS,
+            ]),
             stateToLabel(state) {
                 return (_.find(this.stateOptions, {value: state}) || {text: '---'}).text;
             },
             async changeState(reservation, state) {
                 this.loading = true;
 
-                const {data} = await Axios.patch(`/api/v1/reservation/${reservation.id}`, {
-                    state,
+                const data = await this[RESERVATION_ACTIONS.EDIT_RESERVATION]({
+                    reservation_id: reservation.id,
+                    data: {state},
                 });
                 if (data.id) {
-                    eventBus.flash({color: 'success', text: this.$t('reservation.stateChanged')});
+                    notificationBus.success(this.$t('reservation.stateChanged'));
                 } else {
-                    eventBus.flash({color: 'primary', text: data.toString()});
+                    notificationBus.warning(data.toString());
                 }
-                await this.load();
                 this.loading = false;
             },
             async load() {
-                const {page = 1} = this.options;
-                // TODO: async API search
-                this.items = (await Axios.get(`/api/v1/reservation?page=${page}`)).data;//.results;
+                await this[RESERVATION_ACTIONS.LOAD_RESERVATIONS]({
+                    options: this.options,
+                    state: this.stateFilter,
+                    search: this.search,
+                    headers: this.headers,
+                });
             },
         },
         async created() {
-            await this.load();
-            this.$watch('options', async () => this.load());
+            this.debouncedLoad = _.debounce(this.load, 200);
+
+            this.$watch(
+                (vm) => ([vm.options, vm.$i18n.locale]),
+                this.debouncedLoad,
+                {deep: true, immediate: true},
+            );
+
+            this.$watch(
+                (vm) => ([vm.search, vm.stateFilter]),
+                () => {
+                    this.options.page = 1;
+                    this.debouncedLoad();
+                },
+            );
+
+            const customStateSort = ['created', 'ready', 'running', 'finished'];
+            this.headers = [
+                {text: this.$t('For user'), value: 'user.full_name', mapped: 'user__last_name'},
+                {
+                    text: this.$t('Thesis SN'),
+                    value: 'thesis_registration_number',
+                    mapped: 'thesis__registration_number',
+                },
+                {text: this.$t('Thesis'), value: 'thesis_label', mapped: 'thesis__title'},
+                {text: this.$t('Created'), value: 'created'},
+                {text: this.$t('State'), value: 'state', sort: (t) => customStateSort.indexOf(t)},
+                {text: this.$t('Actions'), value: 'actions', sortable: false},
+            ];
+            if (await hasPerm('audit.view_auditlog'))
+                this.headers.push(
+                    {text: this.$t('Audit'), value: 'audit', sortable: false},
+                );
+
         },
     });
 </script>

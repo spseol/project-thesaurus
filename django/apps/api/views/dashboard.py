@@ -1,7 +1,9 @@
 from django.db.models import Q
+from rest_framework.fields import DateField
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.serializers import ListSerializer
 from rest_framework.views import APIView
 
 from apps.thesis.models import Thesis, Reservation
@@ -33,6 +35,11 @@ class DashboardView(APIView):
         author_theses = Thesis.objects.filter(
             authors=user,
         )
+        author_theses_serializer: ListSerializer = ThesisBaseSerializer(
+            many=True,
+            instance=author_theses
+        )
+        author_theses_serializer.child.fields['submit_deadline'] = DateField()
         # TODO: theses waiting for physical submit
 
         return Response(data=dict(
@@ -48,8 +55,5 @@ class DashboardView(APIView):
                 many=True,
                 instance=theses_just_submitted
             ).data,
-            author_theses=ThesisBaseSerializer(
-                many=True,
-                instance=author_theses
-            ).data,
+            author_theses=author_theses_serializer.data,
         ))

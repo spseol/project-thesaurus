@@ -23,7 +23,7 @@ from apps.review.serializers import ReviewFullInternalSerializer, ReviewPublicSe
 from apps.thesis.models import Thesis, Category, Reservation
 from apps.thesis.serializers import (
     ThesisFullPublicSerializer, ThesisFullInternalSerializer,
-    ThesisBaseSerializer, ThesisSubmitSerializer
+    ThesisSubmitSerializer
 )
 from apps.utils.utils import parse_date
 from apps.utils.views import ModelChoicesOptionsView
@@ -31,9 +31,11 @@ from apps.utils.views import ModelChoicesOptionsView
 
 def _state_change_action(name, state: Thesis.State):
     # TODO: simple FSM validation?
-    def _action_method(self, request: Request, *args, **kwargs):
+
+    def _action_method(self: 'ThesisViewSet', request: Request, *args, **kwargs):
         thesis = self.get_object()  # type: Thesis
-        serializer = ThesisBaseSerializer(instance=thesis, data=dict(state=state), partial=True)
+        self.get_serializer()
+        serializer = self.get_serializer(instance=thesis, data=dict(state=state), partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(data=serializer.data)
@@ -41,9 +43,7 @@ def _state_change_action(name, state: Thesis.State):
     _action_method.__name__ = name
 
     return transaction.atomic(
-        action(methods=['patch'], detail=True)(
-            _action_method
-        )
+        action(methods=['patch'], detail=True)(_action_method)
     )
 
 
@@ -82,16 +82,16 @@ class ThesisViewSet(ModelViewSet):
             )
         )
 
-        if user.has_perm('thesis.change_thesis'):  # can see all of them
-            return qs
-
         # no perms to see all thesis, so filter only published ones
-        return qs.filter(
-            Q(state=Thesis.State.PUBLISHED) |
-            Q(authors=user) |
-            Q(opponent=user, state=Thesis.State.READY_FOR_REVIEW) |
-            Q(supervisor=user, state=Thesis.State.READY_FOR_REVIEW)
-        )
+        if not user.has_perm('thesis.change_thesis'):
+            qs = qs.filter(
+                Q(state=Thesis.State.PUBLISHED) |
+                Q(authors=user) |
+                Q(opponent=user, state=Thesis.State.READY_FOR_REVIEW) |
+                Q(supervisor=user, state=Thesis.State.READY_FOR_REVIEW)
+            )
+
+        return qs
 
     @transaction.atomic
     def perform_create(self, serializer: ThesisFullPublicSerializer):
@@ -177,13 +177,13 @@ class ThesisViewSet(ModelViewSet):
         if not (review_type_attachment and review_file):
             raise ValidationError()
 
-        attachment = Attachment.objects.create_from_upload(
+        Attachment.objects.create_from_upload(
             uploaded=review_file,
             thesis=thesis,
             type_attachment=TypeAttachment.objects.get_by_identifier(review_type_attachment),
         )
 
-        return Response(data=dict(id=attachment.id))
+        return Response(data=self.get_serializer(instance=thesis).data)
 
     @action(methods=['get'], detail=True)
     def reviews(self, request, *args, **kwargs):
