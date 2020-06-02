@@ -64,7 +64,17 @@
                                     :class="{'orange accent-1': column_name in (r.changed_fields || {})}"
                                 >
                                     <td class="py-1 col-1 text-right">
-                                        <code>{{ tableColumnToLabel(r.__table__, column_name) }}</code>
+                                        <v-tooltip
+                                            :disabled="!tableColumnToHelpText(r.__table__, column_name)"
+                                            icon="mdi-info" bottom
+                                        >
+                                            <template v-slot:activator="{ on }">
+                                                <code v-on="on">{{ tableColumnToLabel(r.__table__, column_name)
+                                                    }}</code>
+                                            </template>
+
+                                            {{ tableColumnToHelpText(r.__table__, column_name) }}
+                                        </v-tooltip>
                                     </td>
 
                                     <td class="py-1 col-3" v-for="value in [column_old_value || '', (r.changed_fields || {})[column_name] || '']">
@@ -179,7 +189,8 @@
                             foreign_key_to_model: {},
                             table_columns_to_labels: {},
                             table_columns_to_choices: {},
-                            primary_keys_to_labels: {}
+                            primary_keys_to_labels: {},
+                            table_columns_to_help_text: {}
                         };
 
                     return await this[AUDIT_ACTIONS.LOAD_MAPPINGS]();
@@ -188,7 +199,8 @@
                     foreign_key_to_model: {},
                     table_columns_to_labels: {},
                     table_columns_to_choices: {},
-                    primary_keys_to_labels: {}
+                    primary_keys_to_labels: {},
+                    table_columns_to_help_text: {}
                 }
             }
         },
@@ -196,6 +208,7 @@
             ...auditStore.mapGetters([
                 'filterDisplayValue',
                 'tableColumnToLabel',
+                'tableColumnToHelpText',
                 'actionSubtitle',
                 'auditLogsForModel'
             ]),
@@ -252,8 +265,6 @@
             this.canViewAudit = await hasPerm('audit.view_auditlog');
 
             await this[AUDIT_ACTIONS.LOAD_MAPPINGS]();
-
-
         }
     };
 </script>

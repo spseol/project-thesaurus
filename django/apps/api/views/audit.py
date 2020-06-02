@@ -1,3 +1,4 @@
+from operator import itemgetter
 from typing import Type, Iterable
 
 from django.apps import apps
@@ -133,7 +134,31 @@ class AuditViewSet(GenericViewSet):
                         settings.AUDIT_REWRITE_PKS_TO_LABELS_FOR_MODELS
                     )
                     for obj in model._base_manager.get_queryset()
-                )
+                ),
+
+                # thesis_thesis:
+                # # state:
+                # # # created: 'Created'
+                # # # published: 'Published'
+                table_columns_to_help_text=dict(
+                    filter(
+                        itemgetter(1),
+                        (
+                            (
+                                model._meta.db_table,
+                                dict(
+                                    (field.column, field.help_text)
+                                    for field in model._meta.get_fields()
+                                    if not isinstance(
+                                        field,
+                                        (ManyToOneRel, ManyToManyRel, ManyToManyField)
+                                    ) and field.help_text
+                                )
+                            )
+                            for model in models
+                        )
+                    )
+                ),
 
             )
         )

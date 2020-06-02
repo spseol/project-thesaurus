@@ -114,6 +114,9 @@ export default {
         tableColumnToLabel: (state) => (table, column) =>
             (state.mappings.table_columns_to_labels[table] || {})[column]?.toLowerCase(),
 
+        tableColumnToHelpText: (state) => (table, column) =>
+            (state.mappings.table_columns_to_help_text[table] || {})[column],
+
         actionSubtitle: (state, getters) => (row) => _.truncate(
             _.keys(
                 row.changed_fields || {}
