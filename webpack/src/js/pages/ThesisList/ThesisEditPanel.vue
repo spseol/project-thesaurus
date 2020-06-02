@@ -260,6 +260,7 @@
 
     import _ from 'lodash';
     import qs from 'qs';
+    import Vue from 'vue';
     import {mapState} from 'vuex';
     import Axios from '../../axios';
     import AuditForInstance from '../../components/AuditForInstance.vue';
@@ -268,7 +269,7 @@
     import {THESIS_ACTIONS} from '../../store/thesis';
     import {notificationBus} from '../../utils';
 
-    export default {
+    export default Vue.extend({
         name: 'ThesisEditPanel',
         components: {AuditForInstance},
         props: {
@@ -369,14 +370,16 @@
             }
         },
         async created() {
-            const t = this.thesis;
-            this.data = {
-                ...t,
-                // load v/o if present
-                opponent: {...(t.opponent || {id: null})},
-                supervisor: {...(t.supervisor || {id: null})},
-                authors: _.map(t.authors, 'id')
-            };
+            this.$watch('thesis', () => {
+                const t = this.thesis;
+                this.data = {
+                    ...t,
+                    // load v/o if present
+                    opponent: {...(t.opponent || {id: null})},
+                    supervisor: {...(t.supervisor || {id: null})},
+                    authors: _.map(t.authors, 'id')
+                };
+            }, {immediate: true});
         }
-    };
+    });
 </script>

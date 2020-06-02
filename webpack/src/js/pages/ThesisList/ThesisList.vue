@@ -32,7 +32,7 @@
                     </template>
                     <ThesisEditPanel
                         :thesis="item"
-                        @reload="load" @close="item.editDialog = false"
+                        @close="item.editDialog = false"
                     ></ThesisEditPanel>
                 </v-dialog>
             </template>
@@ -265,11 +265,11 @@
                         mapped: 'opponent__last_name',
                         width: '10%'
                     },
-                    this.perms[PERMS.CHANGE_THESIS] && {text: '', value: 'edit'}
+                    this.perms[PERMS.CHANGE_THESIS] && {text: '', value: 'edit', sortable: false}
                 ];
 
-                headers.push({text: '', value: 'state', width: '10%'});
-                this.perms[PERMS.VIEW_AUDIT] && headers.push({text: '', value: 'audit'});
+                headers.push({text: '', value: 'state', width: '10%', sortable: false});
+                this.perms[PERMS.VIEW_AUDIT] && headers.push({text: '', value: 'audit', sortable: false});
                 return _.compact(headers);
             },
             manualFilterItems() {
