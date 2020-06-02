@@ -86,7 +86,8 @@
                 <v-divider vertical class="mx-2"></v-divider>
                 <v-select
                     v-model="stateFilter" :items="stateOptions" :label="$t('State')"
-                    solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline">
+                    solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline" style="max-width: 18em"
+                >
                 </v-select>
             </v-toolbar>
         </portal>
