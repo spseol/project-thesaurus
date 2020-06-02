@@ -1,5 +1,7 @@
 from constance import config
+from django.db.models import QuerySet
 from django.utils.translation import gettext as _
+from django_filters.rest_framework import FilterSet, CharFilter
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -10,6 +12,23 @@ from apps.api.permissions import CanCancelReservation
 from apps.thesis.models import Reservation, Thesis
 from apps.thesis.serializers import ReservationSerializer
 from apps.utils.views import ModelChoicesOptionsView
+
+
+class ReservationFilter(FilterSet):
+    state = CharFilter(method='filter_by_state')
+
+    def filter_by_state(self, queryset: QuerySet, field_name, value):
+        if value == Reservation.State.OPEN.value:
+            return queryset.filter(state__in=Reservation.OPEN_RESERVATION_STATES)
+
+        elif value in Reservation.State.values:
+            return queryset.filter(state=value)
+
+        raise ValidationError(_('Invalid state filter.'), code='invalid_state')
+
+    class Meta:
+        model = Reservation
+        fields = ('state',)
 
 
 class ReservationViewSet(ModelViewSet):
@@ -26,6 +45,7 @@ class ReservationViewSet(ModelViewSet):
         'thesis__title',
         'thesis__registration_number',
     )
+    filterset_class = ReservationFilter
 
     def get_queryset(self):
         qs = super().get_queryset()

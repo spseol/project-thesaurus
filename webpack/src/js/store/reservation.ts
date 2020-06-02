@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
+import qs from 'qs';
 import Vue from 'vue';
 import Axios from '../axios';
+import {formatDataTableOrdering} from '../utils';
 import {THESIS_ACTIONS} from './thesis';
 
 export enum RESERVATION_MUTATIONS {
@@ -13,6 +15,7 @@ export enum RESERVATION_ACTIONS {
     CREATE_RESERVATION = 'Create reservation',
     LOAD_RESERVATIONS = 'Load reservations',
     CANCEL_RESERVATION = 'Cancel reservation',
+    EDIT_RESERVATION = 'Edit reservation',
 }
 
 const state = {
@@ -46,11 +49,20 @@ export default {
         }
     },
     actions: {
-        async [RESERVATION_ACTIONS.LOAD_RESERVATIONS]({commit}) {
+        async [RESERVATION_ACTIONS.LOAD_RESERVATIONS]({commit}, {state, search, options, headers} = {
+            options: {page: 1, sortBy: [], sortDesc: []},
+            state: '',
+            search: '',
+            headers: []
+        }) {
+            const {page = 1} = options;
+            const ordering = formatDataTableOrdering(options, headers);
+
             return Axios.get(
-                `/api/v1/reservation`
+                `/api/v1/reservation?${qs.stringify({state, search, ordering, page})}`
             ).then(r => {
-                commit(RESERVATION_MUTATIONS.SET_RESERVATION_LIST_RESPONSE, r.data);
+                if (r.status == 200)
+                    commit(RESERVATION_MUTATIONS.SET_RESERVATION_LIST_RESPONSE, r.data);
 
                 return r.data;
             });
@@ -73,6 +85,18 @@ export default {
                 `/api/v1/reservation/${reservation_id}/cancel`
             ).then(r => {
                 if (r.status == 200) {
+                    commit(RESERVATION_MUTATIONS.STORE_RESERVATION, r.data);
+                    dispatch('thesis/' + THESIS_ACTIONS.RELOAD_THESIS, r.data.thesis_id, {root: true});
+                }
+                return r.data;
+            });
+        },
+        async [RESERVATION_ACTIONS.EDIT_RESERVATION]({commit, dispatch}, {reservation_id, data}) {
+            return Axios.patch(
+                `/api/v1/reservation/${reservation_id}`,
+                data
+            ).then(r => {
+                if (r.data.id) {
                     commit(RESERVATION_MUTATIONS.STORE_RESERVATION, r.data);
                     dispatch('thesis/' + THESIS_ACTIONS.RELOAD_THESIS, r.data.thesis_id, {root: true});
                 }

@@ -1,3 +1,4 @@
+import * as _ from 'lodash';
 import Vue from 'vue';
 import colors from 'vuetify/lib/util/colors';
 import Axios from './axios';
@@ -28,6 +29,18 @@ class PageContext {
     }
 }
 
+export function formatDataTableOrdering({sortBy, sortDesc}, headers) {
+    let header;
+    const remap = (value) => (
+        (header = _.find(headers, {value})) && header.mapped)
+        ? header.mapped
+        : value.replace('.', '__');
+
+    return _.map(
+        _.zip(sortBy, sortDesc),
+        ([col, desc]) => `${desc ? '-' : ''}${remap(col).split('.')[0]}`
+    ).join(',');
+}
 
 export function readFileAsync(file) {
     return new Promise((resolve, reject) => {

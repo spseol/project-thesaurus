@@ -12,6 +12,8 @@ class Reservation(BaseTimestampedModel):
     """Reservation defined by thesis and user, which want to borrow the thesis."""
 
     class State(TextChoices):
+        OPEN = 'open', _('Open')
+
         CREATED = 'created', _('Waiting for prepare')
         READY = 'ready', _('Ready for pickup')
         RUNNING = 'running', _('Running')
@@ -36,7 +38,7 @@ class Reservation(BaseTimestampedModel):
 
     state = models.CharField(
         verbose_name=_('State'),
-        choices=State.choices,
+        choices=State.choices[1:],  # open is not available for database state
         default=State.CREATED.value,
         max_length=32,
     )

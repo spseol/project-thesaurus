@@ -3,7 +3,7 @@ import * as qs from 'qs';
 import Vue from 'vue';
 import Axios from '../axios';
 import {Thesis} from '../types';
-import {readFileAsync} from '../utils';
+import {formatDataTableOrdering, readFileAsync} from '../utils';
 
 export enum THESIS_MUTATIONS {
     SET_THESIS_LIST_RESPONSE = 'Set thesis list response',
@@ -55,16 +55,12 @@ export default {
     },
     actions: {
         async [THESIS_ACTIONS.LOAD_THESES](store, {options, filters, headers}) {
-            const {page, sortBy, sortDesc} = options;
-            let header;
-            const remap = (value) => ((header = _.find(headers, {value})) && header.mapped) ? header.mapped : value.replace('.', '__');
+            const {page} = options;
+
             const query = qs.stringify({
                 page,
                 search: _.map(filters, (i) => i.username || i.id || i).join(' '),
-                ordering: _.map(
-                    _.zip(sortBy, sortDesc),
-                    ([col, desc]) => `${desc ? '-' : ''}${remap(col).split('.')[0]}`
-                ).join(',')
+                ordering: formatDataTableOrdering(options, headers)
             });
 
             const response = (await Axios.get(`/api/v1/thesis?${query}`)).data;
