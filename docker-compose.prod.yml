@@ -18,4 +18,3 @@ services:
 
   webserver:
     image: thejoeejoee/thesaurus-nginx:${IMAGE_VERSION:-dev}
-    command: [nginx]
