@@ -7,7 +7,8 @@ export enum OPTIONS_MUTATIONS {
 }
 
 export enum OPTIONS_ACTIONS {
-    LOAD_OPTIONS = 'Load options'
+    LOAD_OPTIONS = 'Load options',
+    RELOAD_OPTIONS = 'Reload options',
 }
 
 const state = {
@@ -32,14 +33,20 @@ export default {
         [OPTIONS_MUTATIONS.SET](state: State, f) {
             f(state);
         },
-        [OPTIONS_MUTATIONS.INITIALIZED](state: State) {
-            state.initialized = true;
+        [OPTIONS_MUTATIONS.INITIALIZED](state: State, _initialized = true) {
+            state.initialized = _initialized;
         },
         [OPTIONS_MUTATIONS.SET_LOAD_REQUEST](state: State, request) {
             state.loadRequest = request;
         }
     },
     actions: {
+        async [OPTIONS_ACTIONS.RELOAD_OPTIONS]({dispatch, commit}) {
+            commit(OPTIONS_MUTATIONS.SET_LOAD_REQUEST, null);
+            commit(OPTIONS_MUTATIONS.INITIALIZED, false);
+
+            return dispatch(OPTIONS_ACTIONS.LOAD_OPTIONS);
+        },
         async [OPTIONS_ACTIONS.LOAD_OPTIONS]({state: State, commit}) {
             if (state.initialized) return;
             if (state.loadRequest) return state.loadRequest;

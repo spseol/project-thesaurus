@@ -124,6 +124,7 @@
             },
         },
         asyncComputed: {
+            // TODO: link to vuex
             stateOptions: asyncComputed('/api/v1/reservation-state-options'),
         },
         methods: {
