@@ -60,6 +60,7 @@
     "ts-loader": "^7.0.4",
     "typescript": "^3.9.3",
     "url-loader": "^4.1.0",
+    "vue-call-store": "^2.2.0",
     "vue-i18n-extract": "^1.1.1",
     "vue-loader": "^15.9.2",
     "vue-template-compiler": "^2.6.11"

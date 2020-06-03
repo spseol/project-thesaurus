@@ -4,6 +4,7 @@ import PortalVue from 'portal-vue';
 import {TiptapVuetifyPlugin} from 'tiptap-vuetify';
 import Vue from 'vue';
 import VueAsyncComputed from 'vue-async-computed';
+import VueCallStore from 'vue-call-store';
 import VueI18n from 'vue-i18n';
 import VueRouter from 'vue-router';
 import VuetifyToast from 'vuetify-toast-snackbar';
@@ -19,10 +20,15 @@ import {DjangoPermsPlugin, I18nRoutePlugin} from './plugins';
 import {createRouter} from './router';
 import {OPTIONS_ACTIONS} from './store/options';
 import {PERMS_ACTIONS} from './store/perms';
-import createStore from './store/store';
+import {createStore} from './store/store';
 import {notificationBus, pageContext, THEME_COLORS} from './utils';
 
+Vue.use(DjangoPermsPlugin);
+Vue.use(I18nRoutePlugin);
+Vue.use(PortalVue);
+Vue.use(VueAsyncComputed);
 Vue.use(VueI18n);
+Vue.use(VueRouter);
 Vue.use(Vuetify, {
     components: {
         VSnackbar,
@@ -30,17 +36,11 @@ Vue.use(Vuetify, {
         VIcon
     }
 });
-Vue.use(VueRouter);
-Vue.use(VueAsyncComputed);
-Vue.use(PortalVue);
-Vue.use(I18nRoutePlugin);
-Vue.use(DjangoPermsPlugin);
 Vue.use(VuetifyToast, {
     x: 'right',
     y: 'top',
     timeout: 6000
 });
-
 
 declare var __SENTRY_DSN__: string;
 
@@ -105,6 +105,7 @@ export default function createVue(opts: any = {}) {
         store.dispatch(`options/${OPTIONS_ACTIONS.LOAD_OPTIONS}`);
     }
 
+    Vue.use(VueCallStore, {store});
 
     const app = new Vue({
         router,

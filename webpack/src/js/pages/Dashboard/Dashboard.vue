@@ -2,9 +2,9 @@
     <v-card>
         <v-card-title>{{ $t('Dashboard') }}</v-card-title>
         <v-card-text>
-            <v-progress-linear indeterminate v-if="$asyncComputed.data.updating"></v-progress-linear>
+            <v-progress-linear indeterminate v-call:pending="DASHBOARD_ACTIONS.LOAD_DASHBOARD"></v-progress-linear>
 
-            <template v-for="thesis in data.author_theses">
+            <template v-for="thesis in dashboardStore.author_theses">
                 <v-alert
                     v-if="thesis.state === 'ready_for_submit'"
                     prominent type="warning" color="red accent-2"
@@ -21,7 +21,9 @@
                                 <br>
                                 <v-icon small>mdi-calendar</v-icon>
                                 {{ $t('Submit deadline') }} {{ relativeDeadline(thesis.submit_deadline) }}
-                                <span class="caption">({{ (new Date(thesis.submit_deadline)).toLocaleDateString($i18n.locale) }})</span>
+                                <span class="caption">
+                                    ({{ (new Date(thesis.submit_deadline)).toLocaleDateString($i18n.locale) }})
+                                </span>
                             </template>
                         </v-col>
                         <v-col class="shrink">
@@ -48,7 +50,7 @@
             </template>
 
             <v-alert
-                v-for="thesis in data.theses_ready_for_review" :key="thesis.id"
+                v-for="thesis in dashboardStore.theses_ready_for_review" :key="thesis.id"
                 prominent type="info" light
             >
                 <v-row align="center">
@@ -65,12 +67,12 @@
                 </v-row>
             </v-alert>
 
-            <v-alert type="info" outlined prominent v-if="data.reservations_ready_for_prepare.length">
+            <v-alert type="info" outlined prominent v-if="dashboardStore.reservations_ready_for_prepare.length">
                 <v-row align="center">
                     <v-col class="grow">
                         <h2 class="mb-1">
                             {{ $t('Reservations waiting for prepare') }}
-                            ({{ data.reservations_ready_for_prepare.length }})
+                            ({{ dashboardStore.reservations_ready_for_prepare.length }})
                         </h2>
                         {{ reservedThesesRegistrationNumbers.join(', ') }}
                     </v-col>
@@ -82,12 +84,12 @@
                 </v-row>
             </v-alert>
 
-            <v-alert type="info" outlined prominent v-if="data.theses_just_submitted.length">
+            <v-alert type="info" outlined prominent v-if="dashboardStore.theses_just_submitted.length">
                 <v-row align="center">
                     <v-col class="grow">
                         <h2 class="mb-1">
                             {{ $t('Just submitted theses waiting for check') }}
-                            ({{ data.theses_just_submitted.length }})
+                            ({{ dashboardStore.theses_just_submitted.length }})
                         </h2>
                     </v-col>
                     <v-col class="shrink">
@@ -98,7 +100,7 @@
                 </v-row>
             </v-alert>
 
-            <v-alert v-if="hasNoData && !$asyncComputed.data.updating" type="info" outlined>
+            <v-alert v-if="hasData" type="info" outlined>
                 {{ $t('dashboard.nothingNote') }}
             </v-alert>
         </v-card-text>
@@ -106,45 +108,33 @@
 </template>
 
 <script type="text/tsx">
-    import _ from 'lodash';
     import moment from 'moment';
-    import {asyncComputed} from '../../utils';
+    import {mapState} from 'vuex';
+    import {DASHBOARD_ACTIONS} from '../../store/dashboard';
+    import {dashboardStore} from '../../store/store';
 
     export default {
         name: 'Dashboard',
-        asyncComputed: {
-            data: asyncComputed(
-                '/api/v1/dashboard',
-                {
-                    'default': {
-                        theses_ready_for_review: {},
-                        reservations_ready_for_prepare: {},
-                        theses_just_submitted: {},
-                        author_theses: {}
-                    }
-                }
-            ),
-            async hasNoData() {
-                return !(
-                    this.data.theses_ready_for_review.length ||
-                    this.data.reservations_ready_for_prepare.length ||
-                    this.data.theses_just_submitted.length ||
-                    this.data.author_theses.length
-                );
-            }
+        data() {
+            return {
+                DASHBOARD_ACTIONS
+            };
         },
         computed: {
-            reservedThesesRegistrationNumbers() {
-                return _.map(
-                    this.data.reservations_ready_for_prepare,
-                    _.property('thesis_registration_number')
-                ).sort();
-            }
+            ...mapState({'dashboardStore': 'dashboard'}),
+            ...dashboardStore.mapGetters([
+                'reservedThesesRegistrationNumbers',
+                'hasData'
+            ])
         },
         methods: {
+            ...dashboardStore.mapActions([DASHBOARD_ACTIONS.LOAD_DASHBOARD]),
             relativeDeadline(date) {
                 return moment(date, null, this.$i18n.locale).fromNow();
             }
+        },
+        async created() {
+            await this[DASHBOARD_ACTIONS.LOAD_DASHBOARD]();
         }
     };
 </script>
