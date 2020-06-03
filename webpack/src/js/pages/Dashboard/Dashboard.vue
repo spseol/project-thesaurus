@@ -100,7 +100,7 @@
                 </v-row>
             </v-alert>
 
-            <v-alert v-if="hasData" type="info" outlined>
+            <v-alert v-if="!hasData && $calls.isDone(DASHBOARD_ACTIONS.LOAD_DASHBOARD)" type="info" outlined>
                 {{ $t('dashboard.nothingNote') }}
             </v-alert>
         </v-card-text>
@@ -109,16 +109,15 @@
 
 <script type="text/tsx">
     import moment from 'moment';
+    import Vue from 'vue';
     import {mapState} from 'vuex';
     import {DASHBOARD_ACTIONS} from '../../store/dashboard';
     import {dashboardStore} from '../../store/store';
 
-    export default {
+    export default Vue.extend({
         name: 'Dashboard',
         data() {
-            return {
-                DASHBOARD_ACTIONS
-            };
+            return {DASHBOARD_ACTIONS};
         },
         computed: {
             ...mapState({'dashboardStore': 'dashboard'}),
@@ -136,5 +135,5 @@
         async created() {
             await this[DASHBOARD_ACTIONS.LOAD_DASHBOARD]();
         }
-    };
+    });
 </script>

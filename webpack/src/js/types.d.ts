@@ -4,6 +4,20 @@ declare module 'axios' {
     }
 }
 
+
+declare module 'vue' {
+    type CallsObject = {
+        // webpack/node_modules/vue-call-store/src/mixin.js
+        isPending: (string) => boolean;
+        isDone: (string) => boolean;
+        hasFailed: (string) => boolean;
+    }
+
+    export default class Vue {
+        $calls: CallsObject;
+    }
+}
+
 // TODO: https://pypi.org/project/django-typomatic/
 export declare class User extends Object {
     id: number;
