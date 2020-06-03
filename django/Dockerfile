@@ -37,4 +37,4 @@ RUN apk add --virtual python-deps libffi-dev build-base cairo-dev cairo cairo-to
 # copy project
 COPY ./ /usr/src/app/
 
-ENTRYPOINT ["./wait-for.sh", "db:5432", "--", "./docker-entrypoint.sh"]
+ENTRYPOINT ["./boot.sh", "--", "./docker-entrypoint.sh"]

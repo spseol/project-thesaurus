@@ -52,16 +52,17 @@ class Command(BaseCommand):
                 published_at=parse_date(row['rok']),
                 reservable=str(row['souhlas']) == '1',
                 state=Thesis.State.PUBLISHED,
+                note=dict(imported_from=tuple(row))
             )
 
-            t.supervisor = User.objects.get_or_create_from_name(name=row['v_jmeno'], thesis_id=None)
-            t.opponent = User.objects.get_or_create_from_name(name=row['o_jmeno'], thesis_id=None)
+            t.supervisor = User.objects.get_or_create_from_name(name=row['v_jmeno'], thesis_id=None)[0]
+            t.opponent = User.objects.get_or_create_from_name(name=row['o_jmeno'], thesis_id=None)[0]
 
             t.opponent and self._teacher_group.user_set.add(t.opponent)
             t.supervisor and self._teacher_group.user_set.add(t.supervisor)
 
             for name in row['ajmeno'].split(','):
-                author = User.objects.get_or_create_from_name(name=name, thesis_id=row['ID'])
+                author = User.objects.get_or_create_from_name(name=name, thesis_id=row['ID'])[0]
                 author.school_class = row['trida']
                 self._student_group.user_set.add(author)
                 t.authors.add(author)

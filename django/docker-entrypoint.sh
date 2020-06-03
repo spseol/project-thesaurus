@@ -1,8 +1,5 @@
 #!/bin/sh
 
-DOCKER_HOST_IP=$(ip route show | awk '/default/ {print $3}')
-export DOCKER_HOST_IP
-
 run() {
   # Start process as unprivileged user
   # Use `exec` to replace original process.

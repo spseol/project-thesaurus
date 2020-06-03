@@ -58,11 +58,10 @@
 
                 this.locale = language;
                 Axios.defaults.headers['Accept-Language'] = language;
-                this.$router.push({
+                await this.$router.push({
                     params: {...(this.$route.params || {}), locale: language},
                     name: this.$route.name
                 });
-                return;
             }
         }
     });
