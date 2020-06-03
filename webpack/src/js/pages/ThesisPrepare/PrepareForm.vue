@@ -140,7 +140,9 @@
             async queryStudentOptions(search) {
                 this.loading = true;
 
-                this.studentOptions = (await Axios.get(`/api/v1/student-options?${qs.stringify({search})}`)).data;
+                this.studentOptions = (
+                    await Axios.get(`/api/v1/student-options?only_active=true&${qs.stringify({search})}`)
+                ).data;
 
                 this.loading = false;
             },
