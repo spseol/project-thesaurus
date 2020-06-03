@@ -10,6 +10,7 @@ services:
 
   webserver:
     build: ./nginx
+    command: [nginx-debug, '-g', 'daemon off;']
 
   webpack:
     build: ./webpack
