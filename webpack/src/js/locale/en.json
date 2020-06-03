@@ -170,7 +170,12 @@
     "justCancelled": "Reservation has been cancelled.",
     "justCreated": "Reservation has been just created.",
     "noActiveReservations": "",
-    "stateChanged": "Reservation state has been changed."
+    "stateChanged": "Reservation state has been changed.",
+    "cancel": {
+      "dialogTitle": "Cancelling reservations",
+      "question": "Are you sure about cancelling reservation for thesis",
+      "confirmationButton": "Yes, cancel it"
+    }
   },
   "review": {
     "commentPlaceholder": "In my opinion ...",
@@ -183,24 +188,24 @@
     "questionsPlaceholder": "Would you mind to explain ...",
     "submitHint": "By submitting, I confirm the accuracy and finality of this review.",
     "submittedAt": "Submitted at",
-    "justDeleted": ""
+    "justDeleted": "Review has been deleted"
   },
   "supervisor": "supervisor",
   "thesis": {
     "import": {
-      "containingErrors": "",
-      "fileFormatDescription": ""
+      "containingErrors": "Sorry, but the import file contains some errors:",
+      "fileFormatDescription": "Sorry, cannot parse input file:"
     },
-    "invalidPublishedAtFormat": "",
+    "invalidPublishedAtFormat": "Invalid format of publication",
     "invalidSNformat": "Not in format AXXX.",
     "justPrepared": "Thesis has been created and it's ready for submit.",
     "justPublished": "Thesis has been published.",
-    "justSaved": "",
+    "justSaved": "Thesis has been saved!",
     "justSentToReview": "Thesis has been sent to supervisor and opponent.",
     "justSubmitted": "Thesis has been successfully submitted!",
-    "noAttachments": "",
-    "noReviews": "",
-    "publishedAtNotInFormat": "",
+    "noAttachments": "No attachments.",
+    "noReviews": "No reviews.",
+    "publishedAtNotInFormat": "Invalid format of publication",
     "reservableHint": "Disallowing with thesis publication has to be confirmed by supervisor and school headquarters before submit.",
     "sendToReviewNote": "After sending thesis to review, opponent and supervisor will be able to download the thesis and fill their reviews.",
     "submit": {
@@ -211,18 +216,18 @@
       "hintSubmitApprove": "I approve thesis submit",
       "hintThesisFinal": "Submitting thesis is in final version"
     },
-    "deleteAttachmentQuestion": "",
-    "deleteReviewQuestion": ""
+    "deleteAttachmentQuestion": "Are you really sure about deleting attachment",
+    "deleteReviewQuestion": "Are you really sure about deleting review"
   },
-  "Submit deadline": "",
-  "Delete attachment": "",
-  "Yes, delete": "",
-  "Delete review from": "",
+  "Submit deadline": "Submit deadline",
+  "Delete attachment": "Delete attachment",
+  "Yes, delete": "Yes, delete",
+  "Delete review from": "Delete review from",
   "attachment": {
-    "justDeleted": "",
-    "justAdded": ""
+    "justDeleted": "Attachment has been deleted!",
+    "justAdded": "Attachment has been added!"
   },
-  "New attachment": "",
-  "Type attachment": "",
-  "New file": ""
+  "New attachment": "New attachment",
+  "Type attachment": "Type attachment",
+  "New file": "New file"
 }

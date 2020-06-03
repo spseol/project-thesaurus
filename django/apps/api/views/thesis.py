@@ -30,8 +30,6 @@ from apps.utils.views import ModelChoicesOptionsView
 
 
 def _state_change_action(name, state: Thesis.State):
-    # TODO: simple FSM validation?
-
     def _action_method(self: 'ThesisViewSet', request: Request, *args, **kwargs):
         thesis = self.get_object()  # type: Thesis
         self.get_serializer()

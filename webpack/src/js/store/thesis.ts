@@ -96,7 +96,8 @@ export default {
                 `/api/v1/thesis/${data.id}`,
                 data
             ).then(r => {
-                commit(THESIS_MUTATIONS.STORE_THESIS, r.data);
+                if (r.status == 200)
+                    commit(THESIS_MUTATIONS.STORE_THESIS, r.data);
                 // TODO detect reload or mutation
                 return r.data;
             });

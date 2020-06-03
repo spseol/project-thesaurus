@@ -163,7 +163,12 @@
     "justCancelled": "Rezerace byla zrušena.",
     "justCreated": "Rezervace byla úspěšně zaevidována.",
     "noActiveReservations": "Žádné aktivní rezervace",
-    "stateChanged": "Stav rezervace úspěšně změněn."
+    "stateChanged": "Stav rezervace úspěšně změněn.",
+    "cancel": {
+      "dialogTitle": "Zrušení rezervace",
+      "question": "Opravdu chcete stornovat rezervaci na práci",
+      "confirmationButton": "Ano, zrušit"
+    }
   },
   "review": {
     "commentPlaceholder": "Práce je ...",
