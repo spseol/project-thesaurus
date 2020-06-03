@@ -8,12 +8,12 @@ declare module 'axios' {
 declare module 'vue' {
     type CallsObject = {
         // webpack/node_modules/vue-call-store/src/mixin.js
-        isPending: (string) => boolean;
-        isDone: (string) => boolean;
-        hasFailed: (string) => boolean;
+        isPending: (identifier: string) => boolean;
+        isDone: (identifier: string) => boolean;
+        hasFailed: (identifier: string) => boolean;
     }
 
-    export default class Vue {
+    export default class Vue extends Vue {
         $calls: CallsObject;
     }
 }

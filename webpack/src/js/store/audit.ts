@@ -56,6 +56,7 @@ export default {
         async [AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE]({commit, dispatch, state}, {model, pk}) {
             if (state.audit[model] && state.audit[model][pk]) return state.audit[model][pk];
 
+            this.$asyncStart(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE);
             return Axios.get(
                 `/api/v1/audit/for-instance/${model}/${pk}`
             ).then(r => {
@@ -65,6 +66,7 @@ export default {
                         {model, pk, data: r.data}
                     );
                 }
+                this.$asyncEnd(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE);
                 return r.data;
             });
         },
@@ -73,26 +75,31 @@ export default {
 
             if (!url) return dispatch(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE, {model, pk});
 
+            this.$asyncStart(AUDIT_ACTIONS.LOAD_AUDIT_NEXT);
             return Axios.get(url).then(r => {
                 if (r.status == 200) {
                     commit(
                         AUDIT_MUTATIONS.APPEND_AUDIT_FOR_INSTANCE,
                         {model, pk, data: r.data}
                     );
-                    return state.audit[model][pk];
+
                 }
-                return r.data;
+                this.$asyncEnd(AUDIT_ACTIONS.LOAD_AUDIT_NEXT);
+
+                return state.audit[model][pk];
             });
         },
         async [AUDIT_ACTIONS.LOAD_MAPPINGS]({commit, state}) {
             if (state.mappings) return state.mappings;
 
+            this.$asyncStart(AUDIT_ACTIONS.LOAD_MAPPINGS);
             commit(
                 AUDIT_MUTATIONS.STORE_MAPPINGS,
                 Axios.get('/api/v1/audit/mappings').then(r => {
                     if (r.status == 200)
                         commit(AUDIT_MUTATIONS.STORE_MAPPINGS, r.data);
 
+                    this.$asyncEnd(AUDIT_ACTIONS.LOAD_MAPPINGS);
                     return r.data;
                 })
             );
