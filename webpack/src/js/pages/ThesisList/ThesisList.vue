@@ -15,7 +15,7 @@
             class="body-2"
         >
             <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length" class="white lighten-5">
+                <td :colspan="headers.length" class="lighten-5" :class="{white: !$vuetify.theme.isDark}">
                     <ThesisDetailPanel
                         :thesis="item"
                     ></ThesisDetailPanel>

@@ -21,7 +21,7 @@ import {createRouter} from './router';
 import {OPTIONS_ACTIONS} from './store/options';
 import {PERMS_ACTIONS} from './store/perms';
 import {createStore} from './store/store';
-import {notificationBus, pageContext, THEME_COLORS} from './utils';
+import {notificationBus, pageContext, THEME_DARK_COLORS, THEME_LIGHT_COLORS} from './utils';
 
 Vue.use(DjangoPermsPlugin);
 Vue.use(I18nRoutePlugin);
@@ -63,7 +63,8 @@ export default function createVue(opts: any = {}) {
         },
         theme: {
             themes: {
-                light: THEME_COLORS
+                light: THEME_LIGHT_COLORS,
+                dark: THEME_DARK_COLORS
             }
         },
         icons: {

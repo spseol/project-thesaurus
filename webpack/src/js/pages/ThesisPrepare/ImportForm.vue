@@ -25,7 +25,7 @@
                         </v-col>
                         <v-col cols="6">
                             <h3 class="headline">{{ $t('Columns') }}</h3>
-                            <v-list light>
+                            <v-list>
                                 <v-list-item v-for="col in columns" :key="col.title">
                                     <v-list-item-icon>
                                         <v-icon>mdi-{{ col.icon }}</v-icon>

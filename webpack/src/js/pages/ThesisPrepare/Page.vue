@@ -2,7 +2,7 @@
     <div>
 
         <portal to="navbar-center" v-if="$route.name === 'thesis-prepare'">
-            <v-btn-toggle background-color="orange" v-model="tab">
+            <v-btn-toggle background-color="primary" v-model="tab">
                 <v-btn text value="single">{{ $t('Prepare single') }}</v-btn>
                 <v-btn text value="multiple">{{ $t('Bulk import') }}</v-btn>
             </v-btn-toggle>

@@ -22,7 +22,32 @@
                 </v-list>
                 <!-- to avoid flex circumstances of v-list -->
                 <div>
-                    <LanguageMenu/>
+                    <v-menu top offset-y>
+                        <template v-slot:activator="{ on }">
+                            <v-list-item v-on="on">
+                                <v-list-item-action>
+                                    <v-icon>mdi-white-balance-sunny</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>
+                                        {{ $vuetify.theme.dark ? $t('Dark') : $t('Light') }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+
+                        <v-list>
+                            <v-list-item @click="$vuetify.theme.dark = true">
+                                <v-list-item-title>{{ $t('Dark') }}</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item @click="$vuetify.theme.dark = false">
+                                <v-list-item-title>{{ $t('Light') }}</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+
+
+                    <LanguageMenu></LanguageMenu>
 
                     <v-list-item v-if="pageContext.djangoAdminUrl" :href="pageContext.djangoAdminUrl">
                         <v-list-item-action>
