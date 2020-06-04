@@ -34,25 +34,22 @@ export default {
                     this.$asyncEnd(DASHBOARD_ACTIONS.LOAD_DASHBOARD);
                     commit(DASHBOARD_MUTATIONS.STORE_DASHBOARD, r.data);
 
-                } else {
-                    this.$asyncFail(DASHBOARD_ACTIONS.LOAD_DASHBOARD);
-
                 }
                 return r.data;
             });
         }
     },
     getters: {
-        reservedThesesRegistrationNumbers: (state): Array<string> =>
-            _.map<Thesis, string>(
+        reservedThesesRegistrationNumbers: (state: State): Array<string> =>
+            _.map<Reservation, string>(
                 state.reservations_ready_for_prepare,
-                _.property('thesis_registration_number')
+                _.property<Reservation, string>('thesis_registration_number')
             ).sort(),
 
-        hasData: (state): boolean => (
-            state.theses_ready_for_review.length &&
-            state.reservations_ready_for_prepare.length &&
-            state.theses_just_submitted.length &&
+        hasData: (state): boolean => !!(
+            state.theses_ready_for_review.length ||
+            state.reservations_ready_for_prepare.length ||
+            state.theses_just_submitted.length ||
             state.author_theses.length
         )
     }

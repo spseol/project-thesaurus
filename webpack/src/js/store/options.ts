@@ -1,4 +1,7 @@
+import _ from 'lodash';
+import {Commit} from 'vuex';
 import Axios from '../axios';
+import {Category, TypeAttachment, UserOption} from '../types';
 
 export enum OPTIONS_MUTATIONS {
     SET = 'Set',
@@ -11,26 +14,25 @@ export enum OPTIONS_ACTIONS {
     RELOAD_OPTIONS = 'Reload options',
 }
 
-const state = {
-    category: [],
-    teacher: [],
-    userFilter: [],
-    thesisYear: [],
-    thesisState: [],
-    reservationState: [],
-    typeAttachment: [],
+class State {
+    category: Category[] = [];
+    teacher: UserOption[] = [];
+    userFilter: UserOption[] = [];
+    thesisYear: { text: string, value: string }[] = [];
+    thesisState: { text: string, value: string }[] = [];
+    reservationState: { text: string, value: string }[] = [];
+    typeAttachment: TypeAttachment[] = [];
 
-    initialized: null,
-    loadRequest: null
-};
-type State = typeof state;
+    initialized: boolean = null;
+    loadRequest: boolean = null;
+}
 
 
 export default {
     namespaced: true,
-    state: state as State,
+    state: new State,
     mutations: {
-        [OPTIONS_MUTATIONS.SET](state: State, f) {
+        [OPTIONS_MUTATIONS.SET](state: State, f: (State) => any) {
             f(state);
         },
         [OPTIONS_MUTATIONS.INITIALIZED](state: State, _initialized = true) {
@@ -47,7 +49,7 @@ export default {
 
             return dispatch(OPTIONS_ACTIONS.LOAD_OPTIONS);
         },
-        async [OPTIONS_ACTIONS.LOAD_OPTIONS]({state: State, commit}) {
+        async [OPTIONS_ACTIONS.LOAD_OPTIONS]({state, commit}: { state: State, commit: Commit }) {
             if (state.initialized) return;
             if (state.loadRequest) return state.loadRequest;
 
@@ -80,6 +82,14 @@ export default {
                 })
             );
             return state.loadRequest;
-        },
+        }
+    },
+    getters: {
+        typeAttachmentAcceptTypes: (state: State) =>
+            (identifier): string =>
+                _.find<TypeAttachment>(
+                    state.typeAttachment,
+                    {identifier}
+                )?.allowed_content_types.join(',')
     }
 };

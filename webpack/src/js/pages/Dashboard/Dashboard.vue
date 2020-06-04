@@ -100,7 +100,7 @@
                 </v-row>
             </v-alert>
 
-            <v-alert v-if="!hasData && $calls.isDone(DASHBOARD_ACTIONS.LOAD_DASHBOARD)" type="info" outlined>
+            <v-alert v-if="!hasData && !$calls.isPending(DASHBOARD_ACTIONS.LOAD_DASHBOARD)" type="info" outlined>
                 {{ $t('dashboard.nothingNote') }}
             </v-alert>
         </v-card-text>
