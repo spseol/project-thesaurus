@@ -2,7 +2,7 @@
     <v-card>
         <v-card-title>{{ $t('Dashboard') }}</v-card-title>
         <v-card-text>
-            <v-progress-linear indeterminate v-call:pending="DASHBOARD_ACTIONS.LOAD_DASHBOARD"></v-progress-linear>
+            <CallLoader :identifier="DASHBOARD_ACTIONS.LOAD_DASHBOARD"></CallLoader>
 
             <template v-for="thesis in dashboardStore.author_theses">
                 <v-alert
@@ -113,9 +113,11 @@
     import {mapState} from 'vuex';
     import {DASHBOARD_ACTIONS} from '../../store/dashboard';
     import {dashboardStore} from '../../store/store';
+    import CallLoader from './CallLoader.vue';
 
     export default Vue.extend({
         name: 'Dashboard',
+        components: {CallLoader},
         data() {
             return {DASHBOARD_ACTIONS};
         },
@@ -132,8 +134,10 @@
                 return moment(date, null, this.$i18n.locale).fromNow();
             }
         },
-        async created() {
-            await this[DASHBOARD_ACTIONS.LOAD_DASHBOARD]();
+        watch: {
+            '$i18n.locale'() {
+                this[DASHBOARD_ACTIONS.LOAD_DASHBOARD]();
+            }
         }
     });
 </script>

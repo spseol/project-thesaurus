@@ -2,7 +2,7 @@
     <v-card>
         <v-card-title>{{ $t('My reservations') }}</v-card-title>
         <v-card-text>
-            <v-progress-linear indeterminate v-if="false"></v-progress-linear>
+            <CallLoader :identifier="RESERVATION_ACTIONS.LOAD_RESERVATIONS"></CallLoader>
 
             <v-alert v-for="res in orderedByImportance" v-bind="stateToAttrs(res.state)" :key="res.id">
                 {{ res.thesis_label }}
@@ -46,7 +46,7 @@
                 </div>
             </v-alert>
 
-            <v-alert type="info" text v-if="!orderedByImportance.length">
+            <v-alert type="info" text v-if="!orderedByImportance.length && !$calls.isPending(RESERVATION_ACTIONS.LOAD_RESERVATIONS)">
                 {{ $t('reservation.noActiveReservations') }}
                 <v-row justify="end" class="mt-2">
                     <v-btn :to="$i18nRoute({name: 'thesis-list'})" type="info" light text>
@@ -62,11 +62,13 @@
     import {RESERVATION_ACTIONS} from '../../store/reservation';
     import {reservationStore} from '../../store/store';
     import {notificationBus} from '../../utils';
+    import CallLoader from './CallLoader.vue';
 
     export default {
         name: 'MyReservations',
+        components: {CallLoader},
         data() {
-            return {cancelDialogs: {}};
+            return {cancelDialogs: {}, RESERVATION_ACTIONS};
         },
         computed: {
             ...reservationStore.mapGetters(['orderedByImportance'])
@@ -78,9 +80,9 @@
             ]),
             stateToAttrs(state) {
                 return {
-                    created: {type: 'info', outlined: true},
+                    created: {type: 'primary', outlined: true},
                     ready: {type: 'success', prominent: true, text: true},
-                    running: {type: 'success', outlined: true, icon: 'mdi-clock'}
+                    running: {type: 'info', outlined: true, icon: 'mdi-clock'}
                 }[state] || {type: 'info'};
             },
             async cancelReservation(reservation) {
@@ -94,6 +96,11 @@
                 } else {
                     notificationBus.warning(data.toString());
                 }
+            }
+        },
+        watch: {
+            '$i18n.locale'() {
+                this[RESERVATION_ACTIONS.LOAD_RESERVATIONS]();
             }
         },
         created() {

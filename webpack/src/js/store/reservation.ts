@@ -55,6 +55,7 @@ export default {
             search: '',
             headers: []
         }) {
+            this.$asyncStart(RESERVATION_ACTIONS.LOAD_RESERVATIONS);
             const {page = 1} = options;
             const ordering = formatDataTableOrdering(options, headers);
 
@@ -64,6 +65,7 @@ export default {
                 if (r.status == 200)
                     commit(RESERVATION_MUTATIONS.SET_RESERVATION_LIST_RESPONSE, r.data);
 
+                this.$asyncEnd(RESERVATION_ACTIONS.LOAD_RESERVATIONS);
                 return r.data;
             });
         },
