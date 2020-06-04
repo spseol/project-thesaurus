@@ -1,7 +1,17 @@
 <template>
     <v-container fluid>
         <v-card :loading="loading">
-            <v-card-title>{{ $t('Thesis review') }}</v-card-title>
+            <v-card-title>
+                {{ $t('Thesis review') }}
+
+                <v-btn
+                    @click="$router.back()" v-if="canBack"
+                    outlined text small rounded class="ml-3"
+                >
+                    <v-icon small class="mr-1">mdi-arrow-left-bold-circle-outline</v-icon>
+                    {{ $t('Back to theses') }}
+                </v-btn>
+            </v-card-title>
             <v-card-text>
                 <!-- TODO: disable all? https://stackoverflow.com/a/55915597 -->
                 <v-form @submit.prevent="submit" v-model="valid">
@@ -204,6 +214,9 @@
             },
             disabled() {
                 return !!this.review.id;
+            },
+            canBack() {
+                return window.history.length > 1;
             }
         },
         asyncComputed: {

@@ -166,7 +166,7 @@
                 if (resp.data.success) {
                     notificationBus.success(resp.data.message);
                     this.importDialog = false;
-                    this.$router.push(this.$i18nRoute({to: 'thesis-list'}));
+                    await this.$router.push(this.$i18nRoute({to: 'thesis-list'}));
                 } else {
                     notificationBus.warning(resp.data.message);
                 }

@@ -182,7 +182,7 @@
                 if (resp.data.id) {
                     notificationBus.success(this.$t('thesis.justPrepared'));
                     Object.assign(this.$data, this.$options.data.apply(this));
-                    this.$router.push({name: 'thesis-list'});
+                    await this.$router.push({name: 'thesis-list'});
                 } else {
                     this.messages = resp.data;
                     _.forEach(

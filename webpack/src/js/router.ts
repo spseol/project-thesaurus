@@ -1,5 +1,6 @@
 import VueRouter from 'vue-router';
 import {Store} from 'vuex';
+import {DASHBOARD_ACTIONS} from './store/dashboard';
 import {PERMS, PERMS_ACTIONS} from './store/perms';
 import {notificationBus} from './utils';
 
@@ -10,11 +11,14 @@ export function createRouter($t, store: Store<any>) {
                 path: '/:locale/', // unknown locales handles Django itself by locale middleware
                 component: {template: '<keep-alive><router-view></router-view></keep-alive>'},
                 children: [
-                    {path: '', component: () => import('./pages/Dashboard/Page.vue'), name: 'dashboard'},
                     {
-                        path: 'thesis/list',
-                        component: () => import('./pages/ThesisList/Page.vue'),
-                        name: 'thesis-list'
+                        path: '',
+                        component: () => import('./pages/Dashboard/Page.vue'),
+                        name: 'dashboard',
+                        beforeEnter(to, from, next) {
+                            store.dispatch(`dashboard/${DASHBOARD_ACTIONS.LOAD_DASHBOARD}`);
+                            next();
+                        }
                     },
                     {
                         path: 'thesis/prepare',
@@ -26,6 +30,16 @@ export function createRouter($t, store: Store<any>) {
                         path: 'thesis/submit/:id',
                         component: () => import('./pages/ThesisSubmit/Page.vue'),
                         name: 'thesis-submit'
+                    },
+                    {
+                        path: 'thesis/review/:thesisId/:reviewId?',
+                        component: () => import('./pages/ReviewSubmit/Page.vue'),
+                        name: 'review-detail'
+                    },
+                    {
+                        path: 'thesis',
+                        component: () => import('./pages/ThesisList/Page.vue'),
+                        name: 'thesis-list'
                     },
                     {
                         path: 'reservations/list',
@@ -44,11 +58,6 @@ export function createRouter($t, store: Store<any>) {
                         component: {template: '<div>Nonono</div>'},
                         name: 'settings'
                     },
-                    {
-                        path: 'review/:thesisId/:reviewId?',
-                        component: () => import('./pages/ReviewSubmit/Page.vue'),
-                        name: 'review-detail'
-                    },
                     {path: '404', component: () => import('./components/404.vue'), name: '404'},
                     {path: '403', component: () => import('./components/403.vue'), name: '403'},
                     {path: '*', redirect: {name: '404'}}
@@ -56,7 +65,19 @@ export function createRouter($t, store: Store<any>) {
             },
             {path: '*', redirect: {name: '404'}}
         ],
-        mode: 'history'
+        mode: 'history',
+        scrollBehavior(to, from, savedPosition) {
+            if (to.hash) {
+                return {
+                    selector: to.hash
+                };
+            } else if (savedPosition) {
+                return savedPosition;
+            } else {
+                return {x: 0, y: 0};
+            }
+        }
+
     });
 
     router.beforeEach(async (to, from, next) => {
