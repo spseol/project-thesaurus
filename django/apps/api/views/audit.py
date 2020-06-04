@@ -110,15 +110,22 @@ class AuditViewSet(GenericViewSet):
                 # # # created: 'Created'
                 # # # published: 'Published'
                 table_columns_to_choices=dict(
-                    (
-                        model._meta.db_table,
-                        dict(
-                            (field.column, dict(field.choices))
-                            for field in model._meta.get_fields()
-                            if not isinstance(field, (ManyToOneRel, ManyToManyRel, ManyToManyField)) and field.choices
+                    filter(
+                        itemgetter(1),
+                        (
+                            (
+                                model._meta.db_table,
+                                dict(
+                                    (field.column, dict(field.choices))
+                                    for field in model._meta.get_fields()
+                                    if
+                                    not isinstance(field,
+                                                   (ManyToOneRel, ManyToManyRel, ManyToManyField)) and field.choices
+                                )
+                            )
+                            for model in models
                         )
                     )
-                    for model in models
                 ),
 
                 # pk mapping to label, only for "safe" models

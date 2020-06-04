@@ -14,6 +14,9 @@ export enum AUDIT_ACTIONS {
     LOAD_AUDIT_NEXT = 'Load audit next',
 }
 
+export const callIdentifier = (identifier: string, model: string, pk: string) =>
+    `${identifier} | ${model} | ${pk}`.replace('.', ' | ');
+
 const state = {
     audit: {},
     mappings: null
@@ -56,7 +59,7 @@ export default {
         async [AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE]({commit, dispatch, state}, {model, pk}) {
             if (state.audit[model] && state.audit[model][pk]) return state.audit[model][pk];
 
-            this.$asyncStart(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE);
+            this.$asyncStart(callIdentifier(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE, model, pk));
             return Axios.get(
                 `/api/v1/audit/for-instance/${model}/${pk}`
             ).then(r => {
@@ -66,7 +69,7 @@ export default {
                         {model, pk, data: r.data}
                     );
                 }
-                this.$asyncEnd(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE);
+                this.$asyncEnd(callIdentifier(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE, model, pk));
                 return r.data;
             });
         },

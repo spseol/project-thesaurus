@@ -11,7 +11,7 @@
 
         <v-card>
             <v-card-title>
-                <v-skeleton-loader type="text" :loading="!$calls.isDone(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE)" width="100%">
+                <v-skeleton-loader type="text" :loading="!$calls.isDone(call(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE))" width="100%">
                     <template v-if="logs">
                         <v-icon>mdi-timeline-clock-outline</v-icon>
                         <span class="mx-1">{{ $t('Audit') }}</span> |
@@ -23,14 +23,14 @@
             <v-card-text>
                 <v-progress-linear
                     indeterminate
-                    v-if="$calls.isPending(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE) || $calls.isPending(AUDIT_ACTIONS.LOAD_MAPPINGS)"
+                    v-if="$calls.isPending(call(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE)) || $calls.isPending(AUDIT_ACTIONS.LOAD_MAPPINGS)"
                 >
                 </v-progress-linear>
 
                 <v-scale-transition>
                     <v-expansion-panels
-                        v-if="$calls.isDone(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE) && $calls.isDone(AUDIT_ACTIONS.LOAD_MAPPINGS)"
-                        :value="[0]" multiple popout focusable
+                        v-if="$calls.isDone(call(AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE)) && $calls.isDone(AUDIT_ACTIONS.LOAD_MAPPINGS)"
+                        v-model="openedPanels" multiple popout focusable
                     >
                         <v-expansion-panel
                             v-for="r in logs.results"
@@ -152,7 +152,7 @@
 <script type="text/tsx">
     import _ from 'lodash';
     import moment from 'moment';
-    import {AUDIT_ACTIONS} from '../store/audit';
+    import {AUDIT_ACTIONS, callIdentifier} from '../store/audit';
     import {auditStore} from '../store/store';
     import {hasPerm} from '../user';
 
@@ -179,46 +179,9 @@
                 canViewAudit: false,
                 loaded: [],
                 next: null,
+                openedPanels: [0],
                 AUDIT_ACTIONS
             };
-        },
-        asyncComputed: {
-            data: {
-                async get() {
-                    if (!await hasPerm('audit.view_auditlog')) return {results: []};
-                    if (!this.dialog) return {results: []};
-
-                    const data = await this[AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE]({
-                        model: this.modelName,
-                        pk: this.modelPk
-                    });
-
-                    this.next = data.next;
-                    return data;
-                },
-                watch: ['$i18n.locale']
-            },
-            mappings: {
-                async get() {
-                    if (!(await hasPerm('audit.view_auditlog')))
-                        return {
-                            foreign_key_to_model: {},
-                            table_columns_to_labels: {},
-                            table_columns_to_choices: {},
-                            primary_keys_to_labels: {},
-                            table_columns_to_help_text: {}
-                        };
-
-                    return await this[AUDIT_ACTIONS.LOAD_MAPPINGS]();
-                },
-                default: {
-                    foreign_key_to_model: {},
-                    table_columns_to_labels: {},
-                    table_columns_to_choices: {},
-                    primary_keys_to_labels: {},
-                    table_columns_to_help_text: {}
-                }
-            }
         },
         computed: {
             ...auditStore.mapGetters([
@@ -228,13 +191,14 @@
                 'actionSubtitle',
                 'auditLogsForModel'
             ]),
+            ...auditStore.mapState(['mappings']),
             logs() {
                 return this.auditLogsForModel(this.modelName, this.modelPk);
             }
         },
         watch: {
             dialog(new_) {
-                new_ && this.$asyncComputed.data.update();
+                new_ && this[AUDIT_ACTIONS.LOAD_AUDIT_FOR_INSTANCE]({model: this.modelName, pk: this.modelPk});
             }
         },
         methods: {
@@ -243,6 +207,9 @@
                 AUDIT_ACTIONS.LOAD_MAPPINGS,
                 AUDIT_ACTIONS.LOAD_AUDIT_NEXT
             ]),
+            call(identifier) {
+                return callIdentifier(identifier, this.modelName, this.modelPk);
+            },
             actionToIcon(action) {
                 return {
                     'I': 'mdi-database-plus',
