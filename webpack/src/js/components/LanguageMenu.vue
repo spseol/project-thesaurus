@@ -49,7 +49,7 @@
                     return this.$i18n.locale;
                 },
                 set(locale) {
-                    pageContext.locale = this.$root.$i18n.locale = locale;
+                    pageContext.locale = String(this.$root.$i18n.locale = locale);
                 }
             }
         },

@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-06-03 09:29+0200\n"
-"PO-Revision-Date: 2020-06-03 10:30+0300\n"
+"POT-Creation-Date: 2020-06-05 23:52+0200\n"
+"PO-Revision-Date: 2020-06-06 00:52+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -94,7 +94,7 @@ msgid "Two letter abbr of category ({})"
 msgstr "Dvoupísmenná zkratka kategorie/zaměření ({})"
 
 #: apps/api/views/thesis_import.py:54 apps/thesis/models/category.py:11
-#: apps/thesis/models/thesis.py:78
+#: apps/thesis/models/thesis.py:79
 msgid "Title"
 msgstr "Název"
 
@@ -102,7 +102,7 @@ msgstr "Název"
 msgid "Thesis long title"
 msgstr "Plný název práce"
 
-#: apps/api/views/thesis_import.py:60 apps/thesis/models/thesis.py:45
+#: apps/api/views/thesis_import.py:60 apps/thesis/models/thesis.py:46
 msgid "Supervisor"
 msgstr "Vedoucí"
 
@@ -110,7 +110,7 @@ msgstr "Vedoucí"
 msgid "Login for internal, full name for external"
 msgstr "Školní login pro interní osoby, plné jméno pro externí"
 
-#: apps/api/views/thesis_import.py:66 apps/thesis/models/thesis.py:52
+#: apps/api/views/thesis_import.py:66 apps/thesis/models/thesis.py:53
 msgid "Opponent"
 msgstr "Oponent"
 
@@ -161,6 +161,10 @@ msgstr "Prázdný název práce."
 #: apps/api/views/thesis_import.py:260
 msgid "Unknown user {}"
 msgstr "Neznámý uživatel {}"
+
+#: apps/api/views/user.py:31
+msgid "Include only active users"
+msgstr "Zahrnou pouze aktivní uživatele"
 
 #: apps/attachment/models/attachment.py:41
 msgid "Target thesis"
@@ -614,7 +618,7 @@ msgstr "Automaticky vygenerováno systémem THESAURUS v"
 msgid "Available online on"
 msgstr "Dostupné online na"
 
-#: apps/thesis/models/category.py:16 apps/utils/models/base.py:50
+#: apps/thesis/models/category.py:16 apps/utils/models/base.py:51
 msgid "Order"
 msgstr "Pořadí"
 
@@ -654,7 +658,7 @@ msgstr "Práce k zapůjčení"
 msgid "For user"
 msgstr "Pro uživatele"
 
-#: apps/thesis/models/reservation.py:40 apps/thesis/models/thesis.py:71
+#: apps/thesis/models/reservation.py:40 apps/thesis/models/thesis.py:72
 msgid "State"
 msgstr "Stav"
 
@@ -670,89 +674,93 @@ msgstr "Rezervace"
 msgid "Reservation {} for {}"
 msgstr "Rezervace {} pro {}"
 
-#: apps/thesis/models/thesis.py:21
+#: apps/thesis/models/thesis.py:22
 msgid "Created"
 msgstr "Vytvořeno"
 
-#: apps/thesis/models/thesis.py:22
+#: apps/thesis/models/thesis.py:23
 msgid "Ready for submit"
 msgstr "Čeká na odevzdání"
 
-#: apps/thesis/models/thesis.py:23
+#: apps/thesis/models/thesis.py:24
 msgid "Submitted"
 msgstr "Odevzdána"
 
-#: apps/thesis/models/thesis.py:24
+#: apps/thesis/models/thesis.py:25
 msgid "Ready for reviews"
 msgstr "Čeká na posudky"
 
-#: apps/thesis/models/thesis.py:25
+#: apps/thesis/models/thesis.py:26
 msgid "Reviewed"
 msgstr "Ohodnoceno"
 
-#: apps/thesis/models/thesis.py:26
+#: apps/thesis/models/thesis.py:27
 msgid "Published"
 msgstr "Publikováno"
 
-#: apps/thesis/models/thesis.py:32
+#: apps/thesis/models/thesis.py:33
 msgid "Corresponding category for thesis."
 msgstr "Odpovídající kategorie práce."
 
-#: apps/thesis/models/thesis.py:38
+#: apps/thesis/models/thesis.py:39
 msgid "Authors"
 msgstr "Autoři"
 
-#: apps/thesis/models/thesis.py:58
+#: apps/thesis/models/thesis.py:59
 msgid "Registration number"
 msgstr "Evidenční číslo"
 
-#: apps/thesis/models/thesis.py:65
+#: apps/thesis/models/thesis.py:66
 msgid "Thesis registration number is not valid."
 msgstr "Evidenční číslo práce není validní."
 
-#: apps/thesis/models/thesis.py:83
+#: apps/thesis/models/thesis.py:84
 msgid "Abstract"
 msgstr "Abstrakt"
 
-#: apps/thesis/models/thesis.py:88
+#: apps/thesis/models/thesis.py:89
 msgid "Publication date"
 msgstr "Publikováno"
 
-#: apps/thesis/models/thesis.py:93
+#: apps/thesis/models/thesis.py:94
 msgid "Submit deadline"
 msgstr "Termín pro odevzdání"
 
-#: apps/thesis/models/thesis.py:98
+#: apps/thesis/models/thesis.py:99
 msgid "Reservable"
 msgstr "Lze vypůjčit"
 
-#: apps/thesis/models/thesis.py:108
+#: apps/thesis/models/thesis.py:104
+msgid "Additional note"
+msgstr "Poznámka"
+
+#: apps/thesis/models/thesis.py:114
 msgid "Thesis"
 msgstr "Práce"
 
-#: apps/thesis/models/thesis.py:109
+#: apps/thesis/models/thesis.py:115
 msgid "Theses"
 msgstr "Práce"
 
-#: apps/thesis/models/thesis.py:118
+#: apps/thesis/models/thesis.py:124
 msgid "Publishing thesis without filled registration number is not allowed."
 msgstr "Publikování práce bez vyplněného evidenčního čísla není povoleno."
 
-#: apps/thesis/models/thesis.py:142
+#: apps/thesis/models/thesis.py:148
 msgid ""
 "Thesis is created with basic information and it's waiting for state change."
 msgstr ""
 "Práce je vytvořena se základními informacemi a je dostupná pouze správci."
 
-#: apps/thesis/models/thesis.py:143
+#: apps/thesis/models/thesis.py:149
 msgid "Thesis is currently waiting for submit from one of authors."
 msgstr "Práce čeká na odevzdání od jednoho z autorů."
 
-#: apps/thesis/models/thesis.py:144
+#: apps/thesis/models/thesis.py:150
 msgid "Thesis has been submitted and it needs to be pushed to reviews."
 msgstr "Práce byla odevzdána a čeká na postoupení k posudkům."
 
-#: apps/thesis/models/thesis.py:145
+#: apps/thesis/models/thesis.py:151
 msgid ""
 "Thesis is waiting for reviews from supervisor and opponent - also possible "
 "to add external review."
@@ -760,19 +768,19 @@ msgstr ""
 "Práce čeká na zadání posudků od vedoucího a oponenta, je možné přidat "
 "externí posudky."
 
-#: apps/thesis/models/thesis.py:147
+#: apps/thesis/models/thesis.py:153
 msgid "Thesis has both reviews and it's waiting for publication."
 msgstr "Práce má oba posudky a je možné ji publikovat."
 
-#: apps/thesis/models/thesis.py:148
+#: apps/thesis/models/thesis.py:154
 msgid "Thesis is public and it's possible to borrow it."
 msgstr "Práce je zveřejněna a lze si ji vypůjčit, pokud je to povoleno."
 
-#: apps/thesis/models/thesis.py:173
+#: apps/thesis/models/thesis.py:179
 msgid "Thesis author relation"
 msgstr "Vazba autora k práci"
 
-#: apps/thesis/models/thesis.py:174
+#: apps/thesis/models/thesis.py:180
 msgid "Thesis author relations"
 msgstr "Vazby autorů k pracem"
 
@@ -784,7 +792,7 @@ msgstr "vytořeno"
 msgid "modified"
 msgstr "modifikováno"
 
-#: apps/utils/models/base.py:45
+#: apps/utils/models/base.py:46
 msgid "Description"
 msgstr "Popis"
 
@@ -796,19 +804,31 @@ msgstr "Chyba serveru"
 msgid "Thesaurus logo"
 msgstr "Thesaurus logo"
 
-#: thesaurus/settings.py:140
+#: thesaurus/settings.py:145
 msgid "Czech"
 msgstr "Česky"
 
-#: thesaurus/settings.py:141
+#: thesaurus/settings.py:146
 msgid "English"
 msgstr "English"
 
-#: thesaurus/settings.py:228
+#: thesaurus/settings.py:233
 msgid "Maximal count of opened reservations linked to one user (inclusive)."
 msgstr "Maximální počet otevřených rezervací na uživatele (včetně)."
 
+#: thesaurus/urls.py:17
+msgid "System administration"
+msgstr "Administrace systému"
+
+#: thesaurus/urls.py:18
+msgid "Admin section"
+msgstr "Administrační sekce"
+
 #: thesaurus/urls.py:19
+msgid "Project THESAURUS"
+msgstr "Projekt THESAURUS"
+
+#: thesaurus/urls.py:23
 msgid "You have been logged out."
 msgstr "Byl jste odhlášen."
 

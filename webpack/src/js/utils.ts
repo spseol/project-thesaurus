@@ -22,8 +22,11 @@ class PageContext {
 
     constructor() {
         return new Proxy(this, {
-            get: function(person, field) {
+            get(self, field: string) {
                 return window['Thesaurus'].pageContext[field];
+            },
+            set(self, field: string, value: any, receiver: any): boolean {
+                return window['Thesaurus'].pageContext[field] = value;
             }
         });
     }

@@ -2,7 +2,7 @@
 
 from django.conf import settings
 from django.conf.urls.i18n import i18n_patterns
-from django.contrib import admin, messages
+from django.contrib import messages, admin
 from django.contrib.auth import views
 from django.contrib.staticfiles.urls import urlpatterns as static_urlpatterns
 from django.urls import path, include, re_path
@@ -13,6 +13,10 @@ from loginas.views import user_logout as la_logout
 from apps.frontend.views import AppView
 
 handler500 = 'apps.utils.views.server_error'
+
+admin.site.site_header = _('System administration')
+admin.site.index_title = _('Admin section')
+admin.site.site_title = _('Project THESAURUS')
 
 
 def user_logout(request):
