@@ -22,11 +22,15 @@ SECRET_KEY = config("SECRET_KEY")
 
 DEBUG = config("DEBUG", cast=bool, default=False)
 
+ENVIRONMENT_NAME = config("ENVIRONMENT_LABEL", cast=str, default="Unknown environment")
+ENVIRONMENT_COLOR = config("ENVIRONMENT_COLOR", cast=str, default="#777")
+
 VERSION = config('THESAURUS_VERSION', default='unknown')
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS").split(" ")
 
 INSTALLED_APPS = [
+    'django_admin_env_notice',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,16 +53,16 @@ INSTALLED_APPS = [
     'apps.review',
     'apps.utils',
 
-    'loginas',
-    'webpack_loader',
     'debug_toolbar',
-    'rest_framework',
-    'mailqueue',
-    'django_filters',
-    'django_extensions',
     'django_better_admin_arrayfield',
     'django_bleach',
+    'django_extensions',
+    'django_filters',
     'django_python3_ldap',
+    'loginas',
+    'mailqueue',
+    'rest_framework',
+    'webpack_loader',
 ]
 
 MIDDLEWARE = [
@@ -88,6 +92,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.template.context_processors.i18n',
+                'django_admin_env_notice.context_processors.from_settings',
             ],
         },
     },
