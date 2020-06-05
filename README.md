@@ -18,10 +18,13 @@ System used fo publication, evidence and managing theses and attachments to them
 
 ## Structure
 Project is using docker-compose to compose all required Docker containers to run:
-- `web` main container with installed Django
-- `db` container with running PostgreSQL database used mainly by Django
-- `webpack` utility container containing webpack for build process of frontend assets
-- `nginx` container with Nginx to proxy to `web` and serving static files (collected from Django and built by Webpack)
+- [`web`](https://hub.docker.com/r/thejoeejoee/thesaurus-django) [![](https://images.microbadger.com/badges/version/thejoeejoee/thesaurus-django.svg)](https://microbadger.com/images/thejoeejoee/thesaurus-django) main container with installed Django 
+
+- `db` container with running PostgreSQL database used by Django Models 
+
+- [`webpack`](https://hub.docker.com/r/thejoeejoee/thesaurus-webpack) [![](https://images.microbadger.com/badges/version/thejoeejoee/thesaurus-webpack.svg)](https://microbadger.com/images/thejoeejoee/thesaurus-webpack) utility container containing webpack for build process of frontend assets 
+
+- [`webserver`](https://hub.docker.com/r/thejoeejoee/thesaurus-nginx) [![](https://images.microbadger.com/badges/version/thejoeejoee/thesaurus-nginx.svg)](https://microbadger.com/images/thejoeejoee/thesaurus-nginx) container with Nginx to proxy to `web` and serving static and media files 
 
 ## Usage
 Assuming installed and running Docker, most frequent commands are grouped in script `run`.

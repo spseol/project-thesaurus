@@ -28,7 +28,6 @@ class ReservationSerializer(ModelSerializer):
 
     class Meta:
         model = Reservation
-        # TODO: state FSM validation?
         fields = (
             'id',
             'thesis',

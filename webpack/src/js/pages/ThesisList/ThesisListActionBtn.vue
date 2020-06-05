@@ -159,11 +159,6 @@
                         primary-title
                     >{{ thesis.title }}</v-card-title>
                     <v-card-text class="pt-3 d-flex flex-column">
-                        <v-file-input
-                            accept="application/pdf"
-                            :label="$t('External review')"
-                            v-model="externalReview.review"
-                        ></v-file-input>
                         <v-btn-toggle
                             group class="align-self-center"
                             mandatory color="primary"
@@ -176,6 +171,13 @@
                                 <strong>{{ $t(key) }}</strong>: {{ user.full_name }}
                             </v-btn>
                         </v-btn-toggle>
+
+                        <v-file-input
+                            :label="$t('External review')"
+                            v-model="externalReview.review" v-if="externalReview.reviewer"
+                            :accept="typeAttachmentAcceptTypes(`${externalReview.reviewer}_review`)"
+                            :prepend-icon="`$${externalReview.reviewer}_review`"
+                        ></v-file-input>
                     </v-card-text>
                     <v-divider></v-divider>
                     <v-card-actions>
@@ -252,7 +254,7 @@
 <script type="text/tsx">
     import _ from 'lodash';
     import {RESERVATION_ACTIONS} from '../../store/reservation';
-    import {reservationStore, thesisStore} from '../../store/store';
+    import {optionsStore, reservationStore, thesisStore} from '../../store/store';
     import {THESIS_ACTIONS} from '../../store/thesis';
     import {notificationBus} from '../../utils';
 
@@ -279,6 +281,7 @@
         },
         computed: {
             ...thesisStore.mapGetters(['availableExternalReviewersOptions']),
+            ...optionsStore.mapGetters(['typeAttachmentAcceptTypes']),
             availableExternalReviewers() {
                 return this.availableExternalReviewersOptions(this.thesis);
             }

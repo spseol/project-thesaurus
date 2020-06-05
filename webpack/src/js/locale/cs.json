@@ -77,7 +77,7 @@
   "Prepare": "Připravit",
   "Prepare admission": "Připravit zadání",
   "Prepare new thesis": "Vytvořit práci",
-  "Prepare single": "Připravit samostatnou",
+  "Prepare single": "Připravit jednotlivě",
   "Prepare thesis": "Připravit práci",
   "Prepared for pickup": "Přichystána k vyzvednutí",
   "Project THESAURUS": "Projekt THESAURUS",
@@ -163,7 +163,12 @@
     "justCancelled": "Rezerace byla zrušena.",
     "justCreated": "Rezervace byla úspěšně zaevidována.",
     "noActiveReservations": "Žádné aktivní rezervace",
-    "stateChanged": "Stav rezervace úspěšně změněn."
+    "stateChanged": "Stav rezervace úspěšně změněn.",
+    "cancel": {
+      "dialogTitle": "Zrušení rezervace",
+      "question": "Opravdu chcete stornovat rezervaci na práci",
+      "confirmationButton": "Ano, zrušit"
+    }
   },
   "review": {
     "commentPlaceholder": "Práce je ...",
@@ -217,5 +222,8 @@
   },
   "New attachment": "Nová příloha",
   "Type attachment": "Typ přílohy",
-  "New file": "Soubor"
+  "New file": "Soubor",
+  "Dark": "Tmavé",
+  "Light": "Světlé",
+  "Back to theses": "Zpět na seznam prací"
 }

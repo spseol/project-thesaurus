@@ -4,6 +4,20 @@ declare module 'axios' {
     }
 }
 
+
+declare module 'vue' {
+    type CallsObject = {
+        // webpack/node_modules/vue-call-store/src/mixin.js
+        isPending: (identifier: string) => boolean;
+        isDone: (identifier: string) => boolean;
+        hasFailed: (identifier: string) => boolean;
+    }
+
+    export default class Vue extends Vue {
+        $calls: CallsObject;
+    }
+}
+
 // TODO: https://pypi.org/project/django-typomatic/
 export declare class User extends Object {
     id: number;
@@ -11,9 +25,17 @@ export declare class User extends Object {
     full_name: string;
 }
 
+export declare class UserOption extends Object {
+    value: string;
+    username: string;
+    text: string;
+}
+
 export declare class TypeAttachment extends Object {
     name: string;
     identifier: string;
+    allowed_content_types: string[];
+    max_size: number;
 }
 
 export declare class Attachment extends Object {
@@ -36,6 +58,11 @@ export declare class Review extends Object {
     _deleteDialog: boolean;
 }
 
+export declare class Category extends Object {
+    id: string;
+    value: string;
+    text: string;
+}
 
 export declare class Reservation extends Object {
     id: string;
@@ -58,6 +85,7 @@ export declare class Thesis extends Object {
     authors: Array<User>;
     attachments: Array<Attachment>;
     reviews: Array<Review>;
+    category: Category;
 
     state: string;
     state_label: string;

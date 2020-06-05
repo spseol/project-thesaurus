@@ -262,7 +262,7 @@ class ThesisImportViewSet(GenericViewSet):
 
         # external
         user = User.objects.get_or_create_from_name(name=reviewer, thesis_id=None)[0]
-        # TODO: needed?
         user.groups.add(Group.objects.get_or_create(name='teacher')[0])
+        user.is_active = False
 
         return user

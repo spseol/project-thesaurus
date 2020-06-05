@@ -15,7 +15,7 @@
             class="body-2"
         >
             <template v-slot:expanded-item="{ headers, item }">
-                <td :colspan="headers.length" class="white lighten-5">
+                <td :colspan="headers.length" class="lighten-5" :class="{white: !$vuetify.theme.isDark}">
                     <ThesisDetailPanel
                         :thesis="item"
                     ></ThesisDetailPanel>
@@ -23,8 +23,9 @@
             </template>
 
             <template v-slot:item.edit="{ item }">
-                <v-dialog :fullscreen="$vuetify.breakpoint.smAndDown" max-width="80em"
-                    v-model="item.editDialog">
+                <v-dialog
+                    :fullscreen="$vuetify.breakpoint.smAndDown" max-width="80em" v-model="item.editDialog"
+                >
                     <template v-slot:activator="{ on }">
                         <v-btn icon v-on="on" small>
                             <v-icon>mdi-file-document-edit-outline</v-icon>

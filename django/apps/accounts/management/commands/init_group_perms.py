@@ -29,6 +29,7 @@ student	Can view Category
 student	Can add Reservation
 student	Can view Reservation
 student	Can view Review
+student	Can view Type attachment
 teacher	Can view Thesis
 teacher	Can add Review
 teacher	Can view Review

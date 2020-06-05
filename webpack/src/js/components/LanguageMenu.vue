@@ -29,6 +29,8 @@
     import qs from 'qs';
     import Vue from 'vue';
     import Axios from '../axios';
+    import {OPTIONS_ACTIONS} from '../store/options';
+    import {optionsStore} from '../store/store';
     import {pageContext} from '../utils';
 
     export default Vue.extend({
@@ -52,17 +54,20 @@
             }
         },
         methods: {
+            ...optionsStore.mapActions([
+                OPTIONS_ACTIONS.RELOAD_OPTIONS
+            ]),
             async setLang(language) {
                 if (language == this.locale) return;
                 let resp = await Axios.post('/api/i18n/setlang/', qs.stringify({language}));
 
                 this.locale = language;
                 Axios.defaults.headers['Accept-Language'] = language;
-                this.$router.push({
+                await this.$router.push({
                     params: {...(this.$route.params || {}), locale: language},
                     name: this.$route.name
                 });
-                return;
+                await this[OPTIONS_ACTIONS.RELOAD_OPTIONS]();
             }
         }
     });

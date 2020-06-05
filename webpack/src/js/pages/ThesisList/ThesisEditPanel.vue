@@ -215,7 +215,7 @@
                                             v-model="newAttachment.type_attachment" return-object clearable
                                         ></v-select>
                                         <v-file-input
-                                            :label="$t('New file')" hide-details
+                                            :label="$t('New file')" hide-details show-size
                                             v-model="newAttachment.file" v-if="newAttachment.type_attachment"
                                             :accept="newAttachment.type_attachment.allowed_content_types.join(',')"
                                             :prepend-icon="`$${newAttachment.type_attachment.identifier}`"

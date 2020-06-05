@@ -24,13 +24,17 @@ class UserQueryset(QuerySet):
 
 class UserManager(AuthUserManager):
     @staticmethod
-    def get_or_create_from_name(*, name: str, thesis_id: Optional[str]) -> Optional['User']:
+    def get_or_create_from_name(*, name: str, thesis_id: Optional[str]) -> typing.Tuple[Optional['User'], bool]:
         from apps.accounts.models import User
 
         name = name.replace('.', '. ').strip()
 
         if name.strip() == '-':
-            return None
+            return None, False
+
+        if len(name) > 28:
+            # two names in one cell
+            name = name.split(',', 1)[0]
 
         degree_after = None
         if ',' in name:

@@ -41,6 +41,7 @@ class BaseTypeModel(BaseModel):
         blank=True,
         choices=(),
     )
+    # TODO: remove?
     description = TextField(
         verbose_name=_('Description'),
         null=True,

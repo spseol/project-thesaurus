@@ -1,7 +1,17 @@
 <template>
     <v-container fluid>
         <v-card :loading="loading">
-            <v-card-title>{{ $t('Thesis review') }}</v-card-title>
+            <v-card-title>
+                {{ $t('Thesis review') }}
+
+                <v-btn
+                    @click="$router.back()" v-if="canBack"
+                    outlined text small rounded class="ml-3"
+                >
+                    <v-icon small class="mr-1">mdi-arrow-left-bold-circle-outline</v-icon>
+                    {{ $t('Back to theses') }}
+                </v-btn>
+            </v-card-title>
             <v-card-text>
                 <!-- TODO: disable all? https://stackoverflow.com/a/55915597 -->
                 <v-form @submit.prevent="submit" v-model="valid">
@@ -133,6 +143,8 @@
     import _ from 'lodash';
     import {Bold, BulletList, History, Italic, Link, ListItem, TiptapVuetify} from 'tiptap-vuetify';
     import Axios from '../../axios';
+    import {DASHBOARD_ACTIONS} from '../../store/dashboard';
+    import {dashboardStore} from '../../store/store';
     import {hasPerm} from '../../user';
     import {GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_4, notificationBus, pageContext} from '../../utils';
 
@@ -202,6 +214,9 @@
             },
             disabled() {
                 return !!this.review.id;
+            },
+            canBack() {
+                return window.history.length > 1;
             }
         },
         asyncComputed: {
@@ -214,6 +229,9 @@
             }
         },
         methods: {
+            ...dashboardStore.mapActions([
+                DASHBOARD_ACTIONS.LOAD_DASHBOARD
+            ]),
             valueToColor(v, scale = 3) {
                 return (scale === 3 ? GRADE_COLOR_SCALE_3 : GRADE_COLOR_SCALE_4)[v];
             },
@@ -229,7 +247,7 @@
 
                 if (resp.id) {
                     notificationBus.success(this.$t('review.justSubmitted'));
-                    this.$router.push(this.$i18nRoute({name: 'dashboard'}));
+                    await this.$router.push(this.$i18nRoute({name: 'dashboard'}));
                 } else {
                     this.messages = resp;
                     this.non_field_error_messages = resp.non_field_errors;

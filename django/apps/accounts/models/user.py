@@ -2,7 +2,7 @@ from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField
 from django.utils.translation import gettext_lazy as _
 
-from apps.accounts.models.managers import UserQueryset, UserManager
+from .managers import UserQueryset, UserManager
 
 
 class User(AbstractUser):
@@ -40,7 +40,7 @@ class User(AbstractUser):
     def get_full_name(self):
         return (
                        (
-                           f'{self.degree_before or ""}'
+                           f'{self.degree_before or ""} '
                            f'{self.first_name} {self.last_name}'
                            f'{(", " + self.degree_after) if self.degree_after else ""}'
                        ) + (f' ({self.school_class})' if self.school_class else '')

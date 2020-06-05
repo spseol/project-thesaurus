@@ -195,7 +195,7 @@ if DEBUG:
 ###### LDAP
 # https://github.com/etianen/django-python3-ldap
 
-LDAP_AUTH_URL = f"ldap://{config('DOCKER_HOST_IP', cast=str)}:{config('LDAP_PORT', default=389)}"
+LDAP_AUTH_URL = f"ldap://{config('LDAP_HOST', cast=str)}:{config('LDAP_PORT', cast=str)}"
 LDAP_AUTH_USE_TLS = False
 LDAP_AUTH_CONNECTION_USERNAME = config('LDAP_USERNAME', cast=str)
 LDAP_AUTH_CONNECTION_PASSWORD = config('LDAP_PASSWORD', cast=str)
@@ -265,6 +265,21 @@ MEDIA_URL = '/media/'
 ROOT_URLCONF = 'thesaurus.urls'
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+if not DEBUG:
+    SECURE_HSTS_SECONDS = 15768000
+
+    SECURE_HSTS_PRELOAD = True
+
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+    SECURE_SSL_REDIRECT = True
+
+    SESSION_COOKIE_SECURE = True
+
+    CSRF_COOKIE_SECURE = True
+
+    SECURE_REFERRER_POLICY = 'strict-origin'
 
 LOGIN_REDIRECT_URL = reverse_lazy('app')
 

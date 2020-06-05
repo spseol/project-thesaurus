@@ -3,6 +3,17 @@
 TIMEOUT=15
 QUIET=0
 
+DOCKER_HOST_IP=$(ip route show | awk '/default/ {print $3}')
+export DOCKER_HOST_IP
+
+if [ "$SQL_HOST" = "DOCKER_HOST" ]; then
+    SQL_HOST=$DOCKER_HOST_IP
+    export SQL_HOST
+fi
+
+HOST=$SQL_HOST
+PORT=$SQL_PORT
+
 echoerr() {
   if [ "$QUIET" -ne 1 ]; then printf "%s\n" "$*" 1>&2; fi
 }
@@ -20,7 +31,10 @@ USAGE
 }
 
 wait_for() {
+
   for i in `seq $TIMEOUT` ; do
+
+    echoerr "Waiting for $HOST:$PORT, $i/$TIMEOUT"
     nc -z "$HOST" "$PORT" > /dev/null 2>&1
     
     result=$?
@@ -39,11 +53,6 @@ wait_for() {
 while [ $# -gt 0 ]
 do
   case "$1" in
-    *:* )
-    HOST=$(printf "%s\n" "$1"| cut -d : -f 1)
-    PORT=$(printf "%s\n" "$1"| cut -d : -f 2)
-    shift 1
-    ;;
     -q | --quiet)
     QUIET=1
     shift 1
@@ -71,7 +80,7 @@ do
   esac
 done
 
-if [ "$HOST" = "" -o "$PORT" = "" ]; then
+if [ "$HOST" = "" ] || [ "$PORT" = "" ]; then
   echoerr "Error: you need to provide a host and port to test."
   usage 2
 fi

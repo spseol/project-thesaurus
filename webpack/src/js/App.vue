@@ -6,7 +6,7 @@
                     <v-list-item-group color="primary">
                         <v-list-item
                             v-for="item in menuItems" :key="item.text"
-                            :to="$i18nRoute(item.to)" exact
+                            :to="$i18nRoute(item.to)" v-bind="item.bind || {}"
                             v-has-perm:[item.perm]
                         >
                             <v-list-item-action>
@@ -20,9 +20,34 @@
                         </v-list-item>
                     </v-list-item-group>
                 </v-list>
-                <!-- to avoid flex circumstances of v-list-thesis -->
+                <!-- to avoid flex circumstances of v-list -->
                 <div>
-                    <LanguageMenu/>
+                    <v-menu top offset-y>
+                        <template v-slot:activator="{ on }">
+                            <v-list-item v-on="on">
+                                <v-list-item-action>
+                                    <v-icon>mdi-white-balance-sunny</v-icon>
+                                </v-list-item-action>
+                                <v-list-item-content>
+                                    <v-list-item-title>
+                                        {{ $vuetify.theme.dark ? $t('Dark') : $t('Light') }}
+                                    </v-list-item-title>
+                                </v-list-item-content>
+                            </v-list-item>
+                        </template>
+
+                        <v-list>
+                            <v-list-item @click="$vuetify.theme.dark = false">
+                                <v-list-item-title>{{ $t('Light') }}</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item @click="$vuetify.theme.dark = true">
+                                <v-list-item-title>{{ $t('Dark') }}</v-list-item-title>
+                            </v-list-item>
+                        </v-list>
+                    </v-menu>
+
+
+                    <LanguageMenu></LanguageMenu>
 
                     <v-list-item v-if="pageContext.djangoAdminUrl" :href="pageContext.djangoAdminUrl">
                         <v-list-item-action>
@@ -101,7 +126,7 @@
         computed: {
             menuItems() {
                 return [
-                    {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'dashboard'}},
+                    {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'dashboard'}, bind: {exact: true}},
                     {
                         icon: 'mdi-book-multiple',
                         text: this.$t('Theses'),

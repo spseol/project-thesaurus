@@ -3,6 +3,7 @@ from functools import cached_property
 from operator import attrgetter
 
 from django.contrib.auth import get_user_model
+from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
@@ -97,6 +98,11 @@ class Thesis(BaseTimestampedModel):
     reservable = models.BooleanField(
         verbose_name=_('Reservable'),
         default=True,
+    )
+
+    note = JSONField(
+        verbose_name=_('Additional note'),
+        default=dict,
     )
 
     objects = ThesisManager()

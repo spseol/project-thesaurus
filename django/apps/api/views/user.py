@@ -1,5 +1,8 @@
-from django.db.models import Count
+from django.db.models import Count, QuerySet
 from django.http import HttpRequest
+from django.utils.translation import ugettext_lazy as _
+from django_filters import FilterSet
+from django_filters.rest_framework import BooleanFilter
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.renderers import JSONRenderer
@@ -24,6 +27,19 @@ class UserFilterOptionsViewSet(ReadOnlyModelViewSet):
     )
 
 
+class StudentFilter(FilterSet):
+    only_active = BooleanFilter(method='filter_active', label=_('Include only active users'))
+
+    def filter_active(self, queryset: QuerySet, field_name, value: bool):
+        if value:
+            return queryset.filter(is_active=True)
+        return queryset
+
+    class Meta:
+        model = User
+        fields = ('only_active',)
+
+
 class StudentOptionsViewSet(ReadOnlyModelViewSet):
     queryset = User.school_users.students()
     pagination_class = None
@@ -32,6 +48,7 @@ class StudentOptionsViewSet(ReadOnlyModelViewSet):
         'first_name',
         'last_name',
     )
+    filterset_class = StudentFilter
 
 
 class TeacherOptionsViewSet(ReadOnlyModelViewSet):
@@ -51,4 +68,5 @@ class UserPermView(APIView):
     renderer_classes = (JSONRenderer,)
 
     def get(self, request: HttpRequest, perm: str):
+        # multiple perms?
         return Response(request.user.has_perm(perm))

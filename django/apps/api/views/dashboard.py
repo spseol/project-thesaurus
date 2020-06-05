@@ -39,8 +39,8 @@ class DashboardView(APIView):
             many=True,
             instance=author_theses
         )
+        # dynamically add submit_deadline to standard thesis serializer
         author_theses_serializer.child.fields['submit_deadline'] = DateField()
-        # TODO: theses waiting for physical submit
 
         return Response(data=dict(
             theses_ready_for_review=ThesisBaseSerializer(

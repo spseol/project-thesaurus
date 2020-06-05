@@ -140,7 +140,9 @@
             async queryStudentOptions(search) {
                 this.loading = true;
 
-                this.studentOptions = (await Axios.get(`/api/v1/student-options?${qs.stringify({search})}`)).data;
+                this.studentOptions = (
+                    await Axios.get(`/api/v1/student-options?only_active=true&${qs.stringify({search})}`)
+                ).data;
 
                 this.loading = false;
             },
@@ -180,7 +182,7 @@
                 if (resp.data.id) {
                     notificationBus.success(this.$t('thesis.justPrepared'));
                     Object.assign(this.$data, this.$options.data.apply(this));
-                    this.$router.push({name: 'thesis-list'});
+                    await this.$router.push({name: 'thesis-list'});
                 } else {
                     this.messages = resp.data;
                     _.forEach(

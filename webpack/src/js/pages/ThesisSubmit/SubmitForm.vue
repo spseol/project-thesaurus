@@ -51,19 +51,22 @@
                             :label="$t('Thesis text')"
                             v-model="thesis.thesisText"
                             :rules="[v => !!v]"
-                            accept="application/pdf"
+                            :accept="typeAttachmentAcceptTypes('thesis_text')"
+                            prepend-icon="$thesis_text"
                         ></v-file-input>
 
                         <v-file-input
                             :label="$t('Thesis poster')"
                             v-model="thesis.thesisPoster"
-                            accept="image/png"
+                            :accept="typeAttachmentAcceptTypes('thesis_poster')"
+                            prepend-icon="$thesis_poster"
                         ></v-file-input>
 
                         <v-file-input
                             :label="$t('Thesis attachment')"
                             v-model="thesis.thesisAttachment"
-                            accept="image/png"
+                            :accept="typeAttachmentAcceptTypes('thesis_attachment')"
+                            prepend-icon="$thesis_attachment"
                         ></v-file-input>
 
                         <v-divider></v-divider>
@@ -103,6 +106,8 @@
     import _ from 'lodash';
     import Vue from 'vue';
     import Axios from '../../axios';
+    import {OPTIONS_ACTIONS} from '../../store/options';
+    import {optionsStore} from '../../store/store';
     import {notificationBus, readFileAsync} from '../../utils';
 
     export default Vue.extend({
@@ -125,6 +130,7 @@
             };
         },
         computed: {
+            ...optionsStore.mapGetters(['typeAttachmentAcceptTypes']),
             submitHints() {
                 return _.chunk([
                     this.$t('thesis.submit.hintAdmission'),
@@ -138,6 +144,7 @@
             }
         },
         methods: {
+            ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS]),
             async submit() {
                 let formData = new FormData();
 
@@ -164,7 +171,7 @@
 
                 if (resp.data.id) {
                     notificationBus.success(this.$t('thesis.justSubmitted'));
-                    this.$router.push({name: 'dashboard'});
+                    await this.$router.push({name: 'dashboard'});
                 } else {
                     this.errorMessages = resp.data;
                     this.valid = false;
@@ -181,6 +188,7 @@
                 if (!this.valid)
                     this.valid = true;
             }, {deep: true});
+            await this[OPTIONS_ACTIONS.LOAD_OPTIONS]();
         }
     });
 </script>
