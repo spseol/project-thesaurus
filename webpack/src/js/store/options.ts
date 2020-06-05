@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {Commit} from 'vuex';
-import Axios from '../axios';
+import {CachedAxios} from '../axios';
 import {Category, TypeAttachment, UserOption} from '../types';
 
 export enum OPTIONS_MUTATIONS {
@@ -56,25 +56,25 @@ export default {
             commit(
                 OPTIONS_MUTATIONS.SET_LOAD_REQUEST,
                 Promise.all([
-                    Axios.get('/api/v1/user-filter-options', {allow403: true}).then(
+                    CachedAxios.get('/api/v1/user-filter-options', {allow403: true}).then(
                         r => commit(OPTIONS_MUTATIONS.SET, s => s.userFilter = r.data)
                     ),
-                    Axios.get('/api/v1/category-options', {allow403: true}).then(
+                    CachedAxios.get('/api/v1/category-options', {allow403: true}).then(
                         r => commit(OPTIONS_MUTATIONS.SET, s => s.category = r.data)
                     ),
-                    Axios.get('/api/v1/thesis-year-options', {allow403: true}).then(
+                    CachedAxios.get('/api/v1/thesis-year-options', {allow403: true}).then(
                         r => commit(OPTIONS_MUTATIONS.SET, s => s.thesisYear = r.data)
                     ),
-                    Axios.get('/api/v1/thesis-state-options', {allow403: true}).then(
+                    CachedAxios.get('/api/v1/thesis-state-options', {allow403: true}).then(
                         r => commit(OPTIONS_MUTATIONS.SET, s => s.thesisState = r.data)
                     ),
-                    Axios.get('/api/v1/reservation-state-options', {allow403: true}).then(
+                    CachedAxios.get('/api/v1/reservation-state-options', {allow403: true}).then(
                         r => commit(OPTIONS_MUTATIONS.SET, s => s.reservationState = r.data)
                     ),
-                    Axios.get('/api/v1/type-attachment', {allow403: true}).then(
+                    CachedAxios.get('/api/v1/type-attachment', {allow403: true}).then(
                         r => commit(OPTIONS_MUTATIONS.SET, s => s.typeAttachment = r.data)
                     ),
-                    Axios.get('/api/v1/teacher-options', {allow403: true}).then(
+                    CachedAxios.get('/api/v1/teacher-options', {allow403: true}).then(
                         r => commit(OPTIONS_MUTATIONS.SET, s => s.teacher = r.data)
                     )
                 ]).then(r => {

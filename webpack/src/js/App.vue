@@ -37,11 +37,11 @@
                         </template>
 
                         <v-list>
-                            <v-list-item @click="$vuetify.theme.dark = true">
-                                <v-list-item-title>{{ $t('Dark') }}</v-list-item-title>
-                            </v-list-item>
                             <v-list-item @click="$vuetify.theme.dark = false">
                                 <v-list-item-title>{{ $t('Light') }}</v-list-item-title>
+                            </v-list-item>
+                            <v-list-item @click="$vuetify.theme.dark = true">
+                                <v-list-item-title>{{ $t('Dark') }}</v-list-item-title>
                             </v-list-item>
                         </v-list>
                     </v-menu>

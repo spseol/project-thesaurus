@@ -28,6 +28,7 @@ config.plugins.push(
     // do not emit compiled assets that include errors
     new webpack.DefinePlugin({
         '__SENTRY_DSN__': '""',
+        '__DEVELOPMENT__': 'true',
     }),
 );
 
