@@ -29,6 +29,7 @@ class ThesisAdmin(ModelAdmin):
 
     list_filter = (
         'state',
+        'reservable',
         'category',
         'authors__school_class',
     )
@@ -36,6 +37,8 @@ class ThesisAdmin(ModelAdmin):
     autocomplete_fields = ('supervisor', 'opponent',)
 
     inlines = (AuthorInline,)
+
+    filter_vertical = ('authors',)
 
     def get_queryset(self, request):
         qs = super().get_queryset(request)
