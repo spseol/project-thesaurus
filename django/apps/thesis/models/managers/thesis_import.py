@@ -97,7 +97,7 @@ class ThesisImportManager(Manager):
                 thesis.full_clean(exclude=('registration_number', 'published_at'))
             except ValidationError as e:
                 line_status.append(dict(
-                    value='',  # .join(e.error_dict.values()),
+                    value=', '.join(map(lambda t: f'{t[0]}: {t[1]}', e.error_dict.items())),
                     error=True,
                 ))
             else:
@@ -194,7 +194,7 @@ class ThesisImportManager(Manager):
             raise ValidationError(_('Found thesis with same name: {}.').format(
                 ' ,'.join(map(str, same_title))
             ))
-        return title
+        return thesis.title
 
     def _set_supervisor(self, thesis: 'Thesis', supervisor: str):
         thesis.supervisor = self._load_reviewer(reviewer=supervisor)

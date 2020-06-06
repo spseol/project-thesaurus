@@ -5,6 +5,7 @@ from operator import attrgetter
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import JSONField
 from django.core.exceptions import ValidationError
+from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import TextChoices
@@ -103,6 +104,7 @@ class Thesis(BaseTimestampedModel):
     note = JSONField(
         verbose_name=_('Additional note'),
         default=dict, null=True, blank=True,
+        encoder=DjangoJSONEncoder,
     )
 
     objects = ThesisManager()

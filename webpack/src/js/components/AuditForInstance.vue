@@ -4,8 +4,8 @@
         max-width="80em" :fullscreen="$vuetify.breakpoint.smAndDown"
     >
         <template v-slot:activator="{ on }">
-            <v-btn fab dark elevation="2" color="orange" v-on="on" class="ma-2" :x-small="small" :small="!small">
-                <v-icon :x-small="small" color="black">mdi-timeline-clock-outline</v-icon>
+            <v-btn fab dark elevation="2" color="primary" v-on="on" class="ma-2" :x-small="small" :small="!small">
+                <v-icon :small="small">mdi-clock-outline</v-icon>
             </v-btn>
         </template>
 
@@ -69,7 +69,8 @@
                                     </thead>
                                     <tbody>
                                     <tr
-                                        v-for="(column_old_value, column_name) of r.row_data" :key="column_name"
+                                        v-for="[column_name, column_old_value, column_label] in sortRowData(r)"
+                                        :key="column_name"
                                         :class="{'orange accent-1': column_name in (r.changed_fields || {})}"
                                     >
                                         <td class="py-1 col-1 text-right">
@@ -78,16 +79,19 @@
                                                 icon="mdi-info" bottom
                                             >
                                                 <template v-slot:activator="{ on }">
-                                                    <code v-on="on">{{ tableColumnToLabel(r.__table__, column_name)
-                                                        }}</code>
+                                                    <code
+                                                        v-on="on" v-text="column_label"
+                                                    ></code>
                                                 </template>
 
                                                 {{ tableColumnToHelpText(r.__table__, column_name) }}
                                             </v-tooltip>
                                         </td>
 
-                                        <td class="py-1 col-3" v-for="value in [column_old_value || '', (r.changed_fields || {})[column_name] || '']">
-
+                                        <td
+                                            v-for="value in [column_old_value || '', (r.changed_fields || {})[column_name] || '']"
+                                            class="py-1 col-3"
+                                        >
                                             <!-- boolean, show checkboxes -->
                                             <template v-if="['t', 'f'].includes(value)">
                                                 <v-icon small :color="booleanToConf(value).color">
@@ -95,7 +99,7 @@
                                                 </v-icon>
                                             </template>
 
-                                            <!-- text, show truncated and in tooltip -->
+                                            <!-- long text, show truncated and tooltip -->
                                             <template v-else-if="value.length > 50">
                                                 <v-tooltip top max-width="70vw">
                                                     <template v-slot:activator="{ on }">
@@ -103,14 +107,15 @@
                                                         {{ truncateValue(value) }}
                                                     </span>
                                                     </template>
-                                                    {{ value }}
+                                                    '{{ value }}'
                                                 </v-tooltip>
                                             </template>
 
-                                            <!-- otherwise try to format by state.choices -->
+                                            <!-- otherwise filter by function -->
                                             <template v-else>
                                                 {{ filterDisplayValue(r.__table__, column_name, value) }}
 
+                                                <!-- maybe has own audit logs, display in following conditions -->
                                                 <!-- show recursively if -->
                                                 <!-- actually has some value -->
                                                 <!-- not reference to self -->
@@ -123,6 +128,7 @@
                                                     :pks-to-ignore="pksToIgnore.concat(modelPk)"
                                                 ></audit-for-instance>
 
+                                                <!-- object recursion -->
                                                 <v-icon small v-if="pksToIgnore.includes(value) || value === modelPk">
                                                     mdi-rotate-left
                                                 </v-icon>
@@ -229,6 +235,16 @@
             },
             dateToRelative(date) {
                 return moment(date, null, this.$i18n.locale).fromNow();
+            },
+            sortRowData(row) {
+                return _.sortBy(
+                    _.toPairs(
+                        row.row_data
+                    ).map(
+                        ([key, value]) => [key, value, this.tableColumnToLabel(row.__table__, key)]
+                    ),
+                    _.property('2.length')
+                );
             },
 
             async loadNext() {

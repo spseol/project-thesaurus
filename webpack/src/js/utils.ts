@@ -144,7 +144,7 @@ export const THEME_LIGHT_COLORS = {
     success: colors.green.base
 };
 export const THEME_DARK_COLORS = {
-    primary: colors.orange.base,
+    primary: colors.orange.darken2,
     secondary: colors.brown.base,
     accent: colors.deepOrange.base,
     error: colors.pink.base,
