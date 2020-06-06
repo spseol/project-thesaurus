@@ -1,6 +1,9 @@
 from typing import Optional
 
-from django.core.files.uploadedfile import UploadedFile
+from django.core.files.uploadedfile import TemporaryUploadedFile
+from django.core.files.uploadhandler import TemporaryFileUploadHandler
+from django.http import HttpRequest
+from django.templatetags.static import static
 from django.utils.translation import ugettext_lazy as _
 from rest_framework.decorators import action
 from rest_framework.request import Request
@@ -17,10 +20,12 @@ class ThesisImportViewSet(GenericViewSet):
     queryset = Thesis.api_objects.all()
     serializer_class = ThesisBaseSerializer
 
-    def create(self, request: Request, *args, **kwargs):
-        # request._request.upload_handlers = [TemporaryFileUploadHandler(request=request)]
+    def initialize_request(self, request: HttpRequest, *args, **kwargs):
+        request.upload_handlers = [TemporaryFileUploadHandler(request=request)]
+        return super().initialize_request(request, *args, **kwargs)
 
-        to_import: Optional[UploadedFile] = request.FILES.get('import')
+    def create(self, request: Request, *args, **kwargs):
+        to_import: Optional[TemporaryUploadedFile] = request.FILES.get('import')
         published_at = parse_date((request.data.get('published_at') + '/01').replace('/', '-'))
         if not (to_import and published_at):
             return Response(
@@ -42,10 +47,16 @@ class ThesisImportViewSet(GenericViewSet):
     def columns(self, request):
         asdict = lambda col: {k: getattr(col, k) for k in 'title description icon'.split(' ')}
         return Response(
-            data=tuple(
-                map(
-                    asdict,
-                    Thesis.import_objects.columns_definition
+            data=dict(
+                file_examples=dict(
+                    csv=static('thesis/import-example.csv'),
+                    xlsx=static('thesis/import-example.xlsx'),
+                ),
+                columns=tuple(
+                    map(
+                        asdict,
+                        Thesis.import_objects.columns_definition
+                    )
                 )
             )
         )

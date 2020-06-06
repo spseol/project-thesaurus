@@ -8,6 +8,7 @@
                         <v-col cols="6">
                             <h3 class="headline">{{ $t('File format') }}</h3>
                             <v-list>
+                                <v-subheader>{{ $t('thesis.import.preferredType') }}</v-subheader>
                                 <v-list-item>
                                     <v-list-item-icon>
                                         <v-icon>mdi-file-excel</v-icon>
@@ -20,13 +21,17 @@
                                             {{ $t('thesis.import.ExcelFormatDescription') }}
                                         </v-list-item-subtitle>
                                         <v-list-item-action-text>
-                                            <v-btn text small outlined>
+                                            <v-btn
+                                                :href="columns.file_examples.xlsx" v-if="columns.file_examples.xlsx"
+                                                text small outlined class="mt-1"
+                                            >
                                                 <v-icon small>mdi-download</v-icon>
                                                 {{ $t('thesis.import.downloadExampleExcelFile') }}
                                             </v-btn>
                                         </v-list-item-action-text>
                                     </v-list-item-content>
                                 </v-list-item>
+                                <v-subheader>{{ $t('thesis.import.possibleType') }}</v-subheader>
                                 <v-list-item>
                                     <v-list-item-icon>
                                         <v-icon>mdi-file</v-icon>
@@ -39,7 +44,10 @@
                                             {{ $t('thesis.import.CSVFormatDescription') }}
                                         </v-list-item-subtitle>
                                         <v-list-item-action-text>
-                                            <v-btn text small outlined>
+                                            <v-btn
+                                                :href="columns.file_examples.csv" v-if="columns.file_examples.csv"
+                                                text small outlined class="mt-1"
+                                            >
                                                 <v-icon small>mdi-download</v-icon>
                                                 {{ $t('thesis.import.downloadExampleCSVFile') }}
                                             </v-btn>
@@ -51,7 +59,7 @@
                         <v-col cols="6">
                             <h3 class="headline">{{ $t('Columns') }}</h3>
                             <v-list>
-                                <v-list-item v-for="col in columns" :key="col.title">
+                                <v-list-item v-for="col in columns.columns" :key="col.title">
                                     <v-list-item-icon>
                                         <v-icon>mdi-{{ col.icon }}</v-icon>
                                     </v-list-item-icon>
@@ -63,9 +71,6 @@
                             </v-list>
                         </v-col>
                     </v-row>
-
-                    <h3 class="headline">{{ $t('Example') }}</h3>
-                    <code class="ma-1 pa-2 black white--text" v-for="ex in examples">{{ ex }}</code>
                     <v-progress-linear indeterminate v-if="$asyncComputed.columns.updating"></v-progress-linear>
                 </v-alert>
                 <v-text-field
@@ -83,8 +88,8 @@
 
                 <v-row no-gutters>
                     <v-spacer></v-spacer>
-                    <v-btn type="submit" color="success" :loading="loading" :disabled="!valid">
-                        {{ $t('Import theses') }}
+                    <v-btn type="submit" color="success" :loading="loading" :disabled="!valid || !published_at || !file">
+                        {{ $t('thesis.import.loadAndCheck') }}
                     </v-btn>
                 </v-row>
             </v-form>
@@ -97,7 +102,7 @@
                         <thead>
                         <tr>
                             <th>#</th>
-                            <th v-for="col in columns">{{ col.title }}</th>
+                            <th v-for="col in columns.columns">{{ col.title }}</th>
                             <th>{{ $t('Status') }}</th>
                         </tr>
                         </thead>
@@ -123,9 +128,16 @@
                     </v-simple-table>
                     <div class="d-flex mt-3 align-center">
                         <v-spacer></v-spacer>
+
                         <v-alert color="red" text v-if="data.error">
                             {{ $t('thesis.import.containingErrors') }}
                         </v-alert>
+
+                        <v-alert color="info" text v-if="!data.error && data.statuses" class="mb-0 mr-3">
+                            {{ $t('thesis.import.totalTheses') }}:
+                            {{ data.statuses.length }}
+                        </v-alert>
+
                         <v-alert color="green" text v-if="!data.error" class="mb-0">
                             <v-checkbox
                                 v-if="!data.error"
@@ -153,13 +165,13 @@
 <script type="text/tsx">
     import Vue from 'vue';
     import Axios from '../../axios';
-    import {asyncOptions, notificationBus, readFileAsync} from '../../utils';
+    import {asyncComputed, asyncOptions, notificationBus, readFileAsync} from '../../utils';
 
     export default Vue.extend({
         name: 'ImportForm',
         asyncComputed: {
             categoryOptions: asyncOptions('/api/v1/category-options'),
-            columns: asyncOptions('/api/v1/thesis-import/columns')
+            columns: asyncComputed('/api/v1/thesis-import/columns', {default: {file_examples: {}, columns: []}})
         },
         data() {
             return {
@@ -170,10 +182,6 @@
                 importAgreement: false,
                 valid: false,
                 published_at: new Date().toISOString().substr(0, 7).replace('-', '/'),
-                examples: [
-                    'obs39515;TL;Aktuální situace na bosensko-chorvatských hranicích;Jiří Peterka;bartonek;08.07.2020',
-                    'hro38531,jor39322;Vt;Analýza konkurenceschopnosti podniku;john;Mgr. Vladimír Tatarkaš;30.06.2020'
-                ]
             };
         },
         methods: {

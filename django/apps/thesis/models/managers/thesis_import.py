@@ -1,14 +1,18 @@
 import csv
-import datetime
 from dataclasses import dataclass
+from datetime import datetime
 from io import StringIO
 from operator import methodcaller, attrgetter
-from typing import Any, TYPE_CHECKING, Callable, List, Dict
+from typing import Any, TYPE_CHECKING, Callable, List, Dict, Union
 
 from django.core.exceptions import ValidationError
+from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.db import transaction
 from django.db.models import QuerySet, Manager
+from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
+from openpyxl import load_workbook, Workbook
+from openpyxl.utils.exceptions import InvalidFileException
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 
@@ -27,10 +31,7 @@ class Column:
 
 
 class ThesisImportManager(Manager):
-    @transaction.atomic
-    def import_from_file(self, file_to_import, published_at: datetime.date, is_final_import: bool):
-
-        statuses = []
+    def _load_csv(self, file_to_import):
         content = file_to_import.file.read()
         try:
             content = content.decode('utf-8')
@@ -46,9 +47,6 @@ class ThesisImportManager(Manager):
 
         data_file = StringIO(content)
 
-        # file_type = filetype.guess(data_file)
-        # load_workbook(to_import)
-
         try:
             dialect = csv.Sniffer().sniff(data_file.read(1024))
             data_file.seek(0)
@@ -59,15 +57,34 @@ class ThesisImportManager(Manager):
                 success=False,
             ), status=HTTP_400_BAD_REQUEST)
 
+        return csv.reader(data_file, dialect=dialect)
+
+    def _load_xls(self, wb: Workbook):
+        return list(wb.active.values)
+
+    @transaction.atomic
+    def import_from_file(self, file_to_import: TemporaryUploadedFile, published_at: datetime.date,
+                         is_final_import: bool):
         sid = transaction.savepoint()
 
-        data = csv.reader(data_file, dialect=dialect)
-        for line in data:
+        try:
+            wb = load_workbook(file_to_import.temporary_file_path(), read_only=True, data_only=True, )
+
+            data_or_response = self._load_xls(wb=wb)
+        except InvalidFileException as e:
+            data_or_response = self._load_csv(file_to_import)
+
+        if isinstance(data_or_response, HttpResponse):
+            return data_or_response
+
+        statuses = []
+
+        for line in data_or_response:
             thesis = self.model(published_at=published_at)
             line_status: List[Dict[str, Any]] = []
 
-            data = self._line_to_dict(line=line)
-            _store_value = self._prepare_store_value(thesis=thesis, data=data)
+            data_or_response = self._line_to_dict(line=line)
+            _store_value = self._prepare_store_value(thesis=thesis, data=data_or_response)
 
             line_status.extend((
                 _store_value(self._set_category),
@@ -128,7 +145,7 @@ class ThesisImportManager(Manager):
             try:
                 value = dict(
                     value=str(
-                        fnc(thesis, data.get(fnc.__name__[5:]) or '')
+                        fnc(thesis, data.get(fnc.__name__[5:]) or '') or ''
                     )
                 )
             except ValidationError as e:
@@ -175,7 +192,7 @@ class ThesisImportManager(Manager):
         same_title = self.filter(title=thesis.title)
         if same_title.exists():
             raise ValidationError(_('Found thesis with same name: {}.').format(
-                ','.join(map(str, same_title))
+                ' ,'.join(map(str, same_title))
             ))
         return title
 
@@ -191,8 +208,11 @@ class ThesisImportManager(Manager):
             ' (E)' if not thesis.opponent.is_active else ''
         ) if thesis.opponent else None
 
-    def _set_submit_deadline(self, thesis: 'Thesis', submit_deadline: str):
-        thesis.submit_deadline = parse_date(submit_deadline)
+    def _set_submit_deadline(self, thesis: 'Thesis', submit_deadline: Union[str, datetime]):
+        if isinstance(submit_deadline, str):
+            thesis.submit_deadline = parse_date(submit_deadline)
+        if isinstance(submit_deadline, datetime):
+            thesis.submit_deadline = submit_deadline.date()
         return thesis.submit_deadline
 
     def _load_reviewer(self, reviewer: str):
@@ -252,7 +272,7 @@ class ThesisImportManager(Manager):
             ),
             Column(
                 _('Deadline'),
-                _('Submit deadline, DD.MM.YYYY'),
+                _('Submit deadline, DD.MM.YYYY, not required'),
                 'calendar',
                 self._set_submit_deadline,
             ),

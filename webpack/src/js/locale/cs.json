@@ -187,11 +187,15 @@
   "thesis": {
     "import": {
       "containingErrors": "Soubor obsahuje chyby, nelze importovat rovnou. Opravte prosím chyby a iniciujte import znovu.",
-      "ExcelFormatDescription": "Soubor ve formátu XLSX",
-      "downloadExampleExcelFile": "Stáhnout vzorový Excel soubor ve formátu xlsx",
-      "CSVFormatDescription": "Soubor ve formátu CSV, oddělovačem je středník, šest sloupců",
+      "ExcelFormatDescription": "Soubor ve formátu XLSX, šest sloupců dle definice",
+      "downloadExampleExcelFile": "Stáhnout vzorový Excel soubor",
+      "CSVFormatDescription": "Soubor ve formátu CSV, oddělovačem je středník, šest sloupců, kódování UTF-8",
       "downloadExampleCSVFile": "Stáhnout vzorový CSV soubor",
-      "importAgreement": "Souhlasím se správností dat a potvrzuji import prací."
+      "importAgreement": "Souhlasím se správností dat a potvrzuji import prací.",
+      "preferredType": "Preferovaný typ",
+      "possibleType": "Alternativně",
+      "loadAndCheck": "Načíst a zkontrolovat data",
+      "totalTheses": "Načteno prací"
     },
     "invalidPublishedAtFormat": "Nevalidní formát data, očekává se RRRR/MM",
     "invalidSNformat": "Není ve formátu <písmeno>XXX",
@@ -214,7 +218,8 @@
       "hintThesisFinal": "Odevzdávám konečnou verzi práce."
     },
     "deleteAttachmentQuestion": "Opravdu chcete smazat přílohu k práci",
-    "deleteReviewQuestion": "Opravdu chcete smazat posudek k práci"
+    "deleteReviewQuestion": "Opravdu chcete smazat posudek k práci",
+    "justSentToSubmit": "Práce byla odeslána studentovi!"
   },
   "Submit deadline": "Termín pro odevzdání",
   "Delete attachment": "Smazat přílohu",
@@ -230,5 +235,6 @@
   "Dark": "Tmavé",
   "Light": "Světlé",
   "Back to theses": "Zpět na seznam prací",
-  "Excel file": "Excel soubor"
+  "Excel file": "Excel soubor",
+  "Send to submit": "Odeslat k odevzdání"
 }
