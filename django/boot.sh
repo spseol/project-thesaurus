@@ -3,11 +3,11 @@
 TIMEOUT=15
 QUIET=0
 
-DOCKER_HOST_IP=$(ip route show | awk '/default/ {print $3}')
-export DOCKER_HOST_IP
+DOCKER_HOST=$(ip route show | awk '/default/ {print $3}')
+export DOCKER_HOST
 
 if [ "$SQL_HOST" = "DOCKER_HOST" ]; then
-    SQL_HOST=$DOCKER_HOST_IP
+    SQL_HOST=$DOCKER_HOST
     export SQL_HOST
 fi
 

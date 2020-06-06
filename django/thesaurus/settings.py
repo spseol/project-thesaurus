@@ -7,12 +7,13 @@ import os
 import re
 from logging.config import dictConfig
 
-from decouple import AutoConfig
 from django.core.validators import MinValueValidator
 from django.db import DEFAULT_DB_ALIAS
 from django.urls import reverse_lazy
 from django.utils.log import DEFAULT_LOGGING
 from django.utils.translation import gettext_lazy as _
+
+from .config import AutoConfig
 
 config = AutoConfig(search_path='/run/secrets/')  # .env file is injected by docker secrets
 
