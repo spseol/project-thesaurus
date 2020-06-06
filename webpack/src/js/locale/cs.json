@@ -45,7 +45,7 @@
   "External review": "Externí posudek",
   "File format": "Formát souboru",
   "File to import": "Soubor k importu",
-  "Final import": "Finálně importovat",
+  "Final import": "Importovat",
   "Finished": "Dokončené",
   "For user": "Pro uživatele",
   "Formal editing, work with sources, citations in the text": "Formální úprava, práce s literaturou, citace v textu",
@@ -181,13 +181,17 @@
     "questionsPlaceholder": "Vysvětlete prosím ...",
     "submitHint": "Odesláním potvrzuji správnost a konečnost tohoto posudku.",
     "submittedAt": "Posudek potvrzen dne",
-    "justDeleted": ""
+    "justDeleted": "Posudek byl smazán!"
   },
   "supervisor": "vedoucí",
   "thesis": {
     "import": {
       "containingErrors": "Soubor obsahuje chyby, nelze importovat rovnou. Opravte prosím chyby a iniciujte import znovu.",
-      "fileFormatDescription": "Soubor ve formátu CSV, oddělovačem je středník, šest sloupců"
+      "ExcelFormatDescription": "Soubor ve formátu XLSX",
+      "downloadExampleExcelFile": "Stáhnout vzorový Excel soubor ve formátu xlsx",
+      "CSVFormatDescription": "Soubor ve formátu CSV, oddělovačem je středník, šest sloupců",
+      "downloadExampleCSVFile": "Stáhnout vzorový CSV soubor",
+      "importAgreement": "Souhlasím se správností dat a potvrzuji import prací."
     },
     "invalidPublishedAtFormat": "Nevalidní formát data, očekává se RRRR/MM",
     "invalidSNformat": "Není ve formátu <písmeno>XXX",
@@ -225,5 +229,6 @@
   "New file": "Soubor",
   "Dark": "Tmavé",
   "Light": "Světlé",
-  "Back to theses": "Zpět na seznam prací"
+  "Back to theses": "Zpět na seznam prací",
+  "Excel file": "Excel soubor"
 }

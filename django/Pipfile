@@ -35,6 +35,7 @@ uvicorn = "*"
 WeasyPrint = "*"
 Werkzeug = "*"
 django-admin-env-notice = "*"
+openpyxl = "*"
 
 [dev-packages]
 

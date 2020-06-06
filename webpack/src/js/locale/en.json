@@ -194,7 +194,12 @@
   "thesis": {
     "import": {
       "containingErrors": "Sorry, but the import file contains some errors:",
-      "fileFormatDescription": "Sorry, cannot parse input file:"
+      "fileFormatDescription": "Sorry, cannot parse input file:",
+      "ExcelFormatDescription": "",
+      "downloadExampleExcelFile": "",
+      "CSVFormatDescription": "",
+      "downloadExampleCSVFile": "",
+      "importAgreement": ""
     },
     "invalidPublishedAtFormat": "Invalid format of publication",
     "invalidSNformat": "Not in format AXXX.",
@@ -232,5 +237,6 @@
   "New file": "New file",
   "Dark": "Dark",
   "Light": "Light",
-  "Back to theses": "Back to these"
+  "Back to theses": "Back to these",
+  "Excel file": ""
 }

@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f171b92b24ebb131f9445fadbe4e7cac68e5c5ec2bbb30552c355944341662b4"
+            "sha256": "c09eee786cbbb07fd36af3ff1353c636fd88edcfc7c474611bc206b12b50bb4b"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -258,6 +258,12 @@
             "index": "pypi",
             "version": "==1.2.0"
         },
+        "et-xmlfile": {
+            "hashes": [
+                "sha256:614d9722d572f6246302c4491846d2c393c199cfa4edc9af593437691683335b"
+            ],
+            "version": "==1.0.1"
+        },
         "faker": {
             "hashes": [
                 "sha256:103c46b9701a151299c5bffe6fefcd4fb5fb04c3b5d06bee4952d36255d44ea2",
@@ -321,6 +327,13 @@
             "markers": "sys_platform != 'win32' and sys_platform != 'cygwin' and platform_python_implementation != 'PyPy'",
             "version": "==0.1.1"
         },
+        "jdcal": {
+            "hashes": [
+                "sha256:1abf1305fce18b4e8aa248cf8fe0c56ce2032392bc64bbd61b5dff2a19ec8bba",
+                "sha256:472872e096eb8df219c23f2689fc336668bdb43d194094b5cc1707e1640acfc8"
+            ],
+            "version": "==1.4.1"
+        },
         "ldap3": {
             "hashes": [
                 "sha256:17f04298b70bf7ecaa5db8a7d8622b5a962ef7fc2b245b2eea705ac1c24338c0",
@@ -357,6 +370,13 @@
                 "sha256:2d82818f5bb3e369420cb3c4060a7970edba416647068eb4c5343488a6c604a8"
             ],
             "version": "==0.4.3"
+        },
+        "openpyxl": {
+            "hashes": [
+                "sha256:547a9fc6aafcf44abe358b89ed4438d077e9d92e4f182c87e2dc294186dc4b64"
+            ],
+            "index": "pypi",
+            "version": "==3.0.3"
         },
         "packaging": {
             "hashes": [

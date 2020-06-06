@@ -4,7 +4,7 @@ from django.db.models import TextChoices, Manager
 from django.utils.translation import gettext_lazy as _
 from django_lifecycle import hook, AFTER_SAVE, AFTER_CREATE
 
-from apps.thesis.models.managers.reservation import OpenReservationsManager
+from apps.thesis.models.managers import OpenReservationsManager
 from apps.utils.models import BaseTimestampedModel
 
 

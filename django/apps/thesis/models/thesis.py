@@ -11,7 +11,7 @@ from django.db.models import TextChoices
 from django.utils.translation import gettext_lazy as _
 from django_lifecycle import hook, AFTER_UPDATE
 
-from apps.thesis.models.managers.thesis import ThesisApiManager, ThesisManager, ThesisImportManager
+from apps.thesis.models.managers import ThesisApiManager, ThesisManager, ThesisImportManager
 from apps.utils.models import BaseTimestampedModel
 
 
@@ -102,7 +102,7 @@ class Thesis(BaseTimestampedModel):
 
     note = JSONField(
         verbose_name=_('Additional note'),
-        default=dict,
+        default=dict, null=True, blank=True,
     )
 
     objects = ThesisManager()

@@ -10,6 +10,25 @@
                             <v-list>
                                 <v-list-item>
                                     <v-list-item-icon>
+                                        <v-icon>mdi-file-excel</v-icon>
+                                    </v-list-item-icon>
+                                    <v-list-item-content>
+                                        <v-list-item-title>
+                                            {{ $t('Excel file') }}
+                                        </v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            {{ $t('thesis.import.ExcelFormatDescription') }}
+                                        </v-list-item-subtitle>
+                                        <v-list-item-action-text>
+                                            <v-btn text small outlined>
+                                                <v-icon small>mdi-download</v-icon>
+                                                {{ $t('thesis.import.downloadExampleExcelFile') }}
+                                            </v-btn>
+                                        </v-list-item-action-text>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-list-item>
+                                    <v-list-item-icon>
                                         <v-icon>mdi-file</v-icon>
                                     </v-list-item-icon>
                                     <v-list-item-content>
@@ -17,8 +36,14 @@
                                             {{ $t('CSV file') }}
                                         </v-list-item-title>
                                         <v-list-item-subtitle>
-                                            {{ $t('thesis.import.fileFormatDescription') }}
+                                            {{ $t('thesis.import.CSVFormatDescription') }}
                                         </v-list-item-subtitle>
+                                        <v-list-item-action-text>
+                                            <v-btn text small outlined>
+                                                <v-icon small>mdi-download</v-icon>
+                                                {{ $t('thesis.import.downloadExampleCSVFile') }}
+                                            </v-btn>
+                                        </v-list-item-action-text>
                                     </v-list-item-content>
                                 </v-list-item>
                             </v-list>
@@ -96,19 +121,29 @@
                         </tr>
                         </tbody>
                     </v-simple-table>
-                    <v-row class="mt-3">
+                    <div class="d-flex mt-3 align-center">
                         <v-spacer></v-spacer>
                         <v-alert color="red" text v-if="data.error">
                             {{ $t('thesis.import.containingErrors') }}
                         </v-alert>
+                        <v-alert color="green" text v-if="!data.error" class="mb-0">
+                            <v-checkbox
+                                v-if="!data.error"
+                                v-model="importAgreement" hide-details
+                                :label="$t('thesis.import.importAgreement')"
+                                class="mr-3 mt-0 pt-0"
+                            ></v-checkbox>
+                        </v-alert>
                         <v-btn
-                            type="submit" color="green" dark
-                            v-if="!data.error" :disabled="data.error"
+                            v-if="!data.error"
+                            :disabled="data.error || !importAgreement"
                             @click="submitFinal"
+                            class="align-self-center ml-5"
+                            type="submit" color="green" large
                         >
                             {{ $t('Final import') }}
                         </v-btn>
-                    </v-row>
+                    </div>
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -132,6 +167,7 @@
                 file: null,
                 data: {},
                 importDialog: false,
+                importAgreement: false,
                 valid: false,
                 published_at: new Date().toISOString().substr(0, 7).replace('-', '/'),
                 examples: [
@@ -166,12 +202,12 @@
                 if (resp.data.success) {
                     notificationBus.success(resp.data.message);
                     this.importDialog = false;
-                    await this.$router.push(this.$i18nRoute({to: 'thesis-list'}));
+                    await this.$router.push(this.$i18nRoute({name: 'thesis-list'}));
                 } else {
                     notificationBus.warning(resp.data.message);
                 }
                 this.data = resp.data;
-
+                this.importAgreement = false;
                 this.loading = false;
             },
             async send(final = false) {

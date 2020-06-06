@@ -21,6 +21,7 @@ export enum THESIS_ACTIONS {
     SUBMIT_EXTERNAL_REVIEW = 'Submit external review',
     PUBLISH_THESIS = 'Publish thesis',
     SEND_TO_REVIEW = 'Send to review',
+    SEND_TO_SUBMIT = 'Send to submit',
 }
 
 const state = {
@@ -150,6 +151,16 @@ export default {
         async [THESIS_ACTIONS.SEND_TO_REVIEW]({commit, state: State}, {thesis_id}) {
             return Axios.patch(
                 `/api/v1/thesis/${thesis_id}/send_to_review`
+            ).then(r => {
+                if (r.status == 200)
+                    commit(THESIS_MUTATIONS.STORE_THESIS, r.data);
+
+                return r.data;
+            });
+        },
+        async [THESIS_ACTIONS.SEND_TO_SUBMIT]({commit, state: State}, {thesis_id}) {
+            return Axios.patch(
+                `/api/v1/thesis/${thesis_id}/send_to_submit`
             ).then(r => {
                 if (r.status == 200)
                     commit(THESIS_MUTATIONS.STORE_THESIS, r.data);

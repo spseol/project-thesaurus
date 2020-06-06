@@ -50,6 +50,15 @@
         </template>
         <v-btn
             v-has-perm:thesis.change_thesis
+            v-if="thesis.state === 'created'"
+            v-text="$t('Send to submit')"
+            small color="primary" elevation="0"
+            @click="sendToSubmit"
+            :disabled="loading"
+        ></v-btn>
+
+        <v-btn
+            v-has-perm:thesis.change_thesis
             v-if="thesis.state === 'submitted'"
             v-text="$t('Send to review')"
             small color="primary" elevation="0"
@@ -290,7 +299,8 @@
             ...thesisStore.mapActions([
                 THESIS_ACTIONS.SUBMIT_EXTERNAL_REVIEW,
                 THESIS_ACTIONS.PUBLISH_THESIS,
-                THESIS_ACTIONS.SEND_TO_REVIEW
+                THESIS_ACTIONS.SEND_TO_REVIEW,
+                THESIS_ACTIONS.SEND_TO_SUBMIT
             ]),
             ...reservationStore.mapActions([
                 RESERVATION_ACTIONS.CREATE_RESERVATION
@@ -323,6 +333,16 @@
                 if (data.id) {
                     notificationBus.success(this.$t('thesis.justSentToReview'));
                     this.sendToReviewDialog = false;
+                    this.dialogLoading = false;
+                }
+            },
+            async sendToSubmit() {
+                this.dialogLoading = true;
+
+                const data = await this[THESIS_ACTIONS.SEND_TO_SUBMIT]({thesis_id: this.thesis.id});
+
+                if (data.id) {
+                    notificationBus.success(this.$t('thesis.justSentToSubmit'));
                     this.dialogLoading = false;
                 }
             },

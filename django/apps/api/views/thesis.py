@@ -161,6 +161,7 @@ class ThesisViewSet(ModelViewSet):
 
         return Response(data=serializer.data)
 
+    send_to_submit = _state_change_action('send_to_submit', Thesis.State.READY_FOR_SUBMIT)
     send_to_review = _state_change_action('send_to_review', Thesis.State.READY_FOR_REVIEW)
     publish = _state_change_action('publish', Thesis.State.PUBLISHED)
 
