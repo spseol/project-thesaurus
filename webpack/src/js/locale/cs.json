@@ -151,9 +151,19 @@
   "opponent": "oponent",
   "page": {
     "403note": "Na zobrazení této stránky nemáte oprávnění.",
-    "403title": "Přístup odmítnut",
     "404note": "Tuto stránku se bohužel nepodařilo nalézt.",
-    "404title": "Stránka nenalezena"
+    "title": {
+      "403": "Přístup odmítnut",
+      "404": "Stránka nenalezena",
+      "dashboard": "Přehled",
+      "login": "Přihlášení",
+      "reservationList": "Seznam rezervací",
+      "reviewSubmit": "Odeslání posudku",
+      "thesisList": "Seznam prací",
+      "thesisSinglePrepare": "Příprava práce",
+      "thesisBulkImport": "Hromadný import prací",
+      "thesisSubmit": "Odevzdání práce"
+    }
   },
   "reservation": {
     "cancelQuestion": "Opravdu chcete zrušit na práci",

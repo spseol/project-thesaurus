@@ -59,10 +59,10 @@
 </template>
 
 <script type="text/tsx">
+    import CallLoader from '../../components/CallLoader.vue';
     import {RESERVATION_ACTIONS} from '../../store/reservation';
     import {reservationStore} from '../../store/store';
     import {notificationBus} from '../../utils';
-    import CallLoader from './CallLoader.vue';
 
     export default {
         name: 'MyReservations',

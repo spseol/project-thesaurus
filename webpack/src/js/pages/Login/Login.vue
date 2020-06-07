@@ -1,5 +1,5 @@
 <template>
-    <v-app class="app">
+    <v-app class="app" v-page-title="$t('page.title.login')">
         <v-content>
             <v-container class="fill-height" fluid>
                 <v-row justify="center">

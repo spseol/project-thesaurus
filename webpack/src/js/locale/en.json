@@ -158,9 +158,19 @@
   "opponent": "opponent",
   "page": {
     "403note": "Sorry, you have no permissions to view this page.",
-    "403title": "Access denied",
     "404note": "Sorry, this page has not been found.",
-    "404title": "Page not found"
+    "title": {
+      "403": "Access denied",
+      "404": "Page not found",
+      "dashboard": "Dashboard",
+      "login": "Login",
+      "reservationList": "Reservation list",
+      "reviewSubmit": "Review submit",
+      "thesisList": "Thesis list",
+      "thesisSinglePrepare": "Single prepare of thesis",
+      "thesisBulkImport": "Theses bulk import",
+      "thesisSubmit": "Submit thesis"
+    }
   },
   "reservation": {
     "cancelQuestion": "Are you sure about cancelling reservation for thesis",

@@ -1,5 +1,5 @@
 <template>
-    <v-row>
+    <v-row v-page-title="$t('page.title.reservationList')">
         <v-col cols="12">
             <ReservationList></ReservationList>
         </v-col>

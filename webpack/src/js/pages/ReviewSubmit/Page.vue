@@ -1,8 +1,10 @@
 <template>
-    <ReviewForm
-        :thesis-loaded="thesis"
-        :review-loaded="review"
-    ></ReviewForm>
+    <v-row no-gutters v-page-title="$t('page.title.reviewSubmit')">
+        <ReviewForm
+            :thesis-loaded="thesis"
+            :review-loaded="review"
+        ></ReviewForm>
+    </v-row>
 </template>
 
 <script type="text/tsx">

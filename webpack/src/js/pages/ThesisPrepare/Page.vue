@@ -1,6 +1,5 @@
 <template>
-    <div>
-
+    <div v-page-title="tab === 'single' ? $t('page.title.thesisSinglePrepare') : $t('page.title.thesisBulkImport')">
         <portal to="navbar-center" v-if="$route.name === 'thesis-prepare'">
             <v-btn-toggle background-color="primary" v-model="tab">
                 <v-btn text value="single">{{ $t('Prepare single') }}</v-btn>
