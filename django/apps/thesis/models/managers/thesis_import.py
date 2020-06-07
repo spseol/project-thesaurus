@@ -80,7 +80,7 @@ class ThesisImportManager(Manager):
         statuses = []
 
         for line in data_or_response:
-            thesis = self.model(published_at=published_at)
+            thesis = self.model(published_at=published_at, note=dict(imported_from=tuple(line)))
             line_status: List[Dict[str, Any]] = []
 
             data_or_response = self._line_to_dict(line=line)
