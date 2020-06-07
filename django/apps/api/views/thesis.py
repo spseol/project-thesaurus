@@ -98,7 +98,6 @@ class ThesisViewSet(ModelViewSet):
             supervisor=serializer.validated_data.get('supervisor'),
             authors=get_list_or_404(
                 get_user_model(),
-                # TODO: refaactor to custom action /prepare?
                 pk__in=serializer.initial_data.get('authors').split(',')
             ),
             published_at=parse_date((serializer.initial_data.get('published_at') + '/01').replace('/', '-'))
@@ -126,7 +125,6 @@ class ThesisViewSet(ModelViewSet):
         if published_at := serializer.initial_data.get('published_at'):
             data['published_at'] = parse_date((published_at + '/01').replace('/', '-'))
 
-        # TODO: refactor to custom action /edit?
         serializer.save(**data)
 
     @action(methods=['patch'], detail=True, permission_classes=[CanSubmitThesisPermission])

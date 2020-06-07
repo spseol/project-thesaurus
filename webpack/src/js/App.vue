@@ -6,7 +6,7 @@
                     <v-list-item-group color="primary">
                         <v-list-item
                             v-for="item in menuItems" :key="item.text"
-                            :to="$i18nRoute(item.to)" v-bind="item.bind || {}"
+                            :to="$i18nRoute(item.to)" exact
                             v-has-perm:[item.perm]
                         >
                             <v-list-item-action>
@@ -45,7 +45,6 @@
                             </v-list-item>
                         </v-list>
                     </v-menu>
-
 
                     <LanguageMenu></LanguageMenu>
 
@@ -126,7 +125,7 @@
         computed: {
             menuItems() {
                 return [
-                    {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'dashboard'}, bind: {exact: true}},
+                    {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'dashboard'}},
                     {
                         icon: 'mdi-book-multiple',
                         text: this.$t('Theses'),

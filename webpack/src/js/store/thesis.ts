@@ -99,7 +99,6 @@ export default {
             ).then(r => {
                 if (r.status == 200)
                     commit(THESIS_MUTATIONS.STORE_THESIS, r.data);
-                // TODO detect reload or mutation
                 return r.data;
             });
         },
@@ -119,7 +118,6 @@ export default {
             ).then(r => {
                 if (r.status == 200)
                     commit(THESIS_MUTATIONS.STORE_THESIS, r.data);
-                // TODO detect reload or mutation
                 return r;
             });
         },
