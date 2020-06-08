@@ -166,7 +166,8 @@ class ThesisImportManager(Manager):
 
         if not authors.exists():
             raise ValidationError(_('Unknown author/s.'))
-        elif len(authors_keys) != authors.count():
+
+        if len(authors_keys) != authors.count():
             raise ValidationError(_('Some of authors not found ({}).').format(
                 ''.join(tuple(set(authors_keys) - set(authors.values_list('username', flat=True))))
             ))
