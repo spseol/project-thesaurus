@@ -157,19 +157,29 @@
   },
   "opponent": "opponent",
   "page": {
-    "403note": "",
-    "403title": "",
+    "403note": "Sorry, you have no permissions to view this page.",
     "404note": "Sorry, this page has not been found.",
-    "404title": "Page not found"
+    "title": {
+      "403": "Access denied",
+      "404": "Page not found",
+      "dashboard": "Dashboard",
+      "login": "Login",
+      "reservationList": "Reservation list",
+      "reviewSubmit": "Review submit",
+      "thesisList": "Thesis list",
+      "thesisSinglePrepare": "Single prepare of thesis",
+      "thesisBulkImport": "Theses bulk import",
+      "thesisSubmit": "Submit thesis"
+    }
   },
   "reservation": {
     "cancelQuestion": "Are you sure about cancelling reservation for thesis",
-    "currentlyBorrowed": "",
-    "directBorrow": "",
-    "goAndMakeAReservation": "",
+    "currentlyBorrowed": "Thesis is currently borrowed. Now you can a reservation and we will tell you when the thesis will be available.",
+    "directBorrow": "Thesis is available for borrow.",
+    "goAndMakeAReservation": "Go and make reservation",
     "justCancelled": "Reservation has been cancelled.",
     "justCreated": "Reservation has been just created.",
-    "noActiveReservations": "",
+    "noActiveReservations": "No active reservations.",
     "stateChanged": "Reservation state has been changed.",
     "cancel": {
       "dialogTitle": "Cancelling reservations",
@@ -194,7 +204,16 @@
   "thesis": {
     "import": {
       "containingErrors": "Sorry, but the import file contains some errors:",
-      "fileFormatDescription": "Sorry, cannot parse input file:"
+      "fileFormatDescription": "Sorry, cannot parse input file:",
+      "ExcelFormatDescription": "Excel .xlsx file with defined columns",
+      "downloadExampleExcelFile": "Download example file",
+      "CSVFormatDescription": "CSV text file with defined columns, semicolon as separator",
+      "downloadExampleCSVFile": "Download example file",
+      "importAgreement": "Data is correct and I agree with import.",
+      "preferredType": "Preferred type",
+      "possibleType": "Also possible",
+      "loadAndCheck": "Load and check",
+      "totalTheses": "Total count"
     },
     "invalidPublishedAtFormat": "Invalid format of publication",
     "invalidSNformat": "Not in format AXXX.",
@@ -217,7 +236,8 @@
       "hintThesisFinal": "Submitting thesis is in final version"
     },
     "deleteAttachmentQuestion": "Are you really sure about deleting attachment",
-    "deleteReviewQuestion": "Are you really sure about deleting review"
+    "deleteReviewQuestion": "Are you really sure about deleting review",
+    "justSentToSubmit": "Thesis has been sent to student for submit"
   },
   "Submit deadline": "Submit deadline",
   "Delete attachment": "Delete attachment",
@@ -232,5 +252,7 @@
   "New file": "New file",
   "Dark": "Dark",
   "Light": "Light",
-  "Back to theses": "Back to these"
+  "Back to theses": "Back to these",
+  "Excel file": "Excel file",
+  "Send to submit": "Send to submit"
 }

@@ -45,7 +45,7 @@
   "External review": "Externí posudek",
   "File format": "Formát souboru",
   "File to import": "Soubor k importu",
-  "Final import": "Finálně importovat",
+  "Final import": "Importovat",
   "Finished": "Dokončené",
   "For user": "Pro uživatele",
   "Formal editing, work with sources, citations in the text": "Formální úprava, práce s literaturou, citace v textu",
@@ -151,9 +151,19 @@
   "opponent": "oponent",
   "page": {
     "403note": "Na zobrazení této stránky nemáte oprávnění.",
-    "403title": "Přístup odmítnut",
     "404note": "Tuto stránku se bohužel nepodařilo nalézt.",
-    "404title": "Stránka nenalezena"
+    "title": {
+      "403": "Přístup odmítnut",
+      "404": "Stránka nenalezena",
+      "dashboard": "Přehled",
+      "login": "Přihlášení",
+      "reservationList": "Seznam rezervací",
+      "reviewSubmit": "Odeslání posudku",
+      "thesisList": "Seznam prací",
+      "thesisSinglePrepare": "Příprava práce",
+      "thesisBulkImport": "Hromadný import prací",
+      "thesisSubmit": "Odevzdání práce"
+    }
   },
   "reservation": {
     "cancelQuestion": "Opravdu chcete zrušit na práci",
@@ -181,13 +191,21 @@
     "questionsPlaceholder": "Vysvětlete prosím ...",
     "submitHint": "Odesláním potvrzuji správnost a konečnost tohoto posudku.",
     "submittedAt": "Posudek potvrzen dne",
-    "justDeleted": ""
+    "justDeleted": "Posudek byl smazán!"
   },
   "supervisor": "vedoucí",
   "thesis": {
     "import": {
       "containingErrors": "Soubor obsahuje chyby, nelze importovat rovnou. Opravte prosím chyby a iniciujte import znovu.",
-      "fileFormatDescription": "Soubor ve formátu CSV, oddělovačem je středník, šest sloupců"
+      "ExcelFormatDescription": "Soubor ve formátu XLSX, šest sloupců dle definice",
+      "downloadExampleExcelFile": "Stáhnout vzorový Excel soubor",
+      "CSVFormatDescription": "Soubor ve formátu CSV, oddělovačem je středník, šest sloupců, kódování UTF-8",
+      "downloadExampleCSVFile": "Stáhnout vzorový CSV soubor",
+      "importAgreement": "Souhlasím se správností dat a potvrzuji import prací.",
+      "preferredType": "Preferovaný typ",
+      "possibleType": "Alternativně",
+      "loadAndCheck": "Načíst a zkontrolovat data",
+      "totalTheses": "Načteno prací"
     },
     "invalidPublishedAtFormat": "Nevalidní formát data, očekává se RRRR/MM",
     "invalidSNformat": "Není ve formátu <písmeno>XXX",
@@ -210,7 +228,8 @@
       "hintThesisFinal": "Odevzdávám konečnou verzi práce."
     },
     "deleteAttachmentQuestion": "Opravdu chcete smazat přílohu k práci",
-    "deleteReviewQuestion": "Opravdu chcete smazat posudek k práci"
+    "deleteReviewQuestion": "Opravdu chcete smazat posudek k práci",
+    "justSentToSubmit": "Práce byla odeslána studentovi!"
   },
   "Submit deadline": "Termín pro odevzdání",
   "Delete attachment": "Smazat přílohu",
@@ -225,5 +244,7 @@
   "New file": "Soubor",
   "Dark": "Tmavé",
   "Light": "Světlé",
-  "Back to theses": "Zpět na seznam prací"
+  "Back to theses": "Zpět na seznam prací",
+  "Excel file": "Excel soubor",
+  "Send to submit": "Odeslat k odevzdání"
 }

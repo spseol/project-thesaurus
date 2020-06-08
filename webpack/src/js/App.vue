@@ -6,7 +6,7 @@
                     <v-list-item-group color="primary">
                         <v-list-item
                             v-for="item in menuItems" :key="item.text"
-                            :to="$i18nRoute(item.to)" v-bind="item.bind || {}"
+                            :to="$i18nRoute(item.to)" exact
                             v-has-perm:[item.perm]
                         >
                             <v-list-item-action>
@@ -37,15 +37,14 @@
                         </template>
 
                         <v-list>
-                            <v-list-item @click="$vuetify.theme.dark = false">
+                            <v-list-item @click="setDark(false)">
                                 <v-list-item-title>{{ $t('Light') }}</v-list-item-title>
                             </v-list-item>
-                            <v-list-item @click="$vuetify.theme.dark = true">
+                            <v-list-item @click="setDark(true)">
                                 <v-list-item-title>{{ $t('Dark') }}</v-list-item-title>
                             </v-list-item>
                         </v-list>
                     </v-menu>
-
 
                     <LanguageMenu></LanguageMenu>
 
@@ -112,6 +111,7 @@
 
 <script type="text/tsx">
     import Vue from 'vue';
+    import {appCache} from './cache';
     import LanguageMenu from './components/LanguageMenu.vue';
     import {pageContext} from './utils';
 
@@ -123,10 +123,16 @@
                 drawer: this.$vuetify.breakpoint.xl && this.$route.name != '404'
             };
         },
+        methods: {
+            async setDark(v) {
+                await appCache.setItem('dark', v);
+                this.$vuetify.theme.dark = v;
+            }
+        },
         computed: {
             menuItems() {
                 return [
-                    {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'dashboard'}, bind: {exact: true}},
+                    {icon: 'mdi-home', text: this.$t('Dashboard'), to: {name: 'dashboard'}},
                     {
                         icon: 'mdi-book-multiple',
                         text: this.$t('Theses'),
@@ -162,5 +168,8 @@
                     this.drawer = false;
             }
         },
+        async created() {
+            this.$vuetify.theme.dark = await appCache.getItem('dark') || false;
+        }
     });
 </script>

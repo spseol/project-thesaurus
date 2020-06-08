@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from django.db.models import Model, UUIDField, CharField, TextField, PositiveSmallIntegerField
+from django.db.models import Model, UUIDField, CharField, PositiveSmallIntegerField
 from django.utils.translation import gettext_lazy as _
 from django_extensions.db.fields import CreationDateTimeField, ModificationDateTimeField
 
@@ -40,12 +40,6 @@ class BaseTypeModel(BaseModel):
         null=True,
         blank=True,
         choices=(),
-    )
-    # TODO: remove?
-    description = TextField(
-        verbose_name=_('Description'),
-        null=True,
-        blank=True
     )
     order = PositiveSmallIntegerField(
         verbose_name=_('Order'),

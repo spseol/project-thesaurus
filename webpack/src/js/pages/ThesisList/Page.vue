@@ -1,5 +1,5 @@
 <template>
-    <v-row no-gutters>
+    <v-row no-gutters v-page-title="$t('page.title.thesisList')">
         <v-col cols="12">
             <ThesisList></ThesisList>
         </v-col>

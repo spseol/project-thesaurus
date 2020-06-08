@@ -54,6 +54,10 @@ if (__SENTRY_DSN__) {
 export default function createVue(opts: any = {}) {
     Vue.config.productionTip = false;
 
+    const originTitle = document.title;
+
+    Vue.directive('page-title', (el, binding) => document.title = `${binding.value} | ${originTitle}`);
+
     const {locale} = pageContext;
 
     const vuetify = new Vuetify({

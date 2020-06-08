@@ -1,10 +1,5 @@
-import typing
-
 from django.db.models import Exists, Count, Q, OuterRef, CharField, QuerySet, Manager
 from django.db.models.functions import ExtractYear, Cast
-
-if typing.TYPE_CHECKING:
-    from apps.thesis.models import Thesis
 
 
 class ThesisManager(Manager):
@@ -66,7 +61,3 @@ class ThesisApiManager(ThesisManager):
             ),
             published_at_year=Cast(ExtractYear('published_at'), CharField())
         )
-
-
-class ThesisImportManager(Manager):
-    pass

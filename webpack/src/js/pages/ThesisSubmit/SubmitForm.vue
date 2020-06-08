@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card v-page-title="pageTitle">
         <v-card-title>{{ $t('Submit thesis') }}</v-card-title>
         <v-form @submit.prevent="submit" ref="form" v-model="valid">
             <v-card-text>
@@ -141,6 +141,9 @@
                     this.$t('thesis.submit.hintAbstractSame'),
                     this.$t('thesis.submit.hintSubmitApprove')
                 ], 4);
+            },
+            pageTitle() {
+                return `${this.$t('page.title.thesisSubmit')} ${this.thesis.title}`;
             }
         },
         methods: {

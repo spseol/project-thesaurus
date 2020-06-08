@@ -1,5 +1,4 @@
 <template>
-    <v-container fluid>
         <v-card :loading="loading">
             <v-card-title>
                 {{ $t('Thesis review') }}
@@ -135,7 +134,6 @@
                 <p>{{ $t('review.gradingNote') }}</p>
             </v-card-text>
         </v-card>
-    </v-container>
 
 </template>
 

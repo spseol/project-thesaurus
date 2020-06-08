@@ -87,12 +87,11 @@
                     ></v-date-picker>
                 </v-menu>
 
-                <!-- TODO: get allowed from API -->
                 <v-file-input
-                    accept="application/pdf"
                     :label="$t('Thesis admission')"
                     v-model="thesis.admission"
                     :error-messages="messages.admission"
+                    :accept="typeAttachmentAcceptTypes('thesis_assigment')"
                 ></v-file-input>
 
                 <v-row no-gutters>
@@ -114,6 +113,7 @@
     import _ from 'lodash';
     import qs from 'qs';
     import Axios from '../../axios';
+    import {optionsStore} from '../../store/store';
     import {asyncComputed, notificationBus, readFileAsync} from '../../utils';
 
     export default {
@@ -135,7 +135,9 @@
                 await this.queryStudentOptions(val);
             }
         },
-
+        computed: {
+            ...optionsStore.mapGetters(['typeAttachmentAcceptTypes'])
+        },
         methods: {
             async queryStudentOptions(search) {
                 this.loading = true;

@@ -1,5 +1,5 @@
 <template>
-    <v-card>
+    <v-card v-page-title="$t('page.title.dashboard')">
         <v-card-title>{{ $t('Dashboard') }}</v-card-title>
         <v-card-text>
             <CallLoader :identifier="DASHBOARD_ACTIONS.LOAD_DASHBOARD"></CallLoader>
@@ -111,9 +111,9 @@
     import moment from 'moment';
     import Vue from 'vue';
     import {mapState} from 'vuex';
+    import CallLoader from '../../components/CallLoader.vue';
     import {DASHBOARD_ACTIONS} from '../../store/dashboard';
     import {dashboardStore} from '../../store/store';
-    import CallLoader from './CallLoader.vue';
 
     export default Vue.extend({
         name: 'Dashboard',
