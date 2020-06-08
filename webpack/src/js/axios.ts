@@ -1,20 +1,17 @@
 import StaticAxios, {AxiosInstance, AxiosRequestConfig} from 'axios';
 
 import {setupCache} from 'axios-cache-adapter';
-import LocalForage from 'localforage';
+import {axiosCacheStore} from './cache';
 import {notificationBus, pageContext} from './utils';
 
 declare var __DEVELOPMENT__: boolean;
 
-const cacheStore = LocalForage.createInstance({
-    name: 'thesaurus-axios-cache'
-});
 
 // Create `axios-cache-adapter` instance
 const cache = setupCache({
     maxAge: 15 * 60 * 1000, // 15 minutes,
     debug: __DEVELOPMENT__,
-    store: cacheStore,
+    store: axiosCacheStore,
     readHeaders: true,
     // include user, locale, path and params to cache key
     key(req: AxiosRequestConfig): string {

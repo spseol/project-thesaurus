@@ -2,7 +2,6 @@ from functools import partial
 from typing import Callable
 
 from django.contrib.admin import ModelAdmin, register, RelatedOnlyFieldListFilter
-from django.db.models import Model
 
 from apps.audit.models import AuditLog
 
@@ -29,7 +28,7 @@ class AuditLogAdmin(ModelAdmin):
 
         return qs.select_related('user')
 
-    dumper: Callable[[str], Callable[['AuditLogAdmin', Model], str]] = lambda attr: lambda _, obj: ', '.join(
+    dumper: Callable[[str], Callable[['AuditLogAdmin', AuditLog], str]] = lambda attr: lambda _, obj: ', '.join(
         map(
             '='.join,
             map(
