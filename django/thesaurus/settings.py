@@ -242,6 +242,7 @@ CONSTANCE_ADDITIONAL_FIELDS = {
         ]
     }],
 }
+CONSTANCE_SUPERUSER_ONLY = False
 
 # emailing
 EMAIL_BACKEND = config('EMAIL_BACKEND')
