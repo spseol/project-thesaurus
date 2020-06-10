@@ -51,7 +51,9 @@ export default {
                 PERMS_MUTATIONS.SET_LOAD_REQUEST,
                 Promise.all(
                     _.values(PERMS).map(
-                        perm => hasPerm(perm.split('_', 1).join('.')
+                        perm => hasPerm(
+                            // only the first occurrence of _
+                            perm.replace('_', '.')
                         ).then(
                             value => commit(PERMS_MUTATIONS.SET_PERM, {perm, value})
                         )
