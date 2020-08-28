@@ -53,11 +53,6 @@ export function createRouter($t, store: Store<any>) {
                         name: 'exports',
                         meta: {perm: PERMS.VIEW_USER}
                     },
-                    {
-                        path: 'settings',
-                        component: {template: '<div>Nonono</div>'},
-                        name: 'settings'
-                    },
                     {path: '404', component: () => import('./components/404.vue'), name: '404'},
                     {path: '403', component: () => import('./components/403.vue'), name: '403'},
                     {path: '*', redirect: {name: '404'}}

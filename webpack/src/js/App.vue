@@ -110,22 +110,22 @@
 
 
 <script type="text/tsx">
-    import Vue from 'vue';
-    import {appCache} from './cache';
-    import LanguageMenu from './components/LanguageMenu.vue';
-    import {pageContext} from './utils';
+import Vue from 'vue';
+import {appCache} from './cache';
+import LanguageMenu from './components/LanguageMenu.vue';
+import {pageContext} from './utils';
 
-    export default Vue.extend({
-        components: {LanguageMenu},
-        data() {
-            return {
-                pageContext,
-                drawer: this.$vuetify.breakpoint.xl && this.$route.name != '404'
-            };
-        },
-        methods: {
-            async setDark(v) {
-                await appCache.setItem('dark', v);
+export default Vue.extend({
+  components: {LanguageMenu},
+  data() {
+    return {
+      pageContext,
+      drawer: this.$vuetify.breakpoint.xl && this.$route.name != '404'
+    };
+  },
+  methods: {
+    async setDark(v) {
+      await appCache.setItem('dark', v);
                 this.$vuetify.theme.dark = v;
             }
         },
@@ -158,7 +158,7 @@
                         to: {name: 'exports'},
                         perm: 'accounts.view_user'
                     },
-                    {icon: 'mdi-cog', text: this.$t('Settings'), to: {name: 'settings'}}
+                  // {icon: 'mdi-cog', text: this.$t('Settings'), to: {name: 'settings'}}
                 ];
             }
         },

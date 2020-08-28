@@ -49,6 +49,7 @@ class UserAdmin(OldUserAdmin):
     change_form_template = 'loginas/change_form.html'
     list_display = ('username', 'full_name', 'school_class', 'groups_labels', 'is_active', 'username_length')
     list_filter = OldUserAdmin.list_filter + ('school_class',)
+    save_on_top = True
 
     inlines = [ThesisInlineSupervisorInline, ThesisInlineOpponentInline, AuthorInlineOpponentInline, ReviewInline]
 
