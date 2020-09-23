@@ -34,7 +34,9 @@ const config: AxiosRequestConfig = {
 };
 
 export const Axios: AxiosInstance = StaticAxios.create(config);
-export const CachedAxios: AxiosInstance = StaticAxios.create({...config, adapter: cache.adapter});
+// TODO: fix cache adapter
+// export const CachedAxios: AxiosInstance = StaticAxios.create({...config, adapter: cache.adapter});
+export const CachedAxios = Axios;
 
 const errorResponseHandler = (error) => {
     if (error?.response?.status === 401) {
