@@ -15,7 +15,7 @@ def sync_user_relations(user: User, attrs: dict):
 
     dn_parts = dn.lower().split(',')
     if 'ou=zaci' in dn_parts:
-        class_ = dn.split(',')[1].split('=')[1]
+        class_ = dn.split(',')[1].split('=')[1].replace(' ', '')
         user.school_class = class_
 
         user.groups.add(_group_cache['student'])
