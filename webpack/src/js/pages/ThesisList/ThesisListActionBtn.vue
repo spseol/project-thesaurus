@@ -61,7 +61,7 @@
             v-has-perm:thesis.change_thesis
             v-if="thesis.state === 'submitted'"
             v-text="$t('Send to review')"
-            small color="primary" elevation="0"
+            small color="info" elevation="0"
             @click="sendToReviewDialog = true"
             :disabled="loading"
         ></v-btn>
@@ -261,23 +261,23 @@
     </span>
 </template>
 <script type="text/tsx">
-    import _ from 'lodash';
-    import {RESERVATION_ACTIONS} from '../../store/reservation';
-    import {optionsStore, reservationStore, thesisStore} from '../../store/store';
-    import {THESIS_ACTIONS} from '../../store/thesis';
-    import {notificationBus} from '../../utils';
+import _ from 'lodash';
+import {RESERVATION_ACTIONS} from '../../store/reservation';
+import {optionsStore, reservationStore, thesisStore} from '../../store/store';
+import {THESIS_ACTIONS} from '../../store/thesis';
+import {notificationBus} from '../../utils';
 
-    export default {
-        name: 'ThesisListActionBtn',
-        props: {
-            thesis: {type: Object, required: true},
-            loading: {type: Boolean}
-        },
-        data() {
-            return {
-                dialogLoading: false,
-                sendToReviewDialog: false,
-                submitExternalReviewDialog: false,
+export default {
+  name: 'ThesisListActionBtn',
+  props: {
+    thesis: {type: Object, required: true},
+    loading: {type: Boolean}
+  },
+  data() {
+    return {
+      dialogLoading: false,
+      sendToReviewDialog: false,
+      submitExternalReviewDialog: false,
                 createReservationDialog: false,
                 preReservation: false,
 
