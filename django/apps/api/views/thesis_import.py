@@ -4,7 +4,7 @@ from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.core.files.uploadhandler import TemporaryFileUploadHandler
 from django.http import HttpRequest
 from django.templatetags.static import static
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response

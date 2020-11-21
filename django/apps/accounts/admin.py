@@ -1,7 +1,7 @@
 from django.contrib.admin import register, TabularInline
 from django.contrib.auth.admin import UserAdmin as OldUserAdmin
 from django.db.models.functions import Length
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 
 from apps.accounts.models import User
 from apps.review.models import Review

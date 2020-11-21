@@ -1,6 +1,6 @@
 from constance import config
 from django.db.models import QuerySet
-from django.utils.translation import gettext as _
+from django.utils.translation import gettext_lazy as _
 from django_filters.rest_framework import FilterSet, CharFilter
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError

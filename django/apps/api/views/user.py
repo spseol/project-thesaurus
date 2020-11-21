@@ -1,6 +1,6 @@
 from django.db.models import Count, QuerySet
 from django.http import HttpRequest
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django_filters import FilterSet
 from django_filters.rest_framework import BooleanFilter
 from rest_framework import permissions

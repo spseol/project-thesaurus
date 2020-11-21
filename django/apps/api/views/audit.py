@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Model, ManyToOneRel, ManyToManyRel, ManyToManyField
 from django.db.models.base import ModelBase
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 from rest_framework.decorators import action
 from rest_framework.exceptions import NotFound
 from rest_framework.generics import get_object_or_404

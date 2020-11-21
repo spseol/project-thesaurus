@@ -7,7 +7,7 @@ from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
 from django.db.models import Manager
 from django.template.defaultfilters import filesizeformat
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext_lazy as _
 
 default_storage: Storage = default_storage
 
