@@ -6,7 +6,7 @@ from django.contrib import messages, admin
 from django.contrib.auth import views
 from django.contrib.staticfiles.urls import urlpatterns as static_urlpatterns
 from django.urls import path, include, re_path
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from django.views.generic import TemplateView
 from loginas.views import user_logout as la_logout
 

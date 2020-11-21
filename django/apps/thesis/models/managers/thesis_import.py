@@ -10,7 +10,7 @@ from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.db import transaction
 from django.db.models import QuerySet, Manager
 from django.http import HttpResponse
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import gettext_lazy as _
 from openpyxl import load_workbook, Workbook
 from openpyxl.utils.exceptions import InvalidFileException
 from rest_framework.response import Response
