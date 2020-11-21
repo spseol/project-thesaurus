@@ -16,7 +16,7 @@ while (( $# > 0 )); do
 
   webpack ) docker-compose run --entrypoint bash --rm webpack; exit;;  # login to webpack container
   django  ) docker-compose run --rm           web "${rest:-sh}"; exit ;;  # login to django container
-  nginx   ) docker-compose run --rm           webserver "${rest:-sh}"; exit ;;  # login to django container
+  nginx   ) docker-compose run --rm           webserver "${rest:-sh}"; exit ;;  # login to nginx container
 
   logs    ) docker-compose logs --tail=50 -f $rest ; exit ;;  # show docker logs
 
