@@ -144,10 +144,9 @@ AUTHENTICATION_BACKENDS = [
 
 LANGUAGES = (
     ('cs', _('Czech')),
-    ('en', _('English')),
 )
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'cs'
 
 TIME_ZONE = config('TZ')
 
