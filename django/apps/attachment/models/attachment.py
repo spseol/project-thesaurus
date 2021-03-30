@@ -29,7 +29,9 @@ def _content_type_choices():
         Rar,
         Tar,
         Gz,
-    )))
+    ))) + [
+               ('application/x-zip-compressed', 'zip'),
+           ]
 
 
 class Attachment(BaseTimestampedModel):
