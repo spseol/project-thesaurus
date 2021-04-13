@@ -66,12 +66,13 @@ export default {
     },
     actions: {
         async [THESIS_ACTIONS.LOAD_THESES](store, {options, filters, headers}) {
-            const {page} = options;
+            const {page, itemsPerPage} = options;
 
             const query = qs.stringify({
                 page,
                 search: _.map(filters, (i) => i.username || i.id || i).join(' '),
-                ordering: formatDataTableOrdering(options, headers)
+                ordering: formatDataTableOrdering(options, headers),
+                page_size: itemsPerPage
             });
 
             const response = (await Axios.get(`/api/v1/thesis?${query}`)).data;

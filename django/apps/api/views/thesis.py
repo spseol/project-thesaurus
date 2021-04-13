@@ -17,6 +17,7 @@ from apps.api.permissions import (
     CanSubmitExternalThesisReviewPermission,
     CanViewThesisFullInternalReview, CanViewAttachment
 )
+from apps.api.utils.pagination import DynamicPageSizePagination
 from apps.attachment.models import Attachment, TypeAttachment
 from apps.attachment.serializers import AttachmentSerializer
 from apps.review.serializers import ReviewFullInternalSerializer, ReviewPublicSerializer
@@ -47,6 +48,7 @@ def _state_change_action(name, state: Thesis.State):
 
 class ThesisViewSet(ModelViewSet):
     queryset = Thesis.api_objects.get_queryset()
+    pagination_class = DynamicPageSizePagination
     search_fields = (
         'title__unaccent',
         'abstract__unaccent',

@@ -10,7 +10,7 @@
             sort-desc
             show-expand
             :footer-props="{
-                'disable-items-per-page': true,
+              itemsPerPageOptions: [20, 10, 30, 40, 50],
             }"
             class="body-2"
         >
@@ -149,31 +149,31 @@
 </template>
 
 <script type="text/tsx">
-    import * as _ from 'lodash';
-    import Vue from 'vue';
-    import {mapState} from 'vuex';
-    import AuditForInstance from '../../components/AuditForInstance.vue';
-    import {OPTIONS_ACTIONS} from '../../store/options';
-    import {PERMS, PERMS_ACTIONS} from '../../store/perms';
+import * as _ from 'lodash';
+import Vue from 'vue';
+import {mapState} from 'vuex';
+import AuditForInstance from '../../components/AuditForInstance.vue';
+import {OPTIONS_ACTIONS} from '../../store/options';
+import {PERMS, PERMS_ACTIONS} from '../../store/perms';
 
-    import {optionsStore, permsStore, thesisStore} from '../../store/store';
-    import {THESIS_ACTIONS} from '../../store/thesis';
-    import {notificationBus} from '../../utils';
-    import ThesisEditPanel from './ThesisEditPanel.vue';
-    import ThesisListActionBtn from './ThesisListActionBtn.vue';
+import {optionsStore, permsStore, thesisStore} from '../../store/store';
+import {THESIS_ACTIONS} from '../../store/thesis';
+import {notificationBus} from '../../utils';
+import ThesisEditPanel from './ThesisEditPanel.vue';
+import ThesisListActionBtn from './ThesisListActionBtn.vue';
 
 
-    export default Vue.extend({
-        components: {
-            AuditForInstance,
-            ThesisEditPanel,
-            ThesisListActionBtn,
-            ThesisDetailPanel: () => import('./ThesisDetailPanel.vue')
-        },
-        data() {
-            return {
-                loading: true,
-                options: {},
+export default Vue.extend({
+  components: {
+    AuditForInstance,
+    ThesisEditPanel,
+    ThesisListActionBtn,
+    ThesisDetailPanel: () => import('./ThesisDetailPanel.vue')
+  },
+  data() {
+    return {
+      loading: true,
+      options: {},
 
                 filterItems: [],
                 categoryFilter: null,
