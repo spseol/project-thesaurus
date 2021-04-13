@@ -2,11 +2,9 @@
     <v-container fluid class="body-1">
         <v-row no-gutters>
             <v-col cols="12" md="8">
+                <h2 v-text="thesis.title" class="display-1"></h2>
                 <table class="InfoTable">
                     <tbody>
-                    <tr>
-                        <td colspan="2" class="display-1">{{ thesis.title }}</td>
-                    </tr>
                     <tr>
                         <td class="font-weight-bold text-left text-md-right col-1">{{ $t('Author') }}</td>
                         <td>{{ thesis.authors.map(o => o.full_name).join(', ') }}</td>
@@ -86,15 +84,22 @@
                 ></v-progress-circular>
 
                 <v-dialog v-if="poster" max-width="70vw" max-height="90vh">
-                    <template v-slot:activator="{ on }">
-                        <v-img
-                            :src="poster.url" v-on="on"
-                            max-width="300px" class="elevation-2"
-                        ></v-img>
-                    </template>
+                  <template v-slot:activator="{ on }">
+                    <v-btn class="ma-2" color="primary" dark v-if="isPosterPdf" v-on="on">
+                      {{ $t('Show poster') }}
+                      <v-icon dark right>mdi-image</v-icon>
+                    </v-btn>
+                    <v-img
+                        v-else
+                        :src="poster.url" v-on="on"
+                        max-width="300px" class="elevation-2"
+                    ></v-img>
+                  </template>
 
                     <v-row no-gutters justify="space-around">
+                      <embed v-if="isPosterPdf" :src="poster.url"/>
                         <v-img
+                            v-else
                             :src="poster.url"
                             max-width="70vw" max-height="90vh"
                         ></v-img>
@@ -106,31 +111,34 @@
 
 </template>
 <script type="text/tsx">
-    import _ from 'lodash';
-    import {ATTACHMENT_ACTIONS} from '../../store/attachment';
-    import {REVIEW_ACTIONS} from '../../store/review';
-    import {attachmentStore, reviewStore} from '../../store/store';
-    import {hasPerm} from '../../user';
-    import {pageContext} from '../../utils';
+import _ from 'lodash';
+import {ATTACHMENT_ACTIONS} from '../../store/attachment';
+import {REVIEW_ACTIONS} from '../../store/review';
+import {attachmentStore, reviewStore} from '../../store/store';
+import {hasPerm} from '../../user';
+import {pageContext} from '../../utils';
 
-    export default {
-        name: 'ThesisDetailPanel',
-        props: {
-            thesis: {
-                type: Object,
-                required: true
-            }
-        },
-        data() {
-            return {};
-        },
+export default {
+  name: 'ThesisDetailPanel',
+  props: {
+    thesis: {
+      type: Object,
+      required: true
+    }
+  },
+  data() {
+    return {};
+  },
         computed: {
-            poster() {
-                return _.find(this.attachments, {type_attachment: {identifier: 'thesis_poster'}});
-            },
-            showPdfReviews() {
-                return this.hasAddReviewPerm || !!_.find(this.thesis.authors, {id: pageContext.user.id});
-            }
+          poster() {
+            return _.find(this.attachments, {type_attachment: {identifier: 'thesis_poster'}});
+          },
+          isPosterPdf() {
+            return this.poster && this.poster.content_type == 'application/pdf';
+          },
+          showPdfReviews() {
+            return this.hasAddReviewPerm || !!_.find(this.thesis.authors, {id: pageContext.user.id});
+          }
         },
         methods: {
             ...reviewStore.mapActions([
@@ -156,13 +164,27 @@
                 default: []
             },
             attachments: {
-                get() {
-                    if (this.thesis.attachments) return new Promise((r) => r(this.thesis.attachments));
+              get() {
+                if (this.thesis.attachments) return new Promise((r) => r(this.thesis.attachments));
 
-                    return this[ATTACHMENT_ACTIONS.LOAD_ATTACHMENTS](this.thesis.id);
-                },
-                default: []
+                return this[ATTACHMENT_ACTIONS.LOAD_ATTACHMENTS](this.thesis.id);
+              },
+              default: []
             }
         }
-    };
+};
 </script>
+<style lang="scss" scoped>
+.InfoTable {
+  table-layout: fixed;
+
+  tr td:first-child {
+    width: 10rem;
+  }
+}
+
+embed {
+  width: 100%;
+  height: 80vh;
+}
+</style>
