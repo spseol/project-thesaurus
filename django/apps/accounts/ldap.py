@@ -1,3 +1,6 @@
+from typing import Type
+
+from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 
 from apps.accounts import logger
@@ -29,3 +32,17 @@ def sync_user_relations(user: User, attrs: dict):
 
     else:
         logger.info("Not group assigned for user: %s.", dn_parts)
+
+
+def clean_user_data(model_fields: dict) -> dict:
+    username = model_fields.get('username')
+
+    # type: Type[User]
+    User = get_user_model()
+
+    if User.objects.filter(username=username, first_name__isnull=False, last_name__isnull=False).exists():
+        # do not refresh first&last name for users already present in database
+        model_fields.pop('first_name', '')
+        model_fields.pop('last_name', '')
+
+    return model_fields
