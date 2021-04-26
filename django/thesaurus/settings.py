@@ -203,7 +203,7 @@ if DEBUG:
 ###### LDAP
 # https://github.com/etianen/django-python3-ldap
 
-LDAP_AUTH_URL = f"ldap://{config('DOCKER_HOST', cast=str)}:{config('LDAP_PORT', cast=str)}"
+LDAP_AUTH_URL = f"ldap://{config('LDAP_HOST', cast=str)}:{config('LDAP_PORT', cast=str)}"
 LDAP_AUTH_USE_TLS = False
 LDAP_AUTH_CONNECTION_USERNAME = config('LDAP_USERNAME', cast=str)
 LDAP_AUTH_CONNECTION_PASSWORD = config('LDAP_PASSWORD', cast=str)
