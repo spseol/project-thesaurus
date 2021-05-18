@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: '/webkpack'
+    target-branch: "develop"
+    schedule:
+      interval: daily
+      time: '00:00'
+    open-pull-requests-limit: 10
+    reviewers:
+      - josef kolář
+    assignees:
+      - josef kolář
+
+  - package-ecosystem: pip
+    directory: '/django'
+    target-branch: "develop"
+    schedule:
+      interval: daily
+      time: '00:00'
+    open-pull-requests-limit: 10
+    reviewers:
+      - josef kolář
+    assignees:
+      - josef kolář
