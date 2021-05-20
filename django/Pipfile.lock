@@ -230,10 +230,10 @@
         },
         "django-python3-ldap": {
             "hashes": [
-                "sha256:b1e52329bb560e1afdaf67665e767a1dc87d3d15e74088eed4b7726c1a01b994"
+                "sha256:594edeacfd4dc38a9211efd6b71e830ca22edc6c413a8a26eecf8d00879664e7"
             ],
             "index": "pypi",
-            "version": "==0.11.3"
+            "version": "==0.11.4"
         },
         "django-seed": {
             "hashes": [
