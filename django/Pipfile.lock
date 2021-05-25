@@ -252,11 +252,11 @@
         },
         "django-weasyprint": {
             "hashes": [
-                "sha256:644d620d20830639cc56e0ada3dd53dea2773b2847cd097b141de3c04166697f",
-                "sha256:6de355e0bccba74ef2133416f2e9beaf60900f1061014d7524b7dc73ef1bb4c9"
+                "sha256:7bda5d9d11e11edbe54630c9e41454d72293a70c40bd8c1c1156f3c5c6eec2e1",
+                "sha256:a1f1bacf1c0d21904a2c2fb6488d97b126d4c823e8cf632cbb5e0d8b3354eeff"
             ],
             "index": "pypi",
-            "version": "==1.0.1"
+            "version": "==1.1.0"
         },
         "django-webpack4-loader": {
             "hashes": [
