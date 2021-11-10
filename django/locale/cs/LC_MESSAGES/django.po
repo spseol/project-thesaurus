@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-21 23:40+0100\n"
-"PO-Revision-Date: 2020-06-07 01:00+0300\n"
+"POT-Creation-Date: 2021-11-10 23:08+0100\n"
+"PO-Revision-Date: 2021-11-10 23:09+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n "
 "<= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0\n"
 
 #: apps/accounts/admin.py:25
 msgid "Supervised thesis"
@@ -115,79 +115,83 @@ msgstr "Chybějí některé z argumentů pro import."
 msgid "Include only active users"
 msgstr "Zahrnou pouze aktivní uživatele"
 
-#: apps/attachment/models/attachment.py:41
+#: apps/attachment/admin.py:19 apps/attachment/admin.py:22
+msgid "Download attachment"
+msgstr "Stáhnout přílohu"
+
+#: apps/attachment/models/attachment.py:43
 msgid "Target thesis"
 msgstr "Práce"
 
-#: apps/attachment/models/attachment.py:49
+#: apps/attachment/models/attachment.py:51
 msgid "Type of attachment"
 msgstr "Typ přílohy"
 
-#: apps/attachment/models/attachment.py:53
+#: apps/attachment/models/attachment.py:55
 msgid "File with thesis"
 msgstr "Soubor s prací"
 
-#: apps/attachment/models/attachment.py:64
+#: apps/attachment/models/attachment.py:66
 msgid "Size of attachment"
 msgstr "Velikost přílohy"
 
-#: apps/attachment/models/attachment.py:70
+#: apps/attachment/models/attachment.py:72
 msgid "Attachment"
 msgstr "Příloha"
 
-#: apps/attachment/models/attachment.py:71
+#: apps/attachment/models/attachment.py:73
 msgid "Attachments"
 msgstr "Přílohy"
 
-#: apps/attachment/models/attachment.py:125
+#: apps/attachment/models/attachment.py:127
 msgid "Thesis text"
 msgstr "Text práce"
 
-#: apps/attachment/models/attachment.py:126
+#: apps/attachment/models/attachment.py:128
 msgid "Thesis assigment"
 msgstr "Text zadání"
 
-#: apps/attachment/models/attachment.py:127
+#: apps/attachment/models/attachment.py:129
 msgid "Supervisor review"
 msgstr "Posudek vedoucího"
 
-#: apps/attachment/models/attachment.py:128
+#: apps/attachment/models/attachment.py:130
 msgid "Opponent review"
 msgstr "Posudek oponenta"
 
-#: apps/attachment/models/attachment.py:129
+#: apps/attachment/models/attachment.py:131
 msgid "Thesis poster"
 msgstr "Plakát práce"
 
-#: apps/attachment/models/attachment.py:130
+#: apps/attachment/models/attachment.py:132
 msgid "Thesis attachment"
 msgstr "Příloha práce"
 
-#: apps/attachment/models/attachment.py:140 apps/utils/models/base.py:37
+#: apps/attachment/models/attachment.py:142 apps/utils/models/base.py:37
 msgid "Identifier"
 msgstr "Identifikátor"
 
-#: apps/attachment/models/attachment.py:152
+#: apps/attachment/models/attachment.py:154
 msgid "List of allowed mime/content types"
 msgstr "Seznam povolených typů souborů"
 
-#: apps/attachment/models/attachment.py:153
+#: apps/attachment/models/attachment.py:155
 msgid "Available options: {}"
 msgstr "Dostupné možnosti: {}"
 
-#: apps/attachment/models/attachment.py:160
+#: apps/attachment/models/attachment.py:162
 msgid "Is public"
 msgstr "Dostupná veřejně"
 
-#: apps/attachment/models/attachment.py:165
+#: apps/attachment/models/attachment.py:167
 msgid "Max size in bytes"
 msgstr "Maximální velikost [B]"
 
-#: apps/attachment/models/attachment.py:171
+#: apps/attachment/models/attachment.py:173
 msgid "Type attachment"
 msgstr "Typ přílohy"
 
-#: apps/attachment/models/attachment.py:172
+#: apps/attachment/models/attachment.py:174
 msgid "Types attachments"
 msgstr "Typy příloh"
 
@@ -499,8 +503,8 @@ msgstr ""
 "oprávněn k vložení posudku k této práci."
 
 #: apps/review/templates/review/review_detail.html:107
-msgid "Absolvent thesis review"
-msgstr "Posudek absolventské práce"
+msgid "Thesis review"
+msgstr "Posudek"
 
 #: apps/review/templates/review/review_detail.html:112
 msgid "First and last name"
@@ -840,6 +844,9 @@ msgstr "Chyba serveru"
 #: templates/base_error.html:10
 msgid "Thesaurus logo"
 msgstr "Thesaurus logo"
+
+#~ msgid "Absolvent thesis review"
+#~ msgstr "Posudek absolventské práce"
 
 #~ msgid "Czech"
 #~ msgstr "Česky"
