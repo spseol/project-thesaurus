@@ -8,6 +8,7 @@ bleach = "*"
 Django = "~=3.2"
 django-better-admin-arrayfield = "*"
 django-bleach = "*"
+django-constance = {extras = [ "database",]}
 django-debug-toolbar = "*"
 django-extensions = "*"
 django-filter = "*"
@@ -36,11 +37,10 @@ WeasyPrint = "*"
 Werkzeug = "*"
 django-admin-env-notice = "*"
 openpyxl = "*"
+decouple = "*"
 
 [dev-packages]
 
 [requires]
 python_version = "3.8"
 
-[packages.django-constance]
-extras = [ "database",]
