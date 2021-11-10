@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 bleach = "*"
-Django = "~=3.1"
+Django = "~=3.2"
 django-better-admin-arrayfield = "*"
 django-bleach = "*"
 django-debug-toolbar = "*"
