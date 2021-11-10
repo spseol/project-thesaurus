@@ -17,7 +17,7 @@ RUN addgroup -S django \
     && pip install pipenv \
     && apk update \
     #   build deps
-    && apk add --virtual build-deps gcc python3-dev musl-dev gettext-dev \
+    && apk add --virtual build-deps gcc g++ python3-dev musl-dev gettext-dev jpeg-dev zlib-dev \
     #  runtime deps
     && apk add postgresql-dev gettext cairo-dev pango-dev gdk-pixbuf openjpeg-dev font-noto tzdata \
     && pipenv install psycopg2-binary --skip-lock --dev \
