@@ -208,11 +208,11 @@
         },
         "django-loginas": {
             "hashes": [
-                "sha256:0a6f956fdbb2184d8b33e7d71528dea1762f0507c7dcedfc9403996b0541c148",
-                "sha256:5179434a85eb0244f0d0a4a9f7d3e293fa907abc540e1a75f1a4d13c0d26b929"
+                "sha256:2d609ddcc68ff840b3e59baa58ac58b870cd1aef491aaab8cd796d022d961c40",
+                "sha256:8d81f31d993b3c3c9f9018b385bfbdf74ead320e0a4b18493141d0e2dbc8ad6b"
             ],
             "index": "pypi",
-            "version": "==0.3.8"
+            "version": "==0.3.10"
         },
         "django-mail-queue": {
             "hashes": [
@@ -527,11 +527,11 @@
         },
         "pycparser": {
             "hashes": [
-                "sha256:2d475327684562c3a96cc71adf7dc8c4f0565175cf86b6d7a404ff4c771f15f0",
-                "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"
+                "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9",
+                "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
-            "version": "==2.20"
+            "version": "==2.21"
         },
         "pyparsing": {
             "hashes": [
