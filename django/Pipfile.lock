@@ -201,10 +201,10 @@
         },
         "django-lifecycle": {
             "hashes": [
-                "sha256:dbab592976d5f74f644e749ab3465d296b6e32d1fd4543df7dfba937330e3014"
+                "sha256:e0c9514c6dcea03d4025f183f2c070759a2b4f3c86ca733b2542cfbb5e42bff8"
             ],
             "index": "pypi",
-            "version": "==0.7.6"
+            "version": "==0.9.3"
         },
         "django-loginas": {
             "hashes": [
@@ -527,11 +527,11 @@
         },
         "pycparser": {
             "hashes": [
-                "sha256:2d475327684562c3a96cc71adf7dc8c4f0565175cf86b6d7a404ff4c771f15f0",
-                "sha256:7582ad22678f0fcd81102833f60ef8d0e57288b6b5fb00323d101be910e35705"
+                "sha256:8ee45429555515e1f6b185e78100aea234072576aa43ab53aefcae078162fca9",
+                "sha256:e644fdec12f7872f86c58ff790da456218b10f863970249516d60a5eaca77206"
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'",
-            "version": "==2.20"
+            "version": "==2.21"
         },
         "pyparsing": {
             "hashes": [
@@ -668,6 +668,13 @@
             ],
             "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
             "version": "==1.26.7"
+        },
+        "urlman": {
+            "hashes": [
+                "sha256:3b9c5ac4e447b1e29fa259dc76953d46d711c84b296a0c66c34870e248eb1205",
+                "sha256:909177485ddbbeada15a21f80155762faf70fc53be31890ff7288e21803f06c7"
+            ],
+            "version": "==2.0.1"
         },
         "uvicorn": {
             "hashes": [
