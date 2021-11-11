@@ -12,7 +12,7 @@ django-constance = {extras = [ "database",]}
 django-debug-toolbar = "*"
 django-extensions = "*"
 django-filter = "*"
-django-lifecycle = "*"
+django-lifecycle = "==0.7.7"
 django-loginas = "*"
 django-mail-queue = "*"
 django-positions = "*"
