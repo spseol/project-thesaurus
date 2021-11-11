@@ -37,7 +37,6 @@ WeasyPrint = "*"
 Werkzeug = "*"
 django-admin-env-notice = "*"
 openpyxl = "*"
-decouple = "*"
 
 [dev-packages]
 
