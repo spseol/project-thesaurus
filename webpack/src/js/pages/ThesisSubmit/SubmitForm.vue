@@ -6,11 +6,13 @@
                 <v-row>
                     <v-col cols="12" lg="6">
                         <v-text-field
-                            disabled filled v-model="thesis.title"
+                            disabled filled
+                            v-model="thesis.title"
                             :label="$t('Thesis title')"
                         ></v-text-field>
                         <v-text-field
-                            disabled filled :value="(new Date(thesis.submit_deadline)).toLocaleDateString($i18n.locale)"
+                            disabled filled
+                            :value="deadlineLabel"
                             :label="$t('Submit deadline')"
                         ></v-text-field>
 
@@ -26,7 +28,8 @@
                             :label="$t('Approved publication and borrowing')"
                             :hint="$t('thesis.reservableHint')"
                             v-model="thesis.reservable"
-                            persistent-hint :true-value="true" :false-value="false" class="mb-5"
+                            persistent-hint
+                            :true-value="true" :false-value="false" class="mb-5"
                         ></v-checkbox>
                     </v-col>
                     <v-col cols="12" lg="6">
@@ -87,16 +90,22 @@
                         </v-alert>
                     </v-col>
                 </v-row>
-
-
             </v-card-text>
 
             <v-divider></v-divider>
             <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn type="submit" color="success" :disabled="!valid" x-large>
-                    {{ $t('Submit thesis') }}
-                </v-btn>
+                <v-row>
+                    <v-col cols="8">
+                        <v-alert v-if="isAfterDeadline" type="error">
+                            {{ $t('thesisSubmit.afterDeadline') }}
+                        </v-alert>
+                    </v-col>
+                    <v-col class="text-right">
+                        <v-btn type="submit" color="success" :disabled="!valid" x-large>
+                            {{ $t('Submit thesis') }}
+                        </v-btn>
+                    </v-col>
+                </v-row>
             </v-card-actions>
         </v-form>
     </v-card>
@@ -104,6 +113,7 @@
 
 <script type="text/tsx">
     import _ from 'lodash';
+    import moment from 'moment';
     import Vue from 'vue';
     import Axios from '../../axios';
     import {OPTIONS_ACTIONS} from '../../store/options';
@@ -144,6 +154,16 @@
             },
             pageTitle() {
                 return `${this.$t('page.title.thesisSubmit')} ${this.thesis.title}`;
+            },
+            isAfterDeadline() {
+                return moment(
+                    this.thesis.submit_deadline,
+                    null,
+                    this.$i18n.locale
+                ).endOf('day').isBefore(moment());
+            },
+            deadlineLabel() {
+                return moment(this.thesis.submit_deadline, null, this.$i18n.locale).endOf('day').format('LLL');
             }
         },
         methods: {

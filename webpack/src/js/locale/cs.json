@@ -247,5 +247,8 @@
   "Light": "Světlé",
   "Back to theses": "Zpět na seznam prací",
   "Excel file": "Excel soubor",
-  "Send to submit": "Odeslat k odevzdání"
+  "Send to submit": "Odeslat k odevzdání",
+  "thesisSubmit": {
+    "afterDeadline": "Odevzdání již po termínu, jsem si vědom/a následků."
+  }
 }

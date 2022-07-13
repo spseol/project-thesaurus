@@ -20,9 +20,10 @@
                             <template v-if="thesis.submit_deadline">
                                 <br>
                                 <v-icon small>mdi-calendar</v-icon>
-                                {{ $t('Submit deadline') }} {{ relativeDeadline(thesis.submit_deadline) }}
+                                {{ $t('Submit deadline') }}
+                                {{ relativeDeadline(thesis.submit_deadline) }}
                                 <span class="caption">
-                                    ({{ (new Date(thesis.submit_deadline)).toLocaleDateString($i18n.locale) }})
+                                    ({{ deadline(thesis.submit_deadline).calendar() }})
                                 </span>
                             </template>
                         </v-col>
@@ -131,7 +132,10 @@
         methods: {
             ...dashboardStore.mapActions([DASHBOARD_ACTIONS.LOAD_DASHBOARD]),
             relativeDeadline(date) {
-                return moment(date, null, this.$i18n.locale).fromNow();
+                return this.deadline(date).fromNow();
+            },
+            deadline(date) {
+                return moment(date, null, this.$i18n.locale).endOf('day');
             }
         },
         watch: {

@@ -255,5 +255,8 @@
   "Light": "Light",
   "Back to theses": "Back to these",
   "Excel file": "Excel file",
-  "Send to submit": "Send to submit"
+  "Send to submit": "Send to submit",
+  "thesisSubmit": {
+    "afterDeadline": "You're submitting theses after deadline, be aware of the consequences."
+  }
 }
