@@ -10,11 +10,11 @@
                             v-model="thesis.title"
                             :label="$t('Thesis title')"
                         ></v-text-field>
-                      <v-text-field
-                          disabled filled
-                          :value="deadlineLabel"
-                          :label="$t('Submit deadline')"
-                      ></v-text-field>
+                        <v-text-field
+                            disabled filled
+                            :value="deadlineLabel"
+                            :label="$t('Submit deadline')"
+                        ></v-text-field>
 
                         <v-textarea
                             outlined hide-details
@@ -24,13 +24,13 @@
                             :rules="[v => !!v]"
                         ></v-textarea>
 
-                      <v-checkbox
-                          :label="$t('Approved publication and borrowing')"
-                          :hint="$t('thesis.reservableHint')"
-                          v-model="thesis.reservable"
-                          persistent-hint
-                          :true-value="true" :false-value="false" class="mb-5"
-                      ></v-checkbox>
+                        <v-checkbox
+                            :label="$t('Approved publication and borrowing')"
+                            :hint="$t('thesis.reservableHint')"
+                            v-model="thesis.reservable"
+                            persistent-hint
+                            :true-value="true" :false-value="false" class="mb-5"
+                        ></v-checkbox>
                     </v-col>
                     <v-col cols="12" lg="6">
                         <v-combobox
@@ -93,44 +93,44 @@
             </v-card-text>
 
             <v-divider></v-divider>
-          <v-card-actions>
-            <v-row>
-              <v-col cols="8">
-                <v-alert v-if="isAfterDeadline" type="error">
-                  {{ $t('thesisSubmit.afterDeadline') }}
-                </v-alert>
-              </v-col>
-              <v-col class="text-right">
-                <v-btn type="submit" color="success" :disabled="!valid" x-large>
-                  {{ $t('Submit thesis') }}
-                </v-btn>
-              </v-col>
-            </v-row>
-          </v-card-actions>
+            <v-card-actions>
+                <v-row>
+                    <v-col cols="8">
+                        <v-alert v-if="isAfterDeadline" type="error">
+                            {{ $t('thesisSubmit.afterDeadline') }}
+                        </v-alert>
+                    </v-col>
+                    <v-col class="text-right">
+                        <v-btn type="submit" color="success" :disabled="!valid" x-large>
+                            {{ $t('Submit thesis') }}
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card-actions>
         </v-form>
     </v-card>
 </template>
 
 <script type="text/tsx">
-import _ from 'lodash';
-import moment from 'moment';
-import Vue from 'vue';
-import Axios from '../../axios';
-import {OPTIONS_ACTIONS} from '../../store/options';
-import {optionsStore} from '../../store/store';
-import {notificationBus, readFileAsync} from '../../utils';
+    import _ from 'lodash';
+    import moment from 'moment';
+    import Vue from 'vue';
+    import Axios from '../../axios';
+    import {OPTIONS_ACTIONS} from '../../store/options';
+    import {optionsStore} from '../../store/store';
+    import {notificationBus, readFileAsync} from '../../utils';
 
-export default Vue.extend({
-  name: 'SubmitForm',
-  props: {
-    id: {type: String, required: true}
-  },
-  data() {
-    return {
-      valid: false,
-      errorMessages: [],
-      thesis: {
-        abstract: '',
+    export default Vue.extend({
+        name: 'SubmitForm',
+        props: {
+            id: {type: String, required: true}
+        },
+        data() {
+            return {
+                valid: false,
+                errorMessages: [],
+                thesis: {
+                    abstract: '',
                     reservable: true,
                     thesisText: null,
                     thesisPoster: null,
@@ -144,27 +144,27 @@ export default Vue.extend({
             submitHints() {
                 return _.chunk([
                     this.$t('thesis.submit.hintAdmission'),
-                  this.$t('thesis.submit.hintAttachment'),
-                  this.$t('thesis.submit.hintPoster'),
-                  this.$t('thesis.submit.hintThesisFinal'),
+                    this.$t('thesis.submit.hintAttachment'),
+                    this.$t('thesis.submit.hintPoster'),
+                    this.$t('thesis.submit.hintThesisFinal'),
 
-                  this.$t('thesis.submit.hintAbstractSame'),
-                  this.$t('thesis.submit.hintSubmitApprove')
+                    this.$t('thesis.submit.hintAbstractSame'),
+                    this.$t('thesis.submit.hintSubmitApprove')
                 ], 4);
             },
-          pageTitle() {
-            return `${this.$t('page.title.thesisSubmit')} ${this.thesis.title}`;
-          },
-          isAfterDeadline() {
-            return moment(
-                this.thesis.submit_deadline,
-                null,
-                this.$i18n.locale
-            ).endOf('day').isBefore(moment());
-          },
-          deadlineLabel() {
-            return moment(this.thesis.submit_deadline, null, this.$i18n.locale).endOf('day').format('LLL');
-          }
+            pageTitle() {
+                return `${this.$t('page.title.thesisSubmit')} ${this.thesis.title}`;
+            },
+            isAfterDeadline() {
+                return moment(
+                    this.thesis.submit_deadline,
+                    null,
+                    this.$i18n.locale
+                ).endOf('day').isBefore(moment());
+            },
+            deadlineLabel() {
+                return moment(this.thesis.submit_deadline, null, this.$i18n.locale).endOf('day').format('LLL');
+            }
         },
         methods: {
             ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS]),

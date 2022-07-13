@@ -258,29 +258,29 @@
 </template>
 
 <script type="text/tsx">
-import _ from 'lodash';
-import moment from 'moment';
-import qs from 'qs';
-import Vue from 'vue';
-import {mapState} from 'vuex';
-import Axios from '../../axios';
-import AuditForInstance from '../../components/AuditForInstance.vue';
-import {ATTACHMENT_ACTIONS} from '../../store/attachment';
-import {attachmentStore, thesisStore} from '../../store/store';
-import {THESIS_ACTIONS} from '../../store/thesis';
-import {notificationBus} from '../../utils';
+    import _ from 'lodash';
+    import moment from 'moment';
+    import qs from 'qs';
+    import Vue from 'vue';
+    import {mapState} from 'vuex';
+    import Axios from '../../axios';
+    import AuditForInstance from '../../components/AuditForInstance.vue';
+    import {ATTACHMENT_ACTIONS} from '../../store/attachment';
+    import {attachmentStore, thesisStore} from '../../store/store';
+    import {THESIS_ACTIONS} from '../../store/thesis';
+    import {notificationBus} from '../../utils';
 
-export default Vue.extend({
-  name: 'ThesisEditPanel',
-  components: {AuditForInstance},
-  props: {
-    thesis: {type: Object}
-  },
-  data() {
-    return {
-      data: {},
-      loading: false,
-      search: '',
+    export default Vue.extend({
+        name: 'ThesisEditPanel',
+        components: {AuditForInstance},
+        props: {
+            thesis: {type: Object}
+        },
+        data() {
+            return {
+                data: {},
+                loading: false,
+                search: '',
                 studentOptions: [],
                 messages: {},
                 non_field_error_messages: [],
@@ -352,20 +352,20 @@ export default Vue.extend({
                 });
 
                 if (data.id) {
-                  notificationBus.success(this.$t('attachment.justAdded'));
-                  this.newAttachment = {
-                    type_attachment: null,
-                    file: null
-                  };
-                  this.non_field_error_messages = [];
+                    notificationBus.success(this.$t('attachment.justAdded'));
+                    this.newAttachment = {
+                        type_attachment: null,
+                        file: null
+                    };
+                    this.non_field_error_messages = [];
                 } else {
-                  this.non_field_error_messages = data;
+                    this.non_field_error_messages = data;
                 }
-              this.newAttachment._loading = false;
+                this.newAttachment._loading = false;
             },
-          toHumanDeadline(date) {
-            return moment(date, null, this.$i18n.locale).endOf('day').format('L LT');
-          }
+            toHumanDeadline(date) {
+                return moment(date, null, this.$i18n.locale).endOf('day').format('L LT');
+            }
         },
         computed: {
             ...mapState({optionsStore: 'options'}),

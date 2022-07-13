@@ -20,9 +20,9 @@
                             <template v-if="thesis.submit_deadline">
                                 <br>
                                 <v-icon small>mdi-calendar</v-icon>
-                              {{ $t('Submit deadline') }}
-                              {{ relativeDeadline(thesis.submit_deadline) }}
-                              <span class="caption">
+                                {{ $t('Submit deadline') }}
+                                {{ relativeDeadline(thesis.submit_deadline) }}
+                                <span class="caption">
                                     ({{ deadline(thesis.submit_deadline).calendar() }})
                                 </span>
                             </template>
@@ -109,34 +109,34 @@
 </template>
 
 <script type="text/tsx">
-import moment from 'moment';
-import Vue from 'vue';
-import {mapState} from 'vuex';
-import CallLoader from '../../components/CallLoader.vue';
-import {DASHBOARD_ACTIONS} from '../../store/dashboard';
-import {dashboardStore} from '../../store/store';
+    import moment from 'moment';
+    import Vue from 'vue';
+    import {mapState} from 'vuex';
+    import CallLoader from '../../components/CallLoader.vue';
+    import {DASHBOARD_ACTIONS} from '../../store/dashboard';
+    import {dashboardStore} from '../../store/store';
 
-export default Vue.extend({
-  name: 'Dashboard',
-  components: {CallLoader},
-  data() {
-    return {DASHBOARD_ACTIONS};
-  },
-  computed: {
-    ...mapState({'dashboardStore': 'dashboard'}),
-    ...dashboardStore.mapGetters([
-      'reservedThesesRegistrationNumbers',
-      'hasData'
+    export default Vue.extend({
+        name: 'Dashboard',
+        components: {CallLoader},
+        data() {
+            return {DASHBOARD_ACTIONS};
+        },
+        computed: {
+            ...mapState({'dashboardStore': 'dashboard'}),
+            ...dashboardStore.mapGetters([
+                'reservedThesesRegistrationNumbers',
+                'hasData'
             ])
         },
         methods: {
-          ...dashboardStore.mapActions([DASHBOARD_ACTIONS.LOAD_DASHBOARD]),
-          relativeDeadline(date) {
-            return this.deadline(date).fromNow();
-          },
-          deadline(date) {
-            return moment(date, null, this.$i18n.locale).endOf('day');
-          }
+            ...dashboardStore.mapActions([DASHBOARD_ACTIONS.LOAD_DASHBOARD]),
+            relativeDeadline(date) {
+                return this.deadline(date).fromNow();
+            },
+            deadline(date) {
+                return moment(date, null, this.$i18n.locale).endOf('day');
+            }
         },
         watch: {
             '$i18n.locale'() {
