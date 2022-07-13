@@ -8,3 +8,7 @@
 .text-transform-none {
   text-transform: none !important;
 }
+
+.theme--dark .tiptap-vuetify-editor__content p {
+  color: white;
+}
