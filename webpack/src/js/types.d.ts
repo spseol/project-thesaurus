@@ -35,7 +35,9 @@ export declare class TypeAttachment extends Object {
     name: string;
     identifier: string;
     allowed_content_types: string[];
+    allowed_content_types_extensions: string[];
     max_size: number;
+    max_size_label: string;
 }
 
 export declare class Attachment extends Object {

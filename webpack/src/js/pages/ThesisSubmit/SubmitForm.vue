@@ -53,26 +53,34 @@
                         <v-file-input
                             :label="$t('Thesis text')"
                             v-model="thesis.thesisText"
-                            :rules="[v => !!v]"
+                            :rules="[v => !!v, uploadFieldSizeRule('thesis_text')]"
                             :accept="typeAttachmentAcceptTypes('thesis_text')"
                             prepend-icon="$thesis_text"
+                            :messages="uploadFieldDetails('thesis_text')"
+                            show-size
                         ></v-file-input>
 
                         <v-file-input
                             :label="$t('Thesis poster')"
+                            :rules="[uploadFieldSizeRule('thesis_poster')]"
                             v-model="thesis.thesisPoster"
                             :accept="typeAttachmentAcceptTypes('thesis_poster')"
                             prepend-icon="$thesis_poster"
+                            :messages="uploadFieldDetails('thesis_poster')"
+                            show-size
                         ></v-file-input>
 
                         <v-file-input
                             :label="$t('Thesis attachment')"
                             v-model="thesis.thesisAttachment"
+                            :rules="[uploadFieldSizeRule('thesis_attachment')]"
                             :accept="typeAttachmentAcceptTypes('thesis_attachment')"
                             prepend-icon="$thesis_attachment"
+                            :messages="uploadFieldDetails('thesis_attachment')"
+                            show-size
                         ></v-file-input>
 
-                        <v-divider></v-divider>
+                        <v-divider class="mt-4"></v-divider>
                         <v-row no-gutters>
                             <v-col v-for="(hintsChunk, i) in submitHints" :key="i" class="d-flex flex-column px-5">
                                 <v-switch
@@ -140,7 +148,11 @@
             };
         },
         computed: {
-            ...optionsStore.mapGetters(['typeAttachmentAcceptTypes']),
+            ...optionsStore.mapGetters([
+                'typeAttachmentAcceptTypes',
+                'typeAttachmentExtensions',
+                'typeAttachmentByIdentifier'
+            ]),
             submitHints() {
                 return _.chunk([
                     this.$t('thesis.submit.hintAdmission'),
@@ -203,6 +215,20 @@
             removeKeyWord(item) {
                 this.thesis.keywords.splice(this.thesis.keywords.indexOf(item), 1);
                 this.thesis.keywords = [...this.thesis.keywords];
+            },
+            uploadFieldDetails(identifier) {
+                const extensions = this.typeAttachmentExtensions(identifier);
+                const type = this.typeAttachmentByIdentifier(identifier);
+
+                return `💾 ${this.$t('thesis.maxSize')}: ${type?.max_size_label || '?'} ℹ️
+                ${this.$t('thesis.allowedTypes')}: ${extensions}`;
+            },
+            uploadFieldSizeRule(identifier) {
+                const type = this.typeAttachmentByIdentifier(identifier);
+
+                return value => !value || value.size < type?.size || `${this.$t('thesis.maxSizeError')}:
+                    ${type?.max_size_label || '?'}.`;
+
             }
         },
         async created() {

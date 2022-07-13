@@ -230,7 +230,10 @@
     },
     "deleteAttachmentQuestion": "Opravdu chcete smazat přílohu k práci",
     "deleteReviewQuestion": "Opravdu chcete smazat posudek k práci",
-    "justSentToSubmit": "Práce byla odeslána studentovi!"
+    "justSentToSubmit": "Práce byla odeslána studentovi!",
+    "maxSize": "Max. velikost",
+    "allowedTypes": "Formáty",
+    "maxSizeError": "Překročena maximální velikost:"
   },
   "Submit deadline": "Termín pro odevzdání",
   "Delete attachment": "Smazat přílohu",

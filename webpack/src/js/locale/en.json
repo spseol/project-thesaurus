@@ -238,7 +238,10 @@
     },
     "deleteAttachmentQuestion": "Are you really sure about deleting attachment",
     "deleteReviewQuestion": "Are you really sure about deleting review",
-    "justSentToSubmit": "Thesis has been sent to student for submit"
+    "justSentToSubmit": "Thesis has been sent to student for submit",
+    "maxSize": "",
+    "allowedTypes": "",
+    "maxSizeError": ""
   },
   "Submit deadline": "Submit deadline",
   "Delete attachment": "Delete attachment",
