@@ -2,7 +2,7 @@ from typing import Optional, TYPE_CHECKING
 
 import filetype
 from django.core.exceptions import ValidationError
-from django.core.files.storage import default_storage, Storage
+from django.core.files.storage import Storage, default_storage
 from django.core.files.uploadedfile import UploadedFile
 from django.db import transaction
 from django.db.models import Manager
@@ -23,7 +23,7 @@ class AttachmentManager(Manager):
             thesis: 'Thesis',
             type_attachment: 'TypeAttachment',
     ):
-        file_type: Optional[filetype.Type] = filetype.guess(uploaded.file)
+        file_type: Optional[filetype.Type] = filetype.guess(uploaded.readline())
 
         if not file_type:
             raise ValidationError(_('Unknown file type for attachment {attachment}.').format(
