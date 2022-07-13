@@ -2,7 +2,7 @@ from typing import Tuple
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import Q, QuerySet, OuterRef, Exists, F
+from django.db.models import Case, Exists, OuterRef, Q, QuerySet, Value, When
 from django.shortcuts import get_list_or_404
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -12,20 +12,14 @@ from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts.models import User
-from apps.api.permissions import (
-    CanSubmitThesisPermission,
-    CanSubmitExternalThesisReviewPermission,
-    CanViewThesisFullInternalReview, CanViewAttachment
-)
+from apps.api.permissions import (CanSubmitExternalThesisReviewPermission, CanSubmitThesisPermission, CanViewAttachment,
+                                  CanViewThesisFullInternalReview)
 from apps.api.utils.pagination import DynamicPageSizePagination
 from apps.attachment.models import Attachment, TypeAttachment
 from apps.attachment.serializers import AttachmentSerializer
 from apps.review.serializers import ReviewFullInternalSerializer, ReviewPublicSerializer
-from apps.thesis.models import Thesis, Category, Reservation
-from apps.thesis.serializers import (
-    ThesisFullPublicSerializer, ThesisFullInternalSerializer,
-    ThesisSubmitSerializer
-)
+from apps.thesis.models import Category, Reservation, Thesis
+from apps.thesis.serializers import (ThesisFullInternalSerializer, ThesisFullPublicSerializer, ThesisSubmitSerializer)
 from apps.utils.utils import parse_date
 from apps.utils.views import ModelChoicesOptionsView
 
@@ -73,12 +67,19 @@ class ThesisViewSet(ModelViewSet):
         user = self.request.user  # type: User
 
         qs = qs.annotate(
-            _reservable=F('reservable') and Exists(
+            already_has_reservation=Exists(
                 queryset=Reservation.open_reservations.filter(
                     thesis_id=OuterRef('pk'),
                     user=user,
                 ),
-                negated=True,
+            )
+        ).annotate(
+            _reservable=Case(
+                When(
+                    Q(reservable=True, already_has_reservation=False),
+                    then=Value(True)
+                ),
+                default=Value(False)
             )
         )
 

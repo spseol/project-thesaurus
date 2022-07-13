@@ -1,7 +1,7 @@
 from constance import config
 from django.db.models import QuerySet
 from django.utils.translation import gettext_lazy as _
-from django_filters.rest_framework import FilterSet, CharFilter
+from django_filters.rest_framework import CharFilter, FilterSet
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
@@ -68,6 +68,9 @@ class ReservationViewSet(ModelViewSet):
                 thesis=thesis,
         ).exists():
             raise ValidationError(_('There is already existing reservation for this thesis by user.'))
+
+        if not thesis.reservable:
+            raise ValidationError(_('This thesis is not reservable.'))
 
         if Reservation.open_reservations.filter(
                 user=user,
