@@ -50,8 +50,10 @@
                                     v-model="review.comment"
                                     :placeholder="$t('review.commentPlaceholder')"
                                     :extensions="tipTapExtensions" :disabled="disabled"
-                                    :card-props="{flat: true, outlined: true, solo: true}" minHeight="200px"
+                                    :card-props="{flat: true, outlined: true, solo: true}"
+                                    minHeight="200px"
                                     :editor-properties="{autoFocus: true}"
+                                    :toolbar-properties="{dark: !$vuetify.theme.dark}"
                                     class="mb-5"
                                 ></tiptap-vuetify>
 
@@ -60,7 +62,9 @@
                                     v-model="review.questions" :disabled="disabled"
                                     :placeholder="$t('review.questionsPlaceholder')"
                                     :extensions="tipTapExtensions"
-                                    :card-props="{flat: true, outlined: true, solo: true}" minHeight="150px"
+                                    :card-props="{flat: true, outlined: true, solo: true}"
+                                    minHeight="150px"
+                                    :toolbar-properties="{dark: !$vuetify.theme.dark}"
                                 ></tiptap-vuetify>
                             </div>
                         </v-col>
@@ -262,3 +266,4 @@
         }
     };
 </script>
+
