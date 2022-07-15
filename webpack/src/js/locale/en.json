@@ -241,7 +241,9 @@
     "justSentToSubmit": "Thesis has been sent to student for submit",
     "maxSize": "Max. size",
     "allowedTypes": "Allowed extensions",
-    "maxSizeError": "You uploaded bigger file then allowed size:"
+    "maxSizeError": "You uploaded bigger file then allowed size:",
+    "missingTextError": "Text of the thesis is required",
+    "missingAbstractError": "Abstract of the thesis is required"
   },
   "Submit deadline": "Submit deadline",
   "Delete attachment": "Delete attachment",

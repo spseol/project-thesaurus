@@ -233,7 +233,9 @@
     "justSentToSubmit": "Práce byla odeslána studentovi!",
     "maxSize": "Max. velikost",
     "allowedTypes": "Formáty",
-    "maxSizeError": "Překročena maximální velikost:"
+    "maxSizeError": "Překročena maximální velikost:",
+    "missingTextError": "Je nutné přiložit text práce.",
+    "missingAbstractError": "Je nutné vyplnit abstrakt práce."
   },
   "Submit deadline": "Termín pro odevzdání",
   "Delete attachment": "Smazat přílohu",

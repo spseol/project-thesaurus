@@ -51,33 +51,33 @@
                         </v-combobox>
 
                         <v-file-input
-                            :label="$t('Thesis text')"
-                            v-model="thesis.thesisText"
-                            :rules="[v => !!v, uploadFieldSizeRule('thesis_text')]"
                             :accept="typeAttachmentAcceptTypes('thesis_text')"
+                            :hint="uploadFieldDetails('thesis_text')"
+                            :label="$t('Thesis text')"
+                            :rules="[uploadFieldSizeRule('thesis_text')]"
                             prepend-icon="$thesis_text"
-                            :messages="uploadFieldDetails('thesis_text')"
-                            show-size
+                            show-size persistent-hint
+                            v-model="thesis.thesisText"
                         ></v-file-input>
 
                         <v-file-input
+                            :accept="typeAttachmentAcceptTypes('thesis_poster')"
+                            :hint="uploadFieldDetails('thesis_poster')"
                             :label="$t('Thesis poster')"
                             :rules="[uploadFieldSizeRule('thesis_poster')]"
-                            v-model="thesis.thesisPoster"
-                            :accept="typeAttachmentAcceptTypes('thesis_poster')"
                             prepend-icon="$thesis_poster"
-                            :messages="uploadFieldDetails('thesis_poster')"
-                            show-size
+                            show-size persistent-hint
+                            v-model="thesis.thesisPoster"
                         ></v-file-input>
 
                         <v-file-input
-                            :label="$t('Thesis attachment')"
-                            v-model="thesis.thesisAttachment"
-                            :rules="[uploadFieldSizeRule('thesis_attachment')]"
                             :accept="typeAttachmentAcceptTypes('thesis_attachment')"
+                            :hint="uploadFieldDetails('thesis_attachment')"
+                            :label="$t('Thesis attachment')"
+                            :rules="[uploadFieldSizeRule('thesis_attachment')]"
                             prepend-icon="$thesis_attachment"
-                            :messages="uploadFieldDetails('thesis_attachment')"
-                            show-size
+                            show-size persistent-hint
+                            v-model="thesis.thesisAttachment"
                         ></v-file-input>
 
                         <v-divider class="mt-4"></v-divider>
@@ -103,7 +103,7 @@
             <v-divider></v-divider>
             <v-card-actions>
                 <v-row>
-                    <v-col cols="8">
+                    <v-col cols="12">
                         <v-alert v-if="isAfterDeadline" type="error">
                             {{ $t('thesisSubmit.afterDeadline') }}
                         </v-alert>
@@ -182,6 +182,7 @@
             ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS]),
             async submit() {
                 let formData = new FormData();
+                this.errorMessages = [];
 
                 const data = {
                     ...this.thesis,
@@ -189,6 +190,12 @@
                 };
                 if (!this.thesis.thesisText) {
                     this.valid = false;
+                    this.errorMessages.push(this.$t('thesis.missingTextError'));
+                    return;
+                }
+                if (!this.thesis.abstract) {
+                    this.valid = false;
+                    this.errorMessages.push(this.$t('thesis.missingAbstractError'));
                     return;
                 }
                 data.thesisText = await readFileAsync(this.thesis.thesisText);
@@ -226,7 +233,7 @@
             uploadFieldSizeRule(identifier) {
                 const type = this.typeAttachmentByIdentifier(identifier);
 
-                return value => !value || value.size < type?.size || `${this.$t('thesis.maxSizeError')}:
+                return value => !value || value.size < type?.max_size || `${this.$t('thesis.maxSizeError')}:
                     ${type?.max_size_label || '?'}.`;
 
             }
