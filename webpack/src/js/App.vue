@@ -100,32 +100,32 @@
     <v-footer app>
       <v-spacer></v-spacer>
       <span class="px-4">
-                <a href="https://github.com/spseol/project-thesaurus">
-                <v-icon>mdi-github</v-icon>
-                    v{{ pageContext.version }}
-                </a> &copy; 2020</span>
+        <a href="https://github.com/spseol/project-thesaurus" target="_blank" class="Link Link--plain">
+            <v-icon>mdi-github</v-icon> v{{ pageContext.version }}
+        </a> &copy; {{ (new Date()).getFullYear() }}
+      </span>
     </v-footer>
   </v-app>
 </template>
 
 
 <script type="text/tsx">
-import Vue from 'vue';
-import {appCache} from './cache';
-import LanguageMenu from './components/LanguageMenu.vue';
-import {pageContext} from './utils';
+    import Vue from 'vue';
+    import {appCache} from './cache';
+    import LanguageMenu from './components/LanguageMenu.vue';
+    import {pageContext} from './utils';
 
-export default Vue.extend({
-  components: {LanguageMenu},
-  data() {
-    return {
-      pageContext,
-      drawer: this.$vuetify.breakpoint.xl && this.$route.name != '404'
-    };
-  },
-  methods: {
-    async setDark(v) {
-      await appCache.setItem('dark', v);
+    export default Vue.extend({
+        components: {LanguageMenu},
+        data() {
+            return {
+                pageContext,
+                drawer: this.$vuetify.breakpoint.xl && this.$route.name != '404'
+            };
+        },
+        methods: {
+            async setDark(v) {
+                await appCache.setItem('dark', v);
       this.$vuetify.theme.dark = v;
     }
   },
@@ -163,13 +163,19 @@ export default Vue.extend({
     }
   },
   watch: {
-    $route(to, from) {
-      if (to.name == '404')
-        this.drawer = false;
-    }
+      $route(to, from) {
+          if (to.name == '404')
+              this.drawer = false;
+      }
   },
-  async created() {
-    this.$vuetify.theme.dark = await appCache.getItem('dark') || false;
-  }
-});
+        async created() {
+            this.$vuetify.theme.dark = await appCache.getItem('dark') || false;
+        }
+    });
 </script>
+
+<style scoped lang="scss">
+.Link--plain:not(:hover) {
+  text-decoration: none;
+}
+</style>
