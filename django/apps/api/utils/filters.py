@@ -4,6 +4,7 @@ from functools import partial
 import unidecode
 from django.core.exceptions import FieldDoesNotExist
 from django.db.models.fields.related import ForeignObjectRel, OneToOneRel
+from django_filters import Filter
 from rest_framework import filters
 from rest_framework.filters import SearchFilter
 
@@ -58,3 +59,10 @@ class UnAccentSearchFilter(SearchFilter):
         search_fields = map(partial(self.STRIP_FROM_SEARCH_FIELDS.sub, ''), search_fields)
 
         return super().must_call_distinct(queryset, search_fields)
+
+
+class InListFilter(Filter):
+    def filter(self, qs, value):
+        if value:
+            return qs.filter(**{self.field_name + '__in': value.split(',')})
+        return qs

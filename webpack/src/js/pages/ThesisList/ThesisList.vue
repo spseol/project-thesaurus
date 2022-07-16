@@ -133,169 +133,206 @@
         </v-combobox>
 
         <v-divider v-if="$vuetify.breakpoint.mdAndUp" vertical class="mx-1"></v-divider>
-        <v-select v-if="$vuetify.breakpoint.mdAndUp"
-            :items="optionsStore.category" v-model="categoryFilter" clearable
-            solo solo-inverted flat hide-details prepend-inner-icon="mdi-filter-outline"
-            :label="$t('Category')" style="max-width: 10em"
-        ></v-select>
+        <v-select
+            v-if="$vuetify.breakpoint.mdAndUp"
+            :items="optionsStore.category"
+            v-model="categoryFilterItems"
+            return-object clearable multiple
+            solo solo-inverted flat hide-details
+            prepend-inner-icon="mdi-filter-outline"
+            :label="$t('Category')"
+            style="max-width: 10em"
+        >
+          <template v-slot:selection="{ item, index }">
+            <span
+                v-if="index === 0"
+                v-text="item.text"
+            />
+            <span
+                v-if="index === 1"
+            >(+{{ categoryFilterItems.length - 1 }})</span>
+          </template>
+        </v-select>
 
         <v-divider vertical class="mx-1" v-if="$vuetify.breakpoint.smAndUp"></v-divider>
-        <v-select v-if="$vuetify.breakpoint.smAndUp"
-            :items="optionsStore.thesisYear" v-model="thesisYearFilter" clearable
-            flat solo-inverted hide-details prepend-inner-icon="mdi-calendar"
-            :label="$t('Publication year')" style="max-width: 10em"
-        ></v-select>
+        <v-select
+            v-if="$vuetify.breakpoint.smAndUp"
+            :items="optionsStore.thesisYear"
+            v-model="publicationYearFilterItems"
+            return-object multiple
+            clearable
+            flat solo-inverted hide-details
+            prepend-inner-icon="mdi-calendar"
+            :label="$t('Publication year')"
+            style="max-width: 11em"
+        >
+          <template v-slot:selection="{ item, index }">
+            <span
+                v-if="index === 0"
+                v-text="item.text"
+            />
+            <span
+                v-if="index === 1"
+            >(+{{ publicationYearFilterItems.length - 1 }})</span>
+          </template>
+        </v-select>
       </v-toolbar>
     </portal>
   </div>
 </template>
 
 <script type="text/tsx">
-import * as _ from 'lodash';
-import Vue from 'vue';
-import {mapState} from 'vuex';
-import AuditForInstance from '../../components/AuditForInstance.vue';
-import {OPTIONS_ACTIONS} from '../../store/options';
-import {PERMS, PERMS_ACTIONS} from '../../store/perms';
+  import * as _ from 'lodash';
+  import Vue from 'vue';
+  import {mapState} from 'vuex';
+  import AuditForInstance from '../../components/AuditForInstance.vue';
+  import {OPTIONS_ACTIONS} from '../../store/options';
+  import {PERMS, PERMS_ACTIONS} from '../../store/perms';
 
-import {optionsStore, permsStore, thesisStore} from '../../store/store';
-import {THESIS_ACTIONS} from '../../store/thesis';
-import {notificationBus} from '../../utils';
-import ThesisEditPanel from './ThesisEditPanel.vue';
-import ThesisListActionBtn from './ThesisListActionBtn.vue';
+  import {optionsStore, permsStore, thesisStore} from '../../store/store';
+  import {THESIS_ACTIONS, ThesisListFilters} from '../../store/thesis';
+  import {notificationBus} from '../../utils';
+  import ThesisEditPanel from './ThesisEditPanel.vue';
+  import ThesisListActionBtn from './ThesisListActionBtn.vue';
 
 
-export default Vue.extend({
-  components: {
-    AuditForInstance,
-    ThesisEditPanel,
-    ThesisListActionBtn,
-    ThesisDetailPanel: () => import('./ThesisDetailPanel.vue')
-  },
-  data() {
-    return {
-      loading: true,
-      options: {},
+  export default Vue.extend({
+    components: {
+      AuditForInstance,
+      ThesisEditPanel,
+      ThesisListActionBtn,
+      ThesisDetailPanel: () => import('./ThesisDetailPanel.vue')
+    },
+    data() {
+      return {
+        loading: true,
+        options: {},
 
-      filterItems: [],
-      categoryFilter: null,
-      thesisYearFilter: null,
+        filterItems: [],
+        categoryFilterItems: [],
+        publicationYearFilterItems: [],
 
-      userEditDialogModel: {}
-    };
-  },
-  methods: {
-    ...thesisStore.mapActions([
-      THESIS_ACTIONS.LOAD_THESES,
-      THESIS_ACTIONS.EDIT_THESIS
-    ]),
-    ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS]),
-    ...permsStore.mapActions([PERMS_ACTIONS.LOAD_PERMS]),
-    addUserFilterFromDataTable(username) {
-      this.filterItems.push(
-          _.find(this.optionsStore.userFilter, {username})
+        userEditDialogModel: {}
+      };
+    },
+    methods: {
+      ...thesisStore.mapActions([
+        THESIS_ACTIONS.LOAD_THESES,
+        THESIS_ACTIONS.EDIT_THESIS
+      ]),
+      ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS]),
+      ...permsStore.mapActions([PERMS_ACTIONS.LOAD_PERMS]),
+      addUserFilterFromDataTable(username) {
+        this.filterItems.push(
+            _.find(this.optionsStore.userFilter, {username})
+        );
+      },
+      removeFromFilter(item) {
+        this.filterItems.splice(this.filterItems.indexOf(item), 1);
+        this.filterItems = [...this.filterItems];
+      },
+      userOptionsFilter(item, queryText, itemText) {
+        itemText = itemText.toLowerCase();
+        return _.some(
+            queryText.toLowerCase().split(/\s+/g),
+            token => itemText.includes(token)
+        );
+      },
+      isThesisEditAllowed({state}) {
+        // TODO: list all states
+        return this.perms[PERMS.CHANGE_THESIS] && state != 'published';
+      },
+
+      async persistThesisEdit(thesis_id, data) {
+        this.loading = true;
+        await this[THESIS_ACTIONS.EDIT_THESIS]({
+          ...data,
+          id: thesis_id
+        });
+        notificationBus.success(this.$t('Successfully saved!'));
+        this.loading = false;
+      },
+      async load() {
+        this.loading = true;
+
+        const filters = new ThesisListFilters(
+            this.filterItems,
+            this.categoryFilterItems,
+            this.publicationYearFilterItems
+        );
+
+        await this[THESIS_ACTIONS.LOAD_THESES]({
+          filters,
+          options: this.options,
+          headers: this.headers
+        });
+
+        this.loading = false;
+      }
+    },
+    computed: {
+      ...thesisStore.mapState(['theses']),
+      ...permsStore.mapState(['perms']),
+      ...mapState({optionsStore: 'options'}),
+      headers() {
+        const lgAndUp = this.$vuetify.breakpoint.lgAndUp;
+        const mdAndUp = this.$vuetify.breakpoint.mdAndUp;
+        const headers = [
+          {text: '', value: 'data-table-expand'},
+
+          {text: this.$t('Title'), value: 'title', width: '25%'},
+
+          this.perms[PERMS.CHANGE_THESIS] && lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
+          {text: this.$t('Category'), value: 'category.title'},
+
+          mdAndUp && {text: this.$t('Year'), value: 'published_at'},
+
+          {
+            text: this.$t('Authors'), value: 'authors',
+            mapped: 'authors__username',
+            width: '15%'
+          },
+
+          lgAndUp && {
+            text: this.$t('Supervisor'),
+            value: 'supervisor.full_name',
+            mapped: 'supervisor__last_name',
+            width: '10%'
+          },
+          lgAndUp && {
+            text: this.$t('Opponent'),
+            value: 'opponent.full_name',
+            mapped: 'opponent__last_name',
+            width: '10%'
+          },
+          this.perms[PERMS.CHANGE_THESIS] && {text: '', value: 'edit', sortable: false}
+        ];
+
+        headers.push({text: '', value: 'state', width: '10%', sortable: false});
+        this.perms[PERMS.VIEW_AUDIT] && headers.push({text: '', value: 'audit', sortable: false});
+        return _.compact(headers);
+      },
+      manualFilterItems() {
+        return _.filter(this.filterItems, _.isString);
+      }
+    },
+    async created() {
+      this.debouncedLoad = _.debounce(this.load, 200);
+      this.$watch(
+          (vm) => ([vm.options, vm.$i18n.locale]),
+          this.debouncedLoad,
+          {deep: true, immediate: true}
       );
-    },
-    removeFromFilter(item) {
-      this.filterItems.splice(this.filterItems.indexOf(item), 1);
-      this.filterItems = [...this.filterItems];
-    },
-    userOptionsFilter(item, queryText, itemText) {
-      itemText = itemText.toLowerCase();
-      return _.some(
-          queryText.toLowerCase().split(/\s+/g),
-          token => itemText.includes(token)
+      this.$watch(
+          (vm) => ([vm.filterItems, vm.categoryFilterItems, vm.publicationYearFilterItems]),
+          () => {
+            this.options.page = 1;
+            this.debouncedLoad();
+          }
       );
-    },
-    isThesisEditAllowed({state}) {
-      // TODO: list all states
-      return this.perms[PERMS.CHANGE_THESIS] && state != 'published';
-    },
 
-    async persistThesisEdit(thesis_id, data) {
-      this.loading = true;
-      await this[THESIS_ACTIONS.EDIT_THESIS]({
-        ...data,
-        id: thesis_id
-      });
-      notificationBus.success(this.$t('Successfully saved!'));
-      this.loading = false;
-    },
-    async load() {
-      this.loading = true;
-
-      await this[THESIS_ACTIONS.LOAD_THESES]({
-        options: this.options,
-        filters: _.filter(_.concat(this.filterItems, this.categoryFilter, this.thesisYearFilter)),
-        headers: this.headers
-      });
-
-      this.loading = false;
+      await this[OPTIONS_ACTIONS.LOAD_OPTIONS]();
+      await this[PERMS_ACTIONS.LOAD_PERMS]();
     }
-  },
-  computed: {
-    ...thesisStore.mapState(['theses']),
-    ...permsStore.mapState(['perms']),
-    ...mapState({optionsStore: 'options'}),
-    headers() {
-      const lgAndUp = this.$vuetify.breakpoint.lgAndUp;
-      const mdAndUp = this.$vuetify.breakpoint.mdAndUp;
-      const headers = [
-        {text: '', value: 'data-table-expand'},
-
-        {text: this.$t('Title'), value: 'title', width: '25%'},
-
-        this.perms[PERMS.CHANGE_THESIS] && lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
-        {text: this.$t('Category'), value: 'category.title'},
-
-        mdAndUp && {text: this.$t('Year'), value: 'published_at'},
-
-        {
-          text: this.$t('Authors'), value: 'authors',
-          mapped: 'authors__username',
-          width: '15%'
-        },
-
-        lgAndUp && {
-          text: this.$t('Supervisor'),
-          value: 'supervisor.full_name',
-          mapped: 'supervisor__last_name',
-          width: '10%'
-        },
-        lgAndUp && {
-          text: this.$t('Opponent'),
-          value: 'opponent.full_name',
-          mapped: 'opponent__last_name',
-          width: '10%'
-        },
-        this.perms[PERMS.CHANGE_THESIS] && {text: '', value: 'edit', sortable: false}
-      ];
-
-      headers.push({text: '', value: 'state', width: '10%', sortable: false});
-      this.perms[PERMS.VIEW_AUDIT] && headers.push({text: '', value: 'audit', sortable: false});
-      return _.compact(headers);
-    },
-    manualFilterItems() {
-      return _.filter(this.filterItems, _.isString);
-    }
-  },
-  async created() {
-    this.debouncedLoad = _.debounce(this.load, 200);
-    this.$watch(
-        (vm) => ([vm.options, vm.$i18n.locale]),
-        this.debouncedLoad,
-        {deep: true, immediate: true}
-    );
-    this.$watch(
-        (vm) => ([vm.filterItems, vm.categoryFilter, vm.thesisYearFilter]),
-        () => {
-          this.options.page = 1;
-          this.debouncedLoad();
-        }
-    );
-
-    await this[OPTIONS_ACTIONS.LOAD_OPTIONS]();
-    await this[PERMS_ACTIONS.LOAD_PERMS]();
-  }
-});
+  });
 </script>

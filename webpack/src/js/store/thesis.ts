@@ -29,6 +29,22 @@ const state = {
 };
 type State = typeof state;
 
+interface FilterItem {
+    // items going from filter combobox
+    readonly username: string | null;
+    readonly value: string | null;
+    readonly id: string | null;
+}
+
+export class ThesisListFilters {
+    constructor(
+        public readonly peopleOrSearch: FilterItem[],
+        public readonly categories: FilterItem[],
+        public readonly years: FilterItem[]
+    ) {
+    }
+}
+
 
 export default {
     namespaced: true,
@@ -65,12 +81,18 @@ export default {
         }
     },
     actions: {
-        async [THESIS_ACTIONS.LOAD_THESES](store, {options, filters, headers}) {
+        async [THESIS_ACTIONS.LOAD_THESES](store, {
+            options,
+            filters,
+            headers
+        }: { filters: ThesisListFilters, options: any, headers: any }) {
             const {page, itemsPerPage} = options;
 
             const query = qs.stringify({
                 page,
-                search: _.map(filters, (i) => i.username || i.id || i).join(' '),
+                search: filters.peopleOrSearch.map(i => i.username || i).join(' '),
+                category: filters.categories.map(c => c.id).join(','),
+                year: filters.years.map(c => c.value).join(','),
                 ordering: formatDataTableOrdering(options, headers),
                 page_size: itemsPerPage
             });

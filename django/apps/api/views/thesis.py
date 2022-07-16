@@ -4,8 +4,11 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.db.models import Case, Exists, OuterRef, Q, QuerySet, Value, When
 from django.shortcuts import get_list_or_404
+from django_filters import FilterSet
+from django_filters.rest_framework import backends
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework import filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
@@ -14,6 +17,7 @@ from rest_framework.viewsets import ModelViewSet
 from apps.accounts.models import User
 from apps.api.permissions import (CanSubmitExternalThesisReviewPermission, CanSubmitThesisPermission, CanViewAttachment,
                                   CanViewThesisFullInternalReview)
+from apps.api.utils.filters import InListFilter
 from apps.api.utils.pagination import DynamicPageSizePagination
 from apps.attachment.models import Attachment, TypeAttachment
 from apps.attachment.serializers import AttachmentSerializer
@@ -40,9 +44,21 @@ def _state_change_action(name, state: Thesis.State):
     )
 
 
+class ThesisFilterSet(FilterSet):
+    category = InListFilter(field_name='category__id')
+    year = InListFilter(field_name='published_at_year')
+
+
 class ThesisViewSet(ModelViewSet):
     queryset = Thesis.api_objects.get_queryset()
     pagination_class = DynamicPageSizePagination
+
+    filter_backends = [
+        filters.SearchFilter,
+        backends.DjangoFilterBackend
+    ]
+    filterset_class = ThesisFilterSet
+
     search_fields = (
         'title__unaccent',
         'abstract__unaccent',
@@ -57,7 +73,6 @@ class ThesisViewSet(ModelViewSet):
         '=opponent__username',
         'opponent__first_name__unaccent',
         'opponent__last_name__unaccent',
-        '=category__id',
         'category__title',
         '=published_at_year',
     )
