@@ -17,7 +17,7 @@ from rest_framework.viewsets import ModelViewSet
 from apps.accounts.models import User
 from apps.api.permissions import (CanSubmitExternalThesisReviewPermission, CanSubmitThesisPermission, CanViewAttachment,
                                   CanViewThesisFullInternalReview)
-from apps.api.utils.filters import InListFilter
+from apps.api.utils.filters import InListFilter, InMultipleFieldsListFilter
 from apps.api.utils.pagination import DynamicPageSizePagination
 from apps.attachment.models import Attachment, TypeAttachment
 from apps.attachment.serializers import AttachmentSerializer
@@ -45,8 +45,12 @@ def _state_change_action(name, state: Thesis.State):
 
 
 class ThesisFilterSet(FilterSet):
-    category = InListFilter(field_name='category__id')
-    year = InListFilter(field_name='published_at_year')
+    category = InListFilter(field_name='category__id', label='Category ID (comma separated)')
+    year = InListFilter(field_name='published_at_year', label='Year of publication (comma separated)')
+    teacher = InMultipleFieldsListFilter(
+        label='Username of related teacher (comma separated)',
+        field_name='supervisor__username opponent__username'
+    )
 
 
 class ThesisViewSet(ModelViewSet):
@@ -67,14 +71,6 @@ class ThesisViewSet(ModelViewSet):
         '=authors__username',
         'authors__first_name__unaccent',
         'authors__last_name__unaccent',
-        '=supervisor__username',
-        'supervisor__first_name__unaccent',
-        'supervisor__last_name__unaccent',
-        '=opponent__username',
-        'opponent__first_name__unaccent',
-        'opponent__last_name__unaccent',
-        'category__title',
-        '=published_at_year',
     )
 
     def get_queryset(self):

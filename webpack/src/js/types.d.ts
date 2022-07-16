@@ -25,10 +25,13 @@ export declare class User extends Object {
     full_name: string;
 }
 
-export declare class UserOption extends Object {
+export declare class SelectOption extends Object {
     value: string;
-    username: string;
     text: string;
+}
+
+export declare class UserOption extends SelectOption {
+    username: string;
 }
 
 export declare class TypeAttachment extends Object {

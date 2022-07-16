@@ -50,9 +50,9 @@
       </template>
 
       <template v-slot:item.authors="{ item }">
-                <span class="caption">
-                {{ item.authors.map(a => a.full_name).join(', ') }}
-                </span>
+        <span class="caption">
+        {{ item.authors.map(a => a.full_name).join(', ') }}
+        </span>
       </template>
 
       <template
@@ -99,12 +99,15 @@
     <portal to="navbar-center" v-if="$route.name === 'thesis-list'">
       <v-toolbar dense color="transparent" elevation="0">
         <v-combobox
-            v-model="filterItems" multiple :items="optionsStore.userFilter"
+            v-model="filterItems" multiple
+            :items="optionsStore.userFilter"
             flat solo-inverted solo prepend-inner-icon="mdi-magnify"
             hide-details clearable chips
             :label="$t('Search')"
             :filter="userOptionsFilter"
             menu-props="closeOnContentClick"
+            :search-input.sync="filterSearchInput"
+            ref="filterCombobox"
         >
           <template v-slot:selection="{ attrs, item, select, selected, index, value }">
             <!-- chip if item is user or manually types text -->
@@ -120,11 +123,12 @@
             </v-chip>
             <!-- maybe too much magic -->
             <span
-                v-if="index === 1 && filterItems.length - manualFilterItems.length - (filterItems[0].value ? 1 : 0) > 0"
-                class="caption order-last"
+                v-if="index === 1 && filterItems.length - manualFilterItems.length - (filterItems[0] && filterItems[0].value ? 1 : 0)
+                > 0"
+
             >(+{{
                 filterItems.length - manualFilterItems.length - (filterItems[0].value ? 1 : 0)
-              }} others)</span>
+              }})</span>
           </template>
 
           <template v-slot:item="{ item }">
@@ -208,6 +212,7 @@ export default Vue.extend({
       loading: true,
       options: {},
 
+      filterSearchInput: '',
       filterItems: [],
       categoryFilterItems: [],
       publicationYearFilterItems: [],
@@ -268,7 +273,7 @@ export default Vue.extend({
       });
 
       this.loading = false;
-    }
+    },
   },
   computed: {
     ...thesisStore.mapState(['theses']),
@@ -314,6 +319,14 @@ export default Vue.extend({
     },
     manualFilterItems() {
       return _.filter(this.filterItems, _.isString);
+    }
+  },
+  watch: {
+    filterItems(new_, old) {
+      if (this.filterSearchInput)
+        this.filterSearchInput = '';
+      if (new_.length && _.isString(new_[0]))
+        this.$refs.filterCombobox.blur();
     }
   },
   async created() {

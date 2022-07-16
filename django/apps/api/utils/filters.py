@@ -3,6 +3,7 @@ from functools import partial
 
 import unidecode
 from django.core.exceptions import FieldDoesNotExist
+from django.db.models import Q
 from django.db.models.fields.related import ForeignObjectRel, OneToOneRel
 from django_filters import Filter
 from rest_framework import filters
@@ -65,4 +66,18 @@ class InListFilter(Filter):
     def filter(self, qs, value):
         if value:
             return qs.filter(**{self.field_name + '__in': value.split(',')})
+        return qs
+
+
+class InMultipleFieldsListFilter(Filter):
+    def filter(self, qs, value):
+        if value:
+            value_as_list = value.split(',')
+            return qs.filter(
+                Q(
+                    **{f + '__in': value_as_list for f in self.field_name.split(' ')},
+                    _connector=Q.OR
+                )
+
+            )
         return qs
