@@ -182,157 +182,157 @@
 </template>
 
 <script type="text/tsx">
-  import * as _ from 'lodash';
-  import Vue from 'vue';
-  import {mapState} from 'vuex';
-  import AuditForInstance from '../../components/AuditForInstance.vue';
-  import {OPTIONS_ACTIONS} from '../../store/options';
-  import {PERMS, PERMS_ACTIONS} from '../../store/perms';
+import * as _ from 'lodash';
+import Vue from 'vue';
+import {mapState} from 'vuex';
+import AuditForInstance from '../../components/AuditForInstance.vue';
+import {OPTIONS_ACTIONS} from '../../store/options';
+import {PERMS, PERMS_ACTIONS} from '../../store/perms';
 
-  import {optionsStore, permsStore, thesisStore} from '../../store/store';
-  import {THESIS_ACTIONS, ThesisListFilters} from '../../store/thesis';
-  import {notificationBus} from '../../utils';
-  import ThesisEditPanel from './ThesisEditPanel.vue';
-  import ThesisListActionBtn from './ThesisListActionBtn.vue';
+import {optionsStore, permsStore, thesisStore} from '../../store/store';
+import {THESIS_ACTIONS, ThesisListFilters} from '../../store/thesis';
+import {notificationBus} from '../../utils';
+import ThesisEditPanel from './ThesisEditPanel.vue';
+import ThesisListActionBtn from './ThesisListActionBtn.vue';
 
 
-  export default Vue.extend({
-    components: {
-      AuditForInstance,
-      ThesisEditPanel,
-      ThesisListActionBtn,
-      ThesisDetailPanel: () => import('./ThesisDetailPanel.vue')
-    },
-    data() {
-      return {
-        loading: true,
-        options: {},
+export default Vue.extend({
+  components: {
+    AuditForInstance,
+    ThesisEditPanel,
+    ThesisListActionBtn,
+    ThesisDetailPanel: () => import('./ThesisDetailPanel.vue')
+  },
+  data() {
+    return {
+      loading: true,
+      options: {},
 
-        filterItems: [],
-        categoryFilterItems: [],
-        publicationYearFilterItems: [],
+      filterItems: [],
+      categoryFilterItems: [],
+      publicationYearFilterItems: [],
 
-        userEditDialogModel: {}
-      };
-    },
-    methods: {
-      ...thesisStore.mapActions([
-        THESIS_ACTIONS.LOAD_THESES,
-        THESIS_ACTIONS.EDIT_THESIS
-      ]),
-      ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS]),
-      ...permsStore.mapActions([PERMS_ACTIONS.LOAD_PERMS]),
-      addUserFilterFromDataTable(username) {
-        this.filterItems.push(
-            _.find(this.optionsStore.userFilter, {username})
-        );
-      },
-      removeFromFilter(item) {
-        this.filterItems.splice(this.filterItems.indexOf(item), 1);
-        this.filterItems = [...this.filterItems];
-      },
-      userOptionsFilter(item, queryText, itemText) {
-        itemText = itemText.toLowerCase();
-        return _.some(
-            queryText.toLowerCase().split(/\s+/g),
-            token => itemText.includes(token)
-        );
-      },
-      isThesisEditAllowed({state}) {
-        // TODO: list all states
-        return this.perms[PERMS.CHANGE_THESIS] && state != 'published';
-      },
-
-      async persistThesisEdit(thesis_id, data) {
-        this.loading = true;
-        await this[THESIS_ACTIONS.EDIT_THESIS]({
-          ...data,
-          id: thesis_id
-        });
-        notificationBus.success(this.$t('Successfully saved!'));
-        this.loading = false;
-      },
-      async load() {
-        this.loading = true;
-
-        const filters = new ThesisListFilters(
-            this.filterItems,
-            this.categoryFilterItems,
-            this.publicationYearFilterItems
-        );
-
-        await this[THESIS_ACTIONS.LOAD_THESES]({
-          filters,
-          options: this.options,
-          headers: this.headers
-        });
-
-        this.loading = false;
-      }
-    },
-    computed: {
-      ...thesisStore.mapState(['theses']),
-      ...permsStore.mapState(['perms']),
-      ...mapState({optionsStore: 'options'}),
-      headers() {
-        const lgAndUp = this.$vuetify.breakpoint.lgAndUp;
-        const mdAndUp = this.$vuetify.breakpoint.mdAndUp;
-        const headers = [
-          {text: '', value: 'data-table-expand'},
-
-          {text: this.$t('Title'), value: 'title', width: '25%'},
-
-          this.perms[PERMS.CHANGE_THESIS] && lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
-          {text: this.$t('Category'), value: 'category.title'},
-
-          mdAndUp && {text: this.$t('Year'), value: 'published_at'},
-
-          {
-            text: this.$t('Authors'), value: 'authors',
-            mapped: 'authors__username',
-            width: '15%'
-          },
-
-          lgAndUp && {
-            text: this.$t('Supervisor'),
-            value: 'supervisor.full_name',
-            mapped: 'supervisor__last_name',
-            width: '10%'
-          },
-          lgAndUp && {
-            text: this.$t('Opponent'),
-            value: 'opponent.full_name',
-            mapped: 'opponent__last_name',
-            width: '10%'
-          },
-          this.perms[PERMS.CHANGE_THESIS] && {text: '', value: 'edit', sortable: false}
-        ];
-
-        headers.push({text: '', value: 'state', width: '10%', sortable: false});
-        this.perms[PERMS.VIEW_AUDIT] && headers.push({text: '', value: 'audit', sortable: false});
-        return _.compact(headers);
-      },
-      manualFilterItems() {
-        return _.filter(this.filterItems, _.isString);
-      }
-    },
-    async created() {
-      this.debouncedLoad = _.debounce(this.load, 200);
-      this.$watch(
-          (vm) => ([vm.options, vm.$i18n.locale]),
-          this.debouncedLoad,
-          {deep: true, immediate: true}
+      userEditDialogModel: {}
+    };
+  },
+  methods: {
+    ...thesisStore.mapActions([
+      THESIS_ACTIONS.LOAD_THESES,
+      THESIS_ACTIONS.EDIT_THESIS
+    ]),
+    ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS]),
+    ...permsStore.mapActions([PERMS_ACTIONS.LOAD_PERMS]),
+    addUserFilterFromDataTable(username) {
+      this.filterItems.push(
+          _.find(this.optionsStore.userFilter, {username})
       );
-      this.$watch(
-          (vm) => ([vm.filterItems, vm.categoryFilterItems, vm.publicationYearFilterItems]),
-          () => {
-            this.options.page = 1;
-            this.debouncedLoad();
-          }
+    },
+    removeFromFilter(item) {
+      this.filterItems.splice(this.filterItems.indexOf(item), 1);
+      this.filterItems = [...this.filterItems];
+    },
+    userOptionsFilter(item, queryText, itemText) {
+      itemText = itemText.toLowerCase();
+      return _.some(
+          queryText.toLowerCase().split(/\s+/g),
+          token => itemText.includes(token)
+      );
+    },
+    isThesisEditAllowed({state}) {
+      // TODO: list all states
+      return this.perms[PERMS.CHANGE_THESIS] && state != 'published';
+    },
+
+    async persistThesisEdit(thesis_id, data) {
+      this.loading = true;
+      await this[THESIS_ACTIONS.EDIT_THESIS]({
+        ...data,
+        id: thesis_id
+      });
+      notificationBus.success(this.$t('Successfully saved!'));
+      this.loading = false;
+    },
+    async load() {
+      this.loading = true;
+
+      const filters = new ThesisListFilters(
+          this.filterItems,
+          this.categoryFilterItems,
+          this.publicationYearFilterItems
       );
 
-      await this[OPTIONS_ACTIONS.LOAD_OPTIONS]();
-      await this[PERMS_ACTIONS.LOAD_PERMS]();
+      await this[THESIS_ACTIONS.LOAD_THESES]({
+        filters,
+        options: this.options,
+        headers: this.headers
+      });
+
+      this.loading = false;
     }
-  });
+  },
+  computed: {
+    ...thesisStore.mapState(['theses']),
+    ...permsStore.mapState(['perms']),
+    ...mapState({optionsStore: 'options'}),
+    headers() {
+      const lgAndUp = this.$vuetify.breakpoint.lgAndUp;
+      const mdAndUp = this.$vuetify.breakpoint.mdAndUp;
+      const headers = [
+        {text: '', value: 'data-table-expand'},
+
+        {text: this.$t('Title'), value: 'title', width: '25%'},
+
+        this.perms[PERMS.CHANGE_THESIS] && lgAndUp && {text: this.$t('SN'), value: 'registration_number'},
+        {text: this.$t('Category'), value: 'category.title'},
+
+        mdAndUp && {text: this.$t('Year'), value: 'published_at'},
+
+        {
+          text: this.$t('Authors'), value: 'authors',
+          mapped: 'authors__username',
+          width: '15%'
+        },
+
+        lgAndUp && {
+          text: this.$t('Supervisor'),
+          value: 'supervisor.full_name',
+          mapped: 'supervisor__last_name',
+          width: '10%'
+        },
+        lgAndUp && {
+          text: this.$t('Opponent'),
+          value: 'opponent.full_name',
+          mapped: 'opponent__last_name',
+          width: '10%'
+        },
+        this.perms[PERMS.CHANGE_THESIS] && {text: '', value: 'edit', sortable: false}
+      ];
+
+      headers.push({text: '', value: 'state', width: '10%', sortable: false});
+      this.perms[PERMS.VIEW_AUDIT] && headers.push({text: '', value: 'audit', sortable: false});
+      return _.compact(headers);
+    },
+    manualFilterItems() {
+      return _.filter(this.filterItems, _.isString);
+    }
+  },
+  async created() {
+    this.debouncedLoad = _.debounce(this.load, 200);
+    this.$watch(
+        (vm) => ([vm.options, vm.$i18n.locale]),
+        this.debouncedLoad,
+        {deep: true, immediate: true}
+    );
+    this.$watch(
+        (vm) => ([vm.filterItems, vm.categoryFilterItems, vm.publicationYearFilterItems]),
+        () => {
+          this.options.page = 1;
+          this.debouncedLoad();
+        }
+    );
+
+    await this[OPTIONS_ACTIONS.LOAD_OPTIONS]();
+    await this[PERMS_ACTIONS.LOAD_PERMS]();
+  }
+});
 </script>
