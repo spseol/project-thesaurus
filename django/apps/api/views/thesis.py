@@ -71,6 +71,9 @@ class ThesisViewSet(ModelViewSet):
         '=authors__username',
         'authors__first_name__unaccent',
         'authors__last_name__unaccent',
+
+        '=supervisor__username',
+        '=opponent__username',
     )
 
     def get_queryset(self):
