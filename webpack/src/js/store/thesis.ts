@@ -1,8 +1,9 @@
 import * as _ from 'lodash';
 import * as qs from 'qs';
 import Vue from 'vue';
+import {DataOptions} from 'vuetify/types';
 import Axios from '../axios';
-import {Thesis} from '../types';
+import {Category, SelectOption, Thesis, ThesisTableHeader, UserOption} from '../types';
 import {formatDataTableOrdering, readFileAsync} from '../utils';
 
 export enum THESIS_MUTATIONS {
@@ -28,6 +29,29 @@ const state = {
     theses: {results: [] as Array<Thesis>, count: 0}
 };
 type State = typeof state;
+
+
+export class ThesisListFilters {
+    public readonly teacher: UserOption[];
+    public readonly search: string[];
+
+    constructor(
+        private readonly teacherOrSearch: (UserOption & string)[],
+        public readonly categories: Category[],
+        public readonly years: SelectOption[]
+    ) {
+        [this.teacher, this.search] = _.partition(teacherOrSearch, v => !!v.value);
+    }
+
+    public asParams() {
+        return {
+            search: this.search.join(' '),
+            teacher: this.teacher.map(i => i.username).join(','),
+            category: this.categories.map(c => c.id).join(','),
+            year: this.years.map(c => c.value).join(',')
+        };
+    }
+}
 
 
 export default {
@@ -65,14 +89,18 @@ export default {
         }
     },
     actions: {
-        async [THESIS_ACTIONS.LOAD_THESES](store, {options, filters, headers}) {
+        async [THESIS_ACTIONS.LOAD_THESES](store, {
+            options,
+            filters,
+            headers
+        }: { filters: ThesisListFilters, options: DataOptions, headers: ThesisTableHeader[] }) {
             const {page, itemsPerPage} = options;
 
             const query = qs.stringify({
                 page,
-                search: _.map(filters, (i) => i.username || i.id || i).join(' '),
                 ordering: formatDataTableOrdering(options, headers),
-                page_size: itemsPerPage
+                page_size: itemsPerPage,
+                ...filters.asParams()
             });
 
             const response = (await Axios.get(`/api/v1/thesis?${query}`)).data;

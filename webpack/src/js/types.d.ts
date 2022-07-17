@@ -1,3 +1,5 @@
+import {DataTableHeader} from 'vuetify';
+
 declare module 'axios' {
     export interface AxiosRequestConfig {
         allow403?: boolean;
@@ -25,10 +27,13 @@ export declare class User extends Object {
     full_name: string;
 }
 
-export declare class UserOption extends Object {
+export declare class SelectOption extends Object {
     value: string;
-    username: string;
     text: string;
+}
+
+export declare class UserOption extends SelectOption {
+    username: string;
 }
 
 export declare class TypeAttachment extends Object {
@@ -95,4 +100,8 @@ export declare class Thesis extends Object {
     available_for_reservation: boolean;
     reservable: boolean;
     open_reservations_count: number;
+}
+
+export interface ThesisTableHeader extends DataTableHeader {
+    mapped: string;
 }
