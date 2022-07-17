@@ -44,28 +44,44 @@
                                 </v-btn>
                             </v-row>
                             <div v-if="showComments">
-                                <v-divider></v-divider>
-                                <h3 class="my-5">{{ $t('Review comment') }}</h3>
-                                <tiptap-vuetify
-                                    v-model="review.comment"
-                                    :placeholder="$t('review.commentPlaceholder')"
-                                    :extensions="tipTapExtensions" :disabled="disabled"
-                                    :card-props="{flat: true, outlined: true, solo: true}"
-                                    minHeight="200px"
-                                    :editor-properties="{autoFocus: true}"
-                                    :toolbar-properties="{dark: !$vuetify.theme.dark}"
-                                    class="mb-5"
-                                ></tiptap-vuetify>
+                              <v-divider></v-divider>
+                              <h3
+                                  class="my-5"
+                                  :class="{'error--text': error_messages.comment}"
+                              >{{ $t('Review comment') }}</h3>
+                              <tiptap-vuetify
+                                  v-model="review.comment"
+                                  :placeholder="$t('review.commentPlaceholder')"
+                                  :extensions="tipTapExtensions" :disabled="disabled"
+                                  :card-props="{flat: true, outlined: true, solo: true}"
+                                  minHeight="200px"
+                                  :editor-properties="{autoFocus: true}"
+                                  :toolbar-properties="{dark: !$vuetify.theme.dark}"
+                                  class="mb-5"
+                              ></tiptap-vuetify>
+                              <v-alert
+                                  v-for="m of error_messages.comment"
+                                  dense outlined text type="error"
+                                  v-text="m" class="mt-4"
+                              ></v-alert>
 
-                                <h3 class="mb-5">{{ $t('Thesis defence questions') }}</h3>
-                                <tiptap-vuetify
-                                    v-model="review.questions" :disabled="disabled"
-                                    :placeholder="$t('review.questionsPlaceholder')"
-                                    :extensions="tipTapExtensions"
-                                    :card-props="{flat: true, outlined: true, solo: true}"
-                                    minHeight="150px"
-                                    :toolbar-properties="{dark: !$vuetify.theme.dark}"
-                                ></tiptap-vuetify>
+                              <h3
+                                  class="mb-5"
+                                  :class="{'error--text': error_messages.questions}"
+                              >{{ $t('Thesis defence questions') }}</h3>
+                              <tiptap-vuetify
+                                  v-model="review.questions" :disabled="disabled"
+                                  :placeholder="$t('review.questionsPlaceholder')"
+                                  :extensions="tipTapExtensions"
+                                  :card-props="{flat: true, outlined: true, solo: true}"
+                                  minHeight="150px"
+                                  :toolbar-properties="{dark: !$vuetify.theme.dark}"
+                              ></tiptap-vuetify>
+                              <v-alert
+                                  v-for="m of error_messages.questions"
+                                  dense outlined text type="error"
+                                  v-text="m" class="mt-4"
+                              ></v-alert>
                             </div>
                         </v-col>
                         <v-col class="d-flex flex-column justify-space-between" cols="12" md="6">
@@ -73,28 +89,31 @@
                                 <v-chip
                                     :color="valueToColor(review.difficulty, 3)"
                                     v-text="$t('Difficulty of selected topic')"
+                                    text-color="grey darken-4"
+                                ></v-chip>
+                              <v-slider
+                                  :color="valueToColor(review.difficulty, 3)"
+                                  :max="3" :min="0" :step="1" :rules="[v => v > 0]"
+                                  :thumb-color="valueToColor(review.difficulty, 3)"
+                                  :tick-labels="grades3"
+                                  class="VSliderCustom__label--grey"
+                                  ticks="always" track-color="grey" :thumb-size="48" :tick-size="4"
+                                  v-model="review.difficulty" :disabled="disabled"
+                              ></v-slider>
+
+                              <div v-for="(grade, i) in review.grades">
+                                <v-chip
+                                    :color="valueToColor(grade, 4)" class="mt-7"
+                                    v-text="gradings[i]" text-color="grey darken-4"
                                 ></v-chip>
                                 <v-slider
-                                    :color="valueToColor(review.difficulty, 3)"
-                                    :max="3" :min="0" :step="1" :rules="[v => v > 0]"
-                                    :thumb-color="valueToColor(review.difficulty, 3)"
-                                    :tick-labels="grades3"
-                                    class="VSliderCustom__label--grey"
-                                    ticks="always" track-color="grey" :thumb-size="48"
-                                    v-model="review.difficulty" :disabled="disabled"
+                                    :max="4" :min="0" :rules="[v => v > 0]" :step="1"
+                                    :thumb-color="valueToColor(grade, 4)" :color="valueToColor(grade, 4)"
+                                    :tick-labels="grades4" ticks="always" track-color="grey"
+                                    class="VSliderCustom__label--grey" :thumb-size="48" :tick-size="4"
+                                    v-model="review.grades[i]" :disabled="disabled"
                                 ></v-slider>
-
-                                <div v-for="(grade, i) in review.grades">
-                                    <v-chip :color="valueToColor(grade, 4)" class="mt-7" v-text="gradings[i]"
-                                    ></v-chip>
-                                    <v-slider
-                                        :max="4" :min="0" :rules="[v => v > 0]" :step="1"
-                                        :thumb-color="valueToColor(grade, 4)" :color="valueToColor(grade, 4)"
-                                        :tick-labels="grades4" ticks="always" track-color="grey"
-                                        class="VSliderCustom__label--grey" :thumb-size="48"
-                                        v-model="review.grades[i]" :disabled="disabled"
-                                    ></v-slider>
-                                </div>
+                              </div>
                             </div>
                             <div>
                                 <v-divider></v-divider>
@@ -104,11 +123,24 @@
                                     v-model="review.grade_proposal" :disabled="disabled"
                                 >
                                     <v-spacer></v-spacer>
-                                    <v-radio
-                                        :color="valueToColor(review.grade_proposal, 4)"
-                                        :key="value" :label="text" :value="value"
-                                        v-for="[value, text] in gradeProposalOptions"
-                                    ></v-radio>
+                                  <v-radio
+                                      :color="valueToColor(5 - review.grade_proposal, 4)"
+                                      :key="value"
+                                      :label="text"
+                                      :value="value"
+                                      v-for="[value, text] in gradeProposalOptions"
+
+                                  >
+                                    <template v-slot:label>
+                                        <span
+                                            v-text="text"
+                                            :style="{
+                                              color: review.grade_proposal === value ?
+                                                valueToColor(5 - review.grade_proposal, 4) : undefined
+                                            }"
+                                        />
+                                    </template>
+                                  </v-radio>
                                 </v-radio-group>
                                 <v-row no-gutters v-if="!this.review.id">
                                     <v-checkbox
@@ -142,44 +174,45 @@
 </template>
 
 <script type="text/tsx">
-    import _ from 'lodash';
-    import {Bold, BulletList, History, Italic, Link, ListItem, TiptapVuetify} from 'tiptap-vuetify';
-    import Axios from '../../axios';
-    import {DASHBOARD_ACTIONS} from '../../store/dashboard';
-    import {dashboardStore} from '../../store/store';
-    import {hasPerm} from '../../user';
-    import {GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_4, notificationBus, pageContext} from '../../utils';
+import _ from 'lodash';
+import {Bold, BulletList, History, Italic, Link, ListItem, TiptapVuetify} from 'tiptap-vuetify';
+import Axios from '../../axios';
+import {DASHBOARD_ACTIONS} from '../../store/dashboard';
+import {dashboardStore} from '../../store/store';
+import {hasPerm} from '../../user';
+import {GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_4, notificationBus, pageContext} from '../../utils';
 
 
-    export default {
-        name: 'ReviewForm',
-        components: {TiptapVuetify},
-        props: {
-            thesisLoaded: {
-                type: Object,
-                required: true
-            },
-            reviewLoaded: {
-                type: Object,
-                required: false
+export default {
+  name: 'ReviewForm',
+  components: {TiptapVuetify},
+  props: {
+    thesisLoaded: {
+      type: Object,
+      required: true
+    },
+    reviewLoaded: {
+      type: Object,
+      required: false
             }
         },
         data() {
             // @ts-ignore
             const $t = (key) => this.$t(key);
             return {
-                thesis: {authors: [], opponent: {}, supervisor: {}},
-                tipTapExtensions: [History, Link, Bold, Italic, BulletList, ListItem],
-                loading: false,
-                valid: true,
-                non_field_error_messages: [],
-                review: {
-                    difficulty: 0,
-                    grade_proposal: 0,
-                    grades: _.times(this.reviewerRole == 'supervisor' ? 6 : 5, () => 0),
-                    comment: null,
-                    questions: null
-                }
+              thesis: {authors: [], opponent: {}, supervisor: {}},
+              tipTapExtensions: [History, Link, Bold, Italic, BulletList, ListItem],
+              loading: false,
+              valid: true,
+              non_field_error_messages: [],
+              error_messages: {},
+              review: {
+                difficulty: 0,
+                grade_proposal: 0,
+                grades: _.times(this.reviewerRole == 'supervisor' ? 6 : 5, () => 0),
+                comment: null,
+                questions: null
+              }
             };
         },
         computed: {
@@ -212,7 +245,7 @@
                 ]);
             },
             gradeProposalOptions() {
-                return _.map(_.reverse(_.compact(this.grades4)), (grade, i) => ([4 - i, grade]));
+              return _.map(_.compact(this.grades4), (grade, i) => ([4 - i, grade]));
             },
             disabled() {
                 return !!this.review.id;
@@ -251,8 +284,8 @@
                     notificationBus.success(this.$t('review.justSubmitted'));
                     await this.$router.push(this.$i18nRoute({name: 'dashboard'}));
                 } else {
-                    this.messages = resp;
-                    this.non_field_error_messages = resp.non_field_errors;
+                  this.error_messages = resp;
+                  this.non_field_error_messages = resp.non_field_errors;
                 }
             }
         },

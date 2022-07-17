@@ -122,17 +122,17 @@ class EventBus extends Vue {
 const notificationBus = new EventBus();
 
 export const GRADE_COLOR_SCALE_3 = {
-    3: colors.green.lighten2,
-    2: colors.blue.lighten3,
-    1: colors.red.lighten2,
-    0: colors.grey.lighten2
+    3: colors.green.lighten1,
+    2: colors.blue.lighten2,
+    1: colors.red.lighten1,
+    0: colors.grey.lighten1
 };
 export const GRADE_COLOR_SCALE_4 = {
-    4: colors.green.lighten2,
-    3: colors.blue.lighten3,
-    2: colors.orange.lighten1,
-    1: colors.red.lighten2,
-    0: colors.grey.lighten2
+    4: colors.green.lighten1,
+    3: colors.blue.lighten2,
+    2: colors.orange.base,
+    1: colors.red.lighten1,
+    0: colors.grey.lighten1
 };
 export const THEME_LIGHT_COLORS = {
     primary: colors.orange.base,
