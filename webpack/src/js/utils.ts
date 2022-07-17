@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import Vue from 'vue';
 import colors from 'vuetify/lib/util/colors';
 import Axios from './axios';
-import {User} from './types';
+import {ThesisTableHeader, User} from './types';
 import {hasPerm} from './user';
 
 class FlashMessage {
@@ -32,7 +32,7 @@ class PageContext {
     }
 }
 
-export function formatDataTableOrdering({sortBy, sortDesc}, headers) {
+export function formatDataTableOrdering({sortBy, sortDesc}, headers: ThesisTableHeader[]) {
     let header;
     const remap = (value) => (
         (header = _.find(headers, {value})) && header.mapped)

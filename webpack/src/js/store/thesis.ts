@@ -1,8 +1,9 @@
 import * as _ from 'lodash';
 import * as qs from 'qs';
 import Vue from 'vue';
+import {DataOptions} from 'vuetify/types';
 import Axios from '../axios';
-import {Category, SelectOption, Thesis, UserOption} from '../types';
+import {Category, SelectOption, Thesis, ThesisTableHeader, UserOption} from '../types';
 import {formatDataTableOrdering, readFileAsync} from '../utils';
 
 export enum THESIS_MUTATIONS {
@@ -92,7 +93,7 @@ export default {
             options,
             filters,
             headers
-        }: { filters: ThesisListFilters, options: any, headers: any }) {
+        }: { filters: ThesisListFilters, options: DataOptions, headers: ThesisTableHeader[] }) {
             const {page, itemsPerPage} = options;
 
             const query = qs.stringify({

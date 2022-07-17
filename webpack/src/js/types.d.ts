@@ -1,3 +1,5 @@
+import {DataTableHeader} from 'vuetify';
+
 declare module 'axios' {
     export interface AxiosRequestConfig {
         allow403?: boolean;
@@ -98,4 +100,8 @@ export declare class Thesis extends Object {
     available_for_reservation: boolean;
     reservable: boolean;
     open_reservations_count: number;
+}
+
+export interface ThesisTableHeader extends DataTableHeader {
+    mapped: string;
 }
