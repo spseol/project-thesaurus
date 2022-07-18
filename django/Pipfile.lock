@@ -707,11 +707,11 @@
         },
         "sentry-sdk": {
             "hashes": [
-                "sha256:54cc2db9d85fcad557b2269f72f82f6f6b3a52eb93ae840a02a6eca4d9a0b707",
-                "sha256:741762816cdd32f647fca94a4515098cd52cb09dfe8c78f7d70eb28d2eaf89c5"
+                "sha256:6f460da98b730d671510af18f119f96d01e3ba027ac0e985871abb3aede1c514",
+                "sha256:95fd321f583dfcfaf279a0b2cdc83d8d28c8b7cca4d2959fc4539bb4fecb56a0"
             ],
             "index": "pypi",
-            "version": "==1.7.0"
+            "version": "==1.7.2"
         },
         "setuptools": {
             "hashes": [
@@ -762,10 +762,10 @@
         },
         "types-markdown": {
             "hashes": [
-                "sha256:730441a5207923a2ed92d5711672702a7d4ad17a45b6f48318006e75bd31eea3",
-                "sha256:7508c2ea43c0a2a94dd40c74d949dd3aeb4c2edafeb596e811409092239bf036"
+                "sha256:6c5cd453c341500779e7b57580c2c1af5727917cb4eba90c41ba02717d9df647",
+                "sha256:c9c67f1aecbcd710ead2057a197064bf790c7493e9b15d490673ef60c4522bf7"
             ],
-            "version": "==3.3.30"
+            "version": "==3.3.31"
         },
         "types-pytz": {
             "hashes": [
