@@ -85,11 +85,21 @@ export default {
         }
     },
     getters: {
-        typeAttachmentAcceptTypes: (state: State) =>
-            (identifier): string =>
+        typeAttachmentByIdentifier: (state: State) =>
+            (identifier): TypeAttachment | null =>
                 _.find<TypeAttachment>(
                     state.typeAttachment,
                     {identifier}
-                )?.allowed_content_types.join(',')
+                ),
+
+        typeAttachmentAcceptTypes: (state: State, getters) =>
+            (identifier): string =>
+                getters.typeAttachmentByIdentifier(identifier)
+                    ?.allowed_content_types.join(','),
+
+        typeAttachmentExtensions: (state: State, getters) =>
+            (identifier): string =>
+                getters.typeAttachmentByIdentifier(identifier)
+                    ?.allowed_content_types_extensions.map(v => `.${v.toLowerCase()}`).join(',')
     }
 };

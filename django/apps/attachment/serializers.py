@@ -1,4 +1,4 @@
-from rest_framework.fields import CharField
+from rest_framework.fields import CharField, ListField
 from rest_framework.relations import HyperlinkedIdentityField, PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
@@ -8,12 +8,17 @@ from apps.thesis.models import Thesis
 
 class TypeAttachmentSerializer(ModelSerializer):
     name = CharField(source='get_identifier_display')
+    max_size_label = CharField()
+    allowed_content_types_extensions = ListField(child=CharField())
 
     class Meta:
         model = TypeAttachment
         fields = (
             'name',
             'identifier',
+            'max_size',
+            'max_size_label',
+            'allowed_content_types_extensions',
         )
         read_only_fields = fields
 

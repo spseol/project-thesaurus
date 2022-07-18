@@ -5,9 +5,9 @@ from django.template.defaultfilters import filesizeformat
 from django.utils.text import slugify
 from django.utils.translation import gettext_lazy as _
 from django_better_admin_arrayfield.models.fields import ArrayField
-from django_lifecycle import hook, AFTER_CREATE
+from django_lifecycle import AFTER_CREATE, hook
 from filetype import Type as FileType, get_type
-from filetype.types.archive import Pdf, Zip, Rar, Tar, Gz
+from filetype.types.archive import Gz, Pdf, Rar, Tar, Zip
 from filetype.types.image import Png
 
 from apps.utils.models import BaseTimestampedModel, BaseTypeModel
@@ -32,6 +32,9 @@ def _content_type_choices():
     ))) + [
                ('application/x-zip-compressed', 'zip'),
            ]
+
+
+CONTENT_TYPE_CHOICES_MAPPING = dict(_content_type_choices())
 
 
 class Attachment(BaseTimestampedModel):
@@ -172,3 +175,11 @@ class TypeAttachment(BaseTypeModel):
     class Meta:
         verbose_name = _('Type attachment')
         verbose_name_plural = _('Types attachments')
+
+    @property
+    def allowed_content_types_extensions(self):
+        return tuple(map(CONTENT_TYPE_CHOICES_MAPPING.get, self.allowed_content_types))
+
+    @property
+    def max_size_label(self) -> str:
+        return filesizeformat(self.max_size) if self.max_size else None

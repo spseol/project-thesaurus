@@ -51,28 +51,36 @@
                         </v-combobox>
 
                         <v-file-input
-                            :label="$t('Thesis text')"
-                            v-model="thesis.thesisText"
-                            :rules="[v => !!v]"
                             :accept="typeAttachmentAcceptTypes('thesis_text')"
+                            :hint="uploadFieldDetails('thesis_text')"
+                            :label="$t('Thesis text')"
+                            :rules="[uploadFieldSizeRule('thesis_text')]"
                             prepend-icon="$thesis_text"
+                            show-size persistent-hint
+                            v-model="thesis.thesisText"
                         ></v-file-input>
 
                         <v-file-input
-                            :label="$t('Thesis poster')"
-                            v-model="thesis.thesisPoster"
                             :accept="typeAttachmentAcceptTypes('thesis_poster')"
+                            :hint="uploadFieldDetails('thesis_poster')"
+                            :label="$t('Thesis poster')"
+                            :rules="[uploadFieldSizeRule('thesis_poster')]"
                             prepend-icon="$thesis_poster"
+                            show-size persistent-hint
+                            v-model="thesis.thesisPoster"
                         ></v-file-input>
 
                         <v-file-input
-                            :label="$t('Thesis attachment')"
-                            v-model="thesis.thesisAttachment"
                             :accept="typeAttachmentAcceptTypes('thesis_attachment')"
+                            :hint="uploadFieldDetails('thesis_attachment')"
+                            :label="$t('Thesis attachment')"
+                            :rules="[uploadFieldSizeRule('thesis_attachment')]"
                             prepend-icon="$thesis_attachment"
+                            show-size persistent-hint
+                            v-model="thesis.thesisAttachment"
                         ></v-file-input>
 
-                        <v-divider></v-divider>
+                        <v-divider class="mt-4"></v-divider>
                         <v-row no-gutters>
                             <v-col v-for="(hintsChunk, i) in submitHints" :key="i" class="d-flex flex-column px-5">
                                 <v-switch
@@ -95,7 +103,7 @@
             <v-divider></v-divider>
             <v-card-actions>
                 <v-row>
-                    <v-col cols="8">
+                    <v-col cols="12">
                         <v-alert v-if="isAfterDeadline" type="error">
                             {{ $t('thesisSubmit.afterDeadline') }}
                         </v-alert>
@@ -140,7 +148,11 @@
             };
         },
         computed: {
-            ...optionsStore.mapGetters(['typeAttachmentAcceptTypes']),
+            ...optionsStore.mapGetters([
+                'typeAttachmentAcceptTypes',
+                'typeAttachmentExtensions',
+                'typeAttachmentByIdentifier'
+            ]),
             submitHints() {
                 return _.chunk([
                     this.$t('thesis.submit.hintAdmission'),
@@ -170,6 +182,7 @@
             ...optionsStore.mapActions([OPTIONS_ACTIONS.LOAD_OPTIONS]),
             async submit() {
                 let formData = new FormData();
+                this.errorMessages = [];
 
                 const data = {
                     ...this.thesis,
@@ -177,6 +190,12 @@
                 };
                 if (!this.thesis.thesisText) {
                     this.valid = false;
+                    this.errorMessages.push(this.$t('thesis.missingTextError'));
+                    return;
+                }
+                if (!this.thesis.abstract) {
+                    this.valid = false;
+                    this.errorMessages.push(this.$t('thesis.missingAbstractError'));
                     return;
                 }
                 data.thesisText = await readFileAsync(this.thesis.thesisText);
@@ -203,6 +222,20 @@
             removeKeyWord(item) {
                 this.thesis.keywords.splice(this.thesis.keywords.indexOf(item), 1);
                 this.thesis.keywords = [...this.thesis.keywords];
+            },
+            uploadFieldDetails(identifier) {
+                const extensions = this.typeAttachmentExtensions(identifier);
+                const type = this.typeAttachmentByIdentifier(identifier);
+
+                return `💾 ${this.$t('thesis.maxSize')}: ${type?.max_size_label || '?'} ℹ️
+                ${this.$t('thesis.allowedTypes')}: ${extensions}`;
+            },
+            uploadFieldSizeRule(identifier) {
+                const type = this.typeAttachmentByIdentifier(identifier);
+
+                return value => !value || value.size < type?.max_size || `${this.$t('thesis.maxSizeError')}:
+                    ${type?.max_size_label || '?'}.`;
+
             }
         },
         async created() {
