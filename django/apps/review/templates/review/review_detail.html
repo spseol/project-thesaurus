@@ -31,39 +31,50 @@
         }
 
         table {
-            border: .7mm solid dimgray;
-            border-collapse: collapse;
-            width: 100%;
-            table-layout: fixed;
+          border: .7mm solid dimgray;
+          border-collapse: collapse;
+          width: 100%;
+          table-layout: fixed;
         }
 
         table td {
-            border: .25mm solid dimgray;
-            padding: 1mm 1.5mm;
+          border: .25mm solid dimgray;
+          padding: 1mm 1.5mm;
+        }
+
+        table td .right {
+          font-size: 3mm;
         }
 
         table tr td:nth-child(1) {
-            width: 33%;
-            font-size: 3mm;
+          width: 45%;
+          font-size: 3mm;
         }
 
-        .comment {
-            height: 70mm;
+        .comment-and-questions-row {
+          height: 145mm;
+          vertical-align: top;
         }
 
-        .questions {
-            height: 45mm;
+        .comment-and-questions-row strong {
+          margin: 1mm 0;
+          display: inline-block;
+        }
+
+        .row-fake-divider {
+          margin: 1mm -1.5mm 0;
+          border-bottom: .7mm solid dimgray;
         }
 
         .questions, .comment {
-            overflow: hidden;
-            text-align: justify;
-            hyphens: auto;
-            white-space: normal;
+          overflow: hidden;
+          text-align: justify;
+          hyphens: auto;
+          white-space: normal;
         }
 
         .questions ul, .comment ul {
-            margin-top: .4em;
+          margin-top: .4em;
             margin-bottom: .4em;
             padding-left: 4mm;
         }
@@ -82,22 +93,22 @@
         }
 
         img {
-            margin: 0 auto;
+          margin: 0 auto;
         }
 
         footer {
-            position: absolute;
-            bottom: 0;
-            text-align: center;
-            left: 0;
-            right: 0;
-            padding-bottom: 5mm;
-            font-size: 3mm;
-            color: darkgray;
+          position: absolute;
+          bottom: 0;
+          text-align: center;
+          left: 0;
+          right: 0;
+          padding-bottom: 5mm;
+          font-size: 2mm;
+          color: darkgray;
         }
 
         footer a {
-            color: dimgray;
+          color: dimgray;
         }
     </style>
 </head>
@@ -150,18 +161,21 @@
             <td><strong>{{ grade|get_choices_display:review.GradesChoices }}</strong></td>
         </tr>
     {% endfor %}
-    <tr class="row-bottom-divider">
+    <tr class="row-bottom-divider comment-and-questions-row">
         <td colspan="2">
             <strong>{% trans "Comment" %}</strong>
             <div class="comment">
                 {{ review.comment.strip|safe }}
             </div>
-        </td>
-    </tr>
-    <tr class="row-bottom-divider">
-        <td colspan="2">
+            <div class="row-fake-divider"></div>
+            {#        </td>#}
+            {#    </tr>#}
+            {#    <tr class="row-bottom-divider">#}
+            {#        <td colspan="2">#}
             <strong>{% trans "Questions" %}</strong>
-            <div class="questions">{{ review.questions.strip|safe }}</div>
+            <div class="questions">
+                {{ review.questions.strip|safe }}
+            </div>
         </td>
     </tr>
     <tr class="row-bottom-divider">
@@ -184,15 +198,11 @@
 </table>
 
 <footer>
-    <small>
-        {% trans "If the evaluation of the leader and the opponent differs by more than two degrees (excellent - unsatisfactory), it will be prepared third independent opinion." %}
-    </small>
+    {% trans "If the evaluation of the leader and the opponent differs by more than two degrees (excellent - unsatisfactory), it will be prepared third independent opinion." %}
     <br>
-    {% trans "Generated automatically by THESAURUS at" %} {% now "d.m.Y H:i" %}. <br>
-    {% trans "Available online on" %}
-    <a href="{% absolute_url "api:review-pdf-detail" review.pk %}">
-        {% absolute_url "api:review-pdf-detail" review.pk %}
-    </a>.
+    {% trans "Generated automatically by THESAURUS at" %} {% now "d.m.Y H:i" %},
+    {% trans "available online on" %}
+    <a href="{% absolute_url "api:review-pdf-detail" review.pk %}">{% absolute_url "api:review-pdf-detail" review.pk %}</a>.
 </footer>
 </body>
 </html>
