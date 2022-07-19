@@ -5,6 +5,11 @@
   color: map_get($grey, 'base');
 }
 
+.v-input--radio-group--items-center .v-input--radio-group__input {
+  justify-content: center;
+}
+
+
 .text-transform-none {
   text-transform: none !important;
 }

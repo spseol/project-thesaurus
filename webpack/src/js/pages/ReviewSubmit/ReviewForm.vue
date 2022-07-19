@@ -60,7 +60,7 @@
                   class="mb-5"
               ></tiptap-vuetify>
               <v-alert
-                  v-for="m of error_messages.comment"
+                  v-for="m of error_messages.comment" :key="m"
                   dense outlined text type="error"
                   v-text="m" class="mt-4"
               ></v-alert>
@@ -78,7 +78,7 @@
                   :toolbar-properties="{dark: !$vuetify.theme.dark}"
               ></tiptap-vuetify>
               <v-alert
-                  v-for="m of error_messages.questions"
+                  v-for="m of error_messages.questions" :key="m"
                   dense outlined text type="error"
                   v-text="m" class="mt-4"
               ></v-alert>
@@ -87,7 +87,7 @@
           <v-col class="d-flex flex-column justify-space-between" cols="12" md="6">
             <div>
               <v-chip
-                  :color="valueToColor(review.difficulty, 3)"
+                  :color="valueToColor(review.difficulty, 3)" label
                   v-text="$t('Difficulty of selected topic')"
                   text-color="grey darken-4"
               ></v-chip>
@@ -103,7 +103,7 @@
 
               <div v-for="(grade, i) in review.grades">
                 <v-chip
-                    :color="valueToColor(grade, 4)" class="mt-7"
+                    :color="valueToColor(grade, 4)" class="mt-7" label
                     v-text="gradings[i]" text-color="grey darken-4"
                 ></v-chip>
                 <v-slider
@@ -119,28 +119,38 @@
             </div>
             <div>
               <v-divider></v-divider>
+              <div class="text-center my-4">
+                <v-chip
+                    large label
+                    :color="valueToColor(review.grade_proposal, 4)"
+                    text-color="grey darken-4"
+                >
+                  {{ $t('Classification proposal') + (gradeProposalLabel ? ': ' : '') }}
+                  <template v-if="gradeProposalLabel">
+                    <div class="ml-1 font-weight-bold"> {{ gradeProposalLabel }}</div>
+                  </template>
+                </v-chip>
+              </div>
               <v-radio-group
-                  :label="$t('Classification proposal')" row
-                  :rules="[v => !!v]"
+                  :rules="[v => !!v]" row
                   v-model="review.grade_proposal" :disabled="disabled"
+                  class="v-input--radio-group--items-center"
               >
-                <v-spacer></v-spacer>
                 <v-radio
-                    :color="valueToColor(4 - review.grade_proposal, 4)"
+                    v-for="([value, text], i) in gradeProposalOptions"
+                    :color="valueToColor(review.grade_proposal, 4)"
                     :key="value"
                     :label="text"
                     :value="value"
-                    v-for="[value, text] in gradeProposalOptions"
-
                 >
                   <template v-slot:label>
-                                        <span
-                                            v-text="text"
-                                            :style="{
-                                              color: review.grade_proposal === value ?
-                                                valueToColor(4 - review.grade_proposal, 4) : undefined
-                                            }"
-                                        />
+                    <div
+                        v-text="text" class="mx-n2"
+                        :style="{
+                          color: review.grade_proposal === value ?
+                            valueToColor(review.grade_proposal, 4) : undefined
+                        }"
+                    />
                   </template>
                 </v-radio>
               </v-radio-group>
@@ -185,6 +195,16 @@ import {hasPerm} from '../../user';
 import {GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_4, notificationBus, pageContext} from '../../utils';
 
 
+const reviewDefaults = (role) => (
+    {
+      difficulty: 0,
+      grade_proposal: 0,
+      grades: _.times(role == 'supervisor' ? 6 : 5, () => 0),
+      comment: null,
+      questions: null
+    }
+);
+
 export default {
   name: 'ReviewForm',
   components: {TiptapVuetify},
@@ -206,13 +226,7 @@ export default {
       valid: true,
       non_field_error_messages: [],
       error_messages: {},
-      review: {
-        difficulty: 0,
-        grade_proposal: 0,
-        grades: _.times(this.reviewerRole == 'supervisor' ? 6 : 5, () => 0),
-        comment: null,
-        questions: null
-      }
+      review: reviewDefaults(this.reviewerRole)
     };
   },
   computed: {
@@ -252,6 +266,9 @@ export default {
     gradeProposalOptions() {
       // plus one because select does have empty option as first one
       return _.map(_.compact(this.grades4), (grade, i) => ([1 + i, grade]));
+    },
+    gradeProposalLabel() {
+      return this.review.grade_proposal ? this.grades4[this.review.grade_proposal] : null;
     },
     disabled() {
       return !!this.review.id;
@@ -300,9 +317,9 @@ export default {
       this.thesis = Object.assign({}, this.thesis, _.cloneDeep(to));
     },
     reviewLoaded(to) {
-      this.review = Object.assign({}, this.review, _.cloneDeep(to));
+      this.review = {};
+      this.review = Object.assign({}, reviewDefaults(this.reviewerRole), _.cloneDeep(to));
     }
   }
 };
 </script>
-
