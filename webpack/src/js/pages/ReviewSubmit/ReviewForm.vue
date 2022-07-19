@@ -199,8 +199,6 @@ export default {
     }
   },
   data() {
-    // @ts-ignore
-    const $t = (key) => this.$t(key);
     return {
       thesis: {authors: [], opponent: {}, supervisor: {}},
       tipTapExtensions: [History, Link, Bold, Italic, BulletList, ListItem],
