@@ -107,8 +107,10 @@
                                     v-text="gradings[i]" text-color="grey darken-4"
                                 ></v-chip>
                                 <v-slider
-                                    :max="4" :min="0" :rules="[v => v > 0]" :step="1"
-                                    :thumb-color="valueToColor(grade, 4)" :color="valueToColor(grade, 4)"
+                                    :min="0" :max="4" :step="1"
+                                    :rules="[v => v > 0]"
+                                    :thumb-color="valueToColor(grade, 4)"
+                                    :color="valueToColor(grade, 4)"
                                     :tick-labels="grades4" ticks="always" track-color="grey"
                                     class="VSliderCustom__label--grey" :thumb-size="48" :tick-size="4"
                                     v-model="review.grades[i]" :disabled="disabled"
@@ -122,9 +124,9 @@
                                     :rules="[v => !!v]"
                                     v-model="review.grade_proposal" :disabled="disabled"
                                 >
-                                    <v-spacer></v-spacer>
+                                  <v-spacer></v-spacer>
                                   <v-radio
-                                      :color="valueToColor(5 - review.grade_proposal, 4)"
+                                      :color="valueToColor(4 - review.grade_proposal, 4)"
                                       :key="value"
                                       :label="text"
                                       :value="value"
@@ -136,7 +138,7 @@
                                             v-text="text"
                                             :style="{
                                               color: review.grade_proposal === value ?
-                                                valueToColor(5 - review.grade_proposal, 4) : undefined
+                                                valueToColor(4 - review.grade_proposal, 4) : undefined
                                             }"
                                         />
                                     </template>
@@ -217,16 +219,21 @@ export default {
         },
         computed: {
             grades4() {
-                return [
-                    this.$t('Excellent'), this.$t('grades.veryWell'),
-                    this.$t('Great'), this.$t('Not sufficient'), ''
-                ].reverse();
+              return [
+                '',
+                this.$t('Not sufficient'),
+                this.$t('Great'),
+                this.$t('grades.veryWell'),
+                this.$t('Excellent')
+              ];
             },
             grades3() {
-                return [
-                    this.$t('Over average'), this.$t('Average'),
-                    this.$t('Under average'), ''
-                ].reverse();
+              return [
+                '',
+                this.$t('Under average'),
+                this.$t('Average'),
+                this.$t('Over average')
+              ];
             },
             reviewerRole() {
                 return {
@@ -245,7 +252,8 @@ export default {
                 ]);
             },
             gradeProposalOptions() {
-              return _.map(_.compact(this.grades4), (grade, i) => ([4 - i, grade]));
+              // plus one because select does have empty option as first one
+              return _.map(_.compact(this.grades4), (grade, i) => ([1 + i, grade]));
             },
             disabled() {
                 return !!this.review.id;

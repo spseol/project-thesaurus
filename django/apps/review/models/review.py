@@ -1,11 +1,11 @@
 from django.contrib.postgres.fields import ArrayField
-from django.contrib.postgres.validators import ArrayMinLengthValidator, ArrayMaxLengthValidator
+from django.contrib.postgres.validators import ArrayMaxLengthValidator, ArrayMinLengthValidator
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
 from django_bleach.models import BleachField
-from django_lifecycle import hook, AFTER_CREATE
+from django_lifecycle import AFTER_CREATE, hook
 
 from apps.utils.models import BaseTimestampedModel
 
@@ -14,15 +14,15 @@ class Review(BaseTimestampedModel):
     """Review representing thesis review by supervisor/opponent."""
 
     class GradesChoices(IntegerChoices):
-        EXCELLENT = 4, _('Excellent')
-        VERY_WELL = 3, _('Very well')
-        GREAT = 2, _('Great')
         NOT_SUFFICIENT = 1, _('Not sufficient')
+        GREAT = 2, _('Great')
+        VERY_WELL = 3, _('Very well')
+        EXCELLENT = 4, _('Excellent')
 
     class DifficultyChoices(IntegerChoices):
-        OVER_AVERAGE = 3, _('Over average')
-        AVERAGE = 2, _('Average')
         UNDER_AVERAGE = 1, _('Under average')
+        AVERAGE = 2, _('Average')
+        OVER_AVERAGE = 3, _('Over average')
 
     thesis = models.ForeignKey(
         to='thesis.Thesis',
