@@ -20,6 +20,8 @@ class PageContext {
     version: string;
     messages: Array<FlashMessage>;
 
+    THESIS_SUBMIT_USE_CONFIRM_DIALOG: boolean;
+
     constructor() {
         return new Proxy(this, {
             get(self, field: string) {
@@ -31,6 +33,8 @@ class PageContext {
         });
     }
 }
+
+const pageContext = new PageContext();
 
 export function formatDataTableOrdering({sortBy, sortDesc}, headers: ThesisTableHeader[]) {
     let header;
@@ -85,7 +89,6 @@ export function asyncComputed(url, options = null) {
 
 export const asyncOptions = (url) => asyncComputed(url, {default: []});
 
-const pageContext = new PageContext();
 
 class Flash extends Object {
     text: string;

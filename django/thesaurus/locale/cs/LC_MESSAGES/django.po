@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-19 10:10+0200\n"
-"PO-Revision-Date: 2022-07-19 10:11+0200\n"
+"POT-Creation-Date: 2022-07-20 15:48+0200\n"
+"PO-Revision-Date: 2022-07-20 15:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -26,6 +26,10 @@ msgstr "Česky"
 #: thesaurus/settings.py:236
 msgid "Maximal count of opened reservations linked to one user (inclusive)."
 msgstr "Maximální počet otevřených rezervací pro jednoho uživatele (včetně)."
+
+#: thesaurus/settings.py:241
+msgid "Use confirm dialog during thesis submitting."
+msgstr "Použít konfirmační dialog při odevzdávání práce."
 
 #: thesaurus/urls.py:17
 msgid "System administration"

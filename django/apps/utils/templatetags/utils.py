@@ -1,6 +1,7 @@
 import re
 from audioop import reverse
 
+from constance import config
 from django import template
 from django.conf import settings
 from django.contrib.messages import get_messages
@@ -50,7 +51,9 @@ def page_context(context, element_id, _re_language=re.compile(r'[_-]'), *args, *
         languages=[(k, translation.gettext(v)) for k, v in settings.LANGUAGES],
         version=settings.VERSION,
 
-        messages=[dict(text=str(m), type=m.level_tag) for m in get_messages(request)]
+        messages=[dict(text=str(m), type=m.level_tag) for m in get_messages(request)],
+
+        THESIS_SUBMIT_USE_CONFIRM_DIALOG=config.THESIS_SUBMIT_USE_CONFIRM_DIALOG,
     ), element_id)
 
 

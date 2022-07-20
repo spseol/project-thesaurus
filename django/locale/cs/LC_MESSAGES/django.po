@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-19 10:10+0200\n"
+"POT-Creation-Date: 2022-07-20 15:48+0200\n"
 "PO-Revision-Date: 2022-07-19 10:11+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
@@ -404,32 +404,32 @@ msgid "You are not authenticated, please log in."
 msgstr "Nejste autentizován, přihlaste se prosím."
 
 #: apps/review/models/review.py:17
-msgid "Excellent"
-msgstr "Výborná"
-
-#: apps/review/models/review.py:18
-msgid "Very well"
-msgstr "Velmi dobrá"
-
-#: apps/review/models/review.py:19
-msgid "Great"
-msgstr "Dobrá"
-
-#: apps/review/models/review.py:20
 msgid "Not sufficient"
 msgstr "Nedostatečná"
 
+#: apps/review/models/review.py:18
+msgid "Great"
+msgstr "Dobrá"
+
+#: apps/review/models/review.py:19
+msgid "Very well"
+msgstr "Velmi dobrá"
+
+#: apps/review/models/review.py:20
+msgid "Excellent"
+msgstr "Výborná"
+
 #: apps/review/models/review.py:23
-msgid "Over average"
-msgstr "Nadprůměrná"
+msgid "Under average"
+msgstr "Podprůměrná"
 
 #: apps/review/models/review.py:24
 msgid "Average"
 msgstr "Průměrná"
 
 #: apps/review/models/review.py:25
-msgid "Under average"
-msgstr "Podprůměrná"
+msgid "Over average"
+msgstr "Nadprůměrná"
 
 #: apps/review/models/review.py:39
 msgid "Review comment"

@@ -254,6 +254,9 @@
   "Excel file": "Excel soubor",
   "Send to submit": "Odeslat k odevzdání",
   "thesisSubmit": {
-    "afterDeadline": "Odevzdání již po termínu, jsem si vědom/a následků."
+    "afterDeadline": "Odevzdání již po termínu, jsem si vědom/a následků.",
+    "confimDialogTitle": "Upozornění",
+    "confimDialogText": "Odevzdání práce je finální, po něm nelze již záznam upravovat. Prosím proveďte finální kontrolu práce.",
+    "confimDialogSubmit": "Zkontrolovat odevzdání"
   }
 }
