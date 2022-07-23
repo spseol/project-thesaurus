@@ -8,7 +8,6 @@ import VueCallStore from 'vue-call-store';
 import VueI18n from 'vue-i18n';
 import VueRouter from 'vue-router';
 import VuetifyToast from 'vuetify-toast-snackbar';
-import 'vuetify-toast-snackbar/src/index';
 import csVuetify from 'vuetify/es5/locale/cs';
 import enVuetify from 'vuetify/es5/locale/en';
 import Vuetify, {VBtn, VIcon, VSnackbar} from 'vuetify/lib/index';
