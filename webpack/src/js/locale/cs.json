@@ -230,7 +230,12 @@
     },
     "deleteAttachmentQuestion": "Opravdu chcete smazat přílohu k práci",
     "deleteReviewQuestion": "Opravdu chcete smazat posudek k práci",
-    "justSentToSubmit": "Práce byla odeslána studentovi!"
+    "justSentToSubmit": "Práce byla odeslána studentovi!",
+    "maxSize": "Max. velikost",
+    "allowedTypes": "Formáty",
+    "maxSizeError": "Překročena maximální velikost:",
+    "missingTextError": "Je nutné přiložit text práce.",
+    "missingAbstractError": "Je nutné vyplnit abstrakt práce."
   },
   "Submit deadline": "Termín pro odevzdání",
   "Delete attachment": "Smazat přílohu",
@@ -247,5 +252,11 @@
   "Light": "Světlé",
   "Back to theses": "Zpět na seznam prací",
   "Excel file": "Excel soubor",
-  "Send to submit": "Odeslat k odevzdání"
+  "Send to submit": "Odeslat k odevzdání",
+  "thesisSubmit": {
+    "afterDeadline": "Odevzdání již po termínu, jsem si vědom/a následků.",
+    "confimDialogTitle": "Upozornění",
+    "confimDialogText": "Odevzdání práce je finální, po něm nelze již záznam upravovat. Prosím proveďte finální kontrolu práce.",
+    "confimDialogSubmit": "Zkontrolovat odevzdání"
+  }
 }

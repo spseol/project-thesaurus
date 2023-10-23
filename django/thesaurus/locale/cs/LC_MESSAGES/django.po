@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-11-10 23:29+0100\n"
-"PO-Revision-Date: 2020-06-08 20:31+0300\n"
+"POT-Creation-Date: 2022-07-20 15:48+0200\n"
+"PO-Revision-Date: 2022-07-20 15:49+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n "
 "<= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 3.0\n"
 
 #: thesaurus/settings.py:146
 msgid "Czech"
@@ -26,6 +26,10 @@ msgstr "Česky"
 #: thesaurus/settings.py:236
 msgid "Maximal count of opened reservations linked to one user (inclusive)."
 msgstr "Maximální počet otevřených rezervací pro jednoho uživatele (včetně)."
+
+#: thesaurus/settings.py:241
+msgid "Use confirm dialog during thesis submitting."
+msgstr "Použít konfirmační dialog při odevzdávání práce."
 
 #: thesaurus/urls.py:17
 msgid "System administration"

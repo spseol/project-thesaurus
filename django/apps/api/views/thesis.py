@@ -2,30 +2,28 @@ from typing import Tuple
 
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from django.db.models import Q, QuerySet, OuterRef, Exists, F
+from django.db.models import Case, Exists, OuterRef, Q, QuerySet, Value, When
 from django.shortcuts import get_list_or_404
+from django_filters import FilterSet
+from django_filters.rest_framework import backends
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework import filters
 from rest_framework.generics import get_object_or_404
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.viewsets import ModelViewSet
 
 from apps.accounts.models import User
-from apps.api.permissions import (
-    CanSubmitThesisPermission,
-    CanSubmitExternalThesisReviewPermission,
-    CanViewThesisFullInternalReview, CanViewAttachment
-)
+from apps.api.permissions import (CanSubmitExternalThesisReviewPermission, CanSubmitThesisPermission, CanViewAttachment,
+                                  CanViewThesisFullInternalReview)
+from apps.api.utils.filters import InListFilter, InMultipleFieldsListFilter
 from apps.api.utils.pagination import DynamicPageSizePagination
 from apps.attachment.models import Attachment, TypeAttachment
 from apps.attachment.serializers import AttachmentSerializer
 from apps.review.serializers import ReviewFullInternalSerializer, ReviewPublicSerializer
-from apps.thesis.models import Thesis, Category, Reservation
-from apps.thesis.serializers import (
-    ThesisFullPublicSerializer, ThesisFullInternalSerializer,
-    ThesisSubmitSerializer
-)
+from apps.thesis.models import Category, Reservation, Thesis
+from apps.thesis.serializers import (ThesisFullInternalSerializer, ThesisFullPublicSerializer, ThesisSubmitSerializer)
 from apps.utils.utils import parse_date
 from apps.utils.views import ModelChoicesOptionsView
 
@@ -46,9 +44,25 @@ def _state_change_action(name, state: Thesis.State):
     )
 
 
+class ThesisFilterSet(FilterSet):
+    category = InListFilter(field_name='category__id', label='Category ID (comma separated)')
+    year = InListFilter(field_name='published_at_year', label='Year of publication (comma separated)')
+    teacher = InMultipleFieldsListFilter(
+        label='Username of related teacher (comma separated)',
+        field_name='supervisor__username opponent__username'
+    )
+
+
 class ThesisViewSet(ModelViewSet):
     queryset = Thesis.api_objects.get_queryset()
     pagination_class = DynamicPageSizePagination
+
+    filter_backends = [
+        filters.SearchFilter,
+        backends.DjangoFilterBackend
+    ]
+    filterset_class = ThesisFilterSet
+
     search_fields = (
         'title__unaccent',
         'abstract__unaccent',
@@ -57,15 +71,9 @@ class ThesisViewSet(ModelViewSet):
         '=authors__username',
         'authors__first_name__unaccent',
         'authors__last_name__unaccent',
+
         '=supervisor__username',
-        'supervisor__first_name__unaccent',
-        'supervisor__last_name__unaccent',
         '=opponent__username',
-        'opponent__first_name__unaccent',
-        'opponent__last_name__unaccent',
-        '=category__id',
-        'category__title',
-        '=published_at_year',
     )
 
     def get_queryset(self):
@@ -73,12 +81,19 @@ class ThesisViewSet(ModelViewSet):
         user = self.request.user  # type: User
 
         qs = qs.annotate(
-            _reservable=F('reservable') and Exists(
+            already_has_reservation=Exists(
                 queryset=Reservation.open_reservations.filter(
                     thesis_id=OuterRef('pk'),
                     user=user,
                 ),
-                negated=True,
+            )
+        ).annotate(
+            _reservable=Case(
+                When(
+                    Q(reservable=True, already_has_reservation=False),
+                    then=Value(True)
+                ),
+                default=Value(False)
             )
         )
 

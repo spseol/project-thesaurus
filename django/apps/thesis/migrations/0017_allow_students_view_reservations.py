@@ -8,7 +8,7 @@ from django.db.migrations import RunPython
 
 def add(apps, editor):
     app_config = apps.get_app_config('thesis')
-    app_config.models_module = app_config.models_module or True
+    app_config.models_module = getattr(app_config, 'models_module', None) or True
     create_contenttypes(app_config)
     create_permissions(app_config)
 

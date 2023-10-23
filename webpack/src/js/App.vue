@@ -100,10 +100,10 @@
     <v-footer app>
       <v-spacer></v-spacer>
       <span class="px-4">
-                <a href="https://github.com/spseol/project-thesaurus">
-                <v-icon>mdi-github</v-icon>
-                    v{{ pageContext.version }}
-                </a> &copy; 2020</span>
+        <a href="https://github.com/spseol/project-thesaurus" target="_blank" class="Link Link--plain">
+            <v-icon>mdi-github</v-icon> v{{ pageContext.version }}
+        </a> &copy; {{ (new Date()).getFullYear() }}
+      </span>
     </v-footer>
   </v-app>
 </template>
@@ -157,7 +157,7 @@ export default Vue.extend({
           text: this.$t('Exports'),
           to: {name: 'exports'},
           perm: 'accounts.view_user'
-        },
+        }
         // {icon: 'mdi-cog', text: this.$t('Settings'), to: {name: 'settings'}}
       ];
     }
@@ -173,3 +173,9 @@ export default Vue.extend({
   }
 });
 </script>
+
+<style scoped lang="scss">
+.Link--plain:not(:hover) {
+  text-decoration: none;
+}
+</style>

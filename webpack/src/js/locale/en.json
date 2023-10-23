@@ -238,7 +238,12 @@
     },
     "deleteAttachmentQuestion": "Are you really sure about deleting attachment",
     "deleteReviewQuestion": "Are you really sure about deleting review",
-    "justSentToSubmit": "Thesis has been sent to student for submit"
+    "justSentToSubmit": "Thesis has been sent to student for submit",
+    "maxSize": "Max. size",
+    "allowedTypes": "Allowed extensions",
+    "maxSizeError": "You uploaded bigger file then allowed size:",
+    "missingTextError": "Text of the thesis is required",
+    "missingAbstractError": "Abstract of the thesis is required"
   },
   "Submit deadline": "Submit deadline",
   "Delete attachment": "Delete attachment",
@@ -255,5 +260,11 @@
   "Light": "Light",
   "Back to theses": "Back to these",
   "Excel file": "Excel file",
-  "Send to submit": "Send to submit"
+  "Send to submit": "Send to submit",
+  "thesisSubmit": {
+    "afterDeadline": "You're submitting theses after deadline, be aware of the consequences.",
+    "confimDialogTitle": "Warning",
+    "confimDialogText": "Submitting is final, no changes after it will be allowed.",
+    "confimDialogSubmit": "Check the values"
+  }
 }

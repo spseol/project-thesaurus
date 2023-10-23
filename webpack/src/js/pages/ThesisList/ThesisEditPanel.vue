@@ -45,7 +45,8 @@
                                 >
                                     <template v-slot:activator="{ on }">
                                         <v-text-field
-                                            v-model="data.submit_deadline" v-on="on"
+                                            v-on="on"
+                                            :value="toHumanDeadline(data.submit_deadline)"
                                             :label="$t('Submit deadline')" readonly
                                             append-icon="mdi-calendar"
                                         ></v-text-field>
@@ -257,8 +258,8 @@
 </template>
 
 <script type="text/tsx">
-
     import _ from 'lodash';
+    import moment from 'moment';
     import qs from 'qs';
     import Vue from 'vue';
     import {mapState} from 'vuex';
@@ -361,6 +362,9 @@
                     this.non_field_error_messages = data;
                 }
                 this.newAttachment._loading = false;
+            },
+            toHumanDeadline(date) {
+                return moment(date, null, this.$i18n.locale).endOf('day').format('L LT');
             }
         },
         computed: {

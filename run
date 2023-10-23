@@ -24,6 +24,7 @@ while (( $# > 0 )); do
             production_settings; echo 'production settings, image version:' $IMAGE_VERSION ;;
   dev     ) # development settings
             echo "development settings" ;;
+  build_and_tag ) production_settings; build_and_tag ;;
 
   *       ) show_help ${@:1}; exit 1 ;;
   esac;
@@ -33,9 +34,9 @@ done
 
 production_settings() {
   export BRANCH=$(git branch | sed -n -e 's/^\* \(.*\)/\1/p')
-  if [[ $BRANCH == 'master' ]]; then
+#  if [[ $BRANCH == 'master' ]]; then
      export IMAGE_VERSION=$(git tag --merged | tail -n1)
-  fi
+#  fi
   export COMPOSE_FILE=docker-compose.base.yml:docker-compose.prod.yml
 }
 
@@ -90,6 +91,19 @@ reload_service() {
   docker-compose run --rm web python manage.py migrate
   docker-compose run --rm web python manage.py collectstatic --clear --noinput
   echo '--- reload OK ---'
+}
+
+build_and_tag() {
+  docker build --tag thejoeejoee/thesaurus-django --tag thejoeejoee/thesaurus-django:${IMAGE_VERSION} django/
+  docker build --tag thejoeejoee/thesaurus-nginx --tag thejoeejoee/thesaurus-nginx:${IMAGE_VERSION} nginx/
+  docker build --tag thejoeejoee/thesaurus-webpack --tag thejoeejoee/thesaurus-webpack:${IMAGE_VERSION} webpack/
+
+  docker push thejoeejoee/thesaurus-django
+  docker push thejoeejoee/thesaurus-django:${IMAGE_VERSION}
+  docker push thejoeejoee/thesaurus-nginx
+  docker push thejoeejoee/thesaurus-nginx:${IMAGE_VERSION}
+  docker push thejoeejoee/thesaurus-webpack
+  docker push thejoeejoee/thesaurus-webpack:${IMAGE_VERSION}
 }
 
 cd $(dirname $0)

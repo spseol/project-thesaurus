@@ -236,6 +236,11 @@ CONSTANCE_CONFIG = {
         _('Maximal count of opened reservations linked to one user (inclusive).'),
         'non_negative_small_integer',
     ),
+    'THESIS_SUBMIT_USE_CONFIRM_DIALOG': (
+        True,
+        _('Use confirm dialog during thesis submitting.'),
+        bool,
+    )
 }
 CONSTANCE_ADDITIONAL_FIELDS = {
     'non_negative_small_integer': ['django.forms.fields.IntegerField', {

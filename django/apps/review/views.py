@@ -6,6 +6,7 @@ from apps.api.permissions import CanViewThesisFullInternalReview
 from apps.review.models import Review
 
 
+# class ReviewPdfView(PermissionRequiredMixin, DetailView):
 class ReviewPdfView(WeasyTemplateResponseMixin, PermissionRequiredMixin, DetailView):
     pdf_attachment = False
     model = Review

@@ -1,12 +1,12 @@
-from rest_framework.fields import DateField, BooleanField, CharField
+from rest_framework.fields import BooleanField, CharField, DateField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer
 
 from apps.accounts.models import User
-from apps.accounts.serializers import UserSerializer, UserInternalSerializer
+from apps.accounts.serializers import UserInternalSerializer, UserSerializer
 from apps.attachment.serializers import AttachmentSerializer
 from apps.review.serializers import ReviewFullInternalSerializer
-from apps.thesis.models import Thesis, Category
+from apps.thesis.models import Category, Thesis
 from apps.thesis.serializers import CategorySerializer
 
 
@@ -52,6 +52,7 @@ class ThesisSubmitSerializer(ThesisBaseSerializer):
             'abstract',
             'reservable',
         )
+        extra_kwargs = {'abstract': {'required': True, 'allow_blank': False, 'allow_null': False}}
 
 
 class ThesisFullPublicSerializer(ThesisBaseSerializer):
