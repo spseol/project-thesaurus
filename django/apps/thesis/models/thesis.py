@@ -115,6 +115,9 @@ class Thesis(BaseTimestampedModel):
         ordering = ['registration_number']
         verbose_name = _('Thesis')
         verbose_name_plural = _('Theses')
+        permissions = (
+            ('can_view_unpublished_theses', _('Can view unpublished theses')),
+        )
 
     def __str__(self):
         return f'{self.title} ({", ".join(tuple(map(attrgetter("full_name"), self.authors.all()))) or "---"})'.strip()
