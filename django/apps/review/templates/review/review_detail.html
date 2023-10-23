@@ -94,7 +94,8 @@
 
         img {
           margin: 0 auto;
-          max-width: 140mm;
+          padding-left: 105mm;
+          display: inline-block;
         }
 
         footer {
@@ -115,7 +116,7 @@
 </head>
 <body>
 <header>
-    <img src="{% static_absolute_local_file "review/header-v2.svg" %}" align="right">
+    <img src="{% static_absolute_local_file "review/header-v2.svg" %}">
     <h1>{% trans "Thesis review" %}</h1>
 </header>
 <table>
