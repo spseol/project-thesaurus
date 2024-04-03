@@ -63,7 +63,7 @@ class Thesis(BaseTimestampedModel):
         null=True,
         validators=[
             RegexValidator(
-                regex=re.compile(r'[A-Z]\d{3}'),
+                regex=re.compile(r'[A-Za-z]\d{3,5}'),
                 message=_('Thesis registration number is not valid.')
             )
         ]
