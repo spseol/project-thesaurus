@@ -10,7 +10,7 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models import TextChoices
 from django.utils.translation import gettext_lazy as _
-from django_lifecycle import hook, AFTER_UPDATE
+from django_lifecycle import AFTER_CREATE, hook, AFTER_UPDATE
 
 from apps.thesis.models.managers import ThesisApiManager, ThesisManager, ThesisImportManager
 from apps.utils.models import BaseTimestampedModel
@@ -163,6 +163,16 @@ class Thesis(BaseTimestampedModel):
     def on_state_change(self):
         from apps.emails.mailers import ThesisMailer
         ThesisMailer.on_state_change(thesis=self)
+
+    @hook(AFTER_CREATE)
+    def after_create(self):
+        from apps.emails.mailers import ThesisMailer
+        ThesisMailer.on_supervisor_added(thesis=self)
+
+    @hook(AFTER_UPDATE, when='opponent', has_changed=True, is_not=None)
+    def after_create(self):
+        from apps.emails.mailers import ThesisMailer
+        ThesisMailer.on_opponent_added(thesis=self)
 
     _skipped_for_hooks = {'available_for_reservation', 'open_reservations_count'}
 

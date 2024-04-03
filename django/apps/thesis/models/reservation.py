@@ -20,7 +20,10 @@ class Reservation(BaseTimestampedModel):
         FINISHED = 'finished', _('Finished')
         CANCELED = 'canceled', _('Canceled')
 
-        OPEN_RESERVATION_STATES = (CREATED, READY, RUNNING)
+        @property
+        @classmethod
+        def OPEN_RESERVATION_STATES(cls):
+            return cls.CREATED, cls.READY, cls.RUNNING
 
     thesis = models.ForeignKey(
         to='thesis.Thesis',

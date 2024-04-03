@@ -16,7 +16,7 @@ class ThesisMailer(BaseMailer):
     @classmethod
     def on_state_change(cls, thesis: Thesis):
         with cls._new_message() as email:
-            email.to_address = cls._build_to_address(thesis.authors.all())
+            email.to_address = cls._build_to_address(tuple(thesis.authors.all()) + (thesis.supervisor,))
 
             email.subject = cls._build_subject(
                 _('Thesis {} changed state to {}').format(thesis.title, thesis.get_state_display())
@@ -72,4 +72,27 @@ class ThesisMailer(BaseMailer):
                 thesis=thesis,
                 url=url,
                 reviewer=reviewer.full_name,
+            )
+
+    @classmethod
+    def on_supervisor_added(cls, thesis: Thesis):
+        return cls._on_role_added(thesis, _("supervisor"))
+
+    @classmethod
+    def on_opponent_added(cls, thesis: Thesis):
+        return cls._on_role_added(thesis, _("opponent"))
+
+    @classmethod
+    def _on_role_added(cls, thesis: Thesis, role: str):
+        with cls._new_message() as email:
+            email.to_address = cls._build_to_address([thesis.supervisor])
+
+            email.subject = cls._build_subject(
+                _('New thesis as {}: {}').format(role, thesis.title)
+            )
+
+            email.html_content = cls._render_content(
+                template_name='emails/thesis/thesis_new_role_assigned.html',
+                thesis=thesis,
+                role=role,
             )
