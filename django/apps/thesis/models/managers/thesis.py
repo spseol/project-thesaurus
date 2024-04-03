@@ -52,12 +52,12 @@ class ThesisApiManager(ThesisManager):
             available_for_reservation=~Exists(
                 queryset=Reservation.objects.filter(
                     thesis=OuterRef('pk'),
-                    state__in=Reservation.State.OPEN_RESERVATION_STATES,
+                    state__in=Reservation.OPEN_RESERVATION_STATES,
                 )
             ),
             open_reservations_count=Count(
                 'reservation_thesis',
-                filter=Q(reservation_thesis__state__in=Reservation.State.OPEN_RESERVATION_STATES),
+                filter=Q(reservation_thesis__state__in=Reservation.OPEN_RESERVATION_STATES),
             ),
             published_at_year=Cast(ExtractYear('published_at'), CharField())
         )

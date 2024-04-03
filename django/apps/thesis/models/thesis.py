@@ -146,7 +146,7 @@ class Thesis(BaseTimestampedModel):
         from .reservation import Reservation
 
         return self.reservation_thesis.filter(
-            state__in=Reservation.State.OPEN_RESERVATION_STATES,
+            state__in=Reservation.OPEN_RESERVATION_STATES,
         ).count()
 
     STATE_HELP_TEXTS = {
