@@ -19,7 +19,7 @@ class ReservationFilter(FilterSet):
 
     def filter_by_state(self, queryset: QuerySet, field_name, value):
         if value == Reservation.State.OPEN.value:
-            return queryset.filter(state__in=Reservation.OPEN_RESERVATION_STATES)
+            return queryset.filter(state__in=Reservation.State.OPEN_RESERVATION_STATES)
 
         if value in Reservation.State.values:
             return queryset.filter(state=value)
@@ -54,7 +54,7 @@ class ReservationViewSet(ModelViewSet):
             return qs
 
         return qs.filter(
-            state__in=Reservation.OPEN_RESERVATION_STATES
+            state__in=Reservation.State.OPEN_RESERVATION_STATES
         ).filter(
             user=self.request.user
         )
