@@ -56,11 +56,10 @@ class ThesisMailer(BaseMailer):
             thesis=thesis,
             reviewer=getattr(thesis, reviewer_key),
             url=absolute_url('api:v1:attachment-detail', attachment.pk),
-            email_attachment=attachment.file,
         )
 
     @classmethod
-    def _on_review_added(cls, thesis: Thesis, reviewer: User, url: str, email_attachment: Optional[File] = None):
+    def _on_review_added(cls, thesis: Thesis, reviewer: User, url: str):
         with cls._new_message() as email:
             email.to_address = cls._build_to_address(thesis.authors.all())
 
@@ -74,5 +73,3 @@ class ThesisMailer(BaseMailer):
                 url=url,
                 reviewer=reviewer.full_name,
             )
-            if email_attachment:
-                email.add_attachment(email_attachment)
