@@ -33,7 +33,8 @@ class BaseMailer(ABC):
                 email.content = strip_tags(email.html_content)
 
             if not email.to_address:
-                logger.warning('Email %s has not set recipient address.', email.subject)
+                logger.warning('Email %s has not set recipient address, discarding.', email.subject)
+                return
 
             email.save()
 
