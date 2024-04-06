@@ -94,6 +94,8 @@ reload_service() {
 }
 
 build_and_tag() {
+  export DOCKER_DEFAULT_PLATFORM=linux/amd64
+
   docker build --tag thejoeejoee/thesaurus-django --tag thejoeejoee/thesaurus-django:${IMAGE_VERSION} django/
   docker build --tag thejoeejoee/thesaurus-nginx --tag thejoeejoee/thesaurus-nginx:${IMAGE_VERSION} nginx/
   docker build --tag thejoeejoee/thesaurus-webpack --tag thejoeejoee/thesaurus-webpack:${IMAGE_VERSION} webpack/

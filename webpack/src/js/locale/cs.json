@@ -209,7 +209,7 @@
       "totalTheses": "Načteno prací"
     },
     "invalidPublishedAtFormat": "Nevalidní formát data, očekává se RRRR/MM",
-    "invalidSNformat": "Není ve formátu <písmeno>XXX",
+    "invalidSNformat": "Není ve formátu <písmeno>XXXXX",
     "justPrepared": "Práce byla vytořena a je připravena pro odevzdání.",
     "justPublished": "Práce byla zveřejněna.",
     "justSaved": "Uloženo",
