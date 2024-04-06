@@ -40,7 +40,7 @@
 </template>
 
 <script type="text/tsx">
-    import _ from 'lodash';
+    import _ from 'lodash-es';
     import Vue from 'vue';
     import Axios from '../../axios';
     import Podium from './Podidum.vue';

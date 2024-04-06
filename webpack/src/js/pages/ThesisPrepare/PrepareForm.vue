@@ -110,7 +110,7 @@
 </template>
 
 <script type="text/tsx">
-    import _ from 'lodash';
+    import _ from 'lodash-es';
     import qs from 'qs';
     import Axios from '../../axios';
     import {optionsStore} from '../../store/store';

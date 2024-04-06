@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import * as qs from 'qs';
 import Vue from 'vue';
 import {DataOptions} from 'vuetify/types';

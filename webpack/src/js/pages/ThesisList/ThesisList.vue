@@ -186,7 +186,7 @@
 </template>
 
 <script type="text/tsx">
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import Vue from 'vue';
 import {mapState} from 'vuex';
 import AuditForInstance from '../../components/AuditForInstance.vue';

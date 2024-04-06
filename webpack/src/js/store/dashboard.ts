@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-es';
 import {Commit} from 'vuex';
 import Axios from '../axios';
 import {Reservation, Thesis} from '../types';

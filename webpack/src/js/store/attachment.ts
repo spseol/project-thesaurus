@@ -1,4 +1,4 @@
-import * as _ from 'lodash';
+import * as _ from 'lodash-es';
 import Vue from 'vue';
 import Axios from '../axios';
 import {Thesis} from '../types';

@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash-es';
 import {Commit} from 'vuex';
 import {CachedAxios} from '../axios';
 import {Category, TypeAttachment, UserOption} from '../types';

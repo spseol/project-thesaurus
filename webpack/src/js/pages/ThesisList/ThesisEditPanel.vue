@@ -258,7 +258,7 @@
 </template>
 
 <script type="text/tsx">
-    import _ from 'lodash';
+    import _ from 'lodash-es';
     import moment from 'moment';
     import qs from 'qs';
     import Vue from 'vue';
