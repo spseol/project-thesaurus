@@ -58,12 +58,12 @@ class Thesis(BaseTimestampedModel):
 
     registration_number = models.CharField(
         verbose_name=_('Registration number'),
-        max_length=4,
+        max_length=6,
         unique=True,
         null=True,
         validators=[
             RegexValidator(
-                regex=re.compile(r'[A-Za-z]\d{3,5}'),
+                regex=re.compile(r'[A-Z]\d{3,5}'),
                 message=_('Thesis registration number is not valid.')
             )
         ]
