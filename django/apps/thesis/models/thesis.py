@@ -170,7 +170,7 @@ class Thesis(BaseTimestampedModel):
         ThesisMailer.on_supervisor_added(thesis=self)
 
     @hook(AFTER_UPDATE, when='opponent', has_changed=True, is_not=None)
-    def after_create(self):
+    def after_opponent_update(self):
         from apps.emails.mailers import ThesisMailer
         ThesisMailer.on_opponent_added(thesis=self)
 
