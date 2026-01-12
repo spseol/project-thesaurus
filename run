@@ -2,6 +2,11 @@
 # taken from https://github.com/universitas/universitas.no
 # utility script / entry point for the repo
 
+docker-compose() {
+    docker compose $@
+}
+
+
 main__(){
 while (( $# > 0 )); do
   rest=${@:2}
