@@ -135,7 +135,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 AUTHENTICATION_BACKENDS = [
-    'django_python3_ldap.auth.LDAPBackend',
+    *(() if config('LDAP_DISABLE', default=False, cast=bool) else ('django_python3_ldap.auth.LDAPBackend',)),
     'django.contrib.auth.backends.ModelBackend',
 ]
 
