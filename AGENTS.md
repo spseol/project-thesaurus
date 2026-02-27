@@ -162,8 +162,8 @@ raise ValidationError('Thesis is already reserved.')
 # apps.api.utils.exceptions.exception_handler
 ```
 
-- No bare `try/except` blocks in views — DRF's exception handler takes care of response shaping.
-- Use `raise_exception=True` consistently; never manually return 400 responses.
+- Don't use `try/except` in views solely to shape HTTP responses; let DRF and the custom exception handler handle error responses.
+- Prefer `raise_exception=True` and DRF exceptions for validation/business-rule errors; avoid hand-crafting 400 responses unless a view has a specific, documented reason.
 
 ### Type annotations
 
