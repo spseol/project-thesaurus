@@ -87,15 +87,15 @@
           <v-col class="d-flex flex-column justify-space-between" cols="12" md="6">
             <div>
               <v-chip
-                  :color="valueToColor(review.difficulty, 3)" label
+                  :color="difficultyColor" label
                   v-text="$t('Difficulty of selected topic')"
                   text-color="grey darken-4"
               ></v-chip>
               <v-slider
-                  :color="valueToColor(review.difficulty, 3)"
+                  :color="difficultyColor"
                   :max="3" :min="0" :step="1" :rules="[v => v > 0]"
-                  :thumb-color="valueToColor(review.difficulty, 3)"
-                  :tick-labels="grades3"
+                  :thumb-color="difficultyColor"
+                  :tick-labels="difficultyTickLabels"
                   class="VSliderCustom__label--grey"
                   ticks="always" track-color="grey" :thumb-size="48" :tick-size="4"
                   v-model="review.difficulty" :disabled="disabled"
@@ -103,15 +103,15 @@
 
               <div v-for="(grade, i) in review.grades">
                 <v-chip
-                    :color="valueToColor(grade, 4)" class="mt-7" label
+                    :color="gradeColor(grade)" class="mt-7" label
                     v-text="gradings[i]" text-color="grey darken-4"
                 ></v-chip>
                 <v-slider
-                    :min="0" :max="4" :step="1"
+                    :min="0" :max="gradeMax" :step="1"
                     :rules="[v => v > 0]"
-                    :thumb-color="valueToColor(grade, 4)"
-                    :color="valueToColor(grade, 4)"
-                    :tick-labels="grades4" ticks="always" track-color="grey"
+                    :thumb-color="gradeColor(grade)"
+                    :color="gradeColor(grade)"
+                    :tick-labels="gradeTickLabels" ticks="always" track-color="grey"
                     class="VSliderCustom__label--grey" :thumb-size="48" :tick-size="4"
                     v-model="review.grades[i]" :disabled="disabled"
                 ></v-slider>
@@ -122,7 +122,7 @@
               <div class="text-center my-4">
                 <v-chip
                     large label
-                    :color="valueToColor(review.grade_proposal, 4)"
+                    :color="gradeColor(review.grade_proposal)"
                     text-color="grey darken-4"
                 >
                   {{ $t('Classification proposal') + (gradeProposalLabel ? ': ' : '') }}
@@ -138,7 +138,7 @@
               >
                 <v-radio
                     v-for="([value, text], i) in gradeProposalOptions"
-                    :color="valueToColor(review.grade_proposal, 4)"
+                    :color="gradeColor(review.grade_proposal)"
                     :key="value"
                     :label="text"
                     :value="value"
@@ -148,7 +148,7 @@
                         v-text="text" class="mx-n2"
                         :style="{
                           color: review.grade_proposal === value ?
-                            valueToColor(review.grade_proposal, 4) : undefined
+                            gradeColor(review.grade_proposal) : undefined
                         }"
                     />
                   </template>
@@ -192,7 +192,7 @@ import Axios from '../../axios';
 import {DASHBOARD_ACTIONS} from '../../store/dashboard';
 import {dashboardStore} from '../../store/store';
 import {hasPerm} from '../../user';
-import {GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_4, notificationBus, pageContext} from '../../utils';
+import {GRADE_COLOR_SCALE_3, GRADE_COLOR_SCALE_3_REVERSED, GRADE_COLOR_SCALE_4, GRADE_COLOR_SCALE_5_DMP, GRADE_COLOR_SCALE_6_AP, notificationBus, pageContext} from '../../utils';
 
 
 const reviewDefaults = (role) => (
@@ -247,6 +247,40 @@ export default {
         this.$t('Over average')
       ];
     },
+    gradeType() {
+      const publishedAt = this.thesis.published_at;
+      const year = publishedAt ? parseInt(publishedAt.split('/')[0], 10) : null;
+      if (!year || year < 2026) return 'old';
+      return this.thesis.category?.grade_type === 'ap' ? 'ap' : 'dmp';
+    },
+    gradeMax() {
+      return {old: 4, dmp: 5, ap: 6}[this.gradeType];
+    },
+    gradeTickLabels() {
+      switch (this.gradeType) {
+        case 'dmp':
+          return ['', '1 - výborný', '2 - chvalitebný', '3 - dobrý', '4 - dostatečný', '5 - nedostatečný'];
+        case 'ap':
+          return ['', 'A', 'B', 'C', 'D', 'E', 'F'];
+        default:
+          return this.grades4;
+      }
+    },
+    difficultyTickLabels() {
+      if (this.gradeType === 'old') {
+        return this.grades3;
+      }
+      return [
+        '',
+        this.$t('Over average'),
+        this.$t('Average'),
+        this.$t('Under average')
+      ];
+    },
+    difficultyColor() {
+      const scale = this.gradeType === 'old' ? GRADE_COLOR_SCALE_3 : GRADE_COLOR_SCALE_3_REVERSED;
+      return scale[this.review.difficulty];
+    },
     reviewerRole() {
       return {
         [this.thesis.supervisor?.username]: 'supervisor',
@@ -264,11 +298,10 @@ export default {
       ]);
     },
     gradeProposalOptions() {
-      // plus one because select does have empty option as first one
-      return _.map(_.compact(this.grades4), (grade, i) => ([1 + i, grade]));
+      return _.map(_.compact(this.gradeTickLabels), (grade, i) => ([1 + i, grade]));
     },
     gradeProposalLabel() {
-      return this.review.grade_proposal ? this.grades4[this.review.grade_proposal] : null;
+      return this.review.grade_proposal ? this.gradeTickLabels[this.review.grade_proposal] : null;
     },
     disabled() {
       return !!this.review.id;
@@ -292,6 +325,10 @@ export default {
     ]),
     valueToColor(v, scale = 3) {
       return (scale === 3 ? GRADE_COLOR_SCALE_3 : GRADE_COLOR_SCALE_4)[v];
+    },
+    gradeColor(v) {
+      const scaleMap = {old: GRADE_COLOR_SCALE_4, dmp: GRADE_COLOR_SCALE_5_DMP, ap: GRADE_COLOR_SCALE_6_AP};
+      return scaleMap[this.gradeType][v];
     },
     async submit() {
       this.loading = true;

@@ -57,4 +57,5 @@ class ReservationAdmin(ModelAdmin):
 
 @register(Category)
 class CategoryAdmin(ModelAdmin):
-    pass
+    list_display = ('title', 'order', 'grade_type')
+    list_editable = ('grade_type',)

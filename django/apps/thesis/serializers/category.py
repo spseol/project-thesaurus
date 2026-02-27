@@ -10,6 +10,7 @@ class CategorySerializer(ModelSerializer):
         fields = (
             'id',
             'title',
+            'grade_type',
         )
 
 
@@ -23,4 +24,5 @@ class CategoryOptionSerializer(ModelSerializer):
             'id',
             'value',
             'text',
+            'grade_type',
         )
