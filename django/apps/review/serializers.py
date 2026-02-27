@@ -52,6 +52,25 @@ class ReviewPublicSerializer(ModelSerializer):
             raise ValidationError(_('Review has been already posted by this user or this user is not allowed to post '
                                     'review for this thesis.'))
 
+        choices_class, max_value, _ = Review.get_grade_config(
+            thesis.category.grade_type, thesis.published_at
+        )
+        valid_values = set(choices_class.values)
+
+        for g in attrs.get('grades', []):
+            if g not in valid_values:
+                raise ValidationError(
+                    _('Invalid grade value %(value)s. Allowed values: %(allowed)s.')
+                    % {'value': g, 'allowed': ', '.join(str(v) for v in sorted(valid_values))}
+                )
+
+        grade_proposal = attrs.get('grade_proposal')
+        if grade_proposal is not None and grade_proposal not in valid_values:
+            raise ValidationError(
+                _('Invalid grade proposal value %(value)s. Allowed values: %(allowed)s.')
+                % {'value': grade_proposal, 'allowed': ', '.join(str(v) for v in sorted(valid_values))}
+            )
+
         return attrs
 
 
