@@ -246,10 +246,10 @@ export default {
 
 - All HTTP errors are handled centrally in `webpack/src/js/axios.ts` interceptors:
   - `401` → force page reload (re-auth)
-  - `403` → treated as a **success** by default `validateStatus` (resolves, never reaches the error interceptor); only callers that override `validateStatus` to treat 403 as an error will trigger a toast warning (suppress with `config.allow403 = true`)
+  - `403` → treated as a **success** by default `validateStatus` (resolves, never reaches the error interceptor); only callers that override `validateStatus` to treat 403 as an error will trigger a toast warning (suppress with `config.allow403 = true`, in which case the error interceptor **handles and swallows** the 403 instead of propagating it)
   - `5xx` → flash error banner
 - Use optional chaining (`?.`) throughout; never assume response shape.
-- Always `return Promise.reject(error)` at the end of error interceptors to propagate to callers.
+- Error interceptors must `return Promise.reject(error)` to propagate errors to callers, **except** in explicitly documented cases where an error is intentionally handled and swallowed (e.g. `403` with `config.allow403 = true`).
 - Validation errors (`400`) are treated as successful responses and handled per-form.
 
 ---
