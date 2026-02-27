@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-07-20 15:48+0200\n"
-"PO-Revision-Date: 2022-07-19 10:11+0200\n"
+"POT-Creation-Date: 2024-04-03 21:50+0200\n"
+"PO-Revision-Date: 2024-04-03 21:53+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -17,7 +17,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n >= 2 && n "
 "<= 4 && n % 1 == 0) ? 1: (n % 1 != 0 ) ? 2 : 3;\n"
-"X-Generator: Poedit 3.0\n"
+"X-Generator: Poedit 3.2.2\n"
 
 #: apps/accounts/admin.py:25
 msgid "Supervised thesis"
@@ -299,9 +299,21 @@ msgstr "Rezervace pro práci {} byla vytvořena"
 msgid "Thesis {} changed state to {}"
 msgstr "Práci {} byl změněn stav na {}."
 
-#: apps/emails/mailers/thesis.py:68
+#: apps/emails/mailers/thesis.py:67
 msgid "Thesis {} has new review from {}"
 msgstr "Práce {} má nový posudek od {}"
+
+#: apps/emails/mailers/thesis.py:79
+msgid "supervisor"
+msgstr "vedoucí"
+
+#: apps/emails/mailers/thesis.py:83
+msgid "opponent"
+msgstr "oponent"
+
+#: apps/emails/mailers/thesis.py:91
+msgid "New thesis as {}: {}"
+msgstr "Nová práce přiřazena jako {}: {}"
 
 #: apps/emails/templates/emails/base.html:3
 msgid "Please, do not reply directly to this email."
@@ -397,6 +409,25 @@ msgstr ""
 "%(current_state)s.\n"
 "\n"
 "        Měj pěkný den!\n"
+"    "
+
+#: apps/emails/templates/emails/thesis/thesis_new_role_assigned.html:5
+#, python-format
+msgid ""
+"\n"
+"        Hello,\n"
+"\n"
+"        you've just been assigned to thesis %(thesis)s as %(role)s.\n"
+"\n"
+"        Have a nice day!\n"
+"    "
+msgstr ""
+"\n"
+"Ahoj,\n"
+"\n"
+"právě byl jsi přiřazen k práci %(thesis)s jako %(role)s.\n"
+"\n"
+"Měj pěkný den!\n"
 "    "
 
 #: apps/frontend/views.py:11
@@ -506,59 +537,59 @@ msgstr ""
 "Posudek byl od tohoto uživatele již přijat anebo tento uživatel není "
 "oprávněn k vložení posudku k této práci."
 
-#: apps/review/templates/review/review_detail.html:118
+#: apps/review/templates/review/review_detail.html:120
 msgid "Thesis review"
 msgstr "Posudek"
 
-#: apps/review/templates/review/review_detail.html:123
+#: apps/review/templates/review/review_detail.html:125
 msgid "First and last name"
 msgstr "Jméno a příjmení"
 
-#: apps/review/templates/review/review_detail.html:131
+#: apps/review/templates/review/review_detail.html:133
 msgid "Thesis title"
 msgstr "Název práce"
 
-#: apps/review/templates/review/review_detail.html:135
+#: apps/review/templates/review/review_detail.html:137
 msgid "Review by"
 msgstr "Posudek vypracoval"
 
-#: apps/review/templates/review/review_detail.html:139
+#: apps/review/templates/review/review_detail.html:141
 msgid "Supervisor / opponent"
 msgstr "Vedoucí / oponent práce"
 
-#: apps/review/templates/review/review_detail.html:143
+#: apps/review/templates/review/review_detail.html:145
 msgid "Criteriums of thesis grading"
 msgstr "Kritéria hodnocení práce"
 
-#: apps/review/templates/review/review_detail.html:145
+#: apps/review/templates/review/review_detail.html:147
 msgid "Grade"
 msgstr "Stupeň hodnocení"
 
-#: apps/review/templates/review/review_detail.html:151
+#: apps/review/templates/review/review_detail.html:153
 msgid "Difficulty of selected topic"
 msgstr "Náročnost zvoleného tématu"
 
-#: apps/review/templates/review/review_detail.html:166
+#: apps/review/templates/review/review_detail.html:168
 msgid "Comment"
 msgstr "Odůvodnění hodnocení práce"
 
-#: apps/review/templates/review/review_detail.html:175
+#: apps/review/templates/review/review_detail.html:177
 msgid "Questions"
 msgstr "Otázky k obhajobě"
 
-#: apps/review/templates/review/review_detail.html:187
+#: apps/review/templates/review/review_detail.html:189
 msgid "In"
 msgstr "V"
 
-#: apps/review/templates/review/review_detail.html:189
+#: apps/review/templates/review/review_detail.html:191
 msgid "at day"
 msgstr "dne"
 
-#: apps/review/templates/review/review_detail.html:194
+#: apps/review/templates/review/review_detail.html:196
 msgid "Signature"
 msgstr "Podpis"
 
-#: apps/review/templates/review/review_detail.html:201
+#: apps/review/templates/review/review_detail.html:203
 msgid ""
 "If the evaluation of the leader and the opponent differs by more than two "
 "degrees (excellent - unsatisfactory), it will be prepared third independent "
@@ -567,11 +598,11 @@ msgstr ""
 "Pokud se hodnocení vedoucího a oponenta liší o více jak dva stupně (výborná "
 "- nevyhovující), bude vypracován třetí nezávislý posudek."
 
-#: apps/review/templates/review/review_detail.html:203
+#: apps/review/templates/review/review_detail.html:205
 msgid "Generated automatically by THESAURUS at"
 msgstr "Automaticky vygenerováno systémem THESAURUS v"
 
-#: apps/review/templates/review/review_detail.html:204
+#: apps/review/templates/review/review_detail.html:206
 msgid "available online on"
 msgstr "dostupné online na"
 
@@ -699,27 +730,27 @@ msgstr "Dokončeno"
 msgid "Canceled"
 msgstr "Zrušená"
 
-#: apps/thesis/models/reservation.py:28
+#: apps/thesis/models/reservation.py:31
 msgid "Thesis for borrow"
 msgstr "Práce k zapůjčení"
 
-#: apps/thesis/models/reservation.py:35
+#: apps/thesis/models/reservation.py:38
 msgid "For user"
 msgstr "Pro uživatele"
 
-#: apps/thesis/models/reservation.py:40 apps/thesis/models/thesis.py:73
+#: apps/thesis/models/reservation.py:43 apps/thesis/models/thesis.py:73
 msgid "State"
 msgstr "Stav"
 
-#: apps/thesis/models/reservation.py:50
+#: apps/thesis/models/reservation.py:53
 msgid "Reservation"
 msgstr "Rezervace"
 
-#: apps/thesis/models/reservation.py:51
+#: apps/thesis/models/reservation.py:54
 msgid "Reservations"
 msgstr "Rezervace"
 
-#: apps/thesis/models/reservation.py:65
+#: apps/thesis/models/reservation.py:68
 msgid "Reservation {} for {}"
 msgstr "Rezervace {} pro {}"
 
@@ -791,25 +822,29 @@ msgstr "Práce"
 msgid "Theses"
 msgstr "Práce"
 
-#: apps/thesis/models/thesis.py:126
+#: apps/thesis/models/thesis.py:119
+msgid "Can view unpublished theses"
+msgstr "Může zobrazit nepublikované práce"
+
+#: apps/thesis/models/thesis.py:129
 msgid "Publishing thesis without filled registration number is not allowed."
 msgstr "Publikování práce bez vyplněného evidenčního čísla není povoleno."
 
-#: apps/thesis/models/thesis.py:150
+#: apps/thesis/models/thesis.py:153
 msgid ""
 "Thesis is created with basic information and it's waiting for state change."
 msgstr ""
 "Práce je vytvořena se základními informacemi a je dostupná pouze správci."
 
-#: apps/thesis/models/thesis.py:151
+#: apps/thesis/models/thesis.py:154
 msgid "Thesis is currently waiting for submit from one of authors."
 msgstr "Práce čeká na odevzdání od jednoho z autorů."
 
-#: apps/thesis/models/thesis.py:152
+#: apps/thesis/models/thesis.py:155
 msgid "Thesis has been submitted and it needs to be pushed to reviews."
 msgstr "Práce byla odevzdána a čeká na postoupení k posudkům."
 
-#: apps/thesis/models/thesis.py:153
+#: apps/thesis/models/thesis.py:156
 msgid ""
 "Thesis is waiting for reviews from supervisor and opponent - also possible "
 "to add external review."
@@ -817,19 +852,19 @@ msgstr ""
 "Práce čeká na zadání posudků od vedoucího a oponenta, je možné přidat "
 "externí posudky."
 
-#: apps/thesis/models/thesis.py:155
+#: apps/thesis/models/thesis.py:158
 msgid "Thesis has both reviews and it's waiting for publication."
 msgstr "Práce má oba posudky a je možné ji publikovat."
 
-#: apps/thesis/models/thesis.py:156
+#: apps/thesis/models/thesis.py:159
 msgid "Thesis is public and it's possible to borrow it."
 msgstr "Práce je zveřejněna a lze si ji vypůjčit, pokud je to povoleno."
 
-#: apps/thesis/models/thesis.py:181
+#: apps/thesis/models/thesis.py:194
 msgid "Thesis author relation"
 msgstr "Vazba autora k práci"
 
-#: apps/thesis/models/thesis.py:182
+#: apps/thesis/models/thesis.py:195
 msgid "Thesis author relations"
 msgstr "Vazby autorů k pracem"
 

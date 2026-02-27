@@ -97,8 +97,13 @@ class ThesisViewSet(ModelViewSet):
             )
         )
 
-        # no perms to see all thesis, so filter only published ones
-        if not user.has_perm('thesis.change_thesis'):
+        # no perms to see all thesis
+        if user.has_perm('thesis.change_thesis'):
+            ...
+        elif user.has_perm('thesis.can_view_unpublished_theses'):
+            ...
+        else:
+            # no additional perms, can see only published or own authored/supervised/opponent'ed theses
             qs = qs.filter(
                 Q(state=Thesis.State.PUBLISHED) |
                 Q(authors=user) |

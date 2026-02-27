@@ -261,7 +261,7 @@
     </span>
 </template>
 <script type="text/tsx">
-import _ from 'lodash';
+import _ from 'lodash-es';
 import {RESERVATION_ACTIONS} from '../../store/reservation';
 import {optionsStore, reservationStore, thesisStore} from '../../store/store';
 import {THESIS_ACTIONS} from '../../store/thesis';

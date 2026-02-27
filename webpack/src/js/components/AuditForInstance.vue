@@ -156,7 +156,7 @@
 </template>
 
 <script type="text/tsx">
-    import _ from 'lodash';
+    import _ from 'lodash-es';
     import moment from 'moment';
     import {AUDIT_ACTIONS, callIdentifier} from '../store/audit';
     import {auditStore} from '../store/store';

@@ -16,8 +16,8 @@
 
                                 <v-text-field
                                     :label="$t('Registration number')" v-model="data.registration_number"
-                                    :counter="4" :error-messages="messages.registration_number"
-                                    :rules="[v => !v || /[A-Z]\d{3}/.test(v) || $t('thesis.invalidSNformat')]"
+                                    :counter="6" :error-messages="messages.registration_number"
+                                    :rules="[v => !v || /[A-Z]\d{3,5}/.test(v) || $t('thesis.invalidSNformat')]"
                                 ></v-text-field>
 
                                 <v-menu
@@ -258,7 +258,7 @@
 </template>
 
 <script type="text/tsx">
-    import _ from 'lodash';
+    import _ from 'lodash-es';
     import moment from 'moment';
     import qs from 'qs';
     import Vue from 'vue';

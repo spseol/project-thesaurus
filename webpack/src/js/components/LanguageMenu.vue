@@ -25,7 +25,7 @@
     </v-menu>
 </template>
 <script type="text/tsx">
-    import * as _ from 'lodash';
+    import * as _ from 'lodash-es';
     import qs from 'qs';
     import Vue from 'vue';
     import Axios from '../axios';

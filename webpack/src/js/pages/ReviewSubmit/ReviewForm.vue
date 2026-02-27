@@ -186,7 +186,7 @@
 </template>
 
 <script type="text/tsx">
-import _ from 'lodash';
+import _ from 'lodash-es';
 import {Bold, BulletList, History, Italic, Link, ListItem, TiptapVuetify} from 'tiptap-vuetify';
 import Axios from '../../axios';
 import {DASHBOARD_ACTIONS} from '../../store/dashboard';

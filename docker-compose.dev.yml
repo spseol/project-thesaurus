@@ -18,7 +18,7 @@ services:
     ports:
       - 3000:3000
     volumes:
-      - ./webpack/:/usr/src/app
+      - ./webpack/src/:/usr/src/app/src
     environment:
       - NODE_ENV=development
       - PUBLIC_PATH=http://${SITE_URL:-localhost}:3000/static/

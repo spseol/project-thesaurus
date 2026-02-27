@@ -111,7 +111,7 @@
 
 </template>
 <script type="text/tsx">
-import _ from 'lodash';
+import _ from 'lodash-es';
 import {ATTACHMENT_ACTIONS} from '../../store/attachment';
 import {REVIEW_ACTIONS} from '../../store/review';
 import {attachmentStore, reviewStore} from '../../store/store';

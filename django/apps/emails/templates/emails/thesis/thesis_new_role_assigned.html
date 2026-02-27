@@ -1,0 +1,12 @@
+{% extends "emails/base.html" %}
+{% load i18n %}
+
+{% block body %}
+    {% blocktrans %}
+        Hello,
+
+        you've just been assigned to thesis {{ thesis }} as {{ role }}.
+
+        Have a nice day!
+    {% endblocktrans %}
+{% endblock %}

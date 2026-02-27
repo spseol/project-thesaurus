@@ -95,7 +95,7 @@
 </template>
 
 <script type="text/tsx">
-    import _ from 'lodash';
+    import _ from 'lodash-es';
     import Vue from 'vue';
     import AuditForInstance from '../../components/AuditForInstance.vue';
     import {RESERVATION_ACTIONS} from '../../store/reservation';
