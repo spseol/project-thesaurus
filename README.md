@@ -26,6 +26,66 @@ Project is using docker-compose to compose all required Docker containers to run
 
 - [`webserver`](https://hub.docker.com/r/thejoeejoee/thesaurus-nginx) [![](https://images.microbadger.com/badges/version/thejoeejoee/thesaurus-nginx.svg)](https://microbadger.com/images/thejoeejoee/thesaurus-nginx) container with Nginx to proxy to `web` and serving static and media files 
 
+## Getting Started
+
+### 1. Environment setup
+
+Copy the env template and fill in the required values:
+
+```bash
+cp .env.local.template .env.local
+```
+
+Open `.env.local` and set at minimum:
+
+| Variable       | Required | Description                             |
+|----------------|----------|-----------------------------------------|
+| `SECRET_KEY`   | Yes      | Django secret key — generate with `python -c "import secrets; print(secrets.token_urlsafe(50))"` |
+| `ALLOWED_HOSTS`| Yes      | Space-separated hostnames, e.g. `localhost 127.0.0.1` |
+| `PUBLIC_HOST`  | Yes      | Base URL for absolute links, e.g. `http://localhost:8080` |
+| `TZ`           | Yes      | Timezone, e.g. `Europe/Prague`          |
+| `LDAP_HOST`    | No       | Leave empty to disable LDAP auth entirely |
+
+> Email vars default to a console backend in dev (`django/.env.dev`).
+> LDAP is **optional** in development — leave `LDAP_HOST` empty to skip it.
+
+### 2. Running locally (Docker)
+
+The `./run` wrapper sets the correct `COMPOSE_FILE` automatically.
+
+```bash
+# Build images (first time only or after Dockerfile changes)
+./run dc build
+
+# Start everything and stream logs
+./run up
+
+# Or start as daemons
+./run upd
+```
+
+The app is available at **http://localhost:8080**.  
+The webpack dev server (with HMR) runs on **http://localhost:3000**.
+
+> To change the hostname used in HMR WebSocket URLs, set `SITE_URL=your-hostname` in your shell before running.
+
+### 3. Running webpack locally (without Docker)
+
+Requires Node ≥ 17. The `NODE_OPTIONS` flag is baked into the npm scripts.
+
+```bash
+cd webpack
+npm install
+npm run dev    # starts dev server on :3000
+npm run build  # production bundle
+```
+
+### 4. Applying database migrations
+
+```bash
+./run dc run --rm web migrate
+```
+
 ## Usage
 Assuming installed and running Docker, most frequent commands are grouped in script `run`.
 For all commands run `$ ./run help`.
@@ -54,11 +114,11 @@ $ ./run prod up
 ```
 
 ## Build with
-- Python 3.8
-- Django 3.0
-- Webpack 4.42
-- Nginx 1.17.4
-- PostgreSQL 12.0
+- Python 3.9
+- Django 3.2
+- Webpack 4
+- Nginx 1.27
+- PostgreSQL 12+
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.md) file for details.
