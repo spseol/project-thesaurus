@@ -128,7 +128,7 @@ from apps.accounts.models import User
 from apps.api.permissions import CanSubmitThesisPermission
 ```
 
-Imports run together without blank lines between groups — do not add separators. The ordering above must be maintained.
+Imports are grouped with a single blank line between groups. The ordering and grouping above must be maintained; do not collapse or reorder groups.
 
 ### Naming conventions
 
