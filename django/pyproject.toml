@@ -7,7 +7,7 @@ dependencies = [
     "Django~=3.2",
     "django-better-admin-arrayfield",
     "django-bleach",
-    "django-constance[database]",
+    "django-constance",
     "django-debug-toolbar",
     "django-extensions",
     "django-filter",

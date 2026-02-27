@@ -1885,7 +1885,7 @@ requires-dist = [
     { name = "django-admin-env-notice" },
     { name = "django-better-admin-arrayfield" },
     { name = "django-bleach" },
-    { name = "django-constance", extras = ["database"] },
+    { name = "django-constance" },
     { name = "django-debug-toolbar" },
     { name = "django-extensions" },
     { name = "django-filter" },
