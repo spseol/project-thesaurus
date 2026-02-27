@@ -7,6 +7,11 @@ from apps.utils.models import BaseModel
 
 class Category(BaseModel):
     """Category of submitted thesis."""
+
+    class GradeType(models.TextChoices):
+        DMP = 'dmp', _('DMP (SPŠ)')
+        AP = 'ap', _('AP (VOŠ)')
+
     title = models.CharField(
         verbose_name=_('Title'),
         max_length=128,
@@ -14,6 +19,13 @@ class Category(BaseModel):
 
     order = PositionField(
         verbose_name=_('Order'),
+    )
+
+    grade_type = models.CharField(
+        max_length=3,
+        choices=GradeType.choices,
+        default=GradeType.DMP,
+        verbose_name=_('Grade type'),
     )
 
     class Meta:
