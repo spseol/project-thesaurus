@@ -259,7 +259,7 @@ export default {
     gradeTickLabels() {
       switch (this.gradeType) {
         case 'dmp':
-          return ['', '1 - výborný', '2 - chvalitebný', '3 - dobrý', '4 - dostatečný', '5 - nedostatečný'];
+          return ['', '1 - Výb.', '2 - Chval.', '3 - Dobrý', '4 - Dost.', '5 - Ned.'];
         case 'ap':
           return ['', 'A', 'B', 'C', 'D', 'E', 'F'];
         default:
