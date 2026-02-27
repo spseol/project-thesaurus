@@ -12,7 +12,7 @@ updates:
     assignees:
       - josef kolář
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: '/django'
     target-branch: "develop"
     schedule:
