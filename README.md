@@ -26,39 +26,97 @@ Project is using docker-compose to compose all required Docker containers to run
 
 - [`webserver`](https://hub.docker.com/r/thejoeejoee/thesaurus-nginx) [![](https://images.microbadger.com/badges/version/thejoeejoee/thesaurus-nginx.svg)](https://microbadger.com/images/thejoeejoee/thesaurus-nginx) container with Nginx to proxy to `web` and serving static and media files 
 
+## Getting Started
+
+### 1. Environment setup
+
+Copy the env template and fill in the required values:
+
+```bash
+cp .env.local.template .env.local
+```
+
+Open `.env.local` and set at minimum:
+
+| Variable        | Required | Description                                                                                                 |
+|-----------------|----------|-------------------------------------------------------------------------------------------------------------|
+| `SECRET_KEY`    | Yes      | Django secret key — generate with `python -c "import secrets; print(secrets.token_urlsafe(50))"` |
+| `ALLOWED_HOSTS` | Yes      | Space-separated hostnames, e.g. `localhost 127.0.0.1`                                                      |
+| `PUBLIC_HOST`   | Yes      | Base URL for absolute links, e.g. `http://localhost:8080`                                                   |
+| `TZ`            | Yes      | Timezone, e.g. `Europe/Prague`                                                                              |
+| `LDAP_HOST`     | No       | Leave empty to disable LDAP auth entirely                                                                   |
+
+> Email vars default to a console backend in dev (`django/.env.dev`).  
+> LDAP is **optional** in development — leave `LDAP_HOST` empty to skip it.
+
+### 2. Running locally (Docker)
+
+The root `.env` file sets `COMPOSE_FILE` to the dev stack by default, so plain `docker compose` commands work without any extra flags.
+
+```bash
+make build   # build images (first time or after Dockerfile changes)
+make up      # start everything, stream logs
+make upd     # start as daemons
+make down    # stop and remove containers
+make logs    # follow logs
+```
+
+The app is available at **http://localhost:8080**.  
+The webpack dev server (with HMR) runs on **http://localhost:3000**.
+
+> To use a custom hostname for HMR WebSocket URLs, set `SITE_URL=your-hostname` in your shell.
+
+### 3. Shell access & management commands
+
+```bash
+make shell-web      # shell into the Django container
+make shell-webpack  # shell into the webpack container
+make migrate        # run Django migrations
+make manage CMD="createsuperuser"  # run any management command
+```
+
+### 4. Running webpack locally (without Docker)
+
+Requires Node ≥ 17. The `NODE_OPTIONS` flag is baked into the npm scripts.
+
+```bash
+cd webpack
+npm install
+npm run dev    # starts dev server on :3000
+npm run build  # production bundle
+```
+
 ## Usage
-Assuming installed and running Docker, most frequent commands are grouped in script `run`.
-For all commands run `$ ./run help`.
 
-Build all needed images:
+### Production
+
+The production stack uses pre-built images. `IMAGE_VERSION` is derived automatically from the last merged git tag.
+
 ```bash
-$ ./run dc build
+make prod-upd     # start production stack (detached)
+make prod-reload  # rebuild webpack + migrate + collectstatic + restart
+make prod-down    # stop production stack
 ```
 
-Start project and watch logs directly in console
+### Releasing images
+
 ```bash
-$ ./run up
+make release-django TAG=1.2.3         # build & push Django image
+make retag-nginx FROM=1.2.2 TO=1.2.3  # retag nginx image
 ```
 
-Start project as deamons
-```bash
-$ ./run upd
-```
-
-Successfully started containers exposing port `:8080` on `localhost` with running project.
-
-##### Production
+### Database
 
 ```bash
-$ ./run prod up
+make dump-db   # dump dev DB to ./dump.sql
 ```
 
 ## Build with
-- Python 3.8
-- Django 3.0
-- Webpack 4.42
-- Nginx 1.17.4
-- PostgreSQL 12.0
+- Python 3.9
+- Django 3.2
+- Webpack 4
+- Nginx 1.27
+- PostgreSQL 12+
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](./LICENSE.md) file for details.

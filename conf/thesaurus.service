@@ -5,8 +5,9 @@ After=docker.service
 
 [Service]
 Restart=always
-ExecStart=/bin/bash -c "/srv/thesaurus/run prod dc up"
-ExecStop=/bin/bash -c "/srv/thesaurus/run prod dc down"
-ExecReload=/bin/bash -c "/srv/thesaurus/run reload"
+WorkingDirectory=/srv/thesaurus
+ExecStart=/bin/bash -c "make prod-upd"
+ExecStop=/bin/bash -c "make prod-down"
+ExecReload=/bin/bash -c "make prod-reload"
 [Install]
 WantedBy=multi-user.target

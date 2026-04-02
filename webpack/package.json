@@ -5,8 +5,8 @@
   "author": "Josef Kolar",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.dev.config.js",
-    "build": "webpack --mode production --config webpack.prod.config.js",
+    "dev": "NODE_OPTIONS=--openssl-legacy-provider webpack-dev-server --config webpack.dev.config.js",
+    "build": "NODE_OPTIONS=--openssl-legacy-provider webpack --mode production --config webpack.prod.config.js",
     "extract-locale": "vue-i18n-extract report -v 'src/**/*.vue' -l 'src/js/locale/**/*.json' -a",
     "merge-locale": "node ./bin/merge-locale-from-django.js"
   },

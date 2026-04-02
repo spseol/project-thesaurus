@@ -1,7 +1,7 @@
 version: 2
 updates:
   - package-ecosystem: npm
-    directory: '/webkpack'
+    directory: '/webpack'
     target-branch: "develop"
     schedule:
       interval: daily
@@ -12,7 +12,7 @@ updates:
     assignees:
       - josef kolář
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: '/django'
     target-branch: "develop"
     schedule:
