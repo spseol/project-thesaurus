@@ -65,7 +65,7 @@ class Review(BaseTimestampedModel):
     )
     difficulty = models.PositiveSmallIntegerField(
         verbose_name=_('Difficulty'),
-        help_text=_('As value between 1 and 3 inclusive, higher is harder.'),
+        help_text=_('As value between 1 and 3 inclusive.'),
         validators=[MinValueValidator(1), MaxValueValidator(3)],
         choices=DifficultyChoices.choices,
     )

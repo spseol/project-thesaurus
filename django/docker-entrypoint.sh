@@ -4,7 +4,7 @@ run() {
   # Start process as unprivileged user
   # Use `exec` to replace original process.
   # This makes it possible for Docker to send signals to the process.
-  exec su root -c "$*"
+  exec su django -c "$*"
 }
 
 case $1 in
