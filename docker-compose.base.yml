@@ -23,7 +23,7 @@ services:
       - .env
 
   db:
-    image: postgres:12.0-alpine
+    image: docker.io/postgres:12.0-alpine
     container_name: thesaurus_db
     volumes:
       - postgres_data:/var/lib/postgresql/data/

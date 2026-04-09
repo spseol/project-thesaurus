@@ -130,11 +130,34 @@ export const GRADE_COLOR_SCALE_3 = {
     1: colors.red.lighten1,
     0: colors.grey.lighten1
 };
+export const GRADE_COLOR_SCALE_3_REVERSED = {
+    1: colors.green.lighten1,
+    2: colors.blue.lighten2,
+    3: colors.red.lighten1,
+    0: colors.grey.lighten1
+};
 export const GRADE_COLOR_SCALE_4 = {
     4: colors.green.lighten1,
     3: colors.blue.lighten2,
     2: colors.orange.base,
     1: colors.red.lighten1,
+    0: colors.grey.lighten1
+};
+export const GRADE_COLOR_SCALE_5_DMP = {
+    1: colors.green.lighten1,
+    2: colors.blue.lighten2,
+    3: colors.amber.base,
+    4: colors.orange.base,
+    5: colors.red.lighten1,
+    0: colors.grey.lighten1
+};
+export const GRADE_COLOR_SCALE_6_AP = {
+    1: colors.green.lighten1,
+    2: colors.blue.lighten2,
+    3: colors.amber.base,
+    4: colors.orange.lighten1,
+    5: colors.deepOrange.base,
+    6: colors.red.lighten1,
     0: colors.grey.lighten1
 };
 export const THEME_LIGHT_COLORS = {

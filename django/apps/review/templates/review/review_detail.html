@@ -145,22 +145,22 @@
         <td><strong>{% trans "Criteriums of thesis grading" %}</strong></td>
         <td>
             <strong>{% trans "Grade" %}</strong>
-            <small class="right">({% for l in review.GradesChoices.labels %}{{ l.lower }}{% if not forloop.last %},
+            <small class="right">({% for l in grades_choices.labels %}{{ l.lower }}{% if not forloop.last %},
             {% endif %}{% endfor %})</small>
         </td>
     </tr>
     <tr>
         <td>{% trans "Difficulty of selected topic" %}</td>
         <td>
-            <strong>{{ review.get_difficulty_display }}</strong>
-            <small class="right">({% for l in review.DifficultyChoices.labels %}{{ l.lower }}{% if not forloop.last %},
+            <strong>{{ difficulty_display }}</strong>
+            <small class="right">({% for l in difficulty_choices.labels %}{{ l.lower }}{% if not forloop.last %},
             {% endif %}{% endfor %})</small>
         </td>
     </tr>
     {% for grading, grade in review.gradings|zip:review.grades %}
         <tr{% if forloop.last %} class="row-bottom-divider"{% endif %}>
             <td>{{ grading }}</td>
-            <td><strong>{{ grade|get_choices_display:review.GradesChoices }}</strong></td>
+            <td><strong>{{ grade|get_choices_display:grades_choices }}</strong></td>
         </tr>
     {% endfor %}
     <tr class="row-bottom-divider comment-and-questions-row">
@@ -182,7 +182,7 @@
     </tr>
     <tr class="row-bottom-divider">
         <td>{% get_verbose_field_name review "grade_proposal" %}</td>
-        <td>{{ review.get_grade_proposal_display }}</td>
+        <td>{{ grade_proposal_display }}</td>
     </tr>
     <tr class="row-bottom-divider row-higher">
         <td>

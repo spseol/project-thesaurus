@@ -8,6 +8,7 @@ class ReviewViewSet(ModelViewSet):
     queryset = Review.objects.get_queryset().select_related(
         'thesis__opponent',
         'thesis__supervisor',
+        'thesis__category',
     ).prefetch_related(
         'thesis__authors',
     )
