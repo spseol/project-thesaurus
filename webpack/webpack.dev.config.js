@@ -46,8 +46,9 @@ config.module.rules.forEach(rule => {
 config.devServer = {
     host: '0.0.0.0',
     port: 3000,
+    sockHost: '0.0.0.0',
     sockPort: 3000,
-    sockHost: 'localhost',
+    allowedHosts: [".local"],
     publicPath: config.output.publicPath,
     hot: true,
     // clientLogLevel: 'warning',

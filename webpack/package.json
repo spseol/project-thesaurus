@@ -5,7 +5,7 @@
   "author": "Josef Kolar",
   "license": "MIT",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.dev.config.js",
+    "dev": "webpack-dev-server --config webpack.dev.config.js --disable-host-check",
     "build": "webpack --mode production --config webpack.prod.config.js",
     "extract-locale": "vue-i18n-extract report -v 'src/**/*.vue' -l 'src/js/locale/**/*.json' -a",
     "merge-locale": "node ./bin/merge-locale-from-django.js"
@@ -49,7 +49,7 @@
     "vuex": "^3.4.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.11",
-    "webpack-dev-server": "^3.11.0",
+    "webpack-dev-server": "^3.11.3",
     "webpack4-bundle-tracker": "0.0.1-beta"
   },
   "devDependencies": {
